@@ -3,7 +3,11 @@ name: Refresh HKJC data
 on:
   workflow_dispatch:
   schedule:
+    # Baseline refreshes around 09:00 and 22:00 Hong Kong time.
     - cron: "0 1,14 * * *"
+    # Race-window refreshes: Wed night plus weekend/day meetings in Hong Kong time.
+    - cron: "*/10 10-15 * * 3"
+    - cron: "*/10 4-11 * * 0,6"
 
 permissions:
   contents: write
@@ -22,7 +26,7 @@ jobs:
 
       - name: Refresh HKJC local model data
         run: |
-          npm run hkjc:refresh -- --historyDays 14 --futureDays 21 --bankroll 200 --minEdge 0 --minProbability 0.15 --maxStakePct 0.05
+          npm run hkjc:refresh -- --historyDays 14 --futureDays 21 --bankroll 200 --minEdge 0 --minProbability 0.15 --maxStakePct 0.05 --finalEdgeBuffer 0.08
           cp hkjc-horse-model/data/processed/dashboard.json data/dashboard.json
 
       - name: Commit refreshed data

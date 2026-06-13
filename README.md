@@ -6,6 +6,7 @@ simulation model.
 ## What It Shows
 
 - HKJC local-race model predictions
+- Final betting plan: entry window, odds floor, stake cap, and pass rules
 - Value-bet filter and paper-bankroll guardrail
 - Official-result settlement ledger
 - Rolling paper profit / ROI
@@ -24,13 +25,14 @@ from the local model workspace. The current export was refreshed from the HKJC
 official fixture/results/race-card flow.
 
 GitHub Actions is configured in `.github/workflows/refresh-hkjc-data.yml` to
-refresh the data twice daily, around 09:00 and 22:00 Hong Kong time. It can also
-be run manually from the Actions tab.
+refresh baseline data around 09:00 and 22:00 Hong Kong time. It also refreshes
+about every 10 minutes during common Hong Kong race windows: Wednesday night and
+weekend/day meetings. It can also be run manually from the Actions tab.
 
 To refresh the source workspace:
 
 ```bash
-npm run hkjc:refresh -- --bankroll 200 --minEdge 0 --minProbability 0.15 --maxStakePct 0.05
+npm run hkjc:refresh -- --bankroll 200 --minEdge 0 --minProbability 0.15 --maxStakePct 0.05 --finalEdgeBuffer 0.08
 ```
 
 Then copy the refreshed dashboard JSON into this publishing project:
@@ -42,3 +44,15 @@ cp "hkjc-horse-model/data/processed/dashboard.json" "../hkjc-local-horse-model/d
 The source dashboard currently has 84 settled HK local races and points to the
 next HK local meeting as 2026-06-21 Sha Tin. Race-card forecasts appear only
 after HKJC publishes local starters.
+
+## Final Betting Plan
+
+The final plan is conditional. It does not force a bet every race.
+
+- Review at T-15 minutes before race start.
+- Execute only in the T-10 to T-5 minute window.
+- Bet type defaults to WIN.
+- A candidate must clear the model probability threshold and the final odds
+  floor. The default final odds floor adds an 8% edge buffer over fair odds.
+- If live odds fall below the floor, official scratchings change the setup, or
+  data is stale, the plan becomes PASS.

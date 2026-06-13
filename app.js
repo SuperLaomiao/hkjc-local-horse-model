@@ -73,6 +73,7 @@ function render() {
         </main>
 
         <aside class="right-stack">
+          ${renderFinalBetPlanPanel(selectedEntry.forecast.finalBetPlan, selectedEntry.forecast.recommendation)}
           ${renderRecommendationPanel(selectedEntry.forecast.recommendation)}
           ${renderSettlementPanel(selectedEntry.settlement)}
           ${renderChartPanel(snapshot.ledger)}
@@ -195,6 +196,92 @@ function passesValueFilter(runner) {
     return Number(runner.probability) >= minProbability;
   }
   return Number(runner.edge) >= minEdge && Number(runner.probability) >= minProbability;
+}
+
+function renderFinalBetPlanPanel(plan, recommendation) {
+  const resolvedPlan = plan ?? fallbackBetPlan(recommendation);
+  const isPass = resolvedPlan.mode === "pass";
+  const isPrepare = resolvedPlan.mode === "prepare" || resolvedPlan.mode === "conditional";
+  const badgeClass = isPass ? "is-pass" : isPrepare ? "is-prepare" : "is-execute";
+  const horseLabel = resolvedPlan.horseName
+    ? `${resolvedPlan.horseNo ? `No. ${resolvedPlan.horseNo} · ` : ""}${resolvedPlan.horseName}`
+    : "不下注";
+
+  return `
+    <section class="panel bet-plan-panel">
+      <div class="panel-header">
+        <div>
+          <h3>最终下注方案</h3>
+          <p>赛前 15 分钟复核，10-5 分钟才执行。</p>
+        </div>
+      </div>
+      <div class="bet-plan-body">
+        <span class="plan-badge ${badgeClass}">${escapeHtml(resolvedPlan.label)}</span>
+        <h2 class="plan-title">${escapeHtml(horseLabel)}</h2>
+        <p class="plan-headline">${escapeHtml(resolvedPlan.headline)}</p>
+        <div class="plan-grid">
+          <div>
+            <span>入场窗口</span>
+            <strong>${escapeHtml(resolvedPlan.entryWindow)}</strong>
+          </div>
+          <div>
+            <span>最低赔率线</span>
+            <strong>${formatOdds(resolvedPlan.minimumOdds)}</strong>
+          </div>
+          <div>
+            <span>计划注码</span>
+            <strong>${formatMoney(resolvedPlan.plannedStake)}</strong>
+          </div>
+          <div>
+            <span>Bet Type</span>
+            <strong>${escapeHtml(resolvedPlan.betType ?? "WIN")}</strong>
+          </div>
+        </div>
+        <div class="plan-timeline">
+          ${renderPlanStep("T-15", resolvedPlan.reviewWindow)}
+          ${renderPlanStep("T-10 至 T-5", resolvedPlan.entryWindow)}
+          ${renderPlanStep("停止线", resolvedPlan.cutoffWindow)}
+        </div>
+        <div class="plan-rules">
+          <strong>执行条件</strong>
+          <ul>
+            ${(resolvedPlan.checklist ?? []).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+          </ul>
+          <strong>放弃条件</strong>
+          <ul>
+            ${(resolvedPlan.stopRules ?? []).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+          </ul>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function renderPlanStep(label, value) {
+  return `
+    <div class="plan-step">
+      <span>${escapeHtml(label)}</span>
+      <strong>${escapeHtml(value ?? "-")}</strong>
+    </div>
+  `;
+}
+
+function fallbackBetPlan(recommendation = {}) {
+  return {
+    mode: recommendation.action === "value" ? "conditional" : "pass",
+    label: recommendation.action === "value" ? "WAIT / 等赔率" : "NO BET / 不买",
+    headline: recommendation.message ?? "No final betting plan is available for this race.",
+    betType: "WIN",
+    horseName: recommendation.horseName ?? null,
+    horseNo: recommendation.horseNo ?? null,
+    minimumOdds: recommendation.fairOdds ?? null,
+    plannedStake: recommendation.action === "value" ? recommendation.suggestedStake : 0,
+    entryWindow: "开跑前 10-5 分钟",
+    reviewWindow: "开跑前 15 分钟复核",
+    cutoffWindow: "不强行下注",
+    checklist: ["下注前必须刷新实时赔率和官方临场变化。"],
+    stopRules: ["最终 value edge 不清楚就 PASS。"],
+  };
 }
 
 function renderRecommendationPanel(recommendation) {

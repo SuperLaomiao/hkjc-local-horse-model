@@ -260,6 +260,7 @@ async function dashboardCommand(args) {
     minProbability: args.minProbability == null ? 0.15 : Number(args.minProbability),
     bankroll: args.bankroll == null ? 1000 : Number(args.bankroll),
     maxStakePct: args.maxStakePct == null ? 0.0125 : Number(args.maxStakePct),
+    finalEdgeBuffer: args.finalEdgeBuffer == null ? 0.08 : Number(args.finalEdgeBuffer),
     allowProbabilityOnly: args.allowProbabilityOnly !== 'false',
     upcomingRaces,
     nextLocalMeetings: args.nextLocalMeetings ?? [],

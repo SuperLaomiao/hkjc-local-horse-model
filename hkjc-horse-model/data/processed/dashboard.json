@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-13T14:14:46.510Z",
+  "generatedAt": "2026-06-13T14:46:37.805Z",
   "scope": "HKJC local races only",
   "summary": {
     "racesSettled": 84,
@@ -47,6 +47,33 @@
       "action": "pass",
       "message": "No positive-edge win recommendation at current odds.",
       "suggestedStake": 0
+    },
+    "finalBetPlan": {
+      "mode": "pass",
+      "label": "NO BET / 不买",
+      "headline": "保留本金；这场没有通过最终下注规则。",
+      "betType": "WIN",
+      "horseId": null,
+      "horseName": null,
+      "horseNo": null,
+      "modelProbability": 0.141671917724135,
+      "fairOdds": 7.058561894723626,
+      "currentOdds": 4.6,
+      "minimumOdds": 7.62,
+      "targetEdge": 0.08,
+      "plannedStake": 0,
+      "stakePct": 0,
+      "entryWindow": "开跑前 10-5 分钟",
+      "reviewWindow": "开跑前 15 分钟复核",
+      "cutoffWindow": "不强行下注",
+      "checklist": [
+        "实时赔率没有正期望值，不下独赢。",
+        "这场只用于赛后复盘和模型学习。"
+      ],
+      "stopRules": [
+        "没有 edge，就不下注。",
+        "不要为了有动作，把 PASS 换成低质量选择。"
+      ]
     },
     "predictions": [
       {
@@ -1374,6 +1401,33 @@
           "message": "No positive-edge win recommendation at current odds.",
           "suggestedStake": 0
         },
+        "finalBetPlan": {
+          "mode": "pass",
+          "label": "NO BET / 不买",
+          "headline": "保留本金；这场没有通过最终下注规则。",
+          "betType": "WIN",
+          "horseId": null,
+          "horseName": null,
+          "horseNo": null,
+          "modelProbability": 0.13935680563932978,
+          "fairOdds": 7.175824642451308,
+          "currentOdds": 4.3,
+          "minimumOdds": 7.75,
+          "targetEdge": 0.08,
+          "plannedStake": 0,
+          "stakePct": 0,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "不强行下注",
+          "checklist": [
+            "实时赔率没有正期望值，不下独赢。",
+            "这场只用于赛后复盘和模型学习。"
+          ],
+          "stopRules": [
+            "没有 edge，就不下注。",
+            "不要为了有动作，把 PASS 换成低质量选择。"
+          ]
+        },
         "predictions": [
           {
             "horseId": "HK_2024_K107",
@@ -1632,6 +1686,34 @@
           "stakePct": 0.028561711092565868,
           "message": "Positive-edge candidate; use stake cap and review final odds before placing any bet."
         },
+        "finalBetPlan": {
+          "mode": "execute",
+          "label": "FINAL BUY / 可买",
+          "headline": "只在最终入场窗口执行，不提前追价。",
+          "betType": "WIN",
+          "horseId": "HK_2025_L335",
+          "horseName": "DRAGON GENERATION",
+          "horseNo": 2,
+          "modelProbability": 0.15642556606691757,
+          "fairOdds": 6.392816885011036,
+          "currentOdds": 21,
+          "minimumOdds": 6.9,
+          "targetEdge": 0.08,
+          "plannedStake": 5.71,
+          "stakePct": 0.02855,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "开跑前 3 分钟后不新增下注",
+          "checklist": [
+            "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
+            "只有实时独赢赔率仍高于最低赔率线，才执行下注。",
+            "严格使用计划注码上限；赔率跌穿就不追。"
+          ],
+          "stopRules": [
+            "马匹退出、骑师/场地出现重大变化，或赔率跌穿最低线，直接 PASS。",
+            "最终 15 分钟内页面没有刷新成功，直接 PASS。"
+          ]
+        },
         "predictions": [
           {
             "horseId": "HK_2025_L051",
@@ -1804,6 +1886,33 @@
           "action": "pass",
           "message": "No positive-edge win recommendation at current odds.",
           "suggestedStake": 0
+        },
+        "finalBetPlan": {
+          "mode": "pass",
+          "label": "NO BET / 不买",
+          "headline": "保留本金；这场没有通过最终下注规则。",
+          "betType": "WIN",
+          "horseId": null,
+          "horseName": null,
+          "horseNo": null,
+          "modelProbability": 0.1322570927161283,
+          "fairOdds": 7.561031166368997,
+          "currentOdds": 8.2,
+          "minimumOdds": 8.17,
+          "targetEdge": 0.08,
+          "plannedStake": 0,
+          "stakePct": 0,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "不强行下注",
+          "checklist": [
+            "实时赔率没有正期望值，不下独赢。",
+            "这场只用于赛后复盘和模型学习。"
+          ],
+          "stopRules": [
+            "没有 edge，就不下注。",
+            "不要为了有动作，把 PASS 换成低质量选择。"
+          ]
         },
         "predictions": [
           {
@@ -2037,6 +2146,33 @@
           "action": "pass",
           "message": "No positive-edge win recommendation at current odds.",
           "suggestedStake": 0
+        },
+        "finalBetPlan": {
+          "mode": "pass",
+          "label": "NO BET / 不买",
+          "headline": "保留本金；这场没有通过最终下注规则。",
+          "betType": "WIN",
+          "horseId": null,
+          "horseName": null,
+          "horseNo": null,
+          "modelProbability": 0.11338387431139928,
+          "fairOdds": 8.819596314495165,
+          "currentOdds": 7.9,
+          "minimumOdds": 9.53,
+          "targetEdge": 0.08,
+          "plannedStake": 0,
+          "stakePct": 0,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "不强行下注",
+          "checklist": [
+            "实时赔率没有正期望值，不下独赢。",
+            "这场只用于赛后复盘和模型学习。"
+          ],
+          "stopRules": [
+            "没有 edge，就不下注。",
+            "不要为了有动作，把 PASS 换成低质量选择。"
+          ]
         },
         "predictions": [
           {
@@ -2316,6 +2452,33 @@
           "message": "No positive-edge win recommendation at current odds.",
           "suggestedStake": 0
         },
+        "finalBetPlan": {
+          "mode": "pass",
+          "label": "NO BET / 不买",
+          "headline": "保留本金；这场没有通过最终下注规则。",
+          "betType": "WIN",
+          "horseId": null,
+          "horseName": null,
+          "horseNo": null,
+          "modelProbability": 0.11401294754971417,
+          "fairOdds": 8.770933665792302,
+          "currentOdds": 7.6,
+          "minimumOdds": 9.47,
+          "targetEdge": 0.08,
+          "plannedStake": 0,
+          "stakePct": 0,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "不强行下注",
+          "checklist": [
+            "实时赔率没有正期望值，不下独赢。",
+            "这场只用于赛后复盘和模型学习。"
+          ],
+          "stopRules": [
+            "没有 edge，就不下注。",
+            "不要为了有动作，把 PASS 换成低质量选择。"
+          ]
+        },
         "predictions": [
           {
             "horseId": "HK_2023_J182",
@@ -2594,6 +2757,33 @@
           "message": "No positive-edge win recommendation at current odds.",
           "suggestedStake": 0
         },
+        "finalBetPlan": {
+          "mode": "pass",
+          "label": "NO BET / 不买",
+          "headline": "保留本金；这场没有通过最终下注规则。",
+          "betType": "WIN",
+          "horseId": null,
+          "horseName": null,
+          "horseNo": null,
+          "modelProbability": 0.1269885296309609,
+          "fairOdds": 7.8747269765708925,
+          "currentOdds": 98,
+          "minimumOdds": 8.5,
+          "targetEdge": 0.08,
+          "plannedStake": 0,
+          "stakePct": 0,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "不强行下注",
+          "checklist": [
+            "实时赔率没有正期望值，不下独赢。",
+            "这场只用于赛后复盘和模型学习。"
+          ],
+          "stopRules": [
+            "没有 edge，就不下注。",
+            "不要为了有动作，把 PASS 换成低质量选择。"
+          ]
+        },
         "predictions": [
           {
             "horseId": "HK_2025_L141",
@@ -2841,6 +3031,33 @@
           "action": "pass",
           "message": "No positive-edge win recommendation at current odds.",
           "suggestedStake": 0
+        },
+        "finalBetPlan": {
+          "mode": "pass",
+          "label": "NO BET / 不买",
+          "headline": "保留本金；这场没有通过最终下注规则。",
+          "betType": "WIN",
+          "horseId": null,
+          "horseName": null,
+          "horseNo": null,
+          "modelProbability": 0.14590222784095955,
+          "fairOdds": 6.853904938929706,
+          "currentOdds": 12,
+          "minimumOdds": 7.4,
+          "targetEdge": 0.08,
+          "plannedStake": 0,
+          "stakePct": 0,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "不强行下注",
+          "checklist": [
+            "实时赔率没有正期望值，不下独赢。",
+            "这场只用于赛后复盘和模型学习。"
+          ],
+          "stopRules": [
+            "没有 edge，就不下注。",
+            "不要为了有动作，把 PASS 换成低质量选择。"
+          ]
         },
         "predictions": [
           {
@@ -3105,6 +3322,33 @@
           "message": "No positive-edge win recommendation at current odds.",
           "suggestedStake": 0
         },
+        "finalBetPlan": {
+          "mode": "pass",
+          "label": "NO BET / 不买",
+          "headline": "保留本金；这场没有通过最终下注规则。",
+          "betType": "WIN",
+          "horseId": null,
+          "horseName": null,
+          "horseNo": null,
+          "modelProbability": 0.1310750908806997,
+          "fairOdds": 7.629214622556833,
+          "currentOdds": 29,
+          "minimumOdds": 8.24,
+          "targetEdge": 0.08,
+          "plannedStake": 0,
+          "stakePct": 0,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "不强行下注",
+          "checklist": [
+            "实时赔率没有正期望值，不下独赢。",
+            "这场只用于赛后复盘和模型学习。"
+          ],
+          "stopRules": [
+            "没有 edge，就不下注。",
+            "不要为了有动作，把 PASS 换成低质量选择。"
+          ]
+        },
         "predictions": [
           {
             "horseId": "HK_2024_K275",
@@ -3363,6 +3607,34 @@
           "stakePct": 0.05,
           "message": "Probability-only paper pick; wait for market odds before treating it as a value recommendation."
         },
+        "finalBetPlan": {
+          "mode": "prepare",
+          "label": "PREP / 预备",
+          "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+          "betType": "WIN",
+          "horseId": "HK_2023_J454",
+          "horseName": "PACKING ANGEL",
+          "horseNo": 3,
+          "modelProbability": 0.22272235359348766,
+          "fairOdds": 4.48989508177162,
+          "currentOdds": null,
+          "minimumOdds": 4.85,
+          "targetEdge": 0.08,
+          "plannedStake": 10,
+          "stakePct": 0.05,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "T-5 仍无实时赔率就不下注",
+          "checklist": [
+            "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
+            "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
+            "赔率缺失或跳动太乱时，只保留纸上模拟。"
+          ],
+          "stopRules": [
+            "最终赔率低于最低线，直接 PASS。",
+            "任何临场官方变化削弱模型条件，直接 PASS。"
+          ]
+        },
         "predictions": [
           {
             "horseId": "HK_2023_J454",
@@ -3565,6 +3837,33 @@
           "action": "pass",
           "message": "No positive-edge win recommendation at current odds.",
           "suggestedStake": 0
+        },
+        "finalBetPlan": {
+          "mode": "pass",
+          "label": "NO BET / 不买",
+          "headline": "保留本金；这场没有通过最终下注规则。",
+          "betType": "WIN",
+          "horseId": null,
+          "horseName": null,
+          "horseNo": null,
+          "modelProbability": 0.1300691143297361,
+          "fairOdds": 7.688220260075855,
+          "currentOdds": 22,
+          "minimumOdds": 8.3,
+          "targetEdge": 0.08,
+          "plannedStake": 0,
+          "stakePct": 0,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "不强行下注",
+          "checklist": [
+            "实时赔率没有正期望值，不下独赢。",
+            "这场只用于赛后复盘和模型学习。"
+          ],
+          "stopRules": [
+            "没有 edge，就不下注。",
+            "不要为了有动作，把 PASS 换成低质量选择。"
+          ]
         },
         "predictions": [
           {
@@ -3813,6 +4112,33 @@
           "action": "pass",
           "message": "No positive-edge win recommendation at current odds.",
           "suggestedStake": 0
+        },
+        "finalBetPlan": {
+          "mode": "pass",
+          "label": "NO BET / 不买",
+          "headline": "保留本金；这场没有通过最终下注规则。",
+          "betType": "WIN",
+          "horseId": null,
+          "horseName": null,
+          "horseNo": null,
+          "modelProbability": 0.13962370742993915,
+          "fairOdds": 7.16210748451715,
+          "currentOdds": 5.2,
+          "minimumOdds": 7.74,
+          "targetEdge": 0.08,
+          "plannedStake": 0,
+          "stakePct": 0,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "不强行下注",
+          "checklist": [
+            "实时赔率没有正期望值，不下独赢。",
+            "这场只用于赛后复盘和模型学习。"
+          ],
+          "stopRules": [
+            "没有 edge，就不下注。",
+            "不要为了有动作，把 PASS 换成低质量选择。"
+          ]
         },
         "predictions": [
           {
@@ -4077,6 +4403,33 @@
           "message": "No positive-edge win recommendation at current odds.",
           "suggestedStake": 0
         },
+        "finalBetPlan": {
+          "mode": "pass",
+          "label": "NO BET / 不买",
+          "headline": "保留本金；这场没有通过最终下注规则。",
+          "betType": "WIN",
+          "horseId": null,
+          "horseName": null,
+          "horseNo": null,
+          "modelProbability": 0.141671917724135,
+          "fairOdds": 7.058561894723626,
+          "currentOdds": 4.6,
+          "minimumOdds": 7.62,
+          "targetEdge": 0.08,
+          "plannedStake": 0,
+          "stakePct": 0,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "不强行下注",
+          "checklist": [
+            "实时赔率没有正期望值，不下独赢。",
+            "这场只用于赛后复盘和模型学习。"
+          ],
+          "stopRules": [
+            "没有 edge，就不下注。",
+            "不要为了有动作，把 PASS 换成低质量选择。"
+          ]
+        },
         "predictions": [
           {
             "horseId": "HK_2025_L230",
@@ -4326,6 +4679,7 @@
     "stakePolicy": "fractional Kelly capped by maxStakePct",
     "minProbability": 0.15,
     "minEdge": 0,
+    "finalEdgeBuffer": 0.08,
     "allowProbabilityOnly": true,
     "responsibleUse": "probability research, not a guarantee of profit"
   }

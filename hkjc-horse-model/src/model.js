@@ -198,6 +198,7 @@ export function buildRaceForecast(race, state = createModelState(), options = {}
   const predictions = predictRace(race, state, options);
   const topPick = predictions[0] ? sanitizePrediction(predictions[0]) : null;
   const recommendation = recommendValueBet(predictions, options);
+  const finalBetPlan = buildFinalBetPlan(race, predictions, recommendation, options);
 
   return {
     raceId: race.raceId,
@@ -214,6 +215,7 @@ export function buildRaceForecast(race, state = createModelState(), options = {}
     trainingRacesBefore: state.completedRaces,
     topPick,
     recommendation,
+    finalBetPlan,
     predictions: predictions.map(sanitizePrediction),
   };
 }
@@ -293,6 +295,120 @@ export function recommendValueBet(predictions, options = {}) {
     suggestedStake,
     stakePct,
     message: 'Positive-edge candidate; use stake cap and review final odds before placing any bet.',
+  };
+}
+
+export function buildFinalBetPlan(race, predictions, recommendation, options = {}) {
+  const bankroll = Number.isFinite(options.bankroll) ? options.bankroll : 1000;
+  const minEdge = Number.isFinite(options.minEdge) ? options.minEdge : DEFAULT_CONFIG.minEdge;
+  const finalEdgeBuffer = Number.isFinite(options.finalEdgeBuffer) ? options.finalEdgeBuffer : 0.08;
+  const targetEdge = Math.max(0, minEdge) + finalEdgeBuffer;
+  const maxStakePct = Number.isFinite(options.maxStakePct) ? options.maxStakePct : 0.0125;
+  const selected = recommendation.horseId
+    ? predictions.find((runner) => runner.horseId === recommendation.horseId)
+    : predictions[0];
+  const probability = recommendation.modelProbability ?? selected?.probability ?? null;
+  const fairOdds = recommendation.fairOdds ?? selected?.fairOdds ?? null;
+  const minimumOdds = Number.isFinite(probability) && probability > 0
+    ? roundOdds((1 + targetEdge) / probability)
+    : null;
+  const currentOdds = recommendation.winOdds ?? selected?.winOdds ?? null;
+  const hasMarketOdds = Number.isFinite(currentOdds);
+  const currentMeetsFinalPrice = hasMarketOdds && Number.isFinite(minimumOdds) && currentOdds >= minimumOdds;
+  const plannedStake = recommendation.action === 'pass'
+    ? 0
+    : roundMoney(Math.min(recommendation.suggestedStake ?? 0, bankroll * maxStakePct));
+
+  if (recommendation.action === 'value') {
+    return {
+      mode: currentMeetsFinalPrice ? 'execute' : 'conditional',
+      label: currentMeetsFinalPrice ? 'FINAL BUY / 可买' : 'WAIT / 等赔率',
+      headline: currentMeetsFinalPrice
+        ? '只在最终入场窗口执行，不提前追价。'
+        : '只列入候选，等临场赔率重新站上最低入场线。',
+      betType: 'WIN',
+      horseId: recommendation.horseId,
+      horseName: recommendation.horseName,
+      horseNo: recommendation.horseNo,
+      modelProbability: probability,
+      fairOdds,
+      currentOdds,
+      minimumOdds,
+      targetEdge,
+      plannedStake,
+      stakePct: bankroll > 0 ? plannedStake / bankroll : 0,
+      entryWindow: '开跑前 10-5 分钟',
+      reviewWindow: '开跑前 15 分钟复核',
+      cutoffWindow: '开跑前 3 分钟后不新增下注',
+      checklist: [
+        'T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。',
+        '只有实时独赢赔率仍高于最低赔率线，才执行下注。',
+        '严格使用计划注码上限；赔率跌穿就不追。',
+      ],
+      stopRules: [
+        '马匹退出、骑师/场地出现重大变化，或赔率跌穿最低线，直接 PASS。',
+        '最终 15 分钟内页面没有刷新成功，直接 PASS。',
+      ],
+    };
+  }
+
+  if (recommendation.action === 'probability') {
+    return {
+      mode: 'prepare',
+      label: 'PREP / 预备',
+      headline: '暂时没有实时赔率，只做候选准备，最终窗口再决定。',
+      betType: 'WIN',
+      horseId: recommendation.horseId,
+      horseName: recommendation.horseName,
+      horseNo: recommendation.horseNo,
+      modelProbability: probability,
+      fairOdds,
+      currentOdds: null,
+      minimumOdds,
+      targetEdge,
+      plannedStake,
+      stakePct: bankroll > 0 ? plannedStake / bankroll : 0,
+      entryWindow: '开跑前 10-5 分钟',
+      reviewWindow: '开跑前 15 分钟复核',
+      cutoffWindow: 'T-5 仍无实时赔率就不下注',
+      checklist: [
+        'T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。',
+        '只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。',
+        '赔率缺失或跳动太乱时，只保留纸上模拟。',
+      ],
+      stopRules: [
+        '最终赔率低于最低线，直接 PASS。',
+        '任何临场官方变化削弱模型条件，直接 PASS。',
+      ],
+    };
+  }
+
+  return {
+    mode: 'pass',
+    label: 'NO BET / 不买',
+    headline: '保留本金；这场没有通过最终下注规则。',
+    betType: 'WIN',
+    horseId: null,
+    horseName: null,
+    horseNo: null,
+    modelProbability: probability,
+    fairOdds,
+    currentOdds,
+    minimumOdds,
+    targetEdge,
+    plannedStake: 0,
+    stakePct: 0,
+    entryWindow: '开跑前 10-5 分钟',
+    reviewWindow: '开跑前 15 分钟复核',
+    cutoffWindow: '不强行下注',
+    checklist: [
+      '实时赔率没有正期望值，不下独赢。',
+      '这场只用于赛后复盘和模型学习。',
+    ],
+    stopRules: [
+      '没有 edge，就不下注。',
+      '不要为了有动作，把 PASS 换成低质量选择。',
+    ],
   };
 }
 
@@ -462,6 +578,7 @@ export function buildDashboardSnapshot(races, options = {}) {
       stakePolicy: 'fractional Kelly capped by maxStakePct',
       minProbability: options.minProbability ?? 0.15,
       minEdge: options.minEdge ?? DEFAULT_CONFIG.minEdge,
+      finalEdgeBuffer: options.finalEdgeBuffer ?? 0.08,
       allowProbabilityOnly: options.allowProbabilityOnly ?? true,
       responsibleUse: 'probability research, not a guarantee of profit',
     },
@@ -622,6 +739,11 @@ function confidenceTier(runner) {
 
 function roundMoney(value) {
   if (!Number.isFinite(value)) return 0;
+  return Math.round(value * 100) / 100;
+}
+
+function roundOdds(value) {
+  if (!Number.isFinite(value)) return null;
   return Math.round(value * 100) / 100;
 }
 

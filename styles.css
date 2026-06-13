@@ -360,10 +360,131 @@ tbody tr:hover {
 }
 
 .recommendation-body,
+.bet-plan-body,
 .settlement-body,
 .chart-body,
 .notes-body {
   padding: 14px;
+}
+
+.bet-plan-panel {
+  border-color: #bed7d4;
+}
+
+.plan-badge {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: var(--teal-soft);
+  color: var(--teal);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.plan-badge.is-prepare {
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+
+.plan-badge.is-pass {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+.plan-title {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.18;
+}
+
+.plan-headline {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.plan-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: 14px 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--line);
+}
+
+.plan-grid div {
+  min-width: 0;
+  padding: 10px;
+  background: var(--surface-soft);
+}
+
+.plan-grid span,
+.plan-step span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.plan-grid strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.9rem;
+  line-height: 1.25;
+}
+
+.plan-timeline {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.plan-step {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 9px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.plan-step strong {
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.plan-rules {
+  padding: 11px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.plan-rules strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.78rem;
+}
+
+.plan-rules strong:first-child {
+  margin-top: 0;
+}
+
+.plan-rules ul {
+  margin: 7px 0 0;
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+.plan-rules li + li {
+  margin-top: 5px;
 }
 
 .recommendation-name {
