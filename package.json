@@ -1,0 +1,10 @@
+{
+  "name": "hkjc-local-horse-model",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "hkjc:refresh": "node hkjc-horse-model/src/cli.js refresh",
+    "hkjc:dashboard": "node hkjc-horse-model/src/cli.js dashboard"
+  }
+}
