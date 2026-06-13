@@ -7,6 +7,8 @@ simulation model.
 
 - HKJC local-race model predictions
 - Final betting plan: entry window, odds floor, stake cap, and pass rules
+- Large refresh button for pulling the latest published plan before a race
+- Mobile-first PWA shell with installable app metadata
 - Value-bet filter and paper-bankroll guardrail
 - Official-result settlement ledger
 - Rolling paper profit / ROI
@@ -44,6 +46,13 @@ cp "hkjc-horse-model/data/processed/dashboard.json" "../hkjc-local-horse-model/d
 The source dashboard currently has 84 settled HK local races and points to the
 next HK local meeting as 2026-06-21 Sha Tin. Race-card forecasts appear only
 after HKJC publishes local starters.
+
+The page-level refresh button reloads the latest published `data/dashboard.json`
+without browser cache. GitHub Pages cannot safely store a secret token in the
+browser, so this button does not directly trigger the GitHub Actions backend.
+During race windows, the backend workflow refreshes about every 10 minutes; a
+future Worker/API can make the button trigger an immediate server-side HKJC
+refresh.
 
 ## Final Betting Plan
 

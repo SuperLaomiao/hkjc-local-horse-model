@@ -1,0 +1,18 @@
+{
+  "name": "HK Local Horse Model",
+  "short_name": "HKJC Model",
+  "description": "香港本地赛马最终下注方案、赛前预测和赛后复盘。",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f7f7",
+  "theme_color": "#04756f",
+  "icons": [
+    {
+      "src": "./icons/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

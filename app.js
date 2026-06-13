@@ -5,26 +5,57 @@ const uiState = {
   snapshot: null,
   selectedRaceId: null,
   filter: "all",
+  isRefreshing: false,
+  refreshStatus: "ready",
+  refreshedAt: null,
 };
 
 init();
 
 async function init() {
+  await refreshDashboardData({ initial: true });
+  registerServiceWorker();
+}
+
+async function refreshDashboardData({ initial = false } = {}) {
+  if (uiState.isRefreshing) return;
+  uiState.isRefreshing = true;
+  uiState.refreshStatus = initial ? "loading-initial" : "loading";
+  if (!initial && uiState.snapshot) render();
+
   try {
-    const response = await fetch(DATA_URL, { cache: "no-store" });
+    const response = await fetch(`${DATA_URL}?t=${Date.now()}`, { cache: "no-store" });
     if (!response.ok) {
       throw new Error(`Dashboard data not found: ${response.status}`);
     }
 
-    uiState.snapshot = await response.json();
-    uiState.selectedRaceId = uiState.snapshot.latestUpcomingForecast?.raceId
-      ?? uiState.snapshot.latestForecast?.raceId
-      ?? uiState.snapshot.recentEntries?.at(-1)?.raceId
-      ?? null;
+    const nextSnapshot = await response.json();
+    uiState.snapshot = nextSnapshot;
+    uiState.selectedRaceId = resolveSelectedRaceId(nextSnapshot, uiState.selectedRaceId);
+    uiState.refreshedAt = new Date().toISOString();
+    uiState.refreshStatus = initial ? "ready" : "success";
     render();
   } catch (error) {
-    renderMissingData(error);
+    uiState.refreshStatus = "error";
+    if (initial || !uiState.snapshot) {
+      renderMissingData(error);
+    } else {
+      render();
+    }
+  } finally {
+    uiState.isRefreshing = false;
+    if (uiState.snapshot) render();
   }
+}
+
+function resolveSelectedRaceId(snapshot, preferredRaceId) {
+  const entries = getAllEntries(snapshot);
+  if (preferredRaceId && entries.some((entry) => entry.raceId === preferredRaceId)) return preferredRaceId;
+  return snapshot.latestUpcomingForecast?.raceId
+    ?? snapshot.latestForecast?.raceId
+    ?? snapshot.recentEntries?.at(-1)?.raceId
+    ?? entries[0]?.raceId
+    ?? null;
 }
 
 function render() {
@@ -73,13 +104,14 @@ function render() {
         </main>
 
         <aside class="right-stack">
-          ${renderFinalBetPlanPanel(selectedEntry.forecast.finalBetPlan, selectedEntry.forecast.recommendation)}
+          ${renderFinalBetPlanPanel(selectedEntry.forecast.finalBetPlan, selectedEntry.forecast.recommendation, snapshot)}
           ${renderRecommendationPanel(selectedEntry.forecast.recommendation)}
           ${renderSettlementPanel(selectedEntry.settlement)}
           ${renderChartPanel(snapshot.ledger)}
           ${renderNotesPanel(snapshot.assumptions, snapshot)}
         </aside>
       </section>
+      ${renderMobileActionBar(selectedEntry)}
     </div>
   `;
 
@@ -198,7 +230,7 @@ function passesValueFilter(runner) {
   return Number(runner.edge) >= minEdge && Number(runner.probability) >= minProbability;
 }
 
-function renderFinalBetPlanPanel(plan, recommendation) {
+function renderFinalBetPlanPanel(plan, recommendation, snapshot) {
   const resolvedPlan = plan ?? fallbackBetPlan(recommendation);
   const isPass = resolvedPlan.mode === "pass";
   const isPrepare = resolvedPlan.mode === "prepare" || resolvedPlan.mode === "conditional";
@@ -214,6 +246,7 @@ function renderFinalBetPlanPanel(plan, recommendation) {
           <h3>最终下注方案</h3>
           <p>赛前 15 分钟复核，10-5 分钟才执行。</p>
         </div>
+        ${renderRefreshButton("刷新最新赔率/方案", "panel")}
       </div>
       <div class="bet-plan-body">
         <span class="plan-badge ${badgeClass}">${escapeHtml(resolvedPlan.label)}</span>
@@ -223,6 +256,10 @@ function renderFinalBetPlanPanel(plan, recommendation) {
           <div>
             <span>入场窗口</span>
             <strong>${escapeHtml(resolvedPlan.entryWindow)}</strong>
+          </div>
+          <div>
+            <span>当前赔率</span>
+            <strong>${formatOdds(resolvedPlan.currentOdds)}</strong>
           </div>
           <div>
             <span>最低赔率线</span>
@@ -236,6 +273,13 @@ function renderFinalBetPlanPanel(plan, recommendation) {
             <span>Bet Type</span>
             <strong>${escapeHtml(resolvedPlan.betType ?? "WIN")}</strong>
           </div>
+          <div>
+            <span>赔率来源</span>
+            <strong>${escapeHtml(oddsSourceLabel(resolvedPlan))}</strong>
+          </div>
+        </div>
+        <div class="refresh-status ${uiState.refreshStatus === "error" ? "is-error" : ""}">
+          ${escapeHtml(refreshStatusText(snapshot))}
         </div>
         <div class="plan-timeline">
           ${renderPlanStep("T-15", resolvedPlan.reviewWindow)}
@@ -257,6 +301,28 @@ function renderFinalBetPlanPanel(plan, recommendation) {
   `;
 }
 
+function renderRefreshButton(label, variant = "") {
+  const text = uiState.isRefreshing ? "刷新中..." : label;
+  return `
+    <button class="refresh-plan-button ${variant ? `is-${variant}` : ""}" data-refresh-plan ${uiState.isRefreshing ? "disabled" : ""}>
+      <span>${escapeHtml(text)}</span>
+    </button>
+  `;
+}
+
+function renderMobileActionBar(entry) {
+  const plan = entry.forecast.finalBetPlan ?? fallbackBetPlan(entry.forecast.recommendation);
+  return `
+    <div class="mobile-action-bar" aria-label="mobile final action">
+      <div>
+        <span>${escapeHtml(plan.label ?? "方案")}</span>
+        <strong>${escapeHtml(plan.horseName ? `${plan.horseNo ? `No. ${plan.horseNo} · ` : ""}${plan.horseName}` : "不下注")}</strong>
+      </div>
+      ${renderRefreshButton("刷新", "mobile")}
+    </div>
+  `;
+}
+
 function renderPlanStep(label, value) {
   return `
     <div class="plan-step">
@@ -264,6 +330,11 @@ function renderPlanStep(label, value) {
       <strong>${escapeHtml(value ?? "-")}</strong>
     </div>
   `;
+}
+
+function oddsSourceLabel(plan) {
+  if (!Number.isFinite(Number(plan.currentOdds))) return "待实时赔率";
+  return plan.mode === "pass" && plan.plannedStake === 0 ? "官方/最新数据" : "最新数据";
 }
 
 function fallbackBetPlan(recommendation = {}) {
@@ -500,6 +571,12 @@ function bindEvents() {
       render();
     });
   });
+
+  document.querySelectorAll("[data-refresh-plan]").forEach((button) => {
+    button.addEventListener("click", () => {
+      refreshDashboardData();
+    });
+  });
 }
 
 function renderMissingData(error) {
@@ -543,6 +620,25 @@ function formatDateTime(value) {
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+  });
+}
+
+function refreshStatusText(snapshot) {
+  if (uiState.refreshStatus === "loading" || uiState.refreshStatus === "loading-initial") {
+    return "正在刷新线上最新数据...";
+  }
+  if (uiState.refreshStatus === "error") {
+    return "刷新失败，请稍后再试；当前仍显示上一次方案。";
+  }
+  const dataTime = snapshot?.generatedAt ? `数据生成：${formatDateTime(snapshot.generatedAt)}` : "数据生成：-";
+  const clickTime = uiState.refreshedAt ? `页面刷新：${formatDateTime(uiState.refreshedAt)}` : "页面刷新：-";
+  return `${dataTime} · ${clickTime} · 赛马窗口后台约每 10 分钟更新`;
+}
+
+function registerServiceWorker() {
+  if (!("serviceWorker" in navigator)) return;
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
   });
 }
 
