@@ -62,6 +62,7 @@ function render() {
   const snapshot = uiState.snapshot;
   const entries = getAllEntries(snapshot);
   const selectedEntry = entries.find((entry) => entry.raceId === uiState.selectedRaceId) ?? entries[0];
+  const todayStatus = localRaceDayStatus(snapshot);
 
   if (!selectedEntry) {
     renderMissingData(new Error("No HKJC local races or race-card forecasts found in dashboard data."));
@@ -104,14 +105,14 @@ function render() {
         </main>
 
         <aside class="right-stack">
-          ${renderFinalBetPlanPanel(selectedEntry.forecast.finalBetPlan, selectedEntry.forecast.recommendation, snapshot)}
+          ${renderFinalBetPlanPanel(selectedEntry.forecast.finalBetPlan, selectedEntry.forecast.recommendation, snapshot, todayStatus)}
           ${renderRecommendationPanel(selectedEntry.forecast.recommendation)}
           ${renderSettlementPanel(selectedEntry.settlement)}
           ${renderChartPanel(snapshot.ledger)}
           ${renderNotesPanel(snapshot.assumptions, snapshot)}
         </aside>
       </section>
-      ${renderMobileActionBar(selectedEntry)}
+      ${renderMobileActionBar(selectedEntry, todayStatus)}
     </div>
   `;
 
@@ -230,7 +231,11 @@ function passesValueFilter(runner) {
   return Number(runner.edge) >= minEdge && Number(runner.probability) >= minProbability;
 }
 
-function renderFinalBetPlanPanel(plan, recommendation, snapshot) {
+function renderFinalBetPlanPanel(plan, recommendation, snapshot, todayStatus) {
+  if (todayStatus.noLocalRaceToday) {
+    return renderNoLocalRacePlanPanel(snapshot, todayStatus);
+  }
+
   const resolvedPlan = plan ?? fallbackBetPlan(recommendation);
   const isPass = resolvedPlan.mode === "pass";
   const isPrepare = resolvedPlan.mode === "prepare" || resolvedPlan.mode === "conditional";
@@ -301,6 +306,74 @@ function renderFinalBetPlanPanel(plan, recommendation, snapshot) {
   `;
 }
 
+function renderNoLocalRacePlanPanel(snapshot, todayStatus) {
+  const nextMeeting = todayStatus.nextMeeting ? formatMeeting(todayStatus.nextMeeting) : "待官方赛程更新";
+  const latestRace = todayStatus.latestRaceDate ? `${todayStatus.latestRaceDate} ${todayStatus.latestRacecourse ?? ""}`.trim() : "-";
+
+  return `
+    <section class="panel bet-plan-panel">
+      <div class="panel-header">
+        <div>
+          <h3>最终下注方案</h3>
+          <p>今天没有香港本地赛马卡，刷新不会生成下注。</p>
+        </div>
+        ${renderRefreshButton("刷新最新赛程/方案", "panel")}
+      </div>
+      <div class="bet-plan-body">
+        <span class="plan-badge is-idle">NO LOCAL RACE / 今日无本地赛</span>
+        <h2 class="plan-title">今天不下注</h2>
+        <p class="plan-headline">刷新成功，但 ${escapeHtml(todayStatus.today)} 没有可执行的香港本地赛马。下一场本地赛事：${escapeHtml(nextMeeting)}。</p>
+        <div class="plan-grid">
+          <div>
+            <span>今日日期</span>
+            <strong>${escapeHtml(todayStatus.today)}</strong>
+          </div>
+          <div>
+            <span>下一场本地赛事</span>
+            <strong>${escapeHtml(nextMeeting)}</strong>
+          </div>
+          <div>
+            <span>最新已结算</span>
+            <strong>${escapeHtml(latestRace)}</strong>
+          </div>
+          <div>
+            <span>赛前卡状态</span>
+            <strong>${snapshot.upcomingEntries?.length ?? 0} 场待赛</strong>
+          </div>
+          <div>
+            <span>计划注码</span>
+            <strong>$0</strong>
+          </div>
+          <div>
+            <span>刷新作用</span>
+            <strong>确认官方最新数据</strong>
+          </div>
+        </div>
+        <div class="refresh-status ${uiState.refreshStatus === "error" ? "is-error" : ""}">
+          ${escapeHtml(refreshStatusText(snapshot))}
+        </div>
+        <div class="plan-timeline">
+          ${renderPlanStep("赛前卡", "等 HKJC 发布本地 Race Card 后才生成预测")}
+          ${renderPlanStep("T-15", "有比赛日才复核马表、退出马、场地和实时赔率")}
+          ${renderPlanStep("停止线", "没有本地赛事或没有实时赔率，不下注")}
+        </div>
+        <div class="plan-rules">
+          <strong>执行条件</strong>
+          <ul>
+            <li>必须有今日香港本地赛事和官方赛前马表。</li>
+            <li>必须在开跑前 10-5 分钟，实时赔率仍高于最低赔率线。</li>
+          </ul>
+          <strong>放弃条件</strong>
+          <ul>
+            <li>今天无本地赛，直接 PASS。</li>
+            <li>不要把昨日赛果或海外转播赛事当作本地下注方案。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
 function renderRefreshButton(label, variant = "") {
   const text = uiState.isRefreshing ? "刷新中..." : label;
   return `
@@ -310,7 +383,20 @@ function renderRefreshButton(label, variant = "") {
   `;
 }
 
-function renderMobileActionBar(entry) {
+function renderMobileActionBar(entry, todayStatus) {
+  if (todayStatus.noLocalRaceToday) {
+    const nextMeeting = todayStatus.nextMeeting ? formatMeeting(todayStatus.nextMeeting) : "待官方更新";
+    return `
+      <div class="mobile-action-bar" aria-label="mobile final action">
+        <div>
+          <span>今日无本地赛</span>
+          <strong>下一场 ${escapeHtml(nextMeeting)}</strong>
+        </div>
+        ${renderRefreshButton("刷新", "mobile")}
+      </div>
+    `;
+  }
+
   const plan = entry.forecast.finalBetPlan ?? fallbackBetPlan(entry.forecast.recommendation);
   return `
     <div class="mobile-action-bar" aria-label="mobile final action">
@@ -321,6 +407,39 @@ function renderMobileActionBar(entry) {
       ${renderRefreshButton("刷新", "mobile")}
     </div>
   `;
+}
+
+function localRaceDayStatus(snapshot) {
+  const today = hkDateString();
+  const nextMeetings = snapshot.nextLocalMeetings ?? [];
+  const meetingToday = nextMeetings.find((meeting) => meeting.date === today) ?? null;
+  const nextMeeting = nextMeetings.find((meeting) => meeting.date >= today) ?? nextMeetings[0] ?? null;
+  const latestForecast = snapshot.latestForecast ?? snapshot.recentEntries?.at(-1)?.forecast ?? null;
+  const latestEntry = snapshot.recentEntries?.at(-1) ?? null;
+  const latestRaceDate = latestForecast?.date ?? latestEntry?.date ?? null;
+  const latestRacecourse = latestForecast?.racecourse ?? latestEntry?.racecourse ?? null;
+  const upcomingCount = snapshot.upcomingEntries?.length ?? 0;
+  const noLocalRaceToday = upcomingCount === 0 && !meetingToday && Boolean(latestRaceDate) && latestRaceDate < today;
+
+  return {
+    today,
+    meetingToday,
+    nextMeeting,
+    latestRaceDate,
+    latestRacecourse,
+    noLocalRaceToday,
+  };
+}
+
+function hkDateString(value = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Hong_Kong",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(value);
+  const lookup = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  return `${lookup.year}-${lookup.month}-${lookup.day}`;
 }
 
 function renderPlanStep(label, value) {

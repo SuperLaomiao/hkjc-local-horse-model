@@ -54,6 +54,11 @@ During race windows, the backend workflow refreshes about every 10 minutes; a
 future Worker/API can make the button trigger an immediate server-side HKJC
 refresh.
 
+On non-race days, the final-plan panel shows a no-local-race state instead of
+reusing the last settled race's `NO BET` decision. The refresh button still
+checks the latest published data, but it will not generate a bet without a
+current HKJC local race card.
+
 ## Final Betting Plan
 
 The final plan is conditional. It does not force a bet every race.

@@ -428,6 +428,11 @@ tbody tr:hover {
   color: var(--amber);
 }
 
+.plan-badge.is-idle {
+  background: #e8f4ff;
+  color: #075985;
+}
+
 .plan-badge.is-pass {
   background: var(--red-soft);
   color: var(--red);
