@@ -59,6 +59,10 @@ reusing the last settled race's `NO BET` decision. The refresh button still
 checks the latest published data, but it will not generate a bet without a
 current HKJC local race card.
 
+The top of the app has a prominent meeting forecast band. It shows the next HKJC
+local meeting, days remaining, expected race count, race-card status, and the
+recommended times to check again before the meeting and before each race.
+
 ## Final Betting Plan
 
 The final plan is conditional. It does not force a bet every race.

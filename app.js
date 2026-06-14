@@ -85,6 +85,8 @@ function render() {
         </div>
       </header>
 
+      ${renderMeetingForecastPanel(snapshot, todayStatus)}
+
       <section class="dashboard">
         <aside class="panel side-panel">
           <div class="panel-header">
@@ -442,6 +444,171 @@ function hkDateString(value = new Date()) {
   return `${lookup.year}-${lookup.month}-${lookup.day}`;
 }
 
+function renderMeetingForecastPanel(snapshot, todayStatus) {
+  const upcoming = snapshot.upcomingEntries ?? [];
+  const firstUpcoming = upcoming[0] ?? null;
+  const fixtureMeeting = todayStatus.meetingToday ?? todayStatus.nextMeeting;
+  const meeting = firstUpcoming
+    ? {
+        date: firstUpcoming.date,
+        racecourse: firstUpcoming.racecourse,
+        raceCount: upcoming.filter((entry) => entry.date === firstUpcoming.date && entry.racecourse === firstUpcoming.racecourse).length,
+      }
+    : fixtureMeeting;
+
+  if (!meeting) {
+    return `
+      <section class="meeting-forecast" aria-label="赛事预报">
+        <div class="forecast-main">
+          <span class="forecast-label">赛事预报</span>
+          <h2>暂时没有未来香港本地赛程</h2>
+          <p>刷新已检查官方 fixture；等 HKJC 更新后，这里会直接显示下一场。</p>
+        </div>
+        <div class="forecast-actions">
+          ${renderRefreshButton("刷新赛程", "panel")}
+        </div>
+      </section>
+    `;
+  }
+
+  const raceCardReady = upcoming.length > 0;
+  const daysText = formatDaysUntil(meeting.date, todayStatus.today);
+  const raceCount = Number.isFinite(Number(meeting.raceCount)) ? `${Number(meeting.raceCount)} 场` : "场次待公布";
+  const advice = buildMeetingAdvice(meeting, raceCardReady, upcoming.length);
+  const followingMeetings = (snapshot.nextLocalMeetings ?? [])
+    .filter((item) => item.date !== meeting.date || item.racecourse !== meeting.racecourse)
+    .slice(0, 3);
+
+  return `
+    <section class="meeting-forecast" aria-label="赛事预报">
+      <div class="forecast-main">
+        <span class="forecast-label">赛事预报</span>
+        <p class="forecast-next-line">下一场香港本地赛马</p>
+        <h2>${escapeHtml(formatForecastDate(meeting.date, true))} · ${escapeHtml(racecourseLabel(meeting.racecourse))}</h2>
+        <div class="forecast-meta-grid">
+          <div>
+            <span>距离现在</span>
+            <strong>${escapeHtml(daysText)}</strong>
+          </div>
+          <div>
+            <span>预计场次</span>
+            <strong>${escapeHtml(raceCount)}</strong>
+          </div>
+          <div>
+            <span>Race Card</span>
+            <strong>${raceCardReady ? "已发布" : "未发布"}</strong>
+          </div>
+        </div>
+      </div>
+      <div class="forecast-actions">
+        ${renderRefreshButton("刷新最新赛程", "panel")}
+        <p>${escapeHtml(raceCardReady ? `${upcoming.length} 场赛前预测已准备，先看候选；最终仍等临场赔率。` : "目前没有今日赛事；等官方 Race Card 发布后才会生成赛前预测。")}</p>
+      </div>
+      <div class="forecast-advice" aria-label="建议查看时间">
+        ${advice.map((item) => `
+          <div class="forecast-advice-step">
+            <span>${escapeHtml(item.label)}</span>
+            <strong>${escapeHtml(item.time)}</strong>
+            <p>${escapeHtml(item.detail)}</p>
+          </div>
+        `).join("")}
+      </div>
+      ${followingMeetings.length ? `
+        <div class="forecast-next-list">
+          <span>后面几场</span>
+          <strong>${followingMeetings.map((item) => `${formatForecastDate(item.date)} ${racecourseLabel(item.racecourse)}`).map(escapeHtml).join(" · ")}</strong>
+        </div>
+      ` : ""}
+    </section>
+  `;
+}
+
+function buildMeetingAdvice(meeting, raceCardReady, upcomingCount) {
+  if (raceCardReady) {
+    return [
+      {
+        label: "现在可看",
+        time: `${upcomingCount} 场预测已出`,
+        detail: "先看概率候选和风险，不要当作最终下注。",
+      },
+      {
+        label: "比赛日复核",
+        time: `${formatForecastDate(meeting.date)} 中午后`,
+        detail: "刷新退出马、场地和赔率变化。",
+      },
+      {
+        label: "最终方案",
+        time: "每场 T-15 / T-10~T-5",
+        detail: "T-15 复核，T-10 到 T-5 才看是否执行。",
+      },
+    ];
+  }
+
+  return [
+    {
+      label: "开始留意",
+      time: `${formatForecastDate(addDays(meeting.date, -2))} 晚上起`,
+      detail: "刷 Race Card；没有马表就没有赛前预测。",
+    },
+    {
+      label: "重点查看",
+      time: `${formatForecastDate(meeting.date)} 中午后`,
+      detail: "看初版候选、场地和赔率，不提前追价。",
+    },
+    {
+      label: "最终方案",
+      time: "每场 T-15 / T-10~T-5",
+      detail: "临场刷新后，只按最低赔率线决定买或不买。",
+    },
+  ];
+}
+
+function formatDaysUntil(dateString, todayString = hkDateString()) {
+  const diff = dayNumber(dateString) - dayNumber(todayString);
+  if (!Number.isFinite(diff)) return "待确认";
+  if (diff < 0) return "已结束";
+  if (diff === 0) return "今天";
+  if (diff === 1) return "明天";
+  return `还有 ${diff} 天`;
+}
+
+function formatForecastDate(dateString, includeYear = false) {
+  const parts = parseDateString(dateString);
+  if (!parts) return dateString ?? "-";
+  const weekday = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"][new Date(Date.UTC(parts.year, parts.month - 1, parts.day)).getUTCDay()];
+  const shortDate = `${parts.month}月${parts.day}日 ${weekday}`;
+  return includeYear ? `${parts.year}-${String(parts.month).padStart(2, "0")}-${String(parts.day).padStart(2, "0")} ${weekday}` : shortDate;
+}
+
+function racecourseLabel(code) {
+  if (code === "ST") return "沙田 ST";
+  if (code === "HV") return "跑马地 HV";
+  return code ?? "-";
+}
+
+function addDays(dateString, offset) {
+  const parts = parseDateString(dateString);
+  if (!parts) return dateString;
+  const date = new Date(Date.UTC(parts.year, parts.month - 1, parts.day + offset));
+  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`;
+}
+
+function dayNumber(dateString) {
+  const parts = parseDateString(dateString);
+  if (!parts) return Number.NaN;
+  return Math.floor(Date.UTC(parts.year, parts.month - 1, parts.day) / 86400000);
+}
+
+function parseDateString(dateString) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(dateString ?? ""));
+  if (!match) return null;
+  return {
+    year: Number(match[1]),
+    month: Number(match[2]),
+    day: Number(match[3]),
+  };
+}
+
 function renderPlanStep(label, value) {
   return `
     <div class="plan-step">
@@ -762,8 +929,8 @@ function registerServiceWorker() {
 }
 
 function formatMeeting(meeting) {
-  const raceCount = Number.isFinite(Number(meeting.raceCount)) ? ` · ${meeting.raceCount} races` : "";
-  return `${meeting.date} ${meeting.racecourse}${raceCount}`;
+  const raceCount = Number.isFinite(Number(meeting.raceCount)) ? ` · ${meeting.raceCount} 场` : "";
+  return `${meeting.date} ${racecourseLabel(meeting.racecourse)}${raceCount}`;
 }
 
 function nextMeetingLabel(snapshot) {
