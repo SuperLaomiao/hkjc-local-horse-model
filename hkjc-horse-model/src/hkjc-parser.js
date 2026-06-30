@@ -119,13 +119,27 @@ export function parseLocalResultHtml(html, context = {}) {
   const courseText = extractLabelValue(html, 'Course');
   const going = extractLabelValue(html, 'Going')?.toUpperCase() ?? null;
   const surface = parseSurface(courseText);
-  const raceNo = context.raceNo ?? (title ? Number(title[1]) : null);
+  const titleRaceNo = title ? Number(title[1]) : null;
+  const raceNo = context.raceNo ?? titleRaceNo;
   const date = normalizeRaceDate(context.date);
   const racecourse = context.racecourse?.toUpperCase() ?? null;
+  const htmlContext = inferResultPageContext(html);
   const runners = parsePerformanceRows(html);
 
   if (!raceNo || !date || !racecourse) {
     throw new Error('Missing race context: date, racecourse, and raceNo are required');
+  }
+
+  if (htmlContext.date && htmlContext.date !== date) {
+    throw new Error(`HKJC result date mismatch: requested ${date}, received ${htmlContext.date}`);
+  }
+
+  if (htmlContext.racecourse && htmlContext.racecourse !== racecourse) {
+    throw new Error(`HKJC result racecourse mismatch: requested ${racecourse}, received ${htmlContext.racecourse}`);
+  }
+
+  if (titleRaceNo && context.raceNo && titleRaceNo !== context.raceNo) {
+    throw new Error(`HKJC result race number mismatch: requested ${context.raceNo}, received ${titleRaceNo}`);
   }
 
   if (runners.length === 0) {
@@ -425,6 +439,43 @@ function parseFixtureCell(cellHtml, { year, month }) {
     racecourse,
     raceCount: raceCount || null,
   };
+}
+
+function inferResultPageContext(html) {
+  const resultLinks = Array.from(String(html).matchAll(/localresults\?([^"'<>]+)/gi))
+    .map((match) => parseResultLinkQuery(match[1]))
+    .filter(Boolean);
+
+  return {
+    date: firstMostCommon(resultLinks.map((link) => link.date).filter(Boolean)),
+    racecourse: firstMostCommon(resultLinks.map((link) => link.racecourse).filter(Boolean)),
+  };
+}
+
+function parseResultLinkQuery(queryText) {
+  const query = decodeHtml(String(queryText)).replaceAll('&amp;', '&');
+  const params = new Map();
+
+  for (const part of query.split('&')) {
+    const [rawKey, rawValue = ''] = part.split('=');
+    const key = decodeURIComponent(rawKey).toLowerCase();
+    const value = decodeURIComponent(rawValue);
+    params.set(key, value);
+  }
+
+  const date = normalizeRaceDate(params.get('racedate'));
+  const racecourse = params.get('racecourse')?.toUpperCase() ?? null;
+  if (!date && !racecourse) return null;
+  return { date, racecourse };
+}
+
+function firstMostCommon(values) {
+  const counts = new Map();
+  for (const value of values) {
+    counts.set(value, (counts.get(value) ?? 0) + 1);
+  }
+
+  return [...counts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
 }
 
 function cleanJockeyName(value) {

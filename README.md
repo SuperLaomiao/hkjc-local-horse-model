@@ -3,6 +3,9 @@
 A static GitHub Pages dashboard for a Hong Kong local horse-racing paper
 simulation model.
 
+Public dashboard:
+https://superlaomiao.github.io/hkjc-local-horse-model/
+
 ## What It Shows
 
 - HKJC local-race model predictions
@@ -51,6 +54,11 @@ cp "hkjc-horse-model/data/processed/dashboard.json" "data/dashboard.json"
 The source dashboard currently has 115 settled HK local races through
 2026-06-27 Sha Tin. Race-card forecasts appear only after HKJC publishes local
 starters.
+
+The refresh parser validates that an official-results page actually matches the
+requested meeting date and race number before writing it into historical data.
+If HKJC falls back to a previous meeting before new results are published, the
+page is rejected instead of polluting the backtest.
 
 The page-level refresh button reloads the latest published `data/dashboard.json`
 without browser cache. GitHub Pages cannot safely store a secret token in the

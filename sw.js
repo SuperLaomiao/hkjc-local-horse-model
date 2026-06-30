@@ -1,4 +1,4 @@
-const CACHE_NAME = "hkjc-model-v3";
+const CACHE_NAME = "hkjc-model-v4";
 const APP_SHELL = [
   "./",
   "./index.html",
