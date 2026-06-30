@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-30T08:48:53.839Z",
+  "generatedAt": "2026-06-30T11:52:47.312Z",
   "scope": "HKJC local races only",
   "summary": {
     "racesSettled": 115,
@@ -317,6 +317,106 @@
     "profit": -12.5,
     "roi": -1,
     "resultLabel": "MISS",
+    "runnerResults": [
+      {
+        "horseId": "HK_2023_J402",
+        "horseNo": 5,
+        "horseName": "SOVEREIGN FUND",
+        "placing": 1,
+        "winOdds": 51
+      },
+      {
+        "horseId": "HK_2023_J180",
+        "horseNo": 2,
+        "horseName": "AEROINVINCIBLE",
+        "placing": 2,
+        "winOdds": 9.8
+      },
+      {
+        "horseId": "HK_2023_J428",
+        "horseNo": 6,
+        "horseName": "CIRCUIT CHAMPION",
+        "placing": 3,
+        "winOdds": 2.3
+      },
+      {
+        "horseId": "HK_2023_J444",
+        "horseNo": 7,
+        "horseName": "DO YOUR PART",
+        "placing": 4,
+        "winOdds": 4.2
+      },
+      {
+        "horseId": "HK_2025_L056",
+        "horseNo": 9,
+        "horseName": "MEGASTAR HEART",
+        "placing": 5,
+        "winOdds": 13
+      },
+      {
+        "horseId": "HK_2025_L135",
+        "horseNo": 11,
+        "horseName": "GOLDEN CHAMP",
+        "placing": 6,
+        "winOdds": 133
+      },
+      {
+        "horseId": "HK_2024_K489",
+        "horseNo": 4,
+        "horseName": "FIT FOR BEAUTY",
+        "placing": 7,
+        "winOdds": 5.4
+      },
+      {
+        "horseId": "HK_2022_H175",
+        "horseNo": 3,
+        "horseName": "CHIU CHOW SPIRIT",
+        "placing": 8,
+        "winOdds": 29
+      },
+      {
+        "horseId": "HK_2025_L184",
+        "horseNo": 8,
+        "horseName": "WINDLORD",
+        "placing": 9,
+        "winOdds": 69
+      },
+      {
+        "horseId": "HK_2025_L314",
+        "horseNo": 13,
+        "horseName": "THUNDER ACTION",
+        "placing": 10,
+        "winOdds": 29
+      },
+      {
+        "horseId": "HK_2025_L283",
+        "horseNo": 1,
+        "horseName": "CONTINENT EXPRESS",
+        "placing": 11,
+        "winOdds": 68
+      },
+      {
+        "horseId": "HK_2023_J396",
+        "horseNo": 12,
+        "horseName": "THRIVING BROTHERS",
+        "placing": 12,
+        "winOdds": 27
+      },
+      {
+        "horseId": "HK_2023_J237",
+        "horseNo": 10,
+        "horseName": "STORMING DRAGON",
+        "placing": 13,
+        "winOdds": 44
+      },
+      {
+        "horseId": "HK_2025_L116",
+        "horseNo": 14,
+        "horseName": "GRIT SPIRIT",
+        "placing": 14,
+        "winOdds": 133
+      }
+    ],
     "marketFavourite": {
       "horseId": "HK_2023_J428",
       "horseName": "CIRCUIT CHAMPION",
@@ -3498,44 +3598,8 @@
       "cumulativeRoi": 0.2195890730796171
     }
   ],
-  "nextLocalMeetings": [
-    {
-      "date": "2026-07-01",
-      "racecourse": "ST",
-      "raceCount": 11,
-      "source": "https://racing.hkjc.com/en-us/local/information/fixture?calyear=2026&calmonth=07"
-    },
-    {
-      "date": "2026-07-04",
-      "racecourse": "ST",
-      "raceCount": 11,
-      "source": "https://racing.hkjc.com/en-us/local/information/fixture?calyear=2026&calmonth=07"
-    },
-    {
-      "date": "2026-07-08",
-      "racecourse": "HV",
-      "raceCount": 9,
-      "source": "https://racing.hkjc.com/en-us/local/information/fixture?calyear=2026&calmonth=07"
-    },
-    {
-      "date": "2026-07-12",
-      "racecourse": "ST",
-      "raceCount": 11,
-      "source": "https://racing.hkjc.com/en-us/local/information/fixture?calyear=2026&calmonth=07"
-    },
-    {
-      "date": "2026-07-15",
-      "racecourse": "HV",
-      "raceCount": 9,
-      "source": "https://racing.hkjc.com/en-us/local/information/fixture?calyear=2026&calmonth=07"
-    }
-  ],
-  "fixtureWindow": {
-    "from": "2026-06-16",
-    "to": "2026-07-21",
-    "today": "2026-06-30",
-    "source": "HKJC local fixture"
-  },
+  "nextLocalMeetings": [],
+  "fixtureWindow": null,
   "performance": {
     "overall": {
       "races": 115,
@@ -3887,6 +3951,32 @@
         "calibrationGap": -0.2296
       }
     ],
+    "stakingStrategy": {
+      "races": 115,
+      "strategyBets": 71,
+      "passRaces": 44,
+      "totalStake": 1350,
+      "anyHits": 22,
+      "anyHitRate": 0.30985915492957744,
+      "officialWinStake": 270,
+      "officialWinReturn": 148,
+      "officialWinProfit": -122,
+      "officialWinRoi": -0.45185185185185184,
+      "fullStrategyRoi": null,
+      "winBets": 27,
+      "winHits": 3,
+      "placeBets": 71,
+      "placeHits": 22,
+      "quinellaPlaceBets": 10,
+      "quinellaPlaceHits": 2,
+      "quinellaBets": 0,
+      "quinellaHits": 0,
+      "unpricedPoolStake": 1080,
+      "unpricedHits": 24,
+      "breakEvenReturnNeededFromUnpricedPools": 1202,
+      "breakEvenReturnPerUnpricedHit": 50.08,
+      "roiNote": "全策略 ROI 暂不可计算：历史数据还缺 Place / Quinella Place / Quinella 官方派彩；officialWinRoi 只结算有官方独赢赔率的 Win 下注线。"
+    },
     "warning": "Historical ROI is a paper-simulation signal, not proof of a stable edge or future profit."
   },
   "ledger": [
@@ -5532,6 +5622,85 @@
         "profit": -12.5,
         "roi": -1,
         "resultLabel": "MISS",
+        "runnerResults": [
+          {
+            "horseId": "HK_2024_K037",
+            "horseNo": 3,
+            "horseName": "DEFINITIVE",
+            "placing": 1,
+            "winOdds": 13
+          },
+          {
+            "horseId": "HK_2025_L240",
+            "horseNo": 5,
+            "horseName": "ROMANTIC GLADIATOR",
+            "placing": 2,
+            "winOdds": 2.5
+          },
+          {
+            "horseId": "HK_2024_K381",
+            "horseNo": 1,
+            "horseName": "FIVEFORTWO",
+            "placing": 3,
+            "winOdds": 10
+          },
+          {
+            "horseId": "HK_2022_H070",
+            "horseNo": 7,
+            "horseName": "SAMARKAND",
+            "placing": 4,
+            "winOdds": 51
+          },
+          {
+            "horseId": "HK_2025_L149",
+            "horseNo": 6,
+            "horseName": "VIOLET STAR",
+            "placing": 5,
+            "winOdds": 8
+          },
+          {
+            "horseId": "HK_2024_K084",
+            "horseNo": 10,
+            "horseName": "STORMI",
+            "placing": 6,
+            "winOdds": 11
+          },
+          {
+            "horseId": "HK_2023_J360",
+            "horseNo": 2,
+            "horseName": "MIGHTY COMMANDER",
+            "placing": 7,
+            "winOdds": 6
+          },
+          {
+            "horseId": "HK_2021_G306",
+            "horseNo": 4,
+            "horseName": "KEEFY",
+            "placing": 8,
+            "winOdds": 28
+          },
+          {
+            "horseId": "HK_2024_K005",
+            "horseNo": 9,
+            "horseName": "ANOTHER WORLD",
+            "placing": 9,
+            "winOdds": 99
+          },
+          {
+            "horseId": "HK_2025_L027",
+            "horseNo": 11,
+            "horseName": "VECU",
+            "placing": 10,
+            "winOdds": 62
+          },
+          {
+            "horseId": "HK_2025_L032",
+            "horseNo": 8,
+            "horseName": "LEGEND WINNER",
+            "placing": 11,
+            "winOdds": 5.5
+          }
+        ],
         "marketFavourite": {
           "horseId": "HK_2025_L240",
           "horseName": "ROMANTIC GLADIATOR",
@@ -5837,6 +6006,106 @@
         "profit": 0,
         "roi": 0,
         "resultLabel": "PASS",
+        "runnerResults": [
+          {
+            "horseId": "HK_2022_H487",
+            "horseNo": 10,
+            "horseName": "CIRCUIT VICTORY",
+            "placing": 1,
+            "winOdds": 15
+          },
+          {
+            "horseId": "HK_2023_J288",
+            "horseNo": 4,
+            "horseName": "LAKESHORE HERO",
+            "placing": 2,
+            "winOdds": 10
+          },
+          {
+            "horseId": "HK_2022_H252",
+            "horseNo": 3,
+            "horseName": "ALWAYS FLUKE",
+            "placing": 3,
+            "winOdds": 5.2
+          },
+          {
+            "horseId": "HK_2024_K171",
+            "horseNo": 12,
+            "horseName": "MULTIDUTCH",
+            "placing": 4,
+            "winOdds": 119
+          },
+          {
+            "horseId": "HK_2022_H144",
+            "horseNo": 13,
+            "horseName": "SONIC BOOM",
+            "placing": 5,
+            "winOdds": 9.6
+          },
+          {
+            "horseId": "HK_2024_K250",
+            "horseNo": 8,
+            "horseName": "DASH",
+            "placing": 6,
+            "winOdds": 23
+          },
+          {
+            "horseId": "HK_2024_K523",
+            "horseNo": 6,
+            "horseName": "AQUAMAN",
+            "placing": 7,
+            "winOdds": 63
+          },
+          {
+            "horseId": "HK_2021_G394",
+            "horseNo": 2,
+            "horseName": "HEROIC MASTER",
+            "placing": 8,
+            "winOdds": 11
+          },
+          {
+            "horseId": "HK_2024_K216",
+            "horseNo": 9,
+            "horseName": "WINNING DIAMOND",
+            "placing": 9,
+            "winOdds": 11
+          },
+          {
+            "horseId": "HK_2023_J479",
+            "horseNo": 11,
+            "horseName": "ISLAND BREEZES",
+            "placing": 10,
+            "winOdds": 52
+          },
+          {
+            "horseId": "HK_2023_J314",
+            "horseNo": 14,
+            "horseName": "TAIHANG SCENERY",
+            "placing": 11,
+            "winOdds": 19
+          },
+          {
+            "horseId": "HK_2023_J308",
+            "horseNo": 5,
+            "horseName": "SOLAR RIVER",
+            "placing": 12,
+            "winOdds": 6.5
+          },
+          {
+            "horseId": "HK_2024_K150",
+            "horseNo": 1,
+            "horseName": "AUTUMN VIBES",
+            "placing": 13,
+            "winOdds": 5.3
+          },
+          {
+            "horseId": "HK_2024_K049",
+            "horseNo": 7,
+            "horseName": "NO OTHER CHOICE",
+            "placing": 14,
+            "winOdds": 10
+          }
+        ],
         "marketFavourite": {
           "horseId": "HK_2022_H252",
           "horseName": "ALWAYS FLUKE",
@@ -6153,6 +6422,106 @@
         "profit": -12.5,
         "roi": -1,
         "resultLabel": "MISS",
+        "runnerResults": [
+          {
+            "horseId": "HK_2023_J187",
+            "horseNo": 12,
+            "horseName": "VERBIER",
+            "placing": 1,
+            "winOdds": 2.9
+          },
+          {
+            "horseId": "HK_2023_J223",
+            "horseNo": 1,
+            "horseName": "SUNNY Q",
+            "placing": 2,
+            "winOdds": 5.7
+          },
+          {
+            "horseId": "HK_2022_H436",
+            "horseNo": 2,
+            "horseName": "COUNTRY DANCER",
+            "placing": 3,
+            "winOdds": 11
+          },
+          {
+            "horseId": "HK_2023_J037",
+            "horseNo": 7,
+            "horseName": "ONLY U",
+            "placing": 4,
+            "winOdds": 15
+          },
+          {
+            "horseId": "HK_2024_K115",
+            "horseNo": 13,
+            "horseName": "BINGO BABE",
+            "placing": 5,
+            "winOdds": 9.4
+          },
+          {
+            "horseId": "HK_2023_J480",
+            "horseNo": 11,
+            "horseName": "EXCEED THE WISH",
+            "placing": 6,
+            "winOdds": 52
+          },
+          {
+            "horseId": "HK_2024_K198",
+            "horseNo": 10,
+            "horseName": "VON BAER",
+            "placing": 7,
+            "winOdds": 13
+          },
+          {
+            "horseId": "HK_2023_J538",
+            "horseNo": 14,
+            "horseName": "SMART TRIO",
+            "placing": 8,
+            "winOdds": 27
+          },
+          {
+            "horseId": "HK_2024_K276",
+            "horseNo": 5,
+            "horseName": "RUNJEET",
+            "placing": 9,
+            "winOdds": 23
+          },
+          {
+            "horseId": "HK_2023_J545",
+            "horseNo": 9,
+            "horseName": "HAPPY BOYS",
+            "placing": 10,
+            "winOdds": 40
+          },
+          {
+            "horseId": "HK_2022_H347",
+            "horseNo": 4,
+            "horseName": "RUBY SAILING",
+            "placing": 11,
+            "winOdds": 12
+          },
+          {
+            "horseId": "HK_2022_H349",
+            "horseNo": 6,
+            "horseName": "GOOD FORTUNE",
+            "placing": 12,
+            "winOdds": 42
+          },
+          {
+            "horseId": "HK_2023_J243",
+            "horseNo": 8,
+            "horseName": "CALL TO COMMAND",
+            "placing": 13,
+            "winOdds": 11
+          },
+          {
+            "horseId": "HK_2024_K289",
+            "horseNo": 3,
+            "horseName": "BASIC INSTINCT",
+            "placing": 14,
+            "winOdds": 19
+          }
+        ],
         "marketFavourite": {
           "horseId": "HK_2023_J187",
           "horseName": "VERBIER",
@@ -6458,6 +6827,106 @@
         "profit": 0,
         "roi": 0,
         "resultLabel": "PASS",
+        "runnerResults": [
+          {
+            "horseId": "HK_2024_K367",
+            "horseNo": 2,
+            "horseName": "ANODE",
+            "placing": 1,
+            "winOdds": 11
+          },
+          {
+            "horseId": "HK_2022_H321",
+            "horseNo": 5,
+            "horseName": "HAYDAY",
+            "placing": 2,
+            "winOdds": 17
+          },
+          {
+            "horseId": "HK_2025_L280",
+            "horseNo": 8,
+            "horseName": "COPARTNER A I",
+            "placing": 3,
+            "winOdds": 16
+          },
+          {
+            "horseId": "HK_2024_K132",
+            "horseNo": 6,
+            "horseName": "GENIUS BABY",
+            "placing": 4,
+            "winOdds": 15
+          },
+          {
+            "horseId": "HK_2024_K134",
+            "horseNo": 11,
+            "horseName": "KA YING RADIANCE",
+            "placing": 5,
+            "winOdds": 2.3
+          },
+          {
+            "horseId": "HK_2025_L174",
+            "horseNo": 4,
+            "horseName": "IRON SECURITY",
+            "placing": 6,
+            "winOdds": 104
+          },
+          {
+            "horseId": "HK_2024_K391",
+            "horseNo": 10,
+            "horseName": "LITTLE MONSTER",
+            "placing": 7,
+            "winOdds": 4.2
+          },
+          {
+            "horseId": "HK_2024_K199",
+            "horseNo": 3,
+            "horseName": "GHORGAN",
+            "placing": 8,
+            "winOdds": 7.4
+          },
+          {
+            "horseId": "HK_2024_K503",
+            "horseNo": 13,
+            "horseName": "FALCON HUNTER",
+            "placing": 9,
+            "winOdds": 80
+          },
+          {
+            "horseId": "HK_2025_L146",
+            "horseNo": 9,
+            "horseName": "TURF QUEST",
+            "placing": 10,
+            "winOdds": 121
+          },
+          {
+            "horseId": "HK_2024_K290",
+            "horseNo": 12,
+            "horseName": "GLORIOUS RYDER",
+            "placing": 11,
+            "winOdds": 159
+          },
+          {
+            "horseId": "HK_2024_K364",
+            "horseNo": 7,
+            "horseName": "CALIFORNIA BAY",
+            "placing": 12,
+            "winOdds": 27
+          },
+          {
+            "horseId": "HK_2023_J039",
+            "horseNo": 1,
+            "horseName": "ARMOUR WAR EAGLE",
+            "placing": 13,
+            "winOdds": 17
+          },
+          {
+            "horseId": "HK_2025_L252",
+            "horseNo": 14,
+            "horseName": "SYNERGY EXPRESS",
+            "placing": 14,
+            "winOdds": 134
+          }
+        ],
         "marketFavourite": {
           "horseId": "HK_2024_K134",
           "horseName": "KA YING RADIANCE",
@@ -6763,6 +7232,106 @@
         "profit": 0,
         "roi": 0,
         "resultLabel": "PASS",
+        "runnerResults": [
+          {
+            "horseId": "HK_2024_K458",
+            "horseNo": 7,
+            "horseName": "SUPER GOLDENDRAGON",
+            "placing": 1,
+            "winOdds": 7.3
+          },
+          {
+            "horseId": "HK_2023_J463",
+            "horseNo": 14,
+            "horseName": "STAR BROSE",
+            "placing": 2,
+            "winOdds": 5.7
+          },
+          {
+            "horseId": "HK_2024_K252",
+            "horseNo": 4,
+            "horseName": "ENTHRALLED",
+            "placing": 3,
+            "winOdds": 4.9
+          },
+          {
+            "horseId": "HK_2025_L006",
+            "horseNo": 9,
+            "horseName": "RELIABLE DAD",
+            "placing": 4,
+            "winOdds": 7.7
+          },
+          {
+            "horseId": "HK_2022_H168",
+            "horseNo": 11,
+            "horseName": "ROMANTIC FANTASY",
+            "placing": 5,
+            "winOdds": 36
+          },
+          {
+            "horseId": "HK_2023_J502",
+            "horseNo": 10,
+            "horseName": "OCEAN IMPACT",
+            "placing": 6,
+            "winOdds": 15
+          },
+          {
+            "horseId": "HK_2023_J536",
+            "horseNo": 1,
+            "horseName": "NOISY BOY",
+            "placing": 7,
+            "winOdds": 3.7
+          },
+          {
+            "horseId": "HK_2022_H382",
+            "horseNo": 2,
+            "horseName": "DOUBLE WIN",
+            "placing": 8,
+            "winOdds": 17
+          },
+          {
+            "horseId": "HK_2024_K205",
+            "horseNo": 8,
+            "horseName": "MASSIVE GLORY",
+            "placing": 9,
+            "winOdds": 90
+          },
+          {
+            "horseId": "HK_2022_H213",
+            "horseNo": 12,
+            "horseName": "JOYFUL PROSPERITY",
+            "placing": 10,
+            "winOdds": 18
+          },
+          {
+            "horseId": "HK_2022_H388",
+            "horseNo": 6,
+            "horseName": "VOLCANIC SPARK",
+            "placing": 11,
+            "winOdds": 28
+          },
+          {
+            "horseId": "HK_2023_J182",
+            "horseNo": 13,
+            "horseName": "ON THE LASH",
+            "placing": 12,
+            "winOdds": 34
+          },
+          {
+            "horseId": "HK_2024_K351",
+            "horseNo": 5,
+            "horseName": "FAST SPEED",
+            "placing": 13,
+            "winOdds": 76
+          },
+          {
+            "horseId": "HK_2024_K254",
+            "horseNo": 3,
+            "horseName": "CHARITY TOGETHER",
+            "placing": 14,
+            "winOdds": 85
+          }
+        ],
         "marketFavourite": {
           "horseId": "HK_2023_J536",
           "horseName": "NOISY BOY",
@@ -7068,6 +7637,106 @@
         "profit": 0,
         "roi": 0,
         "resultLabel": "PASS",
+        "runnerResults": [
+          {
+            "horseId": "HK_2023_J510",
+            "horseNo": 10,
+            "horseName": "NIGHT PUROSANGUE",
+            "placing": 1,
+            "winOdds": 7.1
+          },
+          {
+            "horseId": "HK_2024_K305",
+            "horseNo": 12,
+            "horseName": "BULL ATTITUDE",
+            "placing": 2,
+            "winOdds": 5.7
+          },
+          {
+            "horseId": "HK_2023_J486",
+            "horseNo": 4,
+            "horseName": "CHILL KAKA",
+            "placing": 3,
+            "winOdds": 4.4
+          },
+          {
+            "horseId": "HK_2024_K397",
+            "horseNo": 9,
+            "horseName": "KING OF SELECTION",
+            "placing": 4,
+            "winOdds": 106
+          },
+          {
+            "horseId": "HK_2023_J267",
+            "horseNo": 2,
+            "horseName": "SUPREME AGILITY",
+            "placing": 5,
+            "winOdds": 8.2
+          },
+          {
+            "horseId": "HK_2022_H120",
+            "horseNo": 5,
+            "horseName": "PERFECT TEAM",
+            "placing": 6,
+            "winOdds": 5.7
+          },
+          {
+            "horseId": "HK_2024_K217",
+            "horseNo": 13,
+            "horseName": "CONRAD THE GREAT",
+            "placing": 7,
+            "winOdds": 28
+          },
+          {
+            "horseId": "HK_2020_E471",
+            "horseNo": 7,
+            "horseName": "LESLIE",
+            "placing": 8,
+            "winOdds": 36
+          },
+          {
+            "horseId": "HK_2023_J080",
+            "horseNo": 14,
+            "horseName": "FASHION LEGEND",
+            "placing": 9,
+            "winOdds": 20
+          },
+          {
+            "horseId": "HK_2023_J200",
+            "horseNo": 8,
+            "horseName": "NEVER PETER OUT",
+            "placing": 10,
+            "winOdds": 24
+          },
+          {
+            "horseId": "HK_2023_J123",
+            "horseNo": 6,
+            "horseName": "CALIFORNIA STAR",
+            "placing": 11,
+            "winOdds": 20
+          },
+          {
+            "horseId": "HK_2025_L248",
+            "horseNo": 3,
+            "horseName": "PRESTIGE WIN",
+            "placing": 12,
+            "winOdds": 89
+          },
+          {
+            "horseId": "HK_2023_J533",
+            "horseNo": 1,
+            "horseName": "HAPPY UNIVERSE",
+            "placing": 13,
+            "winOdds": 10
+          },
+          {
+            "horseId": "HK_2023_J058",
+            "horseNo": 11,
+            "horseName": "FOREMOST TEDDY",
+            "placing": 14,
+            "winOdds": 16
+          }
+        ],
         "marketFavourite": {
           "horseId": "HK_2023_J486",
           "horseName": "CHILL KAKA",
@@ -7373,6 +8042,106 @@
         "profit": 0,
         "roi": 0,
         "resultLabel": "PASS",
+        "runnerResults": [
+          {
+            "horseId": "HK_2023_J439",
+            "horseNo": 8,
+            "horseName": "KA YING RESILIENCE",
+            "placing": 1,
+            "winOdds": 4.8
+          },
+          {
+            "horseId": "HK_2025_L233",
+            "horseNo": 4,
+            "horseName": "GROUPER",
+            "placing": 2,
+            "winOdds": 7.7
+          },
+          {
+            "horseId": "HK_2024_K074",
+            "horseNo": 1,
+            "horseName": "YEE CHEONG GLORY",
+            "placing": 3,
+            "winOdds": 5.6
+          },
+          {
+            "horseId": "HK_2021_G192",
+            "horseNo": 9,
+            "horseName": "PHOENIX LIGHT",
+            "placing": 4,
+            "winOdds": 9.4
+          },
+          {
+            "horseId": "HK_2023_J222",
+            "horseNo": 10,
+            "horseName": "ENJOY GOLF",
+            "placing": 5,
+            "winOdds": 5.1
+          },
+          {
+            "horseId": "HK_2025_L205",
+            "horseNo": 6,
+            "horseName": "UNSTOPPAPLE",
+            "placing": 6,
+            "winOdds": 19
+          },
+          {
+            "horseId": "HK_2024_K354",
+            "horseNo": 11,
+            "horseName": "FOREVER FANCY",
+            "placing": 7,
+            "winOdds": 119
+          },
+          {
+            "horseId": "HK_2025_L194",
+            "horseNo": 7,
+            "horseName": "NAVAS G",
+            "placing": 8,
+            "winOdds": 30
+          },
+          {
+            "horseId": "HK_2024_K272",
+            "horseNo": 12,
+            "horseName": "GLACIATED",
+            "placing": 9,
+            "winOdds": 9.9
+          },
+          {
+            "horseId": "HK_2023_J366",
+            "horseNo": 3,
+            "horseName": "ELEGANT LIFE",
+            "placing": 10,
+            "winOdds": 10
+          },
+          {
+            "horseId": "HK_2025_L254",
+            "horseNo": 5,
+            "horseName": "KING'S ARROW",
+            "placing": 11,
+            "winOdds": 36
+          },
+          {
+            "horseId": "HK_2021_G123",
+            "horseNo": 2,
+            "horseName": "AMAZING VICTORY",
+            "placing": 12,
+            "winOdds": 60
+          },
+          {
+            "horseId": "HK_2022_H465",
+            "horseNo": 14,
+            "horseName": "THE CONCENTRATION",
+            "placing": 13,
+            "winOdds": 81
+          },
+          {
+            "horseId": "HK_2022_H057",
+            "horseNo": 13,
+            "horseName": "SAME TO YOU",
+            "placing": 14,
+            "winOdds": 21
+          }
+        ],
         "marketFavourite": {
           "horseId": "HK_2023_J439",
           "horseName": "KA YING RESILIENCE",
@@ -7678,6 +8447,106 @@
         "profit": 0,
         "roi": 0,
         "resultLabel": "PASS",
+        "runnerResults": [
+          {
+            "horseId": "HK_2024_K582",
+            "horseNo": 6,
+            "horseName": "MASTER LUCKY",
+            "placing": 1,
+            "winOdds": 7.7
+          },
+          {
+            "horseId": "HK_2023_J280",
+            "horseNo": 3,
+            "horseName": "HAROLD WIN",
+            "placing": 2,
+            "winOdds": 10
+          },
+          {
+            "horseId": "HK_2025_L322",
+            "horseNo": 1,
+            "horseName": "JOYFUL JOY",
+            "placing": 3,
+            "winOdds": 2.6
+          },
+          {
+            "horseId": "HK_2025_L161",
+            "horseNo": 5,
+            "horseName": "GALLANT DESIGN",
+            "placing": 4,
+            "winOdds": 3.3
+          },
+          {
+            "horseId": "HK_2024_K058",
+            "horseNo": 7,
+            "horseName": "SOLID CAR",
+            "placing": 5,
+            "winOdds": 14
+          },
+          {
+            "horseId": "HK_2024_K204",
+            "horseNo": 4,
+            "horseName": "LIGHT YEARS GLORY",
+            "placing": 6,
+            "winOdds": 13
+          },
+          {
+            "horseId": "HK_2024_K101",
+            "horseNo": 13,
+            "horseName": "VIEW ALL THINGS",
+            "placing": 7,
+            "winOdds": 30
+          },
+          {
+            "horseId": "HK_2025_L328",
+            "horseNo": 12,
+            "horseName": "TURBO JEFFERIES",
+            "placing": 8,
+            "winOdds": 46
+          },
+          {
+            "horseId": "HK_2024_K569",
+            "horseNo": 9,
+            "horseName": "WORD OF KINDNESS",
+            "placing": 9,
+            "winOdds": 91
+          },
+          {
+            "horseId": "HK_2024_K231",
+            "horseNo": 10,
+            "horseName": "STAR SATYR",
+            "placing": 10,
+            "winOdds": 46
+          },
+          {
+            "horseId": "HK_2024_K334",
+            "horseNo": 2,
+            "horseName": "LUNAR DASH",
+            "placing": 11,
+            "winOdds": 25
+          },
+          {
+            "horseId": "HK_2022_H438",
+            "horseNo": 8,
+            "horseName": "THE ABSOLUTE",
+            "placing": 12,
+            "winOdds": 55
+          },
+          {
+            "horseId": "HK_2023_J247",
+            "horseNo": 14,
+            "horseName": "KING GLORIOSO",
+            "placing": 13,
+            "winOdds": 87
+          },
+          {
+            "horseId": "HK_2025_L060",
+            "horseNo": 11,
+            "horseName": "VIEW OF COSMOS",
+            "placing": 14,
+            "winOdds": 201
+          }
+        ],
         "marketFavourite": {
           "horseId": "HK_2025_L322",
           "horseName": "JOYFUL JOY",
@@ -7949,6 +8818,85 @@
         "profit": 0,
         "roi": 0,
         "resultLabel": "PASS",
+        "runnerResults": [
+          {
+            "horseId": "HK_2024_K227",
+            "horseNo": 4,
+            "horseName": "COLOURFUL KING",
+            "placing": 1,
+            "winOdds": 4.9
+          },
+          {
+            "horseId": "HK_2023_J333",
+            "horseNo": 7,
+            "horseName": "MAGIC CONTROL",
+            "placing": 2,
+            "winOdds": 3.4
+          },
+          {
+            "horseId": "HK_2023_J316",
+            "horseNo": 3,
+            "horseName": "BOTTOMUPTOGETHER",
+            "placing": 3,
+            "winOdds": 6.5
+          },
+          {
+            "horseId": "HK_2023_J537",
+            "horseNo": 9,
+            "horseName": "ROMANTIC SON",
+            "placing": 4,
+            "winOdds": 43
+          },
+          {
+            "horseId": "HK_2023_J186",
+            "horseNo": 2,
+            "horseName": "STELLAR EXPRESS",
+            "placing": 5,
+            "winOdds": 4.8
+          },
+          {
+            "horseId": "HK_2025_L223",
+            "horseNo": 11,
+            "horseName": "GLOWING PRAISES",
+            "placing": 6,
+            "winOdds": 6.1
+          },
+          {
+            "horseId": "HK_2023_J141",
+            "horseNo": 6,
+            "horseName": "SING DRAGON",
+            "placing": 7,
+            "winOdds": 35
+          },
+          {
+            "horseId": "HK_2022_H301",
+            "horseNo": 5,
+            "horseName": "INVINCIBLE SAGE",
+            "placing": 8,
+            "winOdds": 14
+          },
+          {
+            "horseId": "HK_2022_H092",
+            "horseNo": 10,
+            "horseName": "SUPERB CAPITALIST",
+            "placing": 9,
+            "winOdds": 47
+          },
+          {
+            "horseId": "HK_2022_H294",
+            "horseNo": 1,
+            "horseName": "BEAUTY WAVES",
+            "placing": 10,
+            "winOdds": 23
+          },
+          {
+            "horseId": "HK_2021_G268",
+            "horseNo": 8,
+            "horseName": "BRAVE STAR",
+            "placing": 11,
+            "winOdds": 84
+          }
+        ],
         "marketFavourite": {
           "horseId": "HK_2023_J333",
           "horseName": "MAGIC CONTROL",
@@ -8239,6 +9187,99 @@
         "profit": 0,
         "roi": 0,
         "resultLabel": "PASS",
+        "runnerResults": [
+          {
+            "horseId": "HK_2023_J136",
+            "horseNo": 1,
+            "horseName": "TALENTS AMBITION",
+            "placing": 1,
+            "winOdds": 4.1
+          },
+          {
+            "horseId": "HK_2024_K473",
+            "horseNo": 14,
+            "horseName": "PRAY FOR JUSTICE",
+            "placing": 2,
+            "winOdds": 11
+          },
+          {
+            "horseId": "HK_2022_H165",
+            "horseNo": 12,
+            "horseName": "TURIN MASCOT",
+            "placing": 3,
+            "winOdds": 12
+          },
+          {
+            "horseId": "HK_2022_H216",
+            "horseNo": 3,
+            "horseName": "KAHOLO ANGEL",
+            "placing": 4,
+            "winOdds": 31
+          },
+          {
+            "horseId": "HK_2024_K080",
+            "horseNo": 8,
+            "horseName": "RUN RUN SMART",
+            "placing": 5,
+            "winOdds": 6
+          },
+          {
+            "horseId": "HK_2024_K382",
+            "horseNo": 10,
+            "horseName": "ALL ROUND WINNER",
+            "placing": 6,
+            "winOdds": 24
+          },
+          {
+            "horseId": "HK_2021_G448",
+            "horseNo": 5,
+            "horseName": "SWORD POINT",
+            "placing": 7,
+            "winOdds": 7.2
+          },
+          {
+            "horseId": "HK_2024_K161",
+            "horseNo": 4,
+            "horseName": "LO RIDER",
+            "placing": 8,
+            "winOdds": 127
+          },
+          {
+            "horseId": "HK_2024_K494",
+            "horseNo": 9,
+            "horseName": "NEZHA",
+            "placing": 9,
+            "winOdds": 7.3
+          },
+          {
+            "horseId": "HK_2023_J133",
+            "horseNo": 7,
+            "horseName": "MUST GO",
+            "placing": 10,
+            "winOdds": 40
+          },
+          {
+            "horseId": "HK_2025_L109",
+            "horseNo": 6,
+            "horseName": "GLITTERING LEGEND",
+            "placing": 11,
+            "winOdds": 12
+          },
+          {
+            "horseId": "HK_2019_D482",
+            "horseNo": 11,
+            "horseName": "TELECOM FIGHTERS",
+            "placing": 12,
+            "winOdds": 61
+          },
+          {
+            "horseId": "HK_2023_J540",
+            "horseNo": 2,
+            "horseName": "VICTORY SKY",
+            "placing": 13,
+            "winOdds": 20
+          }
+        ],
         "marketFavourite": {
           "horseId": "HK_2023_J136",
           "horseName": "TALENTS AMBITION",
@@ -8544,6 +9585,106 @@
         "profit": 0,
         "roi": 0,
         "resultLabel": "PASS",
+        "runnerResults": [
+          {
+            "horseId": "HK_2025_L232",
+            "horseNo": 6,
+            "horseName": "MR INCREDIBLE",
+            "placing": 1,
+            "winOdds": 1.2
+          },
+          {
+            "horseId": "HK_2025_L020",
+            "horseNo": 11,
+            "horseName": "EMBRACE ABERDEEN",
+            "placing": 2,
+            "winOdds": 53
+          },
+          {
+            "horseId": "HK_2025_L121",
+            "horseNo": 7,
+            "horseName": "THUNDER KIT",
+            "placing": 3,
+            "winOdds": 25
+          },
+          {
+            "horseId": "HK_2025_L155",
+            "horseNo": 5,
+            "horseName": "CITY GOLD BANNER",
+            "placing": 4,
+            "winOdds": 41
+          },
+          {
+            "horseId": "HK_2025_L375",
+            "horseNo": 4,
+            "horseName": "ROYAL BLITZ",
+            "placing": 5,
+            "winOdds": 34
+          },
+          {
+            "horseId": "HK_2025_L152",
+            "horseNo": 2,
+            "horseName": "HAPPY INDEX",
+            "placing": 6,
+            "winOdds": 10
+          },
+          {
+            "horseId": "HK_2023_J219",
+            "horseNo": 3,
+            "horseName": "CHATEAUNEUF",
+            "placing": 7,
+            "winOdds": 124
+          },
+          {
+            "horseId": "HK_2024_K365",
+            "horseNo": 9,
+            "horseName": "THOUSAND SPIRIT",
+            "placing": 8,
+            "winOdds": 37
+          },
+          {
+            "horseId": "HK_2022_H439",
+            "horseNo": 8,
+            "horseName": "LIFELINE EXPRESS",
+            "placing": 9,
+            "winOdds": 28
+          },
+          {
+            "horseId": "HK_2023_J303",
+            "horseNo": 1,
+            "horseName": "GUSTOSISIMO",
+            "placing": 10,
+            "winOdds": 8.1
+          },
+          {
+            "horseId": "HK_2024_K476",
+            "horseNo": 12,
+            "horseName": "STANLEY EXPRESS",
+            "placing": 11,
+            "winOdds": 235
+          },
+          {
+            "horseId": "HK_2024_K512",
+            "horseNo": 10,
+            "horseName": "DOUBLE MONEY",
+            "placing": 12,
+            "winOdds": 177
+          },
+          {
+            "horseId": "HK_2021_G016",
+            "horseNo": 14,
+            "horseName": "SUGAR SUGAR",
+            "placing": 13,
+            "winOdds": 83
+          },
+          {
+            "horseId": "HK_2025_L284",
+            "horseNo": 13,
+            "horseName": "VIGOR HAPPINESS",
+            "placing": 14,
+            "winOdds": 295
+          }
+        ],
         "marketFavourite": {
           "horseId": "HK_2025_L232",
           "horseName": "MR INCREDIBLE",
@@ -8860,6 +10001,106 @@
         "profit": -12.5,
         "roi": -1,
         "resultLabel": "MISS",
+        "runnerResults": [
+          {
+            "horseId": "HK_2023_J402",
+            "horseNo": 5,
+            "horseName": "SOVEREIGN FUND",
+            "placing": 1,
+            "winOdds": 51
+          },
+          {
+            "horseId": "HK_2023_J180",
+            "horseNo": 2,
+            "horseName": "AEROINVINCIBLE",
+            "placing": 2,
+            "winOdds": 9.8
+          },
+          {
+            "horseId": "HK_2023_J428",
+            "horseNo": 6,
+            "horseName": "CIRCUIT CHAMPION",
+            "placing": 3,
+            "winOdds": 2.3
+          },
+          {
+            "horseId": "HK_2023_J444",
+            "horseNo": 7,
+            "horseName": "DO YOUR PART",
+            "placing": 4,
+            "winOdds": 4.2
+          },
+          {
+            "horseId": "HK_2025_L056",
+            "horseNo": 9,
+            "horseName": "MEGASTAR HEART",
+            "placing": 5,
+            "winOdds": 13
+          },
+          {
+            "horseId": "HK_2025_L135",
+            "horseNo": 11,
+            "horseName": "GOLDEN CHAMP",
+            "placing": 6,
+            "winOdds": 133
+          },
+          {
+            "horseId": "HK_2024_K489",
+            "horseNo": 4,
+            "horseName": "FIT FOR BEAUTY",
+            "placing": 7,
+            "winOdds": 5.4
+          },
+          {
+            "horseId": "HK_2022_H175",
+            "horseNo": 3,
+            "horseName": "CHIU CHOW SPIRIT",
+            "placing": 8,
+            "winOdds": 29
+          },
+          {
+            "horseId": "HK_2025_L184",
+            "horseNo": 8,
+            "horseName": "WINDLORD",
+            "placing": 9,
+            "winOdds": 69
+          },
+          {
+            "horseId": "HK_2025_L314",
+            "horseNo": 13,
+            "horseName": "THUNDER ACTION",
+            "placing": 10,
+            "winOdds": 29
+          },
+          {
+            "horseId": "HK_2025_L283",
+            "horseNo": 1,
+            "horseName": "CONTINENT EXPRESS",
+            "placing": 11,
+            "winOdds": 68
+          },
+          {
+            "horseId": "HK_2023_J396",
+            "horseNo": 12,
+            "horseName": "THRIVING BROTHERS",
+            "placing": 12,
+            "winOdds": 27
+          },
+          {
+            "horseId": "HK_2023_J237",
+            "horseNo": 10,
+            "horseName": "STORMING DRAGON",
+            "placing": 13,
+            "winOdds": 44
+          },
+          {
+            "horseId": "HK_2025_L116",
+            "horseNo": 14,
+            "horseName": "GRIT SPIRIT",
+            "placing": 14,
+            "winOdds": 133
+          }
+        ],
         "marketFavourite": {
           "horseId": "HK_2023_J428",
           "horseName": "CIRCUIT CHAMPION",

@@ -16,7 +16,8 @@ simulation model.
 - Browser-local self-test mode for your own paper picks
 - Forecast lock records for comparing pre-race snapshots with later results
 - Conservative HK$10-100 staking strategy panel
-- Model performance panel with odds buckets and probability calibration
+- Model performance panel with odds buckets, probability calibration, and
+  staking-strategy backtest diagnostics
 - Next Hong Kong local meeting when HKJC race cards are not yet published
 
 ## Important
@@ -71,8 +72,13 @@ The dashboard includes a local "我的测试台" mode:
 
 The "模型成绩 / Backtest Lab" panel is separate from your local picks. It shows
 rolling backtest health, market-favourite comparison, top-pick odds buckets,
-and probability calibration. Treat it as model diagnostics, not proof of a
-future edge.
+probability calibration, and the current HK$10-100 staking strategy replayed
+against settled historical races. Treat it as model diagnostics, not proof of a
+future edge. The strategy replay can truthfully settle the Win lines because the
+local historical data includes official Win odds. Full strategy ROI is marked as
+unavailable until Place, Quinella Place, and Quinella official dividends are
+parsed into the dataset; until then the page shows structural hit rates,
+unpriced-pool stake, and the break-even return gap.
 
 ## Staking Strategy
 

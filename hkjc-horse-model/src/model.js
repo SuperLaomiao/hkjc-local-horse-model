@@ -447,6 +447,13 @@ export function settleForecast(forecast, actualRace) {
     profit,
     roi: stake > 0 ? profit / stake : 0,
     resultLabel: stake === 0 ? 'PASS' : won ? 'WIN' : 'MISS',
+    runnerResults: actualRace.runners.map((runner) => ({
+      horseId: runner.horseId ?? null,
+      horseNo: runner.horseNo ?? null,
+      horseName: runner.horseName ?? null,
+      placing: runner.placing ?? null,
+      winOdds: runner.winOdds ?? null,
+    })),
     marketFavourite: marketFavourite
       ? {
           horseId: marketFavourite.horseId,

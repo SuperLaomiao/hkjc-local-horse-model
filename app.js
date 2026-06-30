@@ -950,6 +950,10 @@ function renderPerformancePanel(snapshot) {
   const overall = performance.overall;
   const recent = performance.recent;
   const meetings = performance.byMeeting.slice(0, 5);
+  const strategy = performance.stakingStrategy;
+  const strategyHitRate = (hits, bets) => (bets > 0 ? hits / bets : 0);
+  const strategyNote = strategy?.roiNote
+    ?? "全策略 ROI 需要官方位置、位置Q、连赢派彩；当前只把独赢线按官方独赢赔率真实结算。";
   return `
     <section class="panel performance-panel">
       <div class="panel-header">
@@ -964,6 +968,32 @@ function renderPerformancePanel(snapshot) {
         ${renderPerformanceMetric("市场热门", `${overall.marketFavouriteWins}/${overall.marketFavouriteBets}`, formatPercent(overall.marketFavouriteRoi), overall.marketFavouriteRoi)}
         ${renderPerformanceMetric("近 30 场 Top Pick", `${recent.topPickWins}/${recent.races}`, formatPercent(recent.topPickWinRate), recent.topPickRoi)}
       </div>
+      ${strategy ? `
+        <div class="performance-grid">
+          ${renderPerformanceMetric("新策略命中", `${strategy.anyHits}/${strategy.strategyBets}`, `${formatPercent(strategy.anyHitRate)} · ${strategy.passRaces} 场 PASS`, strategy.anyHitRate - 0.5)}
+          ${renderPerformanceMetric("策略建议总注", formatHkd(strategy.totalStake), `${strategy.strategyBets}/${strategy.races} 场下注`, 0)}
+          ${renderPerformanceMetric("独赢线 ROI", formatPercent(strategy.officialWinRoi), `Win ${strategy.winHits}/${strategy.winBets} · ${formatHkd(strategy.officialWinStake)}`, strategy.officialWinRoi)}
+          ${renderPerformanceMetric("全策略 ROI", strategy.fullStrategyRoi === null ? "待派彩" : formatPercent(strategy.fullStrategyRoi), "缺位置/位置Q/连赢官方派彩", strategy.fullStrategyRoi ?? 0)}
+        </div>
+        <div class="mini-record-grid">
+          <div>
+            <h4>新策略组合命中</h4>
+            <div class="mini-record-list">
+              ${renderMiniRecordLine("位置 Place", `${strategy.placeHits}/${strategy.placeBets}`, formatPercent(strategyHitRate(strategy.placeHits, strategy.placeBets)), strategyHitRate(strategy.placeHits, strategy.placeBets) - 0.5)}
+              ${renderMiniRecordLine("位置Q Quinella Place", `${strategy.quinellaPlaceHits}/${strategy.quinellaPlaceBets}`, formatPercent(strategyHitRate(strategy.quinellaPlaceHits, strategy.quinellaPlaceBets)), strategyHitRate(strategy.quinellaPlaceHits, strategy.quinellaPlaceBets) - 0.5)}
+              ${renderMiniRecordLine("连赢 Quinella", `${strategy.quinellaHits}/${strategy.quinellaBets}`, formatPercent(strategyHitRate(strategy.quinellaHits, strategy.quinellaBets)), strategyHitRate(strategy.quinellaHits, strategy.quinellaBets) - 0.5)}
+            </div>
+          </div>
+          <div>
+            <h4>ROI 结算缺口</h4>
+            <div class="mini-record-list">
+              ${renderMiniRecordLine("未定派彩池", formatHkd(strategy.unpricedPoolStake), "非独赢注额", 0)}
+              ${renderMiniRecordLine("全策略回本缺口", formatHkd(strategy.breakEvenReturnNeededFromUnpricedPools), "需由未定池补回", 0)}
+              ${renderMiniRecordLine("每个未定命中需", formatHkd(strategy.breakEvenReturnPerUnpricedHit), `${strategy.unpricedHits} 个未定命中`, 0)}
+            </div>
+          </div>
+        </div>
+      ` : ""}
       <div class="mini-record-grid">
         <div>
           <h4>头号马赔率段</h4>
@@ -992,6 +1022,7 @@ function renderPerformancePanel(snapshot) {
         )).join("")}
       </div>
       <p class="fine-print">${escapeHtml(performance.warning)}</p>
+      ${strategy ? `<p class="fine-print">${escapeHtml(strategyNote)}</p>` : ""}
     </section>
   `;
 }
