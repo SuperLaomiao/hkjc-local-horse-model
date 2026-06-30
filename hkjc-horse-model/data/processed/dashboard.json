@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-30T16:30:42.381Z",
+  "generatedAt": "2026-06-30T16:36:50.830Z",
   "scope": "HKJC local races only",
   "summary": {
     "racesSettled": 115,
@@ -23,8 +23,8 @@
     "racecourse": "ST",
     "raceNo": 11,
     "status": "settled",
-    "raceClass": 5,
-    "distance": 1200,
+    "raceClass": 3,
+    "distance": 1400,
     "surface": "TURF",
     "going": "GOOD",
     "trainingRacesBefore": 114,
@@ -465,12 +465,12 @@
       "confidence": "watch",
       "suggestedStake": 10,
       "stakePct": 0.05,
-      "message": "Positive-edge candidate; use stake cap and review final odds before placing any bet."
+      "message": "Probability-only paper pick; wait for market odds before treating it as a value recommendation."
     },
     "finalBetPlan": {
-      "mode": "execute",
-      "label": "FINAL BUY / 可买",
-      "headline": "只在最终入场窗口执行，不提前追价。",
+      "mode": "prepare",
+      "label": "PREP / 预备",
+      "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
       "betType": "WIN",
       "horseId": "HK_2024_K028",
       "horseName": "ORIENTAL SURPRISE",
@@ -484,15 +484,15 @@
       "stakePct": 0.05,
       "entryWindow": "开跑前 10-5 分钟",
       "reviewWindow": "开跑前 15 分钟复核",
-      "cutoffWindow": "开跑前 3 分钟后不新增下注",
+      "cutoffWindow": "T-5 仍无实时赔率就不下注",
       "checklist": [
         "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
-        "只有实时独赢赔率仍高于最低赔率线，才执行下注。",
-        "严格使用计划注码上限；赔率跌穿就不追。"
+        "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
+        "赔率缺失或跳动太乱时，只保留纸上模拟。"
       ],
       "stopRules": [
-        "马匹退出、骑师/场地出现重大变化，或赔率跌穿最低线，直接 PASS。",
-        "最终 15 分钟内页面没有刷新成功，直接 PASS。"
+        "最终赔率低于最低线，直接 PASS。",
+        "任何临场官方变化削弱模型条件，直接 PASS。"
       ]
     },
     "predictions": [
@@ -6574,7 +6574,7 @@
         "racecourse": "ST",
         "raceNo": 3,
         "status": "settled",
-        "raceClass": 5,
+        "raceClass": 4,
         "distance": 1200,
         "surface": "TURF",
         "going": "GOOD",
@@ -6595,24 +6595,14 @@
           "score": 0.14105180069772055
         },
         "recommendation": {
-          "action": "value",
-          "horseId": "HK_2022_H487",
-          "horseName": "CIRCUIT VICTORY",
-          "horseNo": 10,
-          "modelProbability": 0.2842537280198103,
-          "fairOdds": 3.5179837638938816,
-          "winOdds": 15,
-          "expectedReturn": 4.2638059202971546,
-          "edge": 3.2638059202971546,
-          "confidence": "high",
-          "suggestedStake": 10,
-          "stakePct": 0.05,
-          "message": "Positive-edge candidate; use stake cap and review final odds before placing any bet."
+          "action": "pass",
+          "message": "No positive-edge win recommendation at current odds.",
+          "suggestedStake": 0
         },
         "finalBetPlan": {
-          "mode": "execute",
-          "label": "FINAL BUY / 可买",
-          "headline": "只在最终入场窗口执行，不提前追价。",
+          "mode": "pass",
+          "label": "NO BET / 不买",
+          "headline": "保留本金；这场没有通过最终下注规则。",
           "betType": "WIN",
           "horseId": null,
           "horseName": null,
@@ -6622,19 +6612,18 @@
           "currentOdds": 2.3,
           "minimumOdds": 9.15,
           "targetEdge": 0.08,
-          "plannedStake": 10,
-          "stakePct": 0.05,
+          "plannedStake": 0,
+          "stakePct": 0,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
-          "cutoffWindow": "开跑前 3 分钟后不新增下注",
+          "cutoffWindow": "不强行下注",
           "checklist": [
-            "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
-            "只有实时独赢赔率仍高于最低赔率线，才执行下注。",
-            "严格使用计划注码上限；赔率跌穿就不追。"
+            "实时赔率没有正期望值，不下独赢。",
+            "这场只用于赛后复盘和模型学习。"
           ],
           "stopRules": [
-            "马匹退出、骑师/场地出现重大变化，或赔率跌穿最低线，直接 PASS。",
-            "最终 15 分钟内页面没有刷新成功，直接 PASS。"
+            "没有 edge，就不下注。",
+            "不要为了有动作，把 PASS 换成低质量选择。"
           ]
         },
         "predictions": [
@@ -8643,12 +8632,12 @@
           "confidence": "watch",
           "suggestedStake": 10,
           "stakePct": 0.05,
-          "message": "Positive-edge candidate; use stake cap and review final odds before placing any bet."
+          "message": "Probability-only paper pick; wait for market odds before treating it as a value recommendation."
         },
         "finalBetPlan": {
-          "mode": "execute",
-          "label": "FINAL BUY / 可买",
-          "headline": "只在最终入场窗口执行，不提前追价。",
+          "mode": "prepare",
+          "label": "PREP / 预备",
+          "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
           "betType": "WIN",
           "horseId": "HK_2023_J333",
           "horseName": "MAGIC CONTROL",
@@ -8662,15 +8651,15 @@
           "stakePct": 0.05,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
-          "cutoffWindow": "开跑前 3 分钟后不新增下注",
+          "cutoffWindow": "T-5 仍无实时赔率就不下注",
           "checklist": [
             "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
-            "只有实时独赢赔率仍高于最低赔率线，才执行下注。",
-            "严格使用计划注码上限；赔率跌穿就不追。"
+            "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
+            "赔率缺失或跳动太乱时，只保留纸上模拟。"
           ],
           "stopRules": [
-            "马匹退出、骑师/场地出现重大变化，或赔率跌穿最低线，直接 PASS。",
-            "最终 15 分钟内页面没有刷新成功，直接 PASS。"
+            "最终赔率低于最低线，直接 PASS。",
+            "任何临场官方变化削弱模型条件，直接 PASS。"
           ]
         },
         "predictions": [
