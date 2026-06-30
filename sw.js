@@ -1,9 +1,10 @@
-const CACHE_NAME = "hkjc-model-v2";
+const CACHE_NAME = "hkjc-model-v3";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./styles.css",
   "./app.js",
+  "./bet-strategy.js",
   "./self-test.js",
   "./manifest.webmanifest",
   "./icons/app-icon.svg"

@@ -15,6 +15,7 @@ simulation model.
 - Model top-pick win rate
 - Browser-local self-test mode for your own paper picks
 - Forecast lock records for comparing pre-race snapshots with later results
+- Conservative HK$10-100 staking strategy panel
 - Model performance panel with odds buckets and probability calibration
 - Next Hong Kong local meeting when HKJC race cards are not yet published
 
@@ -72,6 +73,23 @@ The "模型成绩 / Backtest Lab" panel is separate from your local picks. It sh
 rolling backtest health, market-favourite comparison, top-pick odds buckets,
 and probability calibration. Treat it as model diagnostics, not proof of a
 future edge.
+
+## Staking Strategy
+
+The "建议投注策略" panel turns the model forecast into a conservative paper
+staking plan:
+
+- PASS when the model signal is too weak.
+- HK$10-20 for light Place-only tests.
+- HK$30 as the standard plan, usually Place plus a small Win line.
+- HK$50-80 only when the main pick and support horses are strong enough for
+  Quinella Place lines.
+- HK$100 is the maximum tier and should be rare.
+
+The first version prioritizes Place, Quinella Place, and small Win stakes. It
+does not recommend Tierce, First 4, or Quartet because the current model has not
+shown enough ordering accuracy. Final real-money use still requires checking
+official live odds, scratchings, going, and jockey changes before the race.
 
 On non-race days, the final-plan panel shows a no-local-race state instead of
 reusing the last settled race's `NO BET` decision. The refresh button still

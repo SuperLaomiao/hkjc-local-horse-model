@@ -5,6 +5,7 @@ import {
   settleUserPick,
   summarizeUserPicks,
 } from "./self-test.js";
+import { buildStakingStrategy } from "./bet-strategy.js";
 
 const DATA_URL = "./data/dashboard.json";
 const appRoot = document.querySelector("#hkjc-app");
@@ -152,6 +153,7 @@ function render() {
 
         <aside class="right-stack">
           ${renderFinalBetPlanPanel(selectedEntry, snapshot, todayStatus)}
+          ${renderStakingStrategyPanel(selectedEntry)}
           ${renderSelfTestPanel(selectedEntry, entries)}
           ${renderRecommendationPanel(selectedEntry.forecast.recommendation)}
           ${renderSettlementPanel(selectedEntry.settlement)}
@@ -476,6 +478,80 @@ function renderMobileActionBar(entry, todayStatus) {
       ${renderRefreshButton("刷新", "mobile")}
     </div>
   `;
+}
+
+function renderStakingStrategyPanel(entry) {
+  const strategy = buildStakingStrategy(entry);
+  const isPass = strategy.mode === "pass";
+  return `
+    <section class="panel staking-strategy-panel">
+      <div class="panel-header">
+        <div>
+          <h3>建议投注策略</h3>
+          <p>每场 HK$10-100，优先位置 / 位置Q / 小额独赢。</p>
+        </div>
+        <span class="strategy-budget ${isPass ? "is-pass" : ""}">${formatHkd(strategy.budget)}</span>
+      </div>
+      <div class="staking-body">
+        <span class="strategy-mode ${isPass ? "is-pass" : ""}">${escapeHtml(strategy.label)}</span>
+        <h2 class="strategy-title">${escapeHtml(strategy.primaryHorse?.horseName ?? "不下注")}</h2>
+        <p class="strategy-rationale">${escapeHtml(strategy.rationale)}</p>
+        ${strategy.bets.length ? `
+          <div class="bet-line-list">
+            ${strategy.bets.map(renderStakeBetLine).join("")}
+          </div>
+        ` : '<p class="guardrail">这场没有达到最低策略线，建议 PASS。</p>'}
+        <div class="strategy-summary-grid">
+          <div>
+            <span>建议总额</span>
+            <strong>${formatHkd(strategy.totalStake)}</strong>
+          </div>
+          <div>
+            <span>状态</span>
+            <strong>${strategy.hasMarketOdds ? "有赔率，仍需复核" : "等实时赔率"}</strong>
+          </div>
+          <div>
+            <span>信心档</span>
+            <strong>${escapeHtml(strategy.confidence)}</strong>
+          </div>
+          <div>
+            <span>上限</span>
+            <strong>HK$100</strong>
+          </div>
+        </div>
+        <div class="plan-rules">
+          <strong>投注前检查</strong>
+          <ul>
+            ${strategy.checklist.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+          </ul>
+          <strong>停止规则</strong>
+          <ul>
+            ${strategy.stopRules.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+          </ul>
+        </div>
+        <p class="fine-print">${escapeHtml(strategy.disclaimer)}</p>
+      </div>
+    </section>
+  `;
+}
+
+function renderStakeBetLine(bet) {
+  return `
+    <div class="bet-line">
+      <div>
+        <span>${escapeHtml(bet.label)}</span>
+        <strong>${escapeHtml(formatBetHorses(bet.horses))}</strong>
+        <p>${escapeHtml(bet.rationale)}</p>
+      </div>
+      <em>${formatHkd(bet.amount)}</em>
+    </div>
+  `;
+}
+
+function formatBetHorses(horses) {
+  return horses
+    .map((horse) => `${horse.horseNo ? `No.${horse.horseNo} ` : ""}${horse.horseName ?? "-"}`)
+    .join(" + ");
 }
 
 function localRaceDayStatus(snapshot) {
@@ -1162,6 +1238,11 @@ function formatOdds(value) {
 function formatMoney(value) {
   if (!Number.isFinite(value)) return "-";
   return `$${value.toFixed(0)}`;
+}
+
+function formatHkd(value) {
+  if (!Number.isFinite(value)) return "-";
+  return `HK$${value.toFixed(0)}`;
 }
 
 function formatSignedMoney(value) {
