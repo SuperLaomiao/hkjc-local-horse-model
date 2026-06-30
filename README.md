@@ -13,6 +13,9 @@ simulation model.
 - Official-result settlement ledger
 - Rolling paper profit / ROI
 - Model top-pick win rate
+- Browser-local self-test mode for your own paper picks
+- Forecast lock records for comparing pre-race snapshots with later results
+- Model performance panel with odds buckets and probability calibration
 - Next Hong Kong local meeting when HKJC race cards are not yet published
 
 ## Important
@@ -40,12 +43,12 @@ npm run hkjc:refresh -- --bankroll 200 --minEdge 0 --minProbability 0.15 --maxSt
 Then copy the refreshed dashboard JSON into this publishing project:
 
 ```bash
-cp "hkjc-horse-model/data/processed/dashboard.json" "../hkjc-local-horse-model/data/dashboard.json"
+cp "hkjc-horse-model/data/processed/dashboard.json" "data/dashboard.json"
 ```
 
-The source dashboard currently has 84 settled HK local races and points to the
-next HK local meeting as 2026-06-21 Sha Tin. Race-card forecasts appear only
-after HKJC publishes local starters.
+The source dashboard currently has 115 settled HK local races through
+2026-06-27 Sha Tin. Race-card forecasts appear only after HKJC publishes local
+starters.
 
 The page-level refresh button reloads the latest published `data/dashboard.json`
 without browser cache. GitHub Pages cannot safely store a secret token in the
@@ -53,6 +56,22 @@ browser, so this button does not directly trigger the GitHub Actions backend.
 During race windows, the backend workflow refreshes about every 10 minutes; a
 future Worker/API can make the button trigger an immediate server-side HKJC
 refresh.
+
+## Self-Test Lab
+
+The dashboard includes a local "我的测试台" mode:
+
+- Click "我选这匹" in a race table to record your own paper pick.
+- Click "锁定本场预测" to save the model forecast shown in your browser.
+- After official results are refreshed, the page settles your paper pick as
+  `WIN`, `MISS`, or `OPEN`.
+- These records use browser `localStorage`; they stay on this device/browser
+  only. Clearing browser data or switching devices removes them.
+
+The "模型成绩 / Backtest Lab" panel is separate from your local picks. It shows
+rolling backtest health, market-favourite comparison, top-pick odds buckets,
+and probability calibration. Treat it as model diagnostics, not proof of a
+future edge.
 
 On non-race days, the final-plan panel shows a no-local-race state instead of
 reusing the last settled race's `NO BET` decision. The refresh button still

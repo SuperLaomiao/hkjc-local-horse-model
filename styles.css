@@ -521,6 +521,11 @@ tbody tr:hover {
   align-items: center;
 }
 
+.panel-actions {
+  display: grid;
+  gap: 8px;
+}
+
 .refresh-plan-button {
   display: inline-grid;
   place-items: center;
@@ -550,6 +555,46 @@ tbody tr:hover {
 .refresh-plan-button.is-panel {
   align-self: stretch;
   min-width: 150px;
+}
+
+.lock-forecast-button,
+.pick-runner-button,
+.text-button {
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--teal);
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.lock-forecast-button {
+  min-height: 38px;
+  padding: 8px 10px;
+}
+
+.lock-forecast-button.is-locked,
+.pick-runner-button.is-picked {
+  border-color: #9ed0c9;
+  background: var(--teal-soft);
+  color: var(--teal);
+}
+
+.runner-action {
+  min-width: 94px;
+}
+
+.pick-runner-button {
+  width: 100%;
+  padding: 7px 9px;
+  font-size: 0.76rem;
+  white-space: nowrap;
+}
+
+.text-button {
+  padding: 6px 8px;
+  color: var(--muted);
+  font-size: 0.74rem;
 }
 
 .plan-badge {
@@ -740,6 +785,175 @@ tbody tr:hover {
   font-size: 1rem;
 }
 
+.performance-panel,
+.self-test-panel {
+  overflow: hidden;
+}
+
+.performance-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  margin: 14px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--line);
+}
+
+.performance-grid.is-compact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 12px 14px;
+}
+
+.performance-card {
+  min-width: 0;
+  padding: 12px;
+  background: var(--surface-soft);
+}
+
+.performance-card span,
+.self-test-current span,
+.mini-record-line span,
+.calibration-label span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.performance-card strong {
+  display: block;
+  margin-top: 5px;
+  font-size: 1.05rem;
+  line-height: 1.15;
+}
+
+.performance-card small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.mini-record-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 0 14px 14px;
+}
+
+.mini-record-grid h4 {
+  margin: 0 0 8px;
+  font-size: 0.82rem;
+}
+
+.mini-record-list {
+  display: grid;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.mini-record-line {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) auto auto;
+  gap: 10px;
+  align-items: center;
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-soft);
+  font-size: 0.78rem;
+}
+
+.mini-record-line:last-child {
+  border-bottom: 0;
+}
+
+.mini-record-line strong,
+.mini-record-line em {
+  font-style: normal;
+  font-size: 0.78rem;
+}
+
+.meeting-records {
+  margin: 0 14px 14px;
+}
+
+.calibration-bars {
+  display: grid;
+  gap: 8px;
+}
+
+.calibration-row {
+  display: grid;
+  gap: 5px;
+  padding: 9px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.calibration-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.calibration-label strong {
+  font-size: 0.78rem;
+}
+
+.calibration-track {
+  position: relative;
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e5eeee;
+}
+
+.calibration-track span {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: inherit;
+}
+
+.calibration-track .expected {
+  background: rgba(31, 95, 153, 0.32);
+}
+
+.calibration-track .actual {
+  background: rgba(4, 117, 111, 0.78);
+}
+
+.calibration-row small {
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+.self-test-current {
+  margin: 14px 14px 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.self-test-current strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 1rem;
+}
+
+.self-test-current p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
+
 .guardrail {
   padding: 11px;
   border: 1px solid var(--line);
@@ -835,6 +1049,10 @@ tbody tr:hover {
     grid-column: 1 / -1;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .performance-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 780px) {
@@ -894,6 +1112,16 @@ tbody tr:hover {
 
   .right-stack,
   .score-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .performance-grid,
+  .performance-grid.is-compact,
+  .mini-record-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .panel-actions {
     grid-template-columns: 1fr;
   }
 

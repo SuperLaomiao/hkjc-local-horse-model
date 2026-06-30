@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "test": "node --test hkjc-horse-model/test/*.test.js test/*.test.js",
     "hkjc:refresh": "node hkjc-horse-model/src/cli.js refresh",
     "hkjc:dashboard": "node hkjc-horse-model/src/cli.js dashboard"
   }

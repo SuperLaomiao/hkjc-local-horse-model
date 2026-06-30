@@ -1,5 +1,17 @@
+import {
+  createLockedForecast,
+  createUserPick,
+  settleLockedForecast,
+  settleUserPick,
+  summarizeUserPicks,
+} from "./self-test.js";
+
 const DATA_URL = "./data/dashboard.json";
 const appRoot = document.querySelector("#hkjc-app");
+const STORAGE_KEYS = {
+  userPicks: "hkjc.selfTest.userPicks.v1",
+  lockedForecasts: "hkjc.selfTest.lockedForecasts.v1",
+};
 
 const uiState = {
   snapshot: null,
@@ -8,13 +20,44 @@ const uiState = {
   isRefreshing: false,
   refreshStatus: "ready",
   refreshedAt: null,
+  userPicks: [],
+  lockedForecasts: [],
 };
 
 init();
 
 async function init() {
+  loadLocalRecords();
   await refreshDashboardData({ initial: true });
   registerServiceWorker();
+}
+
+function loadLocalRecords() {
+  uiState.userPicks = readLocalArray(STORAGE_KEYS.userPicks);
+  uiState.lockedForecasts = readLocalArray(STORAGE_KEYS.lockedForecasts);
+}
+
+function saveLocalRecords() {
+  writeLocalArray(STORAGE_KEYS.userPicks, uiState.userPicks);
+  writeLocalArray(STORAGE_KEYS.lockedForecasts, uiState.lockedForecasts);
+}
+
+function readLocalArray(key) {
+  try {
+    const raw = window.localStorage.getItem(key);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeLocalArray(key, value) {
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    // Browser storage may be disabled; the page still works without persistence.
+  }
 }
 
 async function refreshDashboardData({ initial = false } = {}) {
@@ -104,10 +147,12 @@ function render() {
           ${renderScoreStrip(snapshot.summary)}
           ${renderPredictionPanel(selectedEntry)}
           ${renderComparisonPanel(snapshot.ledger)}
+          ${renderPerformancePanel(snapshot)}
         </main>
 
         <aside class="right-stack">
-          ${renderFinalBetPlanPanel(selectedEntry.forecast.finalBetPlan, selectedEntry.forecast.recommendation, snapshot, todayStatus)}
+          ${renderFinalBetPlanPanel(selectedEntry, snapshot, todayStatus)}
+          ${renderSelfTestPanel(selectedEntry, entries)}
           ${renderRecommendationPanel(selectedEntry.forecast.recommendation)}
           ${renderSettlementPanel(selectedEntry.settlement)}
           ${renderChartPanel(snapshot.ledger)}
@@ -127,7 +172,7 @@ function renderRaceButton(entry, selectedRaceId) {
   const resultLabel = entry.settlement?.resultLabel ?? "UPCOMING";
   const profit = entry.settlement?.profit ?? 0;
   return `
-    <button class="race-row ${entry.raceId === selectedRaceId ? "is-active" : ""}" data-race-id="${entry.raceId}">
+    <button class="race-row ${entry.raceId === selectedRaceId ? "is-active" : ""}" data-race-select-id="${entry.raceId}">
       <span>
         <strong>${escapeHtml(label)}</strong>
         <span>${escapeHtml(pick)} · ${escapeHtml(resultLabel)}</span>
@@ -162,6 +207,7 @@ function renderScoreStrip(summary) {
 
 function renderPredictionPanel(entry) {
   const forecast = entry.forecast;
+  const userPick = selectedEntryUserPick(entry);
   const rows = (forecast.predictions ?? [])
     .filter((runner) => uiState.filter === "all" || passesValueFilter(runner))
     .slice(0, uiState.filter === "all" ? 14 : 8);
@@ -190,12 +236,13 @@ function renderPredictionPanel(entry) {
               <th>Value Edge</th>
               <th>Draw</th>
               <th>Jockey / Trainer</th>
+              <th>我的测试</th>
             </tr>
           </thead>
           <tbody>
             ${rows.length
-              ? rows.map((runner, index) => renderPredictionRow(runner, index)).join("")
-              : '<tr><td colspan="8" class="muted">No runner clears the current value filter.</td></tr>'}
+              ? rows.map((runner, index) => renderPredictionRow(runner, index, entry, userPick)).join("")
+              : '<tr><td colspan="9" class="muted">No runner clears the current value filter.</td></tr>'}
           </tbody>
         </table>
       </div>
@@ -203,7 +250,8 @@ function renderPredictionPanel(entry) {
   `;
 }
 
-function renderPredictionRow(runner, index) {
+function renderPredictionRow(runner, index, entry, userPick) {
+  const isPicked = userPick?.horseId === runner.horseId;
   return `
     <tr>
       <td><span class="rank-mark">${index + 1}</span></td>
@@ -220,6 +268,11 @@ function renderPredictionRow(runner, index) {
         ${escapeHtml(runner.jockey ?? "-")}
         <span class="subline">${escapeHtml(runner.trainer ?? "-")}</span>
       </td>
+      <td class="runner-action">
+        <button class="pick-runner-button ${isPicked ? "is-picked" : ""}" data-user-pick-horse-id="${escapeHtml(runner.horseId)}" data-race-id="${escapeHtml(entry.raceId)}">
+          ${isPicked ? "已选" : "我选这匹"}
+        </button>
+      </td>
     </tr>
   `;
 }
@@ -233,11 +286,13 @@ function passesValueFilter(runner) {
   return Number(runner.edge) >= minEdge && Number(runner.probability) >= minProbability;
 }
 
-function renderFinalBetPlanPanel(plan, recommendation, snapshot, todayStatus) {
+function renderFinalBetPlanPanel(entry, snapshot, todayStatus) {
   if (todayStatus.noLocalRaceToday) {
     return renderNoLocalRacePlanPanel(snapshot, todayStatus);
   }
 
+  const plan = entry.forecast.finalBetPlan;
+  const recommendation = entry.forecast.recommendation;
   const resolvedPlan = plan ?? fallbackBetPlan(recommendation);
   const isPass = resolvedPlan.mode === "pass";
   const isPrepare = resolvedPlan.mode === "prepare" || resolvedPlan.mode === "conditional";
@@ -253,7 +308,10 @@ function renderFinalBetPlanPanel(plan, recommendation, snapshot, todayStatus) {
           <h3>最终下注方案</h3>
           <p>赛前 15 分钟复核，10-5 分钟才执行。</p>
         </div>
-        ${renderRefreshButton("刷新最新赔率/方案", "panel")}
+        <div class="panel-actions">
+          ${renderLockForecastButton(entry)}
+          ${renderRefreshButton("刷新最新赔率/方案", "panel")}
+        </div>
       </div>
       <div class="bet-plan-body">
         <span class="plan-badge ${badgeClass}">${escapeHtml(resolvedPlan.label)}</span>
@@ -381,6 +439,15 @@ function renderRefreshButton(label, variant = "") {
   return `
     <button class="refresh-plan-button ${variant ? `is-${variant}` : ""}" data-refresh-plan ${uiState.isRefreshing ? "disabled" : ""}>
       <span>${escapeHtml(text)}</span>
+    </button>
+  `;
+}
+
+function renderLockForecastButton(entry) {
+  const locked = selectedEntryLockedForecast(entry);
+  return `
+    <button class="lock-forecast-button ${locked ? "is-locked" : ""}" data-lock-forecast data-race-id="${escapeHtml(entry.raceId)}">
+      ${locked ? "已锁定" : "锁定本场预测"}
     </button>
   `;
 }
@@ -789,6 +856,155 @@ function renderComparisonPanel(ledger) {
   `;
 }
 
+function renderPerformancePanel(snapshot) {
+  const performance = snapshot.performance;
+  if (!performance) {
+    return `
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <h3>模型成绩</h3>
+            <p>下次刷新 dashboard 后会显示完整成绩分解。</p>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  const overall = performance.overall;
+  const recent = performance.recent;
+  const meetings = performance.byMeeting.slice(0, 5);
+  return `
+    <section class="panel performance-panel">
+      <div class="panel-header">
+        <div>
+          <h3>模型成绩 / Backtest Lab</h3>
+          <p>把滚动回测、赔率段和概率校准分开看，避免一个高赔率中奖把判断带偏。</p>
+        </div>
+      </div>
+      <div class="performance-grid">
+        ${renderPerformanceMetric("全量 Top Pick", `${overall.topPickWins}/${overall.races}`, formatPercent(overall.topPickWinRate), overall.topPickRoi)}
+        ${renderPerformanceMetric("全量 Value", `${overall.valueWins}/${overall.valueBets}`, formatPercent(overall.valueRoi), overall.valueRoi)}
+        ${renderPerformanceMetric("市场热门", `${overall.marketFavouriteWins}/${overall.marketFavouriteBets}`, formatPercent(overall.marketFavouriteRoi), overall.marketFavouriteRoi)}
+        ${renderPerformanceMetric("近 30 场 Top Pick", `${recent.topPickWins}/${recent.races}`, formatPercent(recent.topPickWinRate), recent.topPickRoi)}
+      </div>
+      <div class="mini-record-grid">
+        <div>
+          <h4>头号马赔率段</h4>
+          <div class="mini-record-list">
+            ${performance.topPickOddsBuckets.map((bucket) => renderMiniRecordLine(
+              bucket.label,
+              `${bucket.wins}/${bucket.races}`,
+              formatPercent(bucket.roi),
+              bucket.roi,
+            )).join("")}
+          </div>
+        </div>
+        <div>
+          <h4>概率校准</h4>
+          <div class="calibration-bars">
+            ${performance.probabilityCalibration.map(renderCalibrationBar).join("")}
+          </div>
+        </div>
+      </div>
+      <div class="mini-record-list meeting-records">
+        ${meetings.map((meeting) => renderMiniRecordLine(
+          `${meeting.date} ${meeting.racecourse}`,
+          `Top ${meeting.topPickWins}/${meeting.races}`,
+          `Value ${formatPercent(meeting.valueRoi)}`,
+          meeting.valueRoi,
+        )).join("")}
+      </div>
+      <p class="fine-print">${escapeHtml(performance.warning)}</p>
+    </section>
+  `;
+}
+
+function renderSelfTestPanel(entry, entries) {
+  const pick = selectedEntryUserPick(entry);
+  const locked = selectedEntryLockedForecast(entry);
+  const pickSettlement = pick ? settleUserPick(entry, pick) : null;
+  const lockSettlement = locked ? settleLockedForecast(entry, locked) : null;
+  const summary = summarizeUserPicks(entries, uiState.userPicks);
+
+  return `
+    <section class="panel self-test-panel">
+      <div class="panel-header">
+        <div>
+          <h3>我的测试台</h3>
+          <p>你自己的纸上选择存在这个浏览器里，不会影响模型。</p>
+        </div>
+        ${uiState.userPicks.length ? '<button class="text-button" data-clear-user-picks>清空</button>' : ""}
+      </div>
+      <div class="self-test-current">
+        <span>本场我的选择</span>
+        <strong>${pick ? escapeHtml(pick.horseName) : "还没选"}</strong>
+        <p>${pick ? userPickSettlementText(pickSettlement) : "在左边预测表点“我选这匹”，就会记录一张纸上单。"}</p>
+      </div>
+      <div class="self-test-current">
+        <span>赛前锁单</span>
+        <strong>${locked ? "已锁定" : "未锁定"}</strong>
+        <p>${locked ? lockedForecastText(locked, lockSettlement) : "锁单会保存当时的头号马和最终方案，方便赛后核对。"}</p>
+      </div>
+      <div class="performance-grid is-compact">
+        ${renderPerformanceMetric("我的纸上单", `${summary.wins}/${summary.settled}`, `${summary.open} 待赛`, summary.roi)}
+        ${renderPerformanceMetric("我的 ROI", formatSignedMoney(summary.profit), formatPercent(summary.roi), summary.roi)}
+      </div>
+      <p class="fine-print">本地记录只存在你的浏览器。换电脑或清缓存会消失；以后可以再加导出/导入。</p>
+    </section>
+  `;
+}
+
+function renderPerformanceMetric(label, primary, secondary, toneValue = 0) {
+  return `
+    <div class="performance-card">
+      <span>${escapeHtml(label)}</span>
+      <strong class="${profitClass(toneValue)}">${escapeHtml(primary)}</strong>
+      <small>${escapeHtml(secondary)}</small>
+    </div>
+  `;
+}
+
+function renderMiniRecordLine(label, primary, secondary, toneValue = 0) {
+  return `
+    <div class="mini-record-line">
+      <span>${escapeHtml(label)}</span>
+      <strong>${escapeHtml(primary)}</strong>
+      <em class="${profitClass(toneValue)}">${escapeHtml(secondary)}</em>
+    </div>
+  `;
+}
+
+function renderCalibrationBar(bucket) {
+  const expectedWidth = Math.min(100, Math.max(2, bucket.averageProbability * 100));
+  const actualWidth = Math.min(100, Math.max(2, bucket.actualWinRate * 100));
+  return `
+    <div class="calibration-row">
+      <div class="calibration-label">
+        <strong>${escapeHtml(bucket.label)}</strong>
+        <span>${bucket.wins}/${bucket.races}</span>
+      </div>
+      <div class="calibration-track" aria-label="probability calibration">
+        <span class="expected" style="width:${expectedWidth}%"></span>
+        <span class="actual" style="width:${actualWidth}%"></span>
+      </div>
+      <small>预估 ${formatPercent(bucket.averageProbability)} · 实际 ${formatPercent(bucket.actualWinRate)}</small>
+    </div>
+  `;
+}
+
+function userPickSettlementText(settlement) {
+  if (!settlement || settlement.status === "OPEN") return "等待官方赛果；这张纸上单暂未结算。";
+  if (settlement.status === "WIN") return `命中，回报 ${formatMoney(settlement.returned)}，盈利 ${formatSignedMoney(settlement.profit)}。`;
+  return `未中，头马是 ${settlement.winnerHorseName ?? "-"}，盈亏 ${formatSignedMoney(settlement.profit)}。`;
+}
+
+function lockedForecastText(locked, settlement) {
+  const topPick = locked.topPick?.horseName ?? "-";
+  if (!settlement || settlement.status === "OPEN") return `锁定头号马：${topPick}；等待赛果。`;
+  return `锁定头号马：${topPick}，结果 ${settlement.topPickStatus}；头马 ${settlement.winnerHorseName ?? "-"}。`;
+}
+
 function renderNotesPanel(assumptions, snapshot) {
   const nextMeetings = snapshot.nextLocalMeetings ?? [];
   return `
@@ -843,10 +1059,47 @@ function renderProfitChart(ledger) {
   `;
 }
 
+function selectedEntryUserPick(entry) {
+  return uiState.userPicks.find((pick) => pick.raceId === entry.raceId) ?? null;
+}
+
+function selectedEntryLockedForecast(entry) {
+  return uiState.lockedForecasts.find((locked) => locked.raceId === entry.raceId) ?? null;
+}
+
+function recordUserPick(entry, horseId) {
+  const runner = entry.forecast?.predictions?.find((item) => item.horseId === horseId);
+  if (!runner) return;
+  const pick = createUserPick(entry, runner, { stake: 10 });
+  uiState.userPicks = [
+    ...uiState.userPicks.filter((item) => item.raceId !== entry.raceId),
+    pick,
+  ];
+  saveLocalRecords();
+  render();
+}
+
+function lockForecast(entry) {
+  const locked = createLockedForecast(entry, uiState.snapshot?.generatedAt ?? new Date().toISOString());
+  uiState.lockedForecasts = [
+    ...uiState.lockedForecasts.filter((item) => item.raceId !== entry.raceId),
+    locked,
+  ];
+  saveLocalRecords();
+  render();
+}
+
+function clearUserRecords() {
+  uiState.userPicks = [];
+  uiState.lockedForecasts = [];
+  saveLocalRecords();
+  render();
+}
+
 function bindEvents() {
-  document.querySelectorAll("[data-race-id]").forEach((button) => {
+  document.querySelectorAll("[data-race-select-id]").forEach((button) => {
     button.addEventListener("click", () => {
-      uiState.selectedRaceId = button.dataset.raceId;
+      uiState.selectedRaceId = button.dataset.raceSelectId;
       render();
     });
   });
@@ -861,6 +1114,26 @@ function bindEvents() {
   document.querySelectorAll("[data-refresh-plan]").forEach((button) => {
     button.addEventListener("click", () => {
       refreshDashboardData();
+    });
+  });
+
+  document.querySelectorAll("[data-user-pick-horse-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const entry = getAllEntries(uiState.snapshot).find((item) => item.raceId === button.dataset.raceId);
+      if (entry) recordUserPick(entry, button.dataset.userPickHorseId);
+    });
+  });
+
+  document.querySelectorAll("[data-lock-forecast]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const entry = getAllEntries(uiState.snapshot).find((item) => item.raceId === button.dataset.raceId);
+      if (entry) lockForecast(entry);
+    });
+  });
+
+  document.querySelectorAll("[data-clear-user-picks]").forEach((button) => {
+    button.addEventListener("click", () => {
+      clearUserRecords();
     });
   });
 }

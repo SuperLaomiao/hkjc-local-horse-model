@@ -1,3 +1,5 @@
+import { buildPerformanceSnapshot } from './performance.js';
+
 const DEFAULT_CONFIG = {
   baseRating: 65,
   horseRatingWeight: 0.075,
@@ -570,6 +572,7 @@ export function buildDashboardSnapshot(races, options = {}) {
     upcomingEntries,
     nextLocalMeetings: options.nextLocalMeetings ?? [],
     fixtureWindow: options.fixtureWindow ?? null,
+    performance: buildPerformanceSnapshot(rolling.entries),
     ledger: raceSummaries,
     recentEntries: rolling.entries.slice(-12),
     assumptions: {
