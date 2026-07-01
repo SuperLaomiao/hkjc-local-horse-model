@@ -881,6 +881,33 @@ tbody tr:hover {
   line-height: 1.35;
 }
 
+.bet-review {
+  display: block;
+  margin-top: 7px;
+  padding: 6px 7px;
+  border-radius: 6px;
+  background: #eef2f2;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.bet-review.is-hit {
+  background: var(--teal-soft);
+  color: var(--teal);
+}
+
+.bet-review.is-miss {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+.bet-review.is-open {
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+
 .bet-line em {
   display: inline-grid;
   place-items: center;
@@ -915,6 +942,216 @@ tbody tr:hover {
   margin-top: 5px;
   font-size: 0.86rem;
   line-height: 1.25;
+}
+
+.bet-type-guide-panel {
+  overflow: hidden;
+  border-color: #d5c5ea;
+}
+
+.pool-guide-body {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+}
+
+.pool-chip-groups {
+  display: grid;
+  gap: 10px;
+}
+
+.pool-chip-group {
+  display: grid;
+  gap: 6px;
+}
+
+.pool-chip-group > span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.pool-chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pool-chip {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: #334155;
+  cursor: pointer;
+  padding: 6px 8px;
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
+.pool-chip:hover,
+.pool-chip.is-active {
+  border-color: #8e6bd8;
+  background: #f2ecff;
+  color: #5b21b6;
+}
+
+.pool-guide-card {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #d9d2ee;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #ffffff 0%, #fbf9ff 100%);
+}
+
+.pool-guide-title h2 {
+  margin: 8px 0 4px;
+  font-size: 1.2rem;
+  line-height: 1.16;
+}
+
+.pool-guide-title h2 small {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.pool-guide-title p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.74rem;
+  line-height: 1.4;
+}
+
+.pool-status {
+  display: inline-block;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: #eef2f2;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.pool-status.is-play {
+  background: var(--teal-soft);
+  color: var(--teal);
+}
+
+.pool-status.is-small {
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+
+.pool-status.is-paper {
+  background: #e8f4ff;
+  color: #075985;
+}
+
+.pool-status.is-pass {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+.pool-info-grid {
+  display: grid;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--line);
+}
+
+.pool-info-grid div {
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.pool-info-grid span,
+.pool-advice-card span,
+.pool-review-card span,
+.pool-selection-row span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 850;
+}
+
+.pool-info-grid strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.78rem;
+  line-height: 1.38;
+}
+
+.pool-advice-card,
+.pool-review-card {
+  display: grid;
+  gap: 7px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.pool-advice-card strong,
+.pool-review-card strong {
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.pool-advice-card p,
+.pool-review-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.74rem;
+  line-height: 1.42;
+}
+
+.pool-selection-row {
+  display: grid;
+  grid-template-columns: 68px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  padding: 7px 8px;
+  border-radius: 7px;
+  background: var(--surface-soft);
+}
+
+.pool-selection-row em {
+  min-width: 0;
+  color: var(--ink);
+  font-size: 0.78rem;
+  font-style: normal;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.pool-review-card.is-hit {
+  border-color: #9ed0c9;
+  background: var(--teal-soft);
+}
+
+.pool-review-card.is-hit strong {
+  color: var(--teal);
+}
+
+.pool-review-card.is-miss {
+  border-color: #f2bab5;
+  background: var(--red-soft);
+}
+
+.pool-review-card.is-miss strong {
+  color: var(--red);
+}
+
+.pool-review-card.is-open {
+  border-color: #f4ce80;
+  background: var(--amber-soft);
+}
+
+.pool-review-card.is-open strong {
+  color: var(--amber);
 }
 
 .performance-grid {

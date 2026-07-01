@@ -19,6 +19,11 @@ https://superlaomiao.github.io/hkjc-local-horse-model/
 - Browser-local self-test mode for your own paper picks
 - Forecast lock records for comparing pre-race snapshots with later results
 - Conservative HK$10-100 staking strategy panel
+- Betting-products guide for Win / Place / Quinella / Quinella Place,
+  Forecast, Trio, Tierce, First 4, Quartet, multi-leg tickets, and
+  Jockey/Trainer Challenge slips
+- Per-bet-line post-race review for strategy suggestions, including
+  `HIT`, `MISS`, `OPEN`, or not-yet-reviewable states
 - Model performance panel with odds buckets, probability calibration, and
   staking-strategy backtest diagnostics
 - Next Hong Kong local meeting when HKJC race cards are not yet published
@@ -51,8 +56,8 @@ Then copy the refreshed dashboard JSON into this publishing project:
 cp "hkjc-horse-model/data/processed/dashboard.json" "data/dashboard.json"
 ```
 
-The source dashboard currently has 115 settled HK local races through
-2026-06-27 Sha Tin. Race-card forecasts appear only after HKJC publishes local
+The source dashboard currently has 126 settled HK local races through
+2026-07-01 Sha Tin. Race-card forecasts appear only after HKJC publishes local
 starters.
 
 The refresh parser validates that an official-results page actually matches the
@@ -105,7 +110,24 @@ does not recommend Tierce, First 4, or Quartet because the current model has not
 shown enough ordering accuracy. Final real-money use still requires checking
 official live odds, scratchings, going, and jockey changes before the race.
 
-On non-race days, the final-plan panel shows a no-local-race state instead of
+## Betting Products Guide
+
+The "其他玩法 / 玩法库" panel explains the common HKJC slips shown in the
+paper tickets:
+
+- Basic single-race pools: Win, Place, Quinella, Quinella Place.
+- Exact-order and exotic pools: Forecast, Trio, Tierce, First 4, Quartet.
+- Multi-race pools: Double, Treble, Six Up, All Up, Double Trio, Triple Trio.
+- Full-day fixed-odds pools: Jockey Challenge and Trainer Challenge.
+
+Each guide shows how the bet wins, how the paper ticket is filled, the current
+model stance, a conservative recommendation for the selected race, and a
+post-race review state once official results are refreshed. High-volatility
+ordering pools remain paper-test or pass by default until the model has a
+separate ordering/backtest edge.
+
+On non-race days, or after the current race day's results have fully settled,
+the final-plan panel shows a no-local-race / race-day-closed state instead of
 reusing the last settled race's `NO BET` decision. The refresh button still
 checks the latest published data, but it will not generate a bet without a
 current HKJC local race card.

@@ -6,6 +6,13 @@ import {
   summarizeUserPicks,
 } from "./self-test.js";
 import { buildStakingStrategy } from "./bet-strategy.js";
+import {
+  buildPoolGuideRecommendation,
+  getBetTypeGuide,
+  getBetTypeGuides,
+  settlePoolGuideRecommendation,
+  settleStrategyBetLine,
+} from "./betting-products.js";
 
 const DATA_URL = "./data/dashboard.json";
 const appRoot = document.querySelector("#hkjc-app");
@@ -23,6 +30,7 @@ const uiState = {
   refreshedAt: null,
   userPicks: [],
   lockedForecasts: [],
+  selectedPoolType: "PLACE",
 };
 
 init();
@@ -154,6 +162,7 @@ function render() {
         <aside class="right-stack">
           ${renderFinalBetPlanPanel(selectedEntry, snapshot, todayStatus)}
           ${renderStakingStrategyPanel(selectedEntry)}
+          ${renderBetTypeGuidePanel(selectedEntry)}
           ${renderSelfTestPanel(selectedEntry, entries)}
           ${renderRecommendationPanel(selectedEntry.forecast.recommendation)}
           ${renderSettlementPanel(selectedEntry.settlement)}
@@ -371,20 +380,25 @@ function renderFinalBetPlanPanel(entry, snapshot, todayStatus) {
 function renderNoLocalRacePlanPanel(snapshot, todayStatus) {
   const nextMeeting = todayStatus.nextMeeting ? formatMeeting(todayStatus.nextMeeting) : "待官方赛程更新";
   const latestRace = todayStatus.latestRaceDate ? `${todayStatus.latestRaceDate} ${todayStatus.latestRacecourse ?? ""}`.trim() : "-";
+  const completedToday = todayStatus.latestRaceDate === todayStatus.today;
+  const title = completedToday ? "今天赛事已结算" : "今天不下注";
+  const headline = completedToday
+    ? `${escapeHtml(todayStatus.today)} 的香港本地赛果已进入复盘；现在不再生成新投注。下一场本地赛事：${escapeHtml(nextMeeting)}。`
+    : `${escapeHtml(todayStatus.today)} 没有可执行的香港本地赛马。下一场本地赛事：${escapeHtml(nextMeeting)}。`;
 
   return `
     <section class="panel bet-plan-panel">
       <div class="panel-header">
         <div>
           <h3>最终下注方案</h3>
-          <p>今天没有香港本地赛马卡，刷新不会生成下注。</p>
+          <p>${completedToday ? "赛果已出，进入复盘模式。" : "今天没有香港本地赛马卡，刷新不会生成下注。"}</p>
         </div>
         ${renderRefreshButton("刷新最新赛程/方案", "panel")}
       </div>
       <div class="bet-plan-body">
-        <span class="plan-badge is-idle">NO LOCAL RACE / 今日无本地赛</span>
-        <h2 class="plan-title">今天不下注</h2>
-        <p class="plan-headline">刷新成功，但 ${escapeHtml(todayStatus.today)} 没有可执行的香港本地赛马。下一场本地赛事：${escapeHtml(nextMeeting)}。</p>
+        <span class="plan-badge is-idle">${completedToday ? "RACE DAY CLOSED / 今日已结算" : "NO LOCAL RACE / 今日无本地赛"}</span>
+        <h2 class="plan-title">${escapeHtml(title)}</h2>
+        <p class="plan-headline">${headline}</p>
         <div class="plan-grid">
           <div>
             <span>今日日期</span>
@@ -498,7 +512,7 @@ function renderStakingStrategyPanel(entry) {
         <p class="strategy-rationale">${escapeHtml(strategy.rationale)}</p>
         ${strategy.bets.length ? `
           <div class="bet-line-list">
-            ${strategy.bets.map(renderStakeBetLine).join("")}
+            ${strategy.bets.map((bet) => renderStakeBetLine(entry, bet)).join("")}
           </div>
         ` : '<p class="guardrail">这场没有达到最低策略线，建议 PASS。</p>'}
         <div class="strategy-summary-grid">
@@ -535,13 +549,15 @@ function renderStakingStrategyPanel(entry) {
   `;
 }
 
-function renderStakeBetLine(bet) {
+function renderStakeBetLine(entry, bet) {
+  const review = settleStrategyBetLine(entry, bet);
   return `
     <div class="bet-line">
       <div>
         <span>${escapeHtml(bet.label)}</span>
         <strong>${escapeHtml(formatBetHorses(bet.horses))}</strong>
         <p>${escapeHtml(bet.rationale)}</p>
+        <small class="bet-review ${reviewStatusClass(review.status)}">${escapeHtml(review.label)} · ${escapeHtml(review.detail)}</small>
       </div>
       <em>${formatHkd(bet.amount)}</em>
     </div>
@@ -554,6 +570,95 @@ function formatBetHorses(horses) {
     .join(" + ");
 }
 
+function renderBetTypeGuidePanel(entry) {
+  const guides = getBetTypeGuides();
+  const selectedGuide = getBetTypeGuide(uiState.selectedPoolType);
+  const recommendation = buildPoolGuideRecommendation(entry, selectedGuide.type);
+  const review = settlePoolGuideRecommendation(entry, recommendation);
+  const categories = [...new Set(guides.map((guide) => guide.category))];
+
+  return `
+    <section class="panel bet-type-guide-panel">
+      <div class="panel-header">
+        <div>
+          <h3>其他玩法 / 玩法库</h3>
+          <p>把你拍的票面拆开：怎么玩、该不该碰、赛后怎么复盘。</p>
+        </div>
+      </div>
+      <div class="pool-guide-body">
+        <div class="pool-chip-groups">
+          ${categories.map((category) => `
+            <div class="pool-chip-group">
+              <span>${escapeHtml(category)}</span>
+              <div class="pool-chip-grid">
+                ${guides.filter((guide) => guide.category === category).map((guide) => `
+                  <button class="pool-chip ${guide.type === selectedGuide.type ? "is-active" : ""}" data-pool-guide-type="${escapeHtml(guide.type)}">
+                    ${escapeHtml(guide.label)}
+                  </button>
+                `).join("")}
+              </div>
+            </div>
+          `).join("")}
+        </div>
+
+        <div class="pool-guide-card">
+          <div class="pool-guide-title">
+            <span class="pool-status ${poolStatusClass(recommendation.status)}">${escapeHtml(recommendation.badge)}</span>
+            <h2>${escapeHtml(selectedGuide.label)} <small>${escapeHtml(selectedGuide.englishName)}</small></h2>
+            <p>${escapeHtml(selectedGuide.ticketColor)} · 最低注码 ${escapeHtml(selectedGuide.minUnit)} · 风险 ${escapeHtml(selectedGuide.risk)} · 难度 ${escapeHtml(difficultyStars(selectedGuide.difficulty))}</p>
+          </div>
+          <div class="pool-info-grid">
+            ${renderPoolInfo("怎么玩中", selectedGuide.howToWin)}
+            ${renderPoolInfo("怎么填票", selectedGuide.howToFill)}
+            ${renderPoolInfo("模型建议", selectedGuide.modelUse)}
+            ${renderPoolInfo("彩池派彩率", selectedGuide.payoutPool)}
+          </div>
+          <div class="pool-advice-card">
+            <span>本场建议</span>
+            <strong>${escapeHtml(recommendation.ticketText)}</strong>
+            <p>${escapeHtml(recommendation.rationale)}</p>
+            <div class="pool-selection-row">
+              <span>候选</span>
+              <em>${escapeHtml(formatPoolSelections(recommendation.selections))}</em>
+            </div>
+            <div class="pool-selection-row">
+              <span>建议金额</span>
+              <em>${formatHkd(recommendation.stake)}</em>
+            </div>
+          </div>
+          <div class="pool-review-card ${reviewStatusClass(review.status)}">
+            <span>赛后复盘</span>
+            <strong>${escapeHtml(review.label)}</strong>
+            <p>${escapeHtml(review.detail)}</p>
+          </div>
+          <p class="fine-print">${escapeHtml(selectedGuide.caution)} 高难度彩池先纸上测试；未进入长期复盘前不要重注。</p>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function renderPoolInfo(label, value) {
+  return `
+    <div>
+      <span>${escapeHtml(label)}</span>
+      <strong>${escapeHtml(value)}</strong>
+    </div>
+  `;
+}
+
+function formatPoolSelections(selections) {
+  if (!selections?.length) return "—";
+  return selections
+    .map((horse) => `${horse.horseNo ? `No.${horse.horseNo} ` : ""}${horse.horseName ?? "-"}`)
+    .join(" + ");
+}
+
+function difficultyStars(value) {
+  const count = Math.max(1, Math.min(5, Number(value) || 1));
+  return `${"★".repeat(count)}${"☆".repeat(5 - count)}`;
+}
+
 function localRaceDayStatus(snapshot) {
   const today = hkDateString();
   const nextMeetings = snapshot.nextLocalMeetings ?? [];
@@ -564,7 +669,7 @@ function localRaceDayStatus(snapshot) {
   const latestRaceDate = latestForecast?.date ?? latestEntry?.date ?? null;
   const latestRacecourse = latestForecast?.racecourse ?? latestEntry?.racecourse ?? null;
   const upcomingCount = snapshot.upcomingEntries?.length ?? 0;
-  const noLocalRaceToday = upcomingCount === 0 && !meetingToday && Boolean(latestRaceDate) && latestRaceDate < today;
+  const noLocalRaceToday = upcomingCount === 0 && !meetingToday && Boolean(latestRaceDate) && latestRaceDate <= today;
 
   return {
     today,
@@ -1243,6 +1348,13 @@ function bindEvents() {
       clearUserRecords();
     });
   });
+
+  document.querySelectorAll("[data-pool-guide-type]").forEach((button) => {
+    button.addEventListener("click", () => {
+      uiState.selectedPoolType = button.dataset.poolGuideType;
+      render();
+    });
+  });
 }
 
 function renderMissingData(error) {
@@ -1335,6 +1447,22 @@ function fixtureWindowLabel(snapshot) {
 function profitClass(value) {
   if (!Number.isFinite(value) || value === 0) return "";
   return value > 0 ? "profit-positive" : "profit-negative";
+}
+
+function poolStatusClass(status) {
+  if (status === "PLAY") return "is-play";
+  if (status === "SMALL") return "is-small";
+  if (status === "PAPER") return "is-paper";
+  if (status === "PASS") return "is-pass";
+  return "";
+}
+
+function reviewStatusClass(status) {
+  if (status === "HIT") return "is-hit";
+  if (status === "MISS") return "is-miss";
+  if (status === "OPEN") return "is-open";
+  if (status === "NOT_REVIEWED") return "is-muted";
+  return "";
 }
 
 function escapeHtml(value) {
