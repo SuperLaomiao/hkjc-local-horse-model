@@ -1,9 +1,10 @@
-const CACHE_NAME = "hkjc-model-v5";
+const CACHE_NAME = "hkjc-model-v6";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./styles.css",
   "./app.js",
+  "./adaptive-staking.js",
   "./bet-strategy.js",
   "./betting-products.js",
   "./self-test.js",

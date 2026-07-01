@@ -6,6 +6,7 @@ import {
   summarizeUserPicks,
 } from "./self-test.js";
 import { buildStakingStrategy } from "./bet-strategy.js";
+import { buildAdaptiveRacePlan } from "./adaptive-staking.js";
 import {
   buildPoolGuideRecommendation,
   getBetTypeGuide,
@@ -162,6 +163,7 @@ function render() {
         <aside class="right-stack">
           ${renderFinalBetPlanPanel(selectedEntry, snapshot, todayStatus)}
           ${renderStakingStrategyPanel(selectedEntry)}
+          ${renderAdaptiveStakingPanel(entries, selectedEntry)}
           ${renderBetTypeGuidePanel(selectedEntry)}
           ${renderSelfTestPanel(selectedEntry, entries)}
           ${renderRecommendationPanel(selectedEntry.forecast.recommendation)}
@@ -562,6 +564,78 @@ function renderStakeBetLine(entry, bet) {
       <em>${formatHkd(bet.amount)}</em>
     </div>
   `;
+}
+
+function renderAdaptiveStakingPanel(entries, selectedEntry) {
+  const plan = buildAdaptiveRacePlan(entries, selectedEntry);
+  const selectedIndex = plan.rows.findIndex((row) => row.raceId === selectedEntry.raceId);
+  return `
+    <section class="panel adaptive-strategy-panel">
+      <div class="panel-header">
+        <div>
+          <h3>动态投注路线</h3>
+          <p>按上一场命中/未中，自动保护利润、冷却或停手。</p>
+        </div>
+        <span class="strategy-budget">${formatHkd(plan.summary.totalStake)}</span>
+      </div>
+      <div class="adaptive-body">
+        <div class="adaptive-summary-grid">
+          <div>
+            <span>本日执行</span>
+            <strong>${plan.summary.executedRaces}/${plan.summary.races}</strong>
+          </div>
+          <div>
+            <span>路线命中</span>
+            <strong>${plan.summary.hitRaces}/${plan.summary.executedRaces || 0}</strong>
+          </div>
+          <div>
+            <span>跳过</span>
+            <strong>${plan.summary.skippedRaces}</strong>
+          </div>
+          <div>
+            <span>待赛</span>
+            <strong>${plan.summary.openRaces}</strong>
+          </div>
+        </div>
+        <div class="adaptive-timeline">
+          ${plan.rows.map((row, index) => renderAdaptiveRaceRow(row, index === selectedIndex)).join("")}
+        </div>
+        <div class="plan-rules">
+          <strong>动态规则</strong>
+          <ul>
+            ${plan.rules.map((rule) => `<li>${escapeHtml(rule)}</li>`).join("")}
+          </ul>
+        </div>
+        <p class="fine-print">${escapeHtml(plan.disclaimer)}</p>
+      </div>
+    </section>
+  `;
+}
+
+function renderAdaptiveRaceRow(row, isSelected) {
+  const horses = row.bets.length ? formatAdaptiveBets(row.bets) : "不下注";
+  return `
+    <div class="adaptive-race-row ${isSelected ? "is-selected" : ""}">
+      <div class="adaptive-race-main">
+        <span class="adaptive-race-no">R${row.raceNo}</span>
+        <div>
+          <strong>${escapeHtml(horses)}</strong>
+          <p>${escapeHtml(row.decision.reason)}</p>
+        </div>
+      </div>
+      <div class="adaptive-race-side">
+        <span class="adaptive-badge ${adaptiveDecisionClass(row.decision.state)}">${escapeHtml(row.decision.badge)}</span>
+        <em>${formatHkd(row.totalStake)}</em>
+        <small class="bet-review ${reviewStatusClass(row.outcome.status)}">${escapeHtml(row.outcome.label)}</small>
+      </div>
+    </div>
+  `;
+}
+
+function formatAdaptiveBets(bets) {
+  return bets
+    .map((bet) => `${bet.label} ${formatBetHorses(bet.horses)} ${formatHkd(bet.amount)}`)
+    .join("；");
 }
 
 function formatBetHorses(horses) {
@@ -1462,6 +1536,14 @@ function reviewStatusClass(status) {
   if (status === "MISS") return "is-miss";
   if (status === "OPEN") return "is-open";
   if (status === "NOT_REVIEWED") return "is-muted";
+  return "";
+}
+
+function adaptiveDecisionClass(state) {
+  if (state === "OPENING" || state === "NORMAL" || state === "PRE_RACE") return "is-play";
+  if (state === "PROTECT") return "is-protect";
+  if (state === "COOLDOWN") return "is-cooldown";
+  if (state === "STOP" || state === "PASS") return "is-pass";
   return "";
 }
 

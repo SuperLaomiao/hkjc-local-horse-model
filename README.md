@@ -19,6 +19,8 @@ https://superlaomiao.github.io/hkjc-local-horse-model/
 - Browser-local self-test mode for your own paper picks
 - Forecast lock records for comparing pre-race snapshots with later results
 - Conservative HK$10-100 staking strategy panel
+- Adaptive race-by-race route that recalculates later stakes after each
+  settled hit, miss, or open race
 - Betting-products guide for Win / Place / Quinella / Quinella Place,
   Forecast, Trio, Tierce, First 4, Quartet, multi-leg tickets, and
   Jockey/Trainer Challenge slips
@@ -109,6 +111,24 @@ The first version prioritizes Place, Quinella Place, and small Win stakes. It
 does not recommend Tierce, First 4, or Quartet because the current model has not
 shown enough ordering accuracy. Final real-money use still requires checking
 official live odds, scratchings, going, and jockey changes before the race.
+
+## Adaptive Race Route
+
+The "动态投注路线" panel answers the practical question: after Race 1 wins or
+loses, what should happen to Race 2, Race 3, and later races?
+
+- First executed race hit: protect the day. Weak races become PASS; medium or
+  stronger races are reduced to a low-stake Place-only line.
+- First executed race miss: do not chase. Only strong or very-strong signals
+  can continue, and they are capped at low-stake Place-only exposure.
+- Two executed misses in a row: stop the rest of the meeting.
+- Upcoming/open races do not affect the route until official results are
+  refreshed.
+
+This panel is a bankroll-discipline layer on top of the model. It does not
+claim that Race 1 is inherently easier than later races; it simply prevents a
+good start from turning into over-betting, and prevents an early loss from
+turning into chasing.
 
 ## Betting Products Guide
 
