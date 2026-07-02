@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-02T03:34:43.060Z",
+  "generatedAt": "2026-07-02T04:58:13.666Z",
   "scope": "HKJC local races only",
   "summary": {
     "racesSettled": 126,
@@ -130,8 +130,8 @@
         "actualWeight": 127,
         "draw": 3,
         "winOdds": 2.5,
-        "probability": 0.11248020458975869,
-        "fairOdds": 8.890453245948754,
+        "probability": 0.1124802045897587,
+        "fairOdds": 8.890453245948752,
         "edge": -0.7187994885256033,
         "expectedReturn": 0.28120051147439673,
         "score": 0.04632648064631982
@@ -3414,8 +3414,38 @@
       "cumulativeRoi": -0.2934065934065934
     }
   ],
-  "nextLocalMeetings": [],
-  "fixtureWindow": null,
+  "nextLocalMeetings": [
+    {
+      "date": "2026-07-04",
+      "racecourse": "ST",
+      "raceCount": 11,
+      "source": "https://racing.hkjc.com/en-us/local/information/fixture?calyear=2026&calmonth=07"
+    },
+    {
+      "date": "2026-07-08",
+      "racecourse": "HV",
+      "raceCount": 9,
+      "source": "https://racing.hkjc.com/en-us/local/information/fixture?calyear=2026&calmonth=07"
+    },
+    {
+      "date": "2026-07-12",
+      "racecourse": "ST",
+      "raceCount": 11,
+      "source": "https://racing.hkjc.com/en-us/local/information/fixture?calyear=2026&calmonth=07"
+    },
+    {
+      "date": "2026-07-15",
+      "racecourse": "HV",
+      "raceCount": 9,
+      "source": "https://racing.hkjc.com/en-us/local/information/fixture?calyear=2026&calmonth=07"
+    }
+  ],
+  "fixtureWindow": {
+    "from": "2026-06-18",
+    "to": "2026-07-23",
+    "today": "2026-07-02",
+    "source": "HKJC local fixture"
+  },
   "performance": {
     "overall": {
       "races": 126,
@@ -8557,11 +8587,11 @@
             "actualWeight": 128,
             "draw": 8,
             "winOdds": 3.2,
-            "probability": 0.1404235315827262,
-            "fairOdds": 7.121313562826049,
+            "probability": 0.14042353158272616,
+            "fairOdds": 7.1213135628260495,
             "edge": -0.5506446989352762,
-            "expectedReturn": 0.4493553010647238,
-            "score": 0.2640629199282229
+            "expectedReturn": 0.44935530106472377,
+            "score": 0.26406291992822284
           },
           {
             "horseId": "HK_2024_K275",
@@ -11231,8 +11261,8 @@
             "actualWeight": 127,
             "draw": 3,
             "winOdds": 2.5,
-            "probability": 0.11248020458975869,
-            "fairOdds": 8.890453245948754,
+            "probability": 0.1124802045897587,
+            "fairOdds": 8.890453245948752,
             "edge": -0.7187994885256033,
             "expectedReturn": 0.28120051147439673,
             "score": 0.04632648064631982
