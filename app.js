@@ -7,7 +7,7 @@ import {
 } from "./self-test.js";
 import { buildStakingStrategy } from "./bet-strategy.js";
 import { buildAdaptiveRacePlan } from "./adaptive-staking.js";
-import { formatRaceContext, getDashboardLayoutSections } from "./dashboard-layout.js";
+import { buildBettingAvailability, formatRaceContext, getDashboardLayoutSections } from "./dashboard-layout.js";
 import { buildStructuredBetPortfolio } from "./multi-play-portfolio.js";
 import { buildMeetingCountdown } from "./meeting-countdown.js";
 import {
@@ -143,6 +143,7 @@ function render() {
         </div>
       </header>
 
+      ${renderBettingAvailabilityBanner(selectedEntry, todayStatus)}
       ${renderMeetingForecastPanel(snapshot, todayStatus)}
 
       <section class="dashboard simplified-dashboard">
@@ -189,6 +190,21 @@ function renderRaceButton(entry, selectedRaceId) {
       </span>
         <span class="race-profit ${profitClass(profit)}">${entry.settlement ? formatSignedMoney(profit) : "待赛"}</span>
     </button>
+  `;
+}
+
+function renderBettingAvailabilityBanner(entry, todayStatus) {
+  const status = buildBettingAvailability({ entry, today: todayStatus.today });
+  const statusClass = status.canBetNow ? "is-open" : "is-closed";
+  return `
+    <section class="bet-availability ${statusClass}" aria-label="投注开放状态">
+      <div>
+        <span>${escapeHtml(status.label)}</span>
+        <strong>${escapeHtml(status.headline)}</strong>
+        <p>${escapeHtml(status.detail)}</p>
+      </div>
+      <em>${status.canBetNow ? "BETTING OPEN" : "BETTING CLOSED"}</em>
+    </section>
   `;
 }
 

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import {
+  buildBettingAvailability,
   formatRaceContext,
   getDashboardLayoutSections,
   getToolTab,
@@ -43,5 +44,41 @@ describe('dashboard layout sections', () => {
       formatRaceContext({ date: '2026-07-08', racecourse: 'HV', raceNo: 6 }),
       '2026-07-08 跑马地 R6',
     );
+  });
+
+  it('marks betting closed before race day', () => {
+    const status = buildBettingAvailability({
+      entry: { date: '2026-07-04', racecourse: 'ST', raceNo: 1 },
+      today: '2026-07-02',
+    });
+
+    assert.equal(status.canBetNow, false);
+    assert.equal(status.label, '现在不能押');
+    assert.equal(status.tone, 'closed');
+    assert.match(status.detail, /只能等赛马当天/);
+    assert.match(status.detail, /2026-07-04/);
+  });
+
+  it('marks betting open on the same race day before settlement', () => {
+    const status = buildBettingAvailability({
+      entry: { date: '2026-07-04', racecourse: 'ST', raceNo: 1, settlement: null },
+      today: '2026-07-04',
+    });
+
+    assert.equal(status.canBetNow, true);
+    assert.equal(status.label, '今天现在可以押');
+    assert.equal(status.tone, 'open');
+    assert.match(status.detail, /2026-07-04 沙田 R1/);
+  });
+
+  it('keeps a settled race closed even on race day', () => {
+    const status = buildBettingAvailability({
+      entry: { date: '2026-07-04', racecourse: 'ST', raceNo: 1, settlement: { resultLabel: 'MISS' } },
+      today: '2026-07-04',
+    });
+
+    assert.equal(status.canBetNow, false);
+    assert.equal(status.label, '现在不能押');
+    assert.match(status.detail, /已经结算/);
   });
 });

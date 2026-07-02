@@ -67,6 +67,49 @@ export function formatRaceContext(entry = {}) {
   return `${date} ${course} ${raceNo}`;
 }
 
+export function buildBettingAvailability({ entry = {}, today } = {}) {
+  const context = formatRaceContext(entry);
+  const raceDate = entry.date ?? null;
+
+  if (!raceDate || !today) {
+    return {
+      canBetNow: false,
+      label: '现在不能押',
+      tone: 'closed',
+      headline: '现在不能押',
+      detail: '还没有确认今日香港本地赛程；等官方赛程和赛马当天再检查。',
+    };
+  }
+
+  if (entry.settlement) {
+    return {
+      canBetNow: false,
+      label: '现在不能押',
+      tone: 'closed',
+      headline: `现在不能押 · ${context}`,
+      detail: `${context} 已经结算，不能再下注；请看复盘结果。`,
+    };
+  }
+
+  if (raceDate !== today) {
+    return {
+      canBetNow: false,
+      label: '现在不能押',
+      tone: 'closed',
+      headline: `现在不能押 · ${context}`,
+      detail: `这场不是今天的投注日，只能等赛马当天（${raceDate}）再押。今天可以先看候选和风险，不要去窗口下注。`,
+    };
+  }
+
+  return {
+    canBetNow: true,
+    label: '今天现在可以押',
+    tone: 'open',
+    headline: `今天现在可以押 · ${context}`,
+    detail: `${context} 是今天的赛事；仍然按 T-30 复核、T-10~T-5 执行，赔率或临场变化不达标就 PASS。`,
+  };
+}
+
 function racecourseName(code) {
   if (code === 'ST') return '沙田';
   if (code === 'HV') return '跑马地';

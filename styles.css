@@ -265,6 +265,75 @@ button:disabled {
   line-height: 1.35;
 }
 
+.bet-availability {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  margin: 14px 14px 0;
+  padding: 14px 16px;
+  border: 1px solid #f4ce80;
+  border-left: 6px solid var(--amber);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, #fff8e7 0%, #ffffff 100%);
+  box-shadow: var(--shadow);
+}
+
+.bet-availability.is-open {
+  border-color: #9ed0c9;
+  border-left-color: var(--teal);
+  background: linear-gradient(135deg, #e9faf6 0%, #ffffff 100%);
+}
+
+.bet-availability span {
+  display: inline-block;
+  margin-bottom: 6px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--amber-soft);
+  color: var(--amber);
+  font-size: 0.74rem;
+  font-weight: 950;
+}
+
+.bet-availability.is-open span {
+  background: var(--teal-soft);
+  color: var(--teal);
+}
+
+.bet-availability strong {
+  display: block;
+  font-size: 1.08rem;
+  line-height: 1.25;
+}
+
+.bet-availability p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.bet-availability em {
+  display: inline-grid;
+  place-items: center;
+  min-width: 138px;
+  min-height: 44px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: #fff1d0;
+  color: var(--amber);
+  font-size: 0.78rem;
+  font-style: normal;
+  font-weight: 950;
+  letter-spacing: 0.03em;
+}
+
+.bet-availability.is-open em {
+  background: var(--teal-soft);
+  color: var(--teal);
+}
+
 .panel {
   min-width: 0;
   background: var(--surface);
@@ -1772,6 +1841,18 @@ tbody tr:hover {
     margin: 10px 10px 0;
     padding: 14px;
     border-left-width: 4px;
+  }
+
+  .bet-availability {
+    grid-template-columns: 1fr;
+    margin: 10px 10px 0;
+    padding: 13px;
+    border-left-width: 4px;
+  }
+
+  .bet-availability em {
+    justify-self: stretch;
+    min-width: 0;
   }
 
   .meeting-forecast h2 {
