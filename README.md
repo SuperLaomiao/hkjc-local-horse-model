@@ -24,6 +24,8 @@ https://superlaomiao.github.io/hkjc-local-horse-model/
 - Multi-play portfolio optimizer that estimates Win, Place, Quinella Place,
   Quinella, and paper exotic probabilities before allocating a structured
   stake
+- Hour/minute race countdown with a T-30 review marker once HKJC race-card
+  start times are available
 - Betting-products guide for Win / Place / Quinella / Quinella Place,
   Forecast, Trio, Tierce, First 4, Quartet, multi-leg tickets, and
   Jockey/Trainer Challenge slips
@@ -176,8 +178,9 @@ checks the latest published data, but it will not generate a bet without a
 current HKJC local race card.
 
 The top of the app has a prominent meeting forecast band. It shows the next HKJC
-local meeting, days remaining, expected race count, race-card status, and the
-recommended times to check again before the meeting and before each race.
+local meeting, race-card status, next timed race, hours/minutes remaining, and
+the T-30 review marker. If HKJC has not published race-card start times yet, the
+panel deliberately says the time is pending instead of guessing a precise hour.
 
 ## Final Betting Plan
 

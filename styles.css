@@ -165,7 +165,7 @@ button:disabled {
 
 .forecast-meta-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -1660,10 +1660,6 @@ tbody tr:hover {
 
   .forecast-meta-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .forecast-meta-grid div:last-child {
-    grid-column: 1 / -1;
   }
 
   .forecast-advice {

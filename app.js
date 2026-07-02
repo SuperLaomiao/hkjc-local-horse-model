@@ -8,6 +8,7 @@ import {
 import { buildStakingStrategy } from "./bet-strategy.js";
 import { buildAdaptiveRacePlan } from "./adaptive-staking.js";
 import { buildStructuredBetPortfolio } from "./multi-play-portfolio.js";
+import { buildMeetingCountdown } from "./meeting-countdown.js";
 import {
   buildPoolGuideRecommendation,
   getBetTypeGuide,
@@ -894,10 +895,11 @@ function renderMeetingForecastPanel(snapshot, todayStatus) {
     `;
   }
 
-  const raceCardReady = upcoming.length > 0;
-  const daysText = formatDaysUntil(meeting.date, todayStatus.today);
+  const meetingUpcoming = upcoming.filter((entry) => entry.date === meeting.date && entry.racecourse === meeting.racecourse);
+  const raceCardReady = meetingUpcoming.length > 0;
+  const countdown = buildMeetingCountdown({ meeting, upcomingEntries: meetingUpcoming });
   const raceCount = Number.isFinite(Number(meeting.raceCount)) ? `${Number(meeting.raceCount)} 场` : "场次待公布";
-  const advice = buildMeetingAdvice(meeting, raceCardReady, upcoming.length);
+  const advice = buildMeetingAdvice(meeting, raceCardReady, meetingUpcoming.length, countdown);
   const followingMeetings = (snapshot.nextLocalMeetings ?? [])
     .filter((item) => item.date !== meeting.date || item.racecourse !== meeting.racecourse)
     .slice(0, 3);
@@ -911,21 +913,25 @@ function renderMeetingForecastPanel(snapshot, todayStatus) {
         <div class="forecast-meta-grid">
           <div>
             <span>距离现在</span>
-            <strong>${escapeHtml(daysText)}</strong>
+            <strong>${escapeHtml(countdown.distanceText)}</strong>
           </div>
           <div>
-            <span>预计场次</span>
-            <strong>${escapeHtml(raceCount)}</strong>
+            <span>下一跑</span>
+            <strong>${escapeHtml(countdown.nextRaceText)}</strong>
           </div>
           <div>
-            <span>Race Card</span>
-            <strong>${raceCardReady ? "已发布" : "未发布"}</strong>
+            <span>T-30 提醒</span>
+            <strong>${escapeHtml(countdown.t30Text)}</strong>
+          </div>
+          <div>
+            <span>场次 / 马表</span>
+            <strong>${escapeHtml(raceCount)} · ${raceCardReady ? "已发布" : "未发布"}</strong>
           </div>
         </div>
       </div>
       <div class="forecast-actions">
         ${renderRefreshButton("刷新最新赛程", "panel")}
-        <p>${escapeHtml(raceCardReady ? `${upcoming.length} 场赛前预测已准备，先看候选；最终仍等临场赔率。` : "目前没有今日赛事；等官方 Race Card 发布后才会生成赛前预测。")}</p>
+        <p>${escapeHtml(raceCardReady ? `${meetingUpcoming.length} 场赛前预测已准备。${countdown.detail}` : `${countdown.detail} 等官方 Race Card 发布后才会生成赛前预测。`)}</p>
       </div>
       <div class="forecast-advice" aria-label="建议查看时间">
         ${advice.map((item) => `
@@ -946,7 +952,7 @@ function renderMeetingForecastPanel(snapshot, todayStatus) {
   `;
 }
 
-function buildMeetingAdvice(meeting, raceCardReady, upcomingCount) {
+function buildMeetingAdvice(meeting, raceCardReady, upcomingCount, countdown) {
   if (raceCardReady) {
     return [
       {
@@ -955,14 +961,14 @@ function buildMeetingAdvice(meeting, raceCardReady, upcomingCount) {
         detail: "先看概率候选和风险，不要当作最终下注。",
       },
       {
-        label: "比赛日复核",
-        time: `${formatForecastDate(meeting.date)} 中午后`,
-        detail: "刷新退出马、场地和赔率变化。",
+        label: "T-30 复核",
+        time: countdown?.t30Text ?? "每场 T-30",
+        detail: "刷新赔率、退出马、场地和多玩法最低派彩线。",
       },
       {
         label: "最终方案",
-        time: "每场 T-15 / T-10~T-5",
-        detail: "T-15 复核，T-10 到 T-5 才看是否执行。",
+        time: "每场 T-10~T-5",
+        detail: "只在入场线仍成立时执行，不成立就 PASS。",
       },
     ];
   }
