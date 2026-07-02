@@ -7,6 +7,7 @@ import {
 } from "./self-test.js";
 import { buildStakingStrategy } from "./bet-strategy.js";
 import { buildAdaptiveRacePlan } from "./adaptive-staking.js";
+import { formatRaceContext, getDashboardLayoutSections } from "./dashboard-layout.js";
 import { buildStructuredBetPortfolio } from "./multi-play-portfolio.js";
 import { buildMeetingCountdown } from "./meeting-countdown.js";
 import {
@@ -34,6 +35,7 @@ const uiState = {
   userPicks: [],
   lockedForecasts: [],
   selectedPoolType: "PLACE",
+  selectedToolId: "multi-play-portfolio",
 };
 
 init();
@@ -118,6 +120,7 @@ function render() {
   const entries = getAllEntries(snapshot);
   const selectedEntry = entries.find((entry) => entry.raceId === uiState.selectedRaceId) ?? entries[0];
   const todayStatus = localRaceDayStatus(snapshot);
+  const layout = getDashboardLayoutSections({ selectedToolId: uiState.selectedToolId });
 
   if (!selectedEntry) {
     renderMissingData(new Error("No HKJC local races or race-card forecasts found in dashboard data."));
@@ -142,12 +145,12 @@ function render() {
 
       ${renderMeetingForecastPanel(snapshot, todayStatus)}
 
-      <section class="dashboard">
+      <section class="dashboard simplified-dashboard">
         <aside class="panel side-panel">
           <div class="panel-header">
             <div>
-              <h2>每周结果 Ledger</h2>
-              <p>选择一场，查看赛前预测、待赛或官方赛果。</p>
+              <h2>赛事列表</h2>
+              <p>点一场切换；右侧工具只显示当前打开的模块。</p>
             </div>
           </div>
           <div class="race-list">
@@ -157,22 +160,13 @@ function render() {
 
         <main class="main-stack">
           ${renderScoreStrip(snapshot.summary)}
+          ${renderFinalBetPlanPanel(selectedEntry, snapshot, todayStatus)}
+          ${renderStakingStrategyPanel(selectedEntry)}
           ${renderPredictionPanel(selectedEntry)}
-          ${renderComparisonPanel(snapshot.ledger)}
-          ${renderPerformancePanel(snapshot)}
         </main>
 
         <aside class="right-stack">
-          ${renderFinalBetPlanPanel(selectedEntry, snapshot, todayStatus)}
-          ${renderStakingStrategyPanel(selectedEntry)}
-          ${renderMultiPlayPortfolioPanel(selectedEntry)}
-          ${renderAdaptiveStakingPanel(entries, selectedEntry)}
-          ${renderBetTypeGuidePanel(selectedEntry)}
-          ${renderSelfTestPanel(selectedEntry, entries)}
-          ${renderRecommendationPanel(selectedEntry.forecast.recommendation)}
-          ${renderSettlementPanel(selectedEntry.settlement)}
-          ${renderChartPanel(snapshot.ledger)}
-          ${renderNotesPanel(snapshot.assumptions, snapshot)}
+          ${renderToolDrawerPanel(selectedEntry, entries, snapshot, layout)}
         </aside>
       </section>
       ${renderMobileActionBar(selectedEntry, todayStatus)}
@@ -183,7 +177,7 @@ function render() {
 }
 
 function renderRaceButton(entry, selectedRaceId) {
-  const label = `${entry.date} ${entry.racecourse} R${entry.raceNo}`;
+  const label = formatRaceContext(entry);
   const pick = entry.forecast.recommendation?.horseName ?? "PASS";
   const resultLabel = entry.settlement?.resultLabel ?? "UPCOMING";
   const profit = entry.settlement?.profit ?? 0;
@@ -302,6 +296,70 @@ function passesValueFilter(runner) {
   return Number(runner.edge) >= minEdge && Number(runner.probability) >= minProbability;
 }
 
+function renderToolDrawerPanel(entry, entries, snapshot, layout) {
+  const activeTool = layout.activeTool;
+  return `
+    <section class="tool-drawer" aria-label="玩法和复盘工具">
+      <div class="tool-drawer-header">
+        <span>${escapeHtml(activeTool.eyebrow)}</span>
+        <h2>${escapeHtml(activeTool.label)}</h2>
+        <p>${escapeHtml(activeTool.description)} 当前查看：${escapeHtml(formatRaceContext(entry))}。</p>
+      </div>
+      <div class="tool-tab-grid" role="tablist" aria-label="辅助工具切换">
+        ${layout.toolTabs.map((tab) => `
+          <button
+            class="tool-tab ${tab.isActive ? "is-active" : ""}"
+            role="tab"
+            aria-selected="${tab.isActive ? "true" : "false"}"
+            data-tool-tab-id="${escapeHtml(tab.id)}"
+          >
+            <span>${escapeHtml(tab.eyebrow)}</span>
+            <strong>${escapeHtml(tab.label)}</strong>
+          </button>
+        `).join("")}
+      </div>
+      <div class="tool-drawer-content">
+        ${renderToolDrawerContent(activeTool.id, entry, entries, snapshot)}
+      </div>
+    </section>
+  `;
+}
+
+function renderToolDrawerContent(toolId, entry, entries, snapshot) {
+  if (toolId === "pool-guide") {
+    return renderBetTypeGuidePanel(entry);
+  }
+
+  if (toolId === "adaptive-route") {
+    return renderAdaptiveStakingPanel(entries, entry);
+  }
+
+  if (toolId === "review") {
+    return `
+      <div class="tool-panel-stack">
+        ${renderSelfTestPanel(entry, entries)}
+        ${renderSettlementPanel(entry)}
+        ${renderComparisonPanel(snapshot.ledger)}
+      </div>
+    `;
+  }
+
+  if (toolId === "performance") {
+    return `
+      <div class="tool-panel-stack">
+        ${renderPerformancePanel(snapshot)}
+        ${renderChartPanel(snapshot.ledger)}
+      </div>
+    `;
+  }
+
+  if (toolId === "discipline") {
+    return renderNotesPanel(snapshot.assumptions, snapshot);
+  }
+
+  return renderMultiPlayPortfolioPanel(entry);
+}
+
 function renderFinalBetPlanPanel(entry, snapshot, todayStatus) {
   if (todayStatus.noLocalRaceToday) {
     return renderNoLocalRacePlanPanel(snapshot, todayStatus);
@@ -322,7 +380,7 @@ function renderFinalBetPlanPanel(entry, snapshot, todayStatus) {
       <div class="panel-header">
         <div>
           <h3>最终下注方案</h3>
-          <p>赛前 15 分钟复核，10-5 分钟才执行。</p>
+          <p>${escapeHtml(formatRaceContext(entry))} · 赛前 15 分钟复核，10-5 分钟才执行。</p>
         </div>
         <div class="panel-actions">
           ${renderLockForecastButton(entry)}
@@ -330,6 +388,7 @@ function renderFinalBetPlanPanel(entry, snapshot, todayStatus) {
         </div>
       </div>
       <div class="bet-plan-body">
+        <span class="race-context-pill">${escapeHtml(formatRaceContext(entry))}</span>
         <span class="plan-badge ${badgeClass}">${escapeHtml(resolvedPlan.label)}</span>
         <h2 class="plan-title">${escapeHtml(horseLabel)}</h2>
         <p class="plan-headline">${escapeHtml(resolvedPlan.headline)}</p>
@@ -507,11 +566,12 @@ function renderStakingStrategyPanel(entry) {
       <div class="panel-header">
         <div>
           <h3>建议投注策略</h3>
-          <p>每场 HK$10-100，优先位置 / 位置Q / 小额独赢。</p>
+          <p>${escapeHtml(formatRaceContext(entry))} · 每场 HK$10-100，优先位置 / 位置Q / 小额独赢。</p>
         </div>
         <span class="strategy-budget ${isPass ? "is-pass" : ""}">${formatHkd(strategy.budget)}</span>
       </div>
       <div class="staking-body">
+        <span class="race-context-pill">${escapeHtml(formatRaceContext(entry))}</span>
         <span class="strategy-mode ${isPass ? "is-pass" : ""}">${escapeHtml(strategy.label)}</span>
         <h2 class="strategy-title">${escapeHtml(strategy.primaryHorse?.horseName ?? "不下注")}</h2>
         <p class="strategy-rationale">${escapeHtml(strategy.rationale)}</p>
@@ -559,7 +619,7 @@ function renderStakeBetLine(entry, bet) {
   return `
     <div class="bet-line">
       <div>
-        <span>${escapeHtml(bet.label)}</span>
+        <span>${escapeHtml(formatRaceContext(entry))} · ${escapeHtml(bet.label)}</span>
         <strong>${escapeHtml(formatBetHorses(bet.horses))}</strong>
         <p>${escapeHtml(bet.rationale)}</p>
         <small class="bet-review ${reviewStatusClass(review.status)}">${escapeHtml(review.label)} · ${escapeHtml(review.detail)}</small>
@@ -576,11 +636,12 @@ function renderMultiPlayPortfolioPanel(entry) {
       <div class="panel-header">
         <div>
           <h3>多玩法组合优化</h3>
-          <p>把独赢、位置、位置Q、连赢拆开算概率和最低派彩，再组合下注。</p>
+          <p>${escapeHtml(formatRaceContext(entry))} · 把独赢、位置、位置Q、连赢拆开算概率和最低派彩，再组合下注。</p>
         </div>
         <span class="strategy-budget ${portfolio.totalStake === 0 ? "is-pass" : ""}">${formatHkd(portfolio.totalStake)}</span>
       </div>
       <div class="multi-play-body">
+        <span class="race-context-pill">${escapeHtml(formatRaceContext(entry))}</span>
         <span class="strategy-mode ${portfolio.mode === "PASS" ? "is-pass" : ""}">${escapeHtml(portfolio.label)}</span>
         <p class="strategy-rationale">${escapeHtml(portfolio.summary)}</p>
         ${portfolio.cashLines.length ? `
@@ -595,7 +656,7 @@ function renderMultiPlayPortfolioPanel(entry) {
           <div class="multi-play-section">
             <strong>观察 / 等派彩</strong>
             <div class="multi-play-mini-list">
-              ${portfolio.watchLines.map(renderPortfolioMiniLine).join("")}
+              ${portfolio.watchLines.map((line) => renderPortfolioMiniLine(entry, line)).join("")}
             </div>
           </div>
         ` : ""}
@@ -603,7 +664,7 @@ function renderMultiPlayPortfolioPanel(entry) {
           <div class="multi-play-section">
             <strong>纸上高波动线</strong>
             <div class="multi-play-mini-list">
-              ${portfolio.paperLines.slice(0, 5).map(renderPortfolioMiniLine).join("")}
+              ${portfolio.paperLines.slice(0, 5).map((line) => renderPortfolioMiniLine(entry, line)).join("")}
             </div>
           </div>
         ` : ""}
@@ -626,7 +687,7 @@ function renderPortfolioLine(entry, line) {
   return `
     <div class="bet-line portfolio-line">
       <div>
-        <span>${escapeHtml(line.label)} · ${escapeHtml(portfolioStatusText(line.status))}</span>
+        <span>${escapeHtml(formatRaceContext(entry))} · ${escapeHtml(line.label)} · ${escapeHtml(portfolioStatusText(line.status))}</span>
         <strong>${escapeHtml(formatPoolSelections(line.selections))}</strong>
         <p>${escapeHtml(line.rationale)}</p>
         <div class="portfolio-metrics">
@@ -641,10 +702,10 @@ function renderPortfolioLine(entry, line) {
   `;
 }
 
-function renderPortfolioMiniLine(line) {
+function renderPortfolioMiniLine(entry, line) {
   return `
     <div class="portfolio-mini-line">
-      <span>${escapeHtml(line.label)} · ${escapeHtml(formatPoolSelections(line.selections))}</span>
+      <span>${escapeHtml(formatRaceContext(entry))} · ${escapeHtml(line.label)} · ${escapeHtml(formatPoolSelections(line.selections))}</span>
       <strong>${formatPercent(line.estimatedProbability)} · 入场 ${formatHkd(line.requiredDividendPer10)}/10</strong>
     </div>
   `;
@@ -721,6 +782,7 @@ function renderAdaptiveRaceRow(row, isSelected) {
       <div class="adaptive-race-main">
         <span class="adaptive-race-no">R${row.raceNo}</span>
         <div>
+          <span class="adaptive-race-context">${escapeHtml(formatRaceContext(row))}</span>
           <strong>${escapeHtml(horses)}</strong>
           <p>${escapeHtml(row.decision.reason)}</p>
         </div>
@@ -758,10 +820,11 @@ function renderBetTypeGuidePanel(entry) {
       <div class="panel-header">
         <div>
           <h3>其他玩法 / 玩法库</h3>
-          <p>把你拍的票面拆开：怎么玩、该不该碰、赛后怎么复盘。</p>
+          <p>${escapeHtml(formatRaceContext(entry))} · 把你拍的票面拆开：怎么玩、该不该碰、赛后怎么复盘。</p>
         </div>
       </div>
       <div class="pool-guide-body">
+        <span class="race-context-pill">${escapeHtml(formatRaceContext(entry))}</span>
         <div class="pool-chip-groups">
           ${categories.map((category) => `
             <div class="pool-chip-group">
@@ -791,7 +854,7 @@ function renderBetTypeGuidePanel(entry) {
           </div>
           <div class="pool-advice-card">
             <span>本场建议</span>
-            <strong>${escapeHtml(recommendation.ticketText)}</strong>
+            <strong>${escapeHtml(formatRaceContext(entry))} · ${escapeHtml(recommendation.ticketText)}</strong>
             <p>${escapeHtml(recommendation.rationale)}</p>
             <div class="pool-selection-row">
               <span>候选</span>
@@ -1108,14 +1171,15 @@ function renderRecommendationPanel(recommendation) {
   `;
 }
 
-function renderSettlementPanel(settlement) {
+function renderSettlementPanel(entry) {
+  const settlement = entry?.settlement ?? null;
   if (!settlement) {
     return `
       <section class="panel">
         <div class="panel-header">
           <div>
             <h3>赛后复盘</h3>
-            <p>这场还没有官方结果。</p>
+            <p>${escapeHtml(formatRaceContext(entry))} · 这场还没有官方结果。</p>
           </div>
         </div>
         <div class="settlement-body">
@@ -1132,7 +1196,7 @@ function renderSettlementPanel(settlement) {
       <div class="panel-header">
         <div>
           <h3>赛后复盘</h3>
-          <p>官方结果出来后自动对账。</p>
+          <p>${escapeHtml(formatRaceContext(entry))} · 官方结果出来后自动对账。</p>
         </div>
       </div>
       <div class="settlement-body">
@@ -1334,12 +1398,12 @@ function renderSelfTestPanel(entry, entries) {
       <div class="panel-header">
         <div>
           <h3>我的测试台</h3>
-          <p>你自己的纸上选择存在这个浏览器里，不会影响模型。</p>
+          <p>${escapeHtml(formatRaceContext(entry))} · 你自己的纸上选择存在这个浏览器里，不会影响模型。</p>
         </div>
         ${uiState.userPicks.length ? '<button class="text-button" data-clear-user-picks>清空</button>' : ""}
       </div>
       <div class="self-test-current">
-        <span>本场我的选择</span>
+        <span>${escapeHtml(formatRaceContext(entry))} · 我的选择</span>
         <strong>${pick ? escapeHtml(pick.horseName) : "还没选"}</strong>
         <p>${pick ? userPickSettlementText(pickSettlement) : "在左边预测表点“我选这匹”，就会记录一张纸上单。"}</p>
       </div>
@@ -1542,6 +1606,13 @@ function bindEvents() {
   document.querySelectorAll("[data-pool-guide-type]").forEach((button) => {
     button.addEventListener("click", () => {
       uiState.selectedPoolType = button.dataset.poolGuideType;
+      render();
+    });
+  });
+
+  document.querySelectorAll("[data-tool-tab-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      uiState.selectedToolId = button.dataset.toolTabId;
       render();
     });
   });
