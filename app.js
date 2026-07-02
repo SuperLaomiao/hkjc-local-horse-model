@@ -7,7 +7,7 @@ import {
 } from "./self-test.js";
 import { buildStakingStrategy } from "./bet-strategy.js";
 import { buildAdaptiveRacePlan } from "./adaptive-staking.js";
-import { buildBettingAvailability, formatRaceContext, getDashboardLayoutSections } from "./dashboard-layout.js";
+import { buildBettingAvailability, formatRaceContext, getDashboardLayoutSections } from "./dashboard-layout.js?v=20260702-bet-availability";
 import { buildStructuredBetPortfolio } from "./multi-play-portfolio.js";
 import { buildMeetingCountdown } from "./meeting-countdown.js";
 import {
