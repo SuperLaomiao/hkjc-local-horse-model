@@ -21,6 +21,9 @@ https://superlaomiao.github.io/hkjc-local-horse-model/
 - Conservative HK$10-100 staking strategy panel
 - Adaptive race-by-race route that recalculates later stakes after each
   settled hit, miss, or open race
+- Multi-play portfolio optimizer that estimates Win, Place, Quinella Place,
+  Quinella, and paper exotic probabilities before allocating a structured
+  stake
 - Betting-products guide for Win / Place / Quinella / Quinella Place,
   Forecast, Trio, Tierce, First 4, Quartet, multi-leg tickets, and
   Jockey/Trainer Challenge slips
@@ -129,6 +132,26 @@ This panel is a bankroll-discipline layer on top of the model. It does not
 claim that Race 1 is inherently easier than later races; it simply prevents a
 good start from turning into over-betting, and prevents an early loss from
 turning into chasing.
+
+## Multi-Play Portfolio Optimizer
+
+The "多玩法组合优化" panel upgrades the app from one-horse recommendation to a
+structured bet portfolio. For each selected race it builds a probability board
+for:
+
+- Cash-eligible pools: Win, Place, Quinella Place, Quinella.
+- Paper / high-volatility pools: Forecast, Trio, Tierce, First 4, Quartet.
+
+The optimizer estimates each pool's hit probability from the model's ranked
+runner probabilities, converts that into a minimum acceptable dividend per
+HK$10 unit, and then allocates a conservative HK$10-100 portfolio. When actual
+market dividends are available, underpriced lines are rejected. When dividends
+are not available yet, the line is marked conditional and must be checked
+against the displayed entry price before any real bet.
+
+This is intentionally conservative: exact-order and four-horse exotic pools
+stay in paper mode until the model has a separate ordering edge and enough
+settled dividend data for real ROI analysis.
 
 ## Betting Products Guide
 

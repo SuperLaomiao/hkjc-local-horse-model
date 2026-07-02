@@ -788,11 +788,13 @@ tbody tr:hover {
 .performance-panel,
 .self-test-panel,
 .staking-strategy-panel,
+.multi-play-panel,
 .adaptive-strategy-panel {
   overflow: hidden;
 }
 
 .staking-body,
+.multi-play-body,
 .adaptive-body {
   padding: 14px;
 }
@@ -1052,6 +1054,100 @@ tbody tr:hover {
 .adaptive-badge.is-pass {
   background: var(--red-soft);
   color: var(--red);
+}
+
+.multi-play-panel {
+  border-color: #c4cfec;
+}
+
+.multi-play-body {
+  display: grid;
+  gap: 12px;
+}
+
+.multi-play-section {
+  display: grid;
+  gap: 8px;
+}
+
+.multi-play-section > strong {
+  color: var(--ink);
+  font-size: 0.78rem;
+}
+
+.portfolio-line .portfolio-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.portfolio-line .portfolio-metrics em {
+  min-width: 0;
+  padding: 5px 7px;
+  border-radius: 999px;
+  background: #edf2ff;
+  color: #3550a6;
+  font-size: 0.68rem;
+  font-style: normal;
+  font-weight: 850;
+}
+
+.multi-play-mini-list {
+  display: grid;
+  gap: 6px;
+}
+
+.portfolio-mini-line {
+  display: grid;
+  gap: 4px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.portfolio-mini-line span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 750;
+}
+
+.portfolio-mini-line strong {
+  font-size: 0.78rem;
+  line-height: 1.25;
+}
+
+.multi-play-board {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--line);
+}
+
+.multi-play-board div {
+  min-width: 0;
+  padding: 9px;
+  background: #fbfcff;
+}
+
+.multi-play-board span,
+.multi-play-board em {
+  display: block;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-style: normal;
+  line-height: 1.25;
+}
+
+.multi-play-board strong {
+  display: block;
+  margin: 4px 0;
+  color: #3550a6;
+  font-size: 0.9rem;
 }
 
 .bet-type-guide-panel {

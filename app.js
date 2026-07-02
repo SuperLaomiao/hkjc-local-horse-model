@@ -7,6 +7,7 @@ import {
 } from "./self-test.js";
 import { buildStakingStrategy } from "./bet-strategy.js";
 import { buildAdaptiveRacePlan } from "./adaptive-staking.js";
+import { buildStructuredBetPortfolio } from "./multi-play-portfolio.js";
 import {
   buildPoolGuideRecommendation,
   getBetTypeGuide,
@@ -163,6 +164,7 @@ function render() {
         <aside class="right-stack">
           ${renderFinalBetPlanPanel(selectedEntry, snapshot, todayStatus)}
           ${renderStakingStrategyPanel(selectedEntry)}
+          ${renderMultiPlayPortfolioPanel(selectedEntry)}
           ${renderAdaptiveStakingPanel(entries, selectedEntry)}
           ${renderBetTypeGuidePanel(selectedEntry)}
           ${renderSelfTestPanel(selectedEntry, entries)}
@@ -564,6 +566,105 @@ function renderStakeBetLine(entry, bet) {
       <em>${formatHkd(bet.amount)}</em>
     </div>
   `;
+}
+
+function renderMultiPlayPortfolioPanel(entry) {
+  const portfolio = buildStructuredBetPortfolio(entry);
+  return `
+    <section class="panel multi-play-panel">
+      <div class="panel-header">
+        <div>
+          <h3>多玩法组合优化</h3>
+          <p>把独赢、位置、位置Q、连赢拆开算概率和最低派彩，再组合下注。</p>
+        </div>
+        <span class="strategy-budget ${portfolio.totalStake === 0 ? "is-pass" : ""}">${formatHkd(portfolio.totalStake)}</span>
+      </div>
+      <div class="multi-play-body">
+        <span class="strategy-mode ${portfolio.mode === "PASS" ? "is-pass" : ""}">${escapeHtml(portfolio.label)}</span>
+        <p class="strategy-rationale">${escapeHtml(portfolio.summary)}</p>
+        ${portfolio.cashLines.length ? `
+          <div class="multi-play-section">
+            <strong>建议现金组合</strong>
+            <div class="bet-line-list">
+              ${portfolio.cashLines.map((line) => renderPortfolioLine(entry, line)).join("")}
+            </div>
+          </div>
+        ` : '<p class="guardrail">这场没有通过多玩法现金组合线，先 PASS / 观察。</p>'}
+        ${portfolio.watchLines.length ? `
+          <div class="multi-play-section">
+            <strong>观察 / 等派彩</strong>
+            <div class="multi-play-mini-list">
+              ${portfolio.watchLines.map(renderPortfolioMiniLine).join("")}
+            </div>
+          </div>
+        ` : ""}
+        ${portfolio.paperLines.length ? `
+          <div class="multi-play-section">
+            <strong>纸上高波动线</strong>
+            <div class="multi-play-mini-list">
+              ${portfolio.paperLines.slice(0, 5).map(renderPortfolioMiniLine).join("")}
+            </div>
+          </div>
+        ` : ""}
+        <div class="multi-play-board">
+          ${portfolio.board.candidates.slice(0, 6).map(renderProbabilityCandidate).join("")}
+        </div>
+        <p class="fine-print">${escapeHtml(portfolio.board.note)} ${escapeHtml(portfolio.disclaimer)}</p>
+      </div>
+    </section>
+  `;
+}
+
+function renderPortfolioLine(entry, line) {
+  const review = settleStrategyBetLine(entry, {
+    type: line.type,
+    label: line.label,
+    amount: line.stake,
+    horses: line.selections,
+  });
+  return `
+    <div class="bet-line portfolio-line">
+      <div>
+        <span>${escapeHtml(line.label)} · ${escapeHtml(portfolioStatusText(line.status))}</span>
+        <strong>${escapeHtml(formatPoolSelections(line.selections))}</strong>
+        <p>${escapeHtml(line.rationale)}</p>
+        <div class="portfolio-metrics">
+          <em>命中率 ${formatPercent(line.estimatedProbability)}</em>
+          <em>最低派彩 ${formatHkd(line.requiredDividendPer10)}/10</em>
+          <em>${line.marketDividendPer10 ? `当前 ${formatHkd(line.marketDividendPer10)}/10` : "等实时派彩"}</em>
+        </div>
+        <small class="bet-review ${reviewStatusClass(review.status)}">${escapeHtml(review.label)} · ${escapeHtml(review.detail)}</small>
+      </div>
+      <em>${formatHkd(line.stake)}</em>
+    </div>
+  `;
+}
+
+function renderPortfolioMiniLine(line) {
+  return `
+    <div class="portfolio-mini-line">
+      <span>${escapeHtml(line.label)} · ${escapeHtml(formatPoolSelections(line.selections))}</span>
+      <strong>${formatPercent(line.estimatedProbability)} · 入场 ${formatHkd(line.requiredDividendPer10)}/10</strong>
+    </div>
+  `;
+}
+
+function renderProbabilityCandidate(candidate) {
+  return `
+    <div>
+      <span>${escapeHtml(candidate.label)}</span>
+      <strong>${formatPercent(candidate.estimatedProbability)}</strong>
+      <em>${escapeHtml(formatPoolSelections(candidate.selections))}</em>
+    </div>
+  `;
+}
+
+function portfolioStatusText(status) {
+  if (status === "PLAY") return "可执行";
+  if (status === "CONDITIONAL") return "条件单";
+  if (status === "WATCH") return "等更好派彩";
+  if (status === "PAPER") return "纸上";
+  return status;
 }
 
 function renderAdaptiveStakingPanel(entries, selectedEntry) {
