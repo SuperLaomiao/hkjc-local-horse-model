@@ -454,6 +454,7 @@ export function settleForecast(forecast, actualRace) {
       placing: runner.placing ?? null,
       winOdds: runner.winOdds ?? null,
     })),
+    dividends: actualRace.dividends ?? null,
     marketFavourite: marketFavourite
       ? {
           horseId: marketFavourite.horseId,

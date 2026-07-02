@@ -36,9 +36,12 @@ export function buildStakingStrategyPerformance(entries) {
   const officialWinStake = sum(active, (settlement) => settlement.officialWinStake);
   const officialWinReturn = sum(active, (settlement) => settlement.officialWinReturn);
   const officialWinProfit = round(officialWinReturn - officialWinStake);
-  const unpricedPoolStake = round(totalStake - officialWinStake);
+  const knownStrategyReturn = sum(active, (settlement) => settlement.knownStrategyReturn);
+  const unpricedPoolStake = sum(active, (settlement) => settlement.unpricedPoolStake);
   const unpricedHits = sum(active, (settlement) => settlement.unpricedHits);
-  const breakEvenReturnNeededFromUnpricedPools = round(Math.max(0, totalStake - officialWinReturn));
+  const fullStrategyReturn = unpricedHits > 0 ? null : round(knownStrategyReturn);
+  const fullStrategyProfit = fullStrategyReturn === null ? null : round(fullStrategyReturn - totalStake);
+  const breakEvenReturnNeededFromUnpricedPools = round(Math.max(0, totalStake - knownStrategyReturn));
 
   return {
     races: entries.length,
@@ -51,20 +54,28 @@ export function buildStakingStrategyPerformance(entries) {
     officialWinReturn: round(officialWinReturn),
     officialWinProfit,
     officialWinRoi: roi(officialWinReturn, officialWinStake),
-    fullStrategyRoi: null,
+    knownStrategyReturn: round(knownStrategyReturn),
+    fullStrategyReturn,
+    fullStrategyProfit,
+    fullStrategyRoi: fullStrategyReturn === null ? null : roi(fullStrategyReturn, totalStake),
     winBets: sum(active, (settlement) => settlement.winBets),
     winHits: sum(active, (settlement) => settlement.winHits),
     placeBets: sum(active, (settlement) => settlement.placeBets),
     placeHits: sum(active, (settlement) => settlement.placeHits),
+    placeReturn: round(sum(active, (settlement) => settlement.placeReturn)),
     quinellaPlaceBets: sum(active, (settlement) => settlement.quinellaPlaceBets),
     quinellaPlaceHits: sum(active, (settlement) => settlement.quinellaPlaceHits),
+    quinellaPlaceReturn: round(sum(active, (settlement) => settlement.quinellaPlaceReturn)),
     quinellaBets: sum(active, (settlement) => settlement.quinellaBets),
     quinellaHits: sum(active, (settlement) => settlement.quinellaHits),
-    unpricedPoolStake,
+    quinellaReturn: round(sum(active, (settlement) => settlement.quinellaReturn)),
+    unpricedPoolStake: round(unpricedPoolStake),
     unpricedHits,
     breakEvenReturnNeededFromUnpricedPools,
     breakEvenReturnPerUnpricedHit: unpricedHits > 0 ? round(breakEvenReturnNeededFromUnpricedPools / unpricedHits) : null,
-    roiNote: '全策略 ROI 暂不可计算：历史数据还缺 Place / Quinella Place / Quinella 官方派彩；officialWinRoi 只结算有官方独赢赔率的 Win 下注线。',
+    roiNote: unpricedHits > 0
+      ? 'Full strategy ROI still excludes winning lines without official dividends; refresh history to price Place / Quinella Place / Quinella hits.'
+      : 'Full strategy ROI includes official dividends for Win / Place / Quinella Place / Quinella where those staking lines were used.',
   };
 }
 
@@ -184,44 +195,89 @@ function settleStrategyEntry(entry) {
     quinellaPlaceHits: 0,
     quinellaBets: 0,
     quinellaHits: 0,
+    knownStrategyReturn: 0,
+    placeReturn: 0,
+    quinellaPlaceReturn: 0,
+    quinellaReturn: 0,
+    unpricedPoolStake: 0,
     unpricedHits: 0,
   };
 
   for (const bet of strategy.bets) {
     const runners = bet.horses.map((horse) => runnerById.get(horse.horseId)).filter(Boolean);
     const hit = betHit(bet.type, runners, placeCutoff);
+    const amount = Number(bet.amount ?? 0);
     if (hit) result.anyHit = true;
 
     if (bet.type === 'WIN') {
       result.winBets += 1;
-      result.officialWinStake += bet.amount;
+      result.officialWinStake += amount;
       if (hit) {
         result.winHits += 1;
-        result.officialWinReturn += bet.amount * Number(runners[0]?.winOdds ?? bet.horses[0]?.winOdds ?? 0);
+        const returnAmount = winningBetReturn({ bet, runners, dividends: entry.settlement?.dividends });
+        if (returnAmount === null) {
+          result.unpricedHits += 1;
+          result.unpricedPoolStake += amount;
+        } else {
+          result.officialWinReturn += returnAmount;
+          result.knownStrategyReturn += returnAmount;
+        }
       }
     } else if (bet.type === 'PLACE') {
       result.placeBets += 1;
+      const pool = dividendPoolForBet(bet.type, entry.settlement?.dividends);
+      if (!pool) result.unpricedPoolStake += amount;
       if (hit) {
         result.placeHits += 1;
-        result.unpricedHits += 1;
+        const returnAmount = dividendBetReturn({ bet, runners, dividends: entry.settlement?.dividends });
+        if (returnAmount === null) {
+          result.unpricedHits += 1;
+          if (pool) result.unpricedPoolStake += amount;
+        } else {
+          result.placeReturn += returnAmount;
+          result.knownStrategyReturn += returnAmount;
+        }
       }
     } else if (bet.type === 'QUINELLA_PLACE') {
       result.quinellaPlaceBets += 1;
+      const pool = dividendPoolForBet(bet.type, entry.settlement?.dividends);
+      if (!pool) result.unpricedPoolStake += amount;
       if (hit) {
         result.quinellaPlaceHits += 1;
-        result.unpricedHits += 1;
+        const returnAmount = dividendBetReturn({ bet, runners, dividends: entry.settlement?.dividends });
+        if (returnAmount === null) {
+          result.unpricedHits += 1;
+          if (pool) result.unpricedPoolStake += amount;
+        } else {
+          result.quinellaPlaceReturn += returnAmount;
+          result.knownStrategyReturn += returnAmount;
+        }
       }
     } else if (bet.type === 'QUINELLA') {
       result.quinellaBets += 1;
+      const pool = dividendPoolForBet(bet.type, entry.settlement?.dividends);
+      if (!pool) result.unpricedPoolStake += amount;
       if (hit) {
         result.quinellaHits += 1;
-        result.unpricedHits += 1;
+        const returnAmount = dividendBetReturn({ bet, runners, dividends: entry.settlement?.dividends });
+        if (returnAmount === null) {
+          result.unpricedHits += 1;
+          if (pool) result.unpricedPoolStake += amount;
+        } else {
+          result.quinellaReturn += returnAmount;
+          result.knownStrategyReturn += returnAmount;
+        }
       }
     }
   }
 
   result.officialWinStake = round(result.officialWinStake);
   result.officialWinReturn = round(result.officialWinReturn);
+  result.knownStrategyReturn = round(result.knownStrategyReturn);
+  result.placeReturn = round(result.placeReturn);
+  result.quinellaPlaceReturn = round(result.quinellaPlaceReturn);
+  result.quinellaReturn = round(result.quinellaReturn);
+  result.unpricedPoolStake = round(result.unpricedPoolStake);
   return result;
 }
 
@@ -231,6 +287,57 @@ function betHit(type, runners, placeCutoff) {
   if (type === 'QUINELLA_PLACE') return runners.length === 2 && runners.every((runner) => runner.placing <= placeCutoff);
   if (type === 'QUINELLA') return runners.length === 2 && runners.every((runner) => runner.placing <= 2);
   return false;
+}
+
+function winningBetReturn({ bet, runners, dividends }) {
+  const dividendReturn = dividendBetReturn({ bet, runners, dividends });
+  if (dividendReturn !== null) return dividendReturn;
+
+  const odds = Number(runners[0]?.winOdds ?? bet.horses[0]?.winOdds);
+  return Number.isFinite(odds) && odds > 0 ? round(Number(bet.amount ?? 0) * odds) : null;
+}
+
+function dividendBetReturn({ bet, runners, dividends }) {
+  const dividend = findDividendPer10(bet.type, runners, dividends);
+  if (dividend === null) return null;
+  return round((Number(bet.amount ?? 0) / 10) * dividend);
+}
+
+function findDividendPer10(type, runners, dividends) {
+  const pool = dividendPoolForBet(type, dividends);
+  if (!pool) return null;
+
+  const horseNos = runners
+    .map((runner) => Number(runner.horseNo))
+    .filter((horseNo) => Number.isFinite(horseNo));
+  if (horseNos.length === 0) return null;
+
+  const key = dividendCombinationKey(type, horseNos);
+  const dividend = pool.find((item) => dividendCombinationKey(type, item.combination) === key);
+  const dividendPer10 = Number(dividend?.dividendPer10);
+  return Number.isFinite(dividendPer10) ? dividendPer10 : null;
+}
+
+function dividendPoolForBet(type, dividends) {
+  if (!dividends) return null;
+  const key = {
+    WIN: 'win',
+    PLACE: 'place',
+    QUINELLA_PLACE: 'quinellaPlace',
+    QUINELLA: 'quinella',
+  }[type];
+  const pool = key ? dividends[key] : null;
+  return Array.isArray(pool) && pool.length > 0 ? pool : null;
+}
+
+function dividendCombinationKey(type, combination) {
+  const numbers = combination
+    .map((value) => Number(value))
+    .filter((value) => Number.isFinite(value));
+  if (type === 'QUINELLA' || type === 'QUINELLA_PLACE') {
+    numbers.sort((a, b) => a - b);
+  }
+  return numbers.join(',');
 }
 
 function topPickReturnForEntry(entry) {

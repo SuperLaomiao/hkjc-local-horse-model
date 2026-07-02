@@ -4,6 +4,38 @@ import { describe, it } from 'node:test';
 import { parseLocalResultHtml } from '../src/hkjc-parser.js';
 
 describe('HKJC result parser safeguards', () => {
+  it('parses official dividend rows with repeated pool labels omitted by rowspan', () => {
+    const parsed = parseLocalResultHtml(resultHtml({
+      date: '2026/07/01',
+      raceNo: 1,
+      dividends: true,
+    }), {
+      date: '2026-07-01',
+      racecourse: 'ST',
+      raceNo: 1,
+    });
+
+    assert.deepEqual(parsed.dividends.win, [
+      { pool: 'WIN', combination: [3], dividendPer10: 82 },
+    ]);
+    assert.deepEqual(parsed.dividends.place, [
+      { pool: 'PLACE', combination: [3], dividendPer10: 25.5 },
+      { pool: 'PLACE', combination: [10], dividendPer10: 23 },
+      { pool: 'PLACE', combination: [7], dividendPer10: 50 },
+    ]);
+    assert.deepEqual(parsed.dividends.quinella, [
+      { pool: 'QUINELLA', combination: [3, 10], dividendPer10: 312 },
+    ]);
+    assert.deepEqual(parsed.dividends.quinellaPlace, [
+      { pool: 'QUINELLA PLACE', combination: [3, 10], dividendPer10: 102.5 },
+      { pool: 'QUINELLA PLACE', combination: [3, 7], dividendPer10: 240 },
+      { pool: 'QUINELLA PLACE', combination: [7, 10], dividendPer10: 221 },
+    ]);
+    assert.deepEqual(parsed.dividends.trio, [
+      { pool: 'TRIO', combination: [3, 7, 10], dividendPer10: 1523 },
+    ]);
+  });
+
   it('rejects a fallback result page when the actual meeting date differs from the requested date', () => {
     assert.throws(
       () => parseLocalResultHtml(resultHtml({ date: '2026/06/27', raceNo: 1 }), {
@@ -27,7 +59,7 @@ describe('HKJC result parser safeguards', () => {
   });
 });
 
-function resultHtml({ date, raceNo }) {
+function resultHtml({ date, raceNo, dividends = false }) {
   return `
     <html>
       <body>
@@ -57,6 +89,59 @@ function resultHtml({ date, raceNo }) {
             </tbody>
           </table>
         </div>
+        ${dividends ? `
+          <div class="dividend_tab f_clear">
+            <table>
+              <thead>
+                <tr><td colspan="3">Dividend</td></tr>
+                <tr><td>Pool</td><td>Winning Combination</td><td>Dividend (HK$)</td></tr>
+              </thead>
+              <tbody>
+                <tr class="bg_dc">
+                  <td class="fontXi" rowspan="1">WIN</td>
+                  <td class="f_fs14">3</td>
+                  <td class="f_fs14 f_tar">82.00</td>
+                </tr>
+                <tr>
+                  <td class="fontXi" rowspan="3">PLACE</td>
+                  <td class="f_fs14">3</td>
+                  <td class="f_fs14 f_tar">25.50</td>
+                </tr>
+                <tr>
+                  <td class="f_fs14">10</td>
+                  <td class="f_fs14 f_tar">23.00</td>
+                </tr>
+                <tr>
+                  <td class="f_fs14">7</td>
+                  <td class="f_fs14 f_tar">50.00</td>
+                </tr>
+                <tr class="bg_dc">
+                  <td class="fontXi" rowspan="1">QUINELLA</td>
+                  <td class="f_fs14">3,10</td>
+                  <td class="f_fs14 f_tar">312.00</td>
+                </tr>
+                <tr>
+                  <td class="fontXi" rowspan="3">QUINELLA PLACE</td>
+                  <td class="f_fs14">3,10</td>
+                  <td class="f_fs14 f_tar">102.50</td>
+                </tr>
+                <tr>
+                  <td class="f_fs14">3,7</td>
+                  <td class="f_fs14 f_tar">240.00</td>
+                </tr>
+                <tr>
+                  <td class="f_fs14">7,10</td>
+                  <td class="f_fs14 f_tar">221.00</td>
+                </tr>
+                <tr class="bg_dc">
+                  <td class="fontXi" rowspan="1">TRIO</td>
+                  <td class="f_fs14">3,7,10</td>
+                  <td class="f_fs14 f_tar">1,523.00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        ` : ''}
       </body>
     </html>
   `;

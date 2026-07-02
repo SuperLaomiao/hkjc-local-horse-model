@@ -153,6 +153,132 @@
         "winOdds": 35
       }
     ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            6
+          ],
+          "dividendPer10": 16
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            6
+          ],
+          "dividendPer10": 11.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            1
+          ],
+          "dividendPer10": 15.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            7
+          ],
+          "dividendPer10": 11
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            1,
+            6
+          ],
+          "dividendPer10": 65.5
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            6
+          ],
+          "dividendPer10": 25.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            6,
+            7
+          ],
+          "dividendPer10": 13.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            7
+          ],
+          "dividendPer10": 31.5
+        }
+      ],
+      "forecast": [
+        {
+          "pool": "FORECAST",
+          "combination": [
+            6,
+            1
+          ],
+          "dividendPer10": 74
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            6,
+            1,
+            7
+          ],
+          "dividendPer10": 148
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            1,
+            6,
+            7
+          ],
+          "dividendPer10": 39
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            1,
+            5,
+            6,
+            7
+          ],
+          "dividendPer10": 116
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            6,
+            1,
+            7,
+            5
+          ],
+          "dividendPer10": 984
+        }
+      ]
+    },
     "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2026%2F06%2F13&Racecourse=ST&RaceNo=1"
   },
   {
@@ -389,6 +515,132 @@
         "winOdds": 56
       }
     ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            8
+          ],
+          "dividendPer10": 89.5
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            8
+          ],
+          "dividendPer10": 25.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            4
+          ],
+          "dividendPer10": 19.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            12
+          ],
+          "dividendPer10": 16.5
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            4,
+            8
+          ],
+          "dividendPer10": 252
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            4,
+            8
+          ],
+          "dividendPer10": 86.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            8,
+            12
+          ],
+          "dividendPer10": 69
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            4,
+            12
+          ],
+          "dividendPer10": 50.5
+        }
+      ],
+      "forecast": [
+        {
+          "pool": "FORECAST",
+          "combination": [
+            8,
+            4
+          ],
+          "dividendPer10": 526
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            8,
+            4,
+            12
+          ],
+          "dividendPer10": 2546
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            4,
+            8,
+            12
+          ],
+          "dividendPer10": 407
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            4,
+            7,
+            8,
+            12
+          ],
+          "dividendPer10": 712
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            8,
+            4,
+            12,
+            7
+          ],
+          "dividendPer10": 20640
+        }
+      ]
+    },
     "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2026%2F06%2F13&Racecourse=ST&RaceNo=2"
   },
   {
@@ -699,6 +951,132 @@
         "winOdds": 118
       }
     ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            12
+          ],
+          "dividendPer10": 79
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            12
+          ],
+          "dividendPer10": 28
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            4
+          ],
+          "dividendPer10": 45
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            5
+          ],
+          "dividendPer10": 13.5
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            4,
+            12
+          ],
+          "dividendPer10": 535.5
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            4,
+            12
+          ],
+          "dividendPer10": 163
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            5,
+            12
+          ],
+          "dividendPer10": 51.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            4,
+            5
+          ],
+          "dividendPer10": 95
+        }
+      ],
+      "forecast": [
+        {
+          "pool": "FORECAST",
+          "combination": [
+            12,
+            4
+          ],
+          "dividendPer10": 1064
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            12,
+            4,
+            5
+          ],
+          "dividendPer10": 4391
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            4,
+            5,
+            12
+          ],
+          "dividendPer10": 759
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            4,
+            5,
+            10,
+            12
+          ],
+          "dividendPer10": 7556
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            12,
+            4,
+            5,
+            10
+          ],
+          "dividendPer10": 167633
+        }
+      ]
+    },
     "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2026%2F06%2F13&Racecourse=ST&RaceNo=3"
   },
   {
@@ -1023,6 +1401,132 @@
         "winOdds": 37
       }
     ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            3
+          ],
+          "dividendPer10": 494.5
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            3
+          ],
+          "dividendPer10": 134.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            12
+          ],
+          "dividendPer10": 16
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            2
+          ],
+          "dividendPer10": 21
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            3,
+            12
+          ],
+          "dividendPer10": 1679
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            3,
+            12
+          ],
+          "dividendPer10": 475.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            2,
+            3
+          ],
+          "dividendPer10": 520
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            2,
+            12
+          ],
+          "dividendPer10": 44.5
+        }
+      ],
+      "forecast": [
+        {
+          "pool": "FORECAST",
+          "combination": [
+            3,
+            12
+          ],
+          "dividendPer10": 4316
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            3,
+            12,
+            2
+          ],
+          "dividendPer10": 26280
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            2,
+            3,
+            12
+          ],
+          "dividendPer10": 3087
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            2,
+            3,
+            6,
+            12
+          ],
+          "dividendPer10": 1440
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            3,
+            12,
+            2,
+            6
+          ],
+          "dividendPer10": 55543
+        }
+      ]
+    },
     "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2026%2F06%2F13&Racecourse=ST&RaceNo=4"
   },
   {
@@ -1279,6 +1783,132 @@
         "winOdds": 98
       }
     ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            7
+          ],
+          "dividendPer10": 71
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            7
+          ],
+          "dividendPer10": 23
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            2
+          ],
+          "dividendPer10": 25
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            3
+          ],
+          "dividendPer10": 18
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            2,
+            7
+          ],
+          "dividendPer10": 253.5
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            2,
+            7
+          ],
+          "dividendPer10": 92
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            3,
+            7
+          ],
+          "dividendPer10": 83.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            2,
+            3
+          ],
+          "dividendPer10": 68
+        }
+      ],
+      "forecast": [
+        {
+          "pool": "FORECAST",
+          "combination": [
+            7,
+            2
+          ],
+          "dividendPer10": 555
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            7,
+            2,
+            3
+          ],
+          "dividendPer10": 2416
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            2,
+            3,
+            7
+          ],
+          "dividendPer10": 460
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            1,
+            2,
+            3,
+            7
+          ],
+          "dividendPer10": 297
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            7,
+            2,
+            3,
+            1
+          ],
+          "dividendPer10": 7915
+        }
+      ]
+    },
     "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2026%2F06%2F13&Racecourse=ST&RaceNo=5"
   },
   {
@@ -1568,6 +2198,132 @@
         "winOdds": 191
       }
     ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            1
+          ],
+          "dividendPer10": 138
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            1
+          ],
+          "dividendPer10": 30.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            11
+          ],
+          "dividendPer10": 11.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            9
+          ],
+          "dividendPer10": 16.5
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            1,
+            11
+          ],
+          "dividendPer10": 110
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            11
+          ],
+          "dividendPer10": 47
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            9
+          ],
+          "dividendPer10": 87.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            9,
+            11
+          ],
+          "dividendPer10": 19.5
+        }
+      ],
+      "forecast": [
+        {
+          "pool": "FORECAST",
+          "combination": [
+            1,
+            11
+          ],
+          "dividendPer10": 389
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            1,
+            11,
+            9
+          ],
+          "dividendPer10": 1557
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            1,
+            9,
+            11
+          ],
+          "dividendPer10": 164
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            1,
+            7,
+            9,
+            11
+          ],
+          "dividendPer10": 282
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            1,
+            11,
+            9,
+            7
+          ],
+          "dividendPer10": 8744
+        }
+      ]
+    },
     "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2026%2F06%2F13&Racecourse=ST&RaceNo=6"
   },
   {
@@ -1824,6 +2580,132 @@
         "winOdds": 28
       }
     ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            3
+          ],
+          "dividendPer10": 17
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            3
+          ],
+          "dividendPer10": 12
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            6
+          ],
+          "dividendPer10": 15
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            1
+          ],
+          "dividendPer10": 20
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            3,
+            6
+          ],
+          "dividendPer10": 43
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            3,
+            6
+          ],
+          "dividendPer10": 20.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            3
+          ],
+          "dividendPer10": 25
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            6
+          ],
+          "dividendPer10": 44.5
+        }
+      ],
+      "forecast": [
+        {
+          "pool": "FORECAST",
+          "combination": [
+            3,
+            6
+          ],
+          "dividendPer10": 62
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            3,
+            6,
+            1
+          ],
+          "dividendPer10": 176
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            1,
+            3,
+            6
+          ],
+          "dividendPer10": 61
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            1,
+            3,
+            6,
+            12
+          ],
+          "dividendPer10": 1059
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            3,
+            6,
+            1,
+            12
+          ],
+          "dividendPer10": 5663
+        }
+      ]
+    },
     "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2026%2F06%2F13&Racecourse=ST&RaceNo=7"
   },
   {
@@ -2029,6 +2911,132 @@
         "winOdds": 9.1
       }
     ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            2
+          ],
+          "dividendPer10": 129.5
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            2
+          ],
+          "dividendPer10": 34
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            7
+          ],
+          "dividendPer10": 21.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            1
+          ],
+          "dividendPer10": 31
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            2,
+            7
+          ],
+          "dividendPer10": 354.5
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            2,
+            7
+          ],
+          "dividendPer10": 108.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            2
+          ],
+          "dividendPer10": 152.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            7
+          ],
+          "dividendPer10": 140
+        }
+      ],
+      "forecast": [
+        {
+          "pool": "FORECAST",
+          "combination": [
+            2,
+            7
+          ],
+          "dividendPer10": 968
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            2,
+            7,
+            1
+          ],
+          "dividendPer10": 6856
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            1,
+            2,
+            7
+          ],
+          "dividendPer10": 1081
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            1,
+            2,
+            5,
+            7
+          ],
+          "dividendPer10": 1452
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            2,
+            7,
+            1,
+            5
+          ],
+          "dividendPer10": 40623
+        }
+      ]
+    },
     "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2026%2F06%2F13&Racecourse=ST&RaceNo=8"
   },
   {
@@ -2285,6 +3293,132 @@
         "winOdds": 53
       }
     ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            10
+          ],
+          "dividendPer10": 56
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            10
+          ],
+          "dividendPer10": 20.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            3
+          ],
+          "dividendPer10": 29.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            9
+          ],
+          "dividendPer10": 76
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            3,
+            10
+          ],
+          "dividendPer10": 362
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            3,
+            10
+          ],
+          "dividendPer10": 121
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            9,
+            10
+          ],
+          "dividendPer10": 246.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            3,
+            9
+          ],
+          "dividendPer10": 379
+        }
+      ],
+      "forecast": [
+        {
+          "pool": "FORECAST",
+          "combination": [
+            10,
+            3
+          ],
+          "dividendPer10": 681
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            10,
+            3,
+            9
+          ],
+          "dividendPer10": 11795
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            3,
+            9,
+            10
+          ],
+          "dividendPer10": 3274
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            2,
+            3,
+            9,
+            10
+          ],
+          "dividendPer10": 2596
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            10,
+            3,
+            9,
+            2
+          ],
+          "dividendPer10": 62891
+        }
+      ]
+    },
     "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2026%2F06%2F13&Racecourse=ST&RaceNo=9"
   },
   {
@@ -2574,6 +3708,132 @@
         "winOdds": 76
       }
     ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            2
+          ],
+          "dividendPer10": 52.5
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            2
+          ],
+          "dividendPer10": 16.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            8
+          ],
+          "dividendPer10": 25.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            11
+          ],
+          "dividendPer10": 19.5
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            2,
+            8
+          ],
+          "dividendPer10": 201
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            2,
+            8
+          ],
+          "dividendPer10": 59.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            2,
+            11
+          ],
+          "dividendPer10": 53
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            8,
+            11
+          ],
+          "dividendPer10": 75
+        }
+      ],
+      "forecast": [
+        {
+          "pool": "FORECAST",
+          "combination": [
+            2,
+            8
+          ],
+          "dividendPer10": 322
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            2,
+            8,
+            11
+          ],
+          "dividendPer10": 1410
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            2,
+            8,
+            11
+          ],
+          "dividendPer10": 245
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            2,
+            4,
+            8,
+            11
+          ],
+          "dividendPer10": 276
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            2,
+            8,
+            11,
+            4
+          ],
+          "dividendPer10": 5892
+        }
+      ]
+    },
     "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2026%2F06%2F13&Racecourse=ST&RaceNo=10"
   },
   {
@@ -2884,6 +4144,132 @@
         "winOdds": 125
       }
     ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            12
+          ],
+          "dividendPer10": 46.5
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            12
+          ],
+          "dividendPer10": 18.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            3
+          ],
+          "dividendPer10": 13.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            4
+          ],
+          "dividendPer10": 41.5
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            3,
+            12
+          ],
+          "dividendPer10": 68.5
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            3,
+            12
+          ],
+          "dividendPer10": 32
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            4,
+            12
+          ],
+          "dividendPer10": 130
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            3,
+            4
+          ],
+          "dividendPer10": 90
+        }
+      ],
+      "forecast": [
+        {
+          "pool": "FORECAST",
+          "combination": [
+            12,
+            3
+          ],
+          "dividendPer10": 170
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            12,
+            3,
+            4
+          ],
+          "dividendPer10": 1448
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            3,
+            4,
+            12
+          ],
+          "dividendPer10": 275
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            3,
+            4,
+            8,
+            12
+          ],
+          "dividendPer10": 2218
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            12,
+            3,
+            4,
+            8
+          ],
+          "dividendPer10": 27805
+        }
+      ]
+    },
     "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2026%2F06%2F13&Racecourse=ST&RaceNo=11"
   }
 ]

@@ -1239,7 +1239,15 @@ function renderPerformancePanel(snapshot) {
   const strategy = performance.stakingStrategy;
   const strategyHitRate = (hits, bets) => (bets > 0 ? hits / bets : 0);
   const strategyNote = strategy?.roiNote
-    ?? "全策略 ROI 需要官方位置、位置Q、连赢派彩；当前只把独赢线按官方独赢赔率真实结算。";
+    ?? "全策略 ROI 会按官方 Win / Place / Quinella Place / Quinella 派彩结算；缺派彩的命中线会标记为待定。";
+  const fullStrategyLabel = !strategy
+    ? "-"
+    : strategy.fullStrategyRoi === null ? "待派彩" : formatPercent(strategy.fullStrategyRoi);
+  const fullStrategySecondary = !strategy
+    ? "等待 dashboard 刷新"
+    : strategy.fullStrategyRoi === null
+      ? `${strategy.unpricedHits} 个命中待官方派彩`
+      : `${formatHkd(strategy.fullStrategyReturn)} 回报 · ${formatHkd(strategy.fullStrategyProfit)} 盈亏`;
   return `
     <section class="panel performance-panel">
       <div class="panel-header">
@@ -1259,7 +1267,7 @@ function renderPerformancePanel(snapshot) {
           ${renderPerformanceMetric("新策略命中", `${strategy.anyHits}/${strategy.strategyBets}`, `${formatPercent(strategy.anyHitRate)} · ${strategy.passRaces} 场 PASS`, strategy.anyHitRate - 0.5)}
           ${renderPerformanceMetric("策略建议总注", formatHkd(strategy.totalStake), `${strategy.strategyBets}/${strategy.races} 场下注`, 0)}
           ${renderPerformanceMetric("独赢线 ROI", formatPercent(strategy.officialWinRoi), `Win ${strategy.winHits}/${strategy.winBets} · ${formatHkd(strategy.officialWinStake)}`, strategy.officialWinRoi)}
-          ${renderPerformanceMetric("全策略 ROI", strategy.fullStrategyRoi === null ? "待派彩" : formatPercent(strategy.fullStrategyRoi), "缺位置/位置Q/连赢官方派彩", strategy.fullStrategyRoi ?? 0)}
+          ${renderPerformanceMetric("全策略 ROI", fullStrategyLabel, fullStrategySecondary, strategy.fullStrategyRoi ?? 0)}
         </div>
         <div class="mini-record-grid">
           <div>
@@ -1271,11 +1279,12 @@ function renderPerformancePanel(snapshot) {
             </div>
           </div>
           <div>
-            <h4>ROI 结算缺口</h4>
+            <h4>官方派彩结算</h4>
             <div class="mini-record-list">
-              ${renderMiniRecordLine("未定派彩池", formatHkd(strategy.unpricedPoolStake), "非独赢注额", 0)}
-              ${renderMiniRecordLine("全策略回本缺口", formatHkd(strategy.breakEvenReturnNeededFromUnpricedPools), "需由未定池补回", 0)}
-              ${renderMiniRecordLine("每个未定命中需", formatHkd(strategy.breakEvenReturnPerUnpricedHit), `${strategy.unpricedHits} 个未定命中`, 0)}
+              ${renderMiniRecordLine("位置派彩回报", formatHkd(strategy.placeReturn), `${strategy.placeHits}/${strategy.placeBets} 命中`, strategy.placeReturn - strategy.totalStake)}
+              ${renderMiniRecordLine("位置Q派彩回报", formatHkd(strategy.quinellaPlaceReturn), `${strategy.quinellaPlaceHits}/${strategy.quinellaPlaceBets} 命中`, strategy.quinellaPlaceReturn - strategy.totalStake)}
+              ${renderMiniRecordLine("待定命中线", `${strategy.unpricedHits} 条`, `${formatHkd(strategy.unpricedPoolStake)} 注额待派彩`, 0)}
+              ${strategy.unpricedHits > 0 ? renderMiniRecordLine("全策略回本缺口", formatHkd(strategy.breakEvenReturnNeededFromUnpricedPools), `每个待定需 ${formatHkd(strategy.breakEvenReturnPerUnpricedHit)}`, 0) : ""}
             </div>
           </div>
         </div>

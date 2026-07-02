@@ -125,6 +125,7 @@ export function parseLocalResultHtml(html, context = {}) {
   const racecourse = context.racecourse?.toUpperCase() ?? null;
   const htmlContext = inferResultPageContext(html);
   const runners = parsePerformanceRows(html);
+  const dividends = parseDividendRows(html);
 
   if (!raceNo || !date || !racecourse) {
     throw new Error('Missing race context: date, racecourse, and raceNo are required');
@@ -159,6 +160,7 @@ export function parseLocalResultHtml(html, context = {}) {
     course: courseText,
     going,
     runners,
+    ...(dividends ? { dividends } : {}),
     source: buildLocalResultUrl({ date, racecourse, raceNo }),
   };
 }
@@ -354,6 +356,69 @@ function parseRunnerRow(rowHtml) {
     finishSeconds: secondsFromRaceTime(stripText(cells[10])),
     winOdds: numberOrNull(stripText(cells[11])),
   };
+}
+
+function parseDividendRows(html) {
+  const dividendStart = html.search(/<div\b[^>]*class=["'][^"']*\bdividend_tab\b/i);
+  if (dividendStart < 0) return null;
+
+  const dividendHtml = html.slice(dividendStart);
+  const tbody = dividendHtml.match(/<tbody\b[^>]*>([\s\S]*?)<\/tbody>/i);
+  if (!tbody) return null;
+
+  const dividends = {};
+  let currentPool = null;
+  for (const match of tbody[1].matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)) {
+    const cells = Array.from(match[1].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi)).map((cellMatch) => cellMatch[1]);
+    if (cells.length < 2) continue;
+
+    let combinationCell;
+    let dividendCell;
+    if (cells.length >= 3) {
+      currentPool = normalizeDividendPool(stripText(cells[0]));
+      combinationCell = cells[1];
+      dividendCell = cells[2];
+    } else {
+      combinationCell = cells[0];
+      dividendCell = cells[1];
+    }
+
+    const key = dividendPoolKey(currentPool);
+    const combination = parseDividendCombination(stripText(combinationCell));
+    const dividendPer10 = numberOrNull(stripText(dividendCell));
+    if (!key || combination.length === 0 || !Number.isFinite(dividendPer10)) continue;
+
+    dividends[key] ??= [];
+    dividends[key].push({
+      pool: currentPool,
+      combination,
+      dividendPer10,
+    });
+  }
+
+  return Object.keys(dividends).length > 0 ? dividends : null;
+}
+
+function normalizeDividendPool(value) {
+  return String(value).replace(/\s+/g, ' ').trim().toUpperCase();
+}
+
+function dividendPoolKey(pool) {
+  return {
+    WIN: 'win',
+    PLACE: 'place',
+    QUINELLA: 'quinella',
+    'QUINELLA PLACE': 'quinellaPlace',
+    FORECAST: 'forecast',
+    TIERCE: 'tierce',
+    TRIO: 'trio',
+    'FIRST 4': 'first4',
+    QUARTET: 'quartet',
+  }[pool] ?? null;
+}
+
+function parseDividendCombination(value) {
+  return Array.from(String(value).matchAll(/\d+/g)).map((match) => Number(match[0]));
 }
 
 function parseRaceCardSummary(html) {

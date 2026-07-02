@@ -152,6 +152,23 @@ describe('performance summaries', () => {
     assert.equal(strategy.breakEvenReturnPerUnpricedHit, 4);
     assert.match(strategy.roiNote, /Place.*Quinella Place/i);
   });
+
+  it('prices place and quinella-place staking lines from official dividends', () => {
+    const strategy = buildStakingStrategyPerformance(strategyEntriesWithDividends);
+
+    assert.equal(strategy.races, 3);
+    assert.equal(strategy.strategyBets, 2);
+    assert.equal(strategy.totalStake, 80);
+    assert.equal(strategy.officialWinReturn, 68);
+    assert.equal(strategy.fullStrategyReturn, 203);
+    assert.equal(strategy.fullStrategyProfit, 123);
+    assert.equal(strategy.fullStrategyRoi, 1.5375);
+    assert.equal(strategy.placeReturn, 80);
+    assert.equal(strategy.quinellaPlaceReturn, 55);
+    assert.equal(strategy.unpricedHits, 0);
+    assert.equal(strategy.unpricedPoolStake, 0);
+    assert.match(strategy.roiNote, /official dividends/i);
+  });
 });
 
 const strategyEntries = [
@@ -205,6 +222,83 @@ const strategyEntries = [
   }),
 ];
 
+const strategyEntriesWithDividends = [
+  strategyEntry({
+    raceId: '2026-06-21-ST-1',
+    topProbability: 0.162,
+    topWinOdds: 6.8,
+    secondProbability: 0.12,
+    thirdProbability: 0.1,
+    dividends: {
+      place: [
+        { pool: 'PLACE', combination: [1], dividendPer10: 24 },
+        { pool: 'PLACE', combination: [4], dividendPer10: 18 },
+        { pool: 'PLACE', combination: [5], dividendPer10: 20 },
+      ],
+    },
+    results: [
+      result('A', 'Main Chance', 1, 6.8),
+      result('D', 'Pace Setter', 2, 18),
+      result('E', 'Late Closer', 3, 21),
+      result('B', 'Support B', 4, 9),
+      result('C', 'Support C', 5, 12),
+      result('F', 'Wide Draw', 6, 34),
+      result('G', 'Outsider', 7, 55),
+    ],
+  }),
+  strategyEntry({
+    raceId: '2026-06-21-ST-2',
+    topProbability: 0.188,
+    topWinOdds: 7.5,
+    secondProbability: 0.142,
+    thirdProbability: 0.118,
+    dividends: {
+      place: [
+        { pool: 'PLACE', combination: [4], dividendPer10: 42 },
+        { pool: 'PLACE', combination: [1], dividendPer10: 16 },
+        { pool: 'PLACE', combination: [2], dividendPer10: 19 },
+      ],
+      quinellaPlace: [
+        { pool: 'QUINELLA PLACE', combination: [1, 4], dividendPer10: 66 },
+        { pool: 'QUINELLA PLACE', combination: [1, 2], dividendPer10: 55 },
+        { pool: 'QUINELLA PLACE', combination: [2, 4], dividendPer10: 78 },
+      ],
+    },
+    results: [
+      result('D', 'Pace Setter', 1, 18),
+      result('A', 'Main Chance', 2, 7.5),
+      result('B', 'Support B', 3, 6.2),
+      result('E', 'Late Closer', 4, 21),
+      result('C', 'Support C', 5, 11),
+      result('F', 'Wide Draw', 6, 34),
+      result('G', 'Outsider', 7, 55),
+    ],
+  }),
+  strategyEntry({
+    raceId: '2026-06-21-ST-3',
+    topProbability: 0.105,
+    topWinOdds: 20,
+    secondProbability: 0.095,
+    thirdProbability: 0.09,
+    dividends: {
+      place: [
+        { pool: 'PLACE', combination: [3], dividendPer10: 18 },
+        { pool: 'PLACE', combination: [2], dividendPer10: 22 },
+        { pool: 'PLACE', combination: [4], dividendPer10: 31 },
+      ],
+    },
+    results: [
+      result('C', 'Weak Three', 1, 5),
+      result('B', 'Weak Two', 2, 8),
+      result('D', 'Pace Setter', 3, 18),
+      result('E', 'Late Closer', 4, 21),
+      result('F', 'Wide Draw', 5, 34),
+      result('G', 'Outsider', 6, 55),
+      result('A', 'Weak One', 7, 20),
+    ],
+  }),
+];
+
 function entry({
   raceId,
   date,
@@ -242,6 +336,7 @@ function strategyEntry({
   topWinOdds,
   secondProbability,
   thirdProbability,
+  dividends = null,
   results,
 }) {
   const predictions = [
@@ -260,6 +355,7 @@ function strategyEntry({
     },
     settlement: {
       runnerResults: results,
+      dividends,
     },
   };
 }
