@@ -4,6 +4,7 @@ import { describe, it } from 'node:test';
 import {
   buildPerformanceSnapshot,
   buildProbabilityCalibration,
+  buildProbabilityScoring,
   buildStakingStrategyPerformance,
   groupByMeeting,
   groupTopPickOddsBuckets,
@@ -120,6 +121,17 @@ describe('performance summaries', () => {
     );
   });
 
+  it('scores probability forecasts with Brier score and log loss', () => {
+    const scoring = buildProbabilityScoring(entries);
+
+    assert.equal(scoring.races, 3);
+    assert.equal(scoring.brierScore, 0.2135);
+    assert.equal(scoring.logLoss, 0.5906);
+    assert.equal(scoring.averageProbability, 0.1533);
+    assert.equal(scoring.actualWinRate, 0.3333);
+    assert.equal(scoring.calibrationGap, 0.18);
+  });
+
   it('builds one compact performance snapshot for the dashboard', () => {
     const snapshot = buildPerformanceSnapshot(entries);
 
@@ -127,6 +139,7 @@ describe('performance summaries', () => {
     assert.equal(snapshot.byMeeting.length, 2);
     assert.equal(snapshot.topPickOddsBuckets.length, 4);
     assert.equal(snapshot.probabilityCalibration.length, 4);
+    assert.equal(snapshot.probabilityScoring.races, 3);
     assert.equal(typeof snapshot.stakingStrategy.strategyBets, 'number');
     assert.match(snapshot.warning, /not proof/i);
   });
@@ -138,18 +151,18 @@ describe('performance summaries', () => {
     assert.equal(strategy.strategyBets, 2);
     assert.equal(strategy.passRaces, 1);
     assert.equal(strategy.totalStake, 80);
-    assert.equal(strategy.officialWinStake, 20);
+    assert.equal(strategy.officialWinStake, 10);
     assert.equal(strategy.officialWinReturn, 68);
-    assert.equal(strategy.officialWinProfit, 48);
-    assert.equal(strategy.officialWinRoi, 2.4);
+    assert.equal(strategy.officialWinProfit, 58);
+    assert.equal(strategy.officialWinRoi, 5.8);
     assert.equal(strategy.fullStrategyRoi, null);
     assert.equal(strategy.anyHitRate, 1);
     assert.equal(strategy.winHits, 1);
-    assert.equal(strategy.placeHits, 2);
+    assert.equal(strategy.placeHits, 3);
     assert.equal(strategy.quinellaPlaceHits, 1);
-    assert.equal(strategy.unpricedPoolStake, 60);
+    assert.equal(strategy.unpricedPoolStake, 70);
     assert.equal(strategy.breakEvenReturnNeededFromUnpricedPools, 12);
-    assert.equal(strategy.breakEvenReturnPerUnpricedHit, 4);
+    assert.equal(strategy.breakEvenReturnPerUnpricedHit, 3);
     assert.match(strategy.roiNote, /Place.*Quinella Place/i);
   });
 
@@ -160,10 +173,10 @@ describe('performance summaries', () => {
     assert.equal(strategy.strategyBets, 2);
     assert.equal(strategy.totalStake, 80);
     assert.equal(strategy.officialWinReturn, 68);
-    assert.equal(strategy.fullStrategyReturn, 203);
-    assert.equal(strategy.fullStrategyProfit, 123);
-    assert.equal(strategy.fullStrategyRoi, 1.5375);
-    assert.equal(strategy.placeReturn, 80);
+    assert.equal(strategy.fullStrategyReturn, 222);
+    assert.equal(strategy.fullStrategyProfit, 142);
+    assert.equal(strategy.fullStrategyRoi, 1.775);
+    assert.equal(strategy.placeReturn, 99);
     assert.equal(strategy.quinellaPlaceReturn, 55);
     assert.equal(strategy.unpricedHits, 0);
     assert.equal(strategy.unpricedPoolStake, 0);

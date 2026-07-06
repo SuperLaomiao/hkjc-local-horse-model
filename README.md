@@ -47,9 +47,9 @@ from the local model workspace. The current export was refreshed from the HKJC
 official fixture/results/race-card flow.
 
 GitHub Actions is configured in `.github/workflows/refresh-hkjc-data.yml` to
-refresh baseline data around 09:00 and 22:00 Hong Kong time. It also refreshes
-about every 10 minutes during common Hong Kong race windows: Wednesday night and
-weekend/day meetings. It can also be run manually from the Actions tab.
+refresh baseline data around 09:00 Hong Kong time, plus one post-race refresh
+around 23:45 Hong Kong time on common Hong Kong race days. It can also be run
+manually from the Actions tab.
 
 To refresh the source workspace:
 
@@ -57,14 +57,89 @@ To refresh the source workspace:
 npm run hkjc:refresh -- --bankroll 200 --minEdge 0 --minProbability 0.15 --maxStakePct 0.05 --finalEdgeBuffer 0.08
 ```
 
-Then copy the refreshed dashboard JSON into this publishing project:
+Then sync the refreshed raw/race-card files into the local SQLite database and
+export the website dashboard from that database:
 
 ```bash
-cp "hkjc-horse-model/data/processed/dashboard.json" "data/dashboard.json"
+npm run hkjc:sync-db
+npm run hkjc:dashboard-db -- --bankroll 200 --minEdge 0 --minProbability 0.15 --maxStakePct 0.05 --finalEdgeBuffer 0.08
 ```
 
-The source dashboard currently has 126 settled HK local races through
-2026-07-01 Sha Tin. Race-card forecasts appear only after HKJC publishes local
+For unattended local operation, use the combined command:
+
+```bash
+npm run hkjc:auto-run -- --bankroll 200 --minEdge 0 --minProbability 0.15 --maxStakePct 0.05 --finalEdgeBuffer 0.08
+```
+
+It syncs raw/upcoming JSON into SQLite, optionally imports a market snapshot
+when `--marketInput path/to/market-snapshot.json` is supplied, regenerates
+`data/dashboard.json`, and records the latest recommendation run for later
+audit/replay. It also writes the latest settled recommendation review to
+`data/latest-recommendation-audit.json` unless `--auditOutput` is supplied.
+
+Codex also has a local recurring automation named `HKJC赛后数据抓取` (`hkjc`)
+that runs after likely Hong Kong race days instead of polling frequently. It is
+intended to refresh the local SQLite store, rebuild the dashboard, and produce
+one post-race recommendation audit without requiring a manual prompt in this
+chat.
+
+You can also regenerate only the latest recommendation audit:
+
+```bash
+npm run hkjc:recommendation-audit
+```
+
+The SQLite database is stored locally at
+`hkjc-horse-model/data/hkjc.sqlite`. It is the durable local research store for
+official race results, runners, dividends, upcoming race cards, pre-race market
+snapshots, pool snapshots, and recommendation-run audit records. The static
+website still reads `data/dashboard.json`; SQLite is used to build and replay
+the model before exporting that JSON.
+
+Market snapshots can be imported once official odds/capital-pool data is
+available in normalized JSON:
+
+```bash
+npm run hkjc:market-snapshot -- --input hkjc-horse-model/data/market-snapshot.json
+```
+
+Expected shape:
+
+```json
+{
+  "odds": [
+    {
+      "raceId": "2026-07-08-HV-1",
+      "date": "2026-07-08",
+      "racecourse": "HV",
+      "raceNo": 1,
+      "capturedAt": "2026-07-08T10:00:00.000Z",
+      "minutesToPost": 30,
+      "pool": "PLACE",
+      "combination": [2],
+      "oddsValue": 2.4,
+      "source": "official"
+    }
+  ],
+  "pools": [
+    {
+      "raceId": "2026-07-08-HV-1",
+      "date": "2026-07-08",
+      "racecourse": "HV",
+      "raceNo": 1,
+      "capturedAt": "2026-07-08T10:00:00.000Z",
+      "minutesToPost": 30,
+      "pool": "PLACE",
+      "investment": 98765,
+      "sellStatus": "START_SELLING",
+      "source": "official"
+    }
+  ]
+}
+```
+
+The source dashboard currently has 137 settled HK local races through
+2026-07-04 Sha Tin. Race-card forecasts appear only after HKJC publishes local
 starters.
 
 The refresh parser validates that an official-results page actually matches the
@@ -75,9 +150,20 @@ page is rejected instead of polluting the backtest.
 The page-level refresh button reloads the latest published `data/dashboard.json`
 without browser cache. GitHub Pages cannot safely store a secret token in the
 browser, so this button does not directly trigger the GitHub Actions backend.
-During race windows, the backend workflow refreshes about every 10 minutes; a
-future Worker/API can make the button trigger an immediate server-side HKJC
-refresh.
+The backend workflow is intentionally low-frequency for now: daily baseline plus
+post-race refresh. A future Worker/API can make the button trigger an immediate
+server-side HKJC refresh once realtime odds/pool capture is added.
+
+## Deployment
+
+The stable public dashboard is served by GitHub Pages from the `main` branch
+root:
+
+https://superlaomiao.github.io/hkjc-local-horse-model/
+
+After pushing to `main`, GitHub Pages rebuilds the static site automatically.
+The site reads `data/dashboard.json`, so the published view reflects the latest
+committed dashboard export rather than the local SQLite database file.
 
 ## Self-Test Lab
 
@@ -144,12 +230,25 @@ for:
 - Cash-eligible pools: Win, Place, Quinella Place, Quinella.
 - Paper / high-volatility pools: Forecast, Trio, Tierce, First 4, Quartet.
 
-The optimizer estimates each pool's hit probability from the model's ranked
-runner probabilities, converts that into a minimum acceptable dividend per
-HK$10 unit, and then allocates a conservative HK$10-100 portfolio. When actual
-market dividends are available, underpriced lines are rejected. When dividends
-are not available yet, the line is marked conditional and must be checked
-against the displayed entry price before any real bet.
+The optimizer estimates each pool's hit probability with a
+Harville/Plackett-Luce ranking model: single-runner probabilities are normalized
+into a full finishing-order distribution, then reused consistently for Place,
+Quinella Place, Quinella, Forecast, Trio, First 4, and Quartet probabilities.
+That keeps all pool estimates on one probability scale instead of relying on
+separate hand-tuned multipliers.
+
+It then converts each candidate into a minimum acceptable dividend per HK$10
+unit and allocates a conservative HK$10-100 portfolio. Cash lines are EV-first:
+when actual market dividends are available, the line must clear the target
+expected ROI buffer before it can enter the portfolio, and selected lines are
+ranked by expected ROI rather than by pool type. When dividends are not
+available yet, the line is marked conditional and must be checked against the
+displayed entry price before any real bet.
+
+The performance panel also reports probability-scoring metrics. Brier Score and
+Log Loss are included because a betting model needs calibrated probabilities,
+not just a high top-pick hit rate; lower values indicate better probability
+forecasts.
 
 This is intentionally conservative: exact-order and four-horse exotic pools
 stay in paper mode until the model has a separate ordering edge and enough

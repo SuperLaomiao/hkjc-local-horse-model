@@ -6,6 +6,11 @@
   "scripts": {
     "test": "node --test hkjc-horse-model/test/*.test.js test/*.test.js",
     "hkjc:refresh": "node hkjc-horse-model/src/cli.js refresh",
-    "hkjc:dashboard": "node hkjc-horse-model/src/cli.js dashboard"
+    "hkjc:dashboard": "node hkjc-horse-model/src/cli.js dashboard",
+    "hkjc:sync-db": "node hkjc-horse-model/src/cli.js sync-db",
+    "hkjc:dashboard-db": "node hkjc-horse-model/src/cli.js dashboard-db --output data/dashboard.json",
+    "hkjc:market-snapshot": "node hkjc-horse-model/src/cli.js market-snapshot",
+    "hkjc:recommendation-audit": "node hkjc-horse-model/src/cli.js recommendation-audit",
+    "hkjc:auto-run": "node hkjc-horse-model/src/cli.js auto-run --output data/dashboard.json"
   }
 }

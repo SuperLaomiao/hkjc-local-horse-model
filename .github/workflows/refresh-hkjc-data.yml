@@ -3,11 +3,10 @@ name: Refresh HKJC data
 on:
   workflow_dispatch:
   schedule:
-    # Baseline refreshes around 09:00 and 22:00 Hong Kong time.
-    - cron: "0 1,14 * * *"
-    # Race-window refreshes: Wed night plus weekend/day meetings in Hong Kong time.
-    - cron: "*/10 10-15 * * 3"
-    - cron: "*/10 4-11 * * 0,6"
+    # Baseline refresh around 09:00 Hong Kong time.
+    - cron: "0 1 * * *"
+    # Post-race refresh around 23:45 Hong Kong time on common HK race days.
+    - cron: "45 15 * * 0,3,6"
 
 permissions:
   contents: write
@@ -22,18 +21,18 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "25"
 
       - name: Refresh HKJC local model data
         run: |
           npm run hkjc:refresh -- --historyDays 14 --futureDays 21 --bankroll 200 --minEdge 0 --minProbability 0.15 --maxStakePct 0.05 --finalEdgeBuffer 0.08
-          cp hkjc-horse-model/data/processed/dashboard.json data/dashboard.json
+          npm run hkjc:auto-run -- --bankroll 200 --minEdge 0 --minProbability 0.15 --maxStakePct 0.05 --finalEdgeBuffer 0.08
 
       - name: Commit refreshed data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/dashboard.json hkjc-horse-model/data/raw hkjc-horse-model/data/upcoming hkjc-horse-model/data/processed/dashboard.json
+          git add data/dashboard.json data/latest-recommendation-audit.json hkjc-horse-model/data/raw hkjc-horse-model/data/upcoming hkjc-horse-model/data/processed/dashboard.json hkjc-horse-model/data/processed/latest-recommendation-audit.json
           if git diff --cached --quiet; then
             echo "No HKJC data changes to commit."
           else

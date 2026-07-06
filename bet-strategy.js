@@ -105,18 +105,50 @@ function buildBetLines({ top, second, third, budget, confidence, config }) {
     ];
   }
 
+  if (confidence === 'strong') {
+    const lines = [
+      placeBet(20, top),
+    ];
+
+    if (isStrongSupport(second, config)) {
+      lines.push(supportPlaceBet(10, second));
+      lines.push(qpBet(10, top, second));
+    } else {
+      lines.push(winBet(10, top));
+    }
+
+    if (isUsableSupport(second, config) && isUsableSupport(third, config)) {
+      lines.push(qpBet(10, second, third, '两匹支撑马同时进前三，用来对冲主马失位风险。'));
+    } else if (isUsableSupport(third, config)) {
+      lines.push(qpBet(10, top, third));
+    }
+
+    return capLinesToBudget(lines, budget);
+  }
+
   const lines = [
-    placeBet(confidence === 'very-strong' ? 40 : confidence === 'strong' && budget >= 80 ? 30 : 20, top),
-    winBet(confidence === 'very-strong' || budget >= 80 ? 20 : 10, top),
+    placeBet(20, top),
   ];
 
-  if (second && Number(second.probability) >= config.strongSupportThreshold) {
-    lines.push(qpBet(confidence === 'very-strong' || budget >= 80 ? 20 : 10, top, second));
+  if (isStrongSupport(second, config)) {
+    lines.push(supportPlaceBet(20, second));
   }
 
-  if (third && Number(third.probability) >= config.supportThreshold) {
+  if (isUsableSupport(third, config)) {
+    lines.push(supportPlaceBet(10, third));
+  }
+
+  if (isStrongSupport(second, config)) {
+    lines.push(qpBet(10, top, second));
+  }
+
+  if (isUsableSupport(second, config) && isUsableSupport(third, config)) {
+    lines.push(qpBet(20, second, third, '两匹支撑马同时进前三，用来对冲主马失位风险。'));
+  } else if (isUsableSupport(third, config)) {
     lines.push(qpBet(10, top, third));
   }
+
+  lines.push(winBet(10, top));
 
   if (confidence === 'very-strong' && second) {
     lines.push(quinellaBet(10, top, second));
@@ -140,12 +172,16 @@ function placeBet(amount, horse) {
   return betLine('PLACE', '位置', amount, [horse], '主打进前三；比独赢更适合当前模型。');
 }
 
+function supportPlaceBet(amount, horse) {
+  return betLine('PLACE', '位置', amount, [horse], '支撑马位置对冲；避免所有现金注单都依赖同一匹核心马。');
+}
+
 function winBet(amount, horse) {
   return betLine('WIN', '独赢', amount, [horse], '小额保留头马 upside；不要重注硬追头马。');
 }
 
-function qpBet(amount, first, second) {
-  return betLine('QUINELLA_PLACE', '位置Q', amount, [first, second], '两匹同时进前三即可；优先于连赢。');
+function qpBet(amount, first, second, rationale = '两匹同时进前三即可；优先于连赢。') {
+  return betLine('QUINELLA_PLACE', '位置Q', amount, [first, second], rationale);
 }
 
 function quinellaBet(amount, first, second) {
@@ -204,6 +240,7 @@ function buildStopRules(budget) {
   return [
     '任何候选马退出、换骑师或场地明显不利，直接 PASS。',
     '最终赔率太低或页面数据过期，直接 PASS。',
+    '单一马匹/核心马暴露过高时，宁愿减注或 PASS，不做伪分散。',
     budget >= 100 ? 'HK$100 是最高档；一日最多一场，不得继续加码。' : '不要为了凑满 HK$100 而增加低质量组合。',
   ];
 }
@@ -216,4 +253,12 @@ function formatPercent(value) {
 function isPositiveNumber(value) {
   const number = Number(value);
   return Number.isFinite(number) && number > 0;
+}
+
+function isUsableSupport(runner, config) {
+  return Number(runner?.probability ?? 0) >= config.supportThreshold;
+}
+
+function isStrongSupport(runner, config) {
+  return Number(runner?.probability ?? 0) >= config.strongSupportThreshold;
 }

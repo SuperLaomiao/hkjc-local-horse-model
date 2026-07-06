@@ -1,3 +1,5 @@
+import { createRankingProbabilityModel } from "./ranking-probabilities.js";
+
 const DEFAULT_OPTIONS = {
   minUnit: 10,
   maxBudget: 100,
@@ -7,6 +9,7 @@ const DEFAULT_OPTIONS = {
   minWinProbability: 0.15,
   minQplProbability: 0.12,
   minQuinellaProbability: 0.055,
+  maxCoreExposureShare: 0.6,
 };
 
 const POOL_META = {
@@ -35,59 +38,80 @@ export function buildMultiPlayProbabilityBoard(entry, options = {}) {
   }
 
   const placeCutoff = estimatedPlaceCutoff(runners.length);
-  const placeProbabilities = estimatePlaceProbabilities(runners, placeCutoff);
-  const candidates = [
-    candidate("PLACE", [top], placeProbabilities.get(top.horseId) ?? 0, {
-      marketDividendPer10: marketDividend(top, "PLACE"),
-      cashEligible: true,
-      rationale: "单马进入位置名次，作为组合里的低波动主线。",
-    }),
+  const rankingModel = createRankingProbabilityModel(runners, {
+    maxRank: Math.max(4, placeCutoff),
+  });
+  const placeProbabilities = new Map(runners.map((runner) => [
+    runner.horseId,
+    rankingModel.placeProbability(runner.horseId, placeCutoff),
+  ]));
+  const candidates = [top, second, third].filter(Boolean).map((runner, index) => candidate("PLACE", [runner], placeProbabilities.get(runner.horseId) ?? 0, {
+    marketDividendPer10: marketDividendForPool({ type: "PLACE", runners: [runner], entry, config }),
+    cashEligible: true,
+    rationale: index === 0
+      ? "单马进入位置名次，作为组合里的低波动主线。"
+      : "支撑马进入位置名次，用来降低现金组合对头号马的依赖。",
+  }));
+
+  candidates.push(
     candidate("WIN", [top], Number(top.probability), {
-      marketDividendPer10: marketDividend(top, "WIN"),
+      marketDividendPer10: marketDividendForPool({ type: "WIN", runners: [top], entry, config }),
       cashEligible: true,
       rationale: "只在实时独赢赔率高过入场线时小注。",
     }),
-  ];
+  );
 
   if (second) {
-    candidates.push(candidate("QUINELLA_PLACE", [top, second], estimateQplProbability(top, second, placeProbabilities), {
-      marketDividendPer10: positiveNumber(config.qplDividendPer10),
+    candidates.push(candidate("QUINELLA_PLACE", [top, second], rankingModel.unorderedTopKProbability(horseIds([top, second]), placeCutoff), {
+      marketDividendPer10: marketDividendForPool({ type: "QUINELLA_PLACE", runners: [top, second], entry, config }),
       cashEligible: true,
       rationale: "两匹同时进入位置名次；比连赢更贴近当前概率模型。",
     }));
-    candidates.push(candidate("QUINELLA", [top, second], estimateQuinellaProbability(top, second), {
-      marketDividendPer10: positiveNumber(config.quinellaDividendPer10),
+    candidates.push(candidate("QUINELLA", [top, second], rankingModel.unorderedTopKProbability(horseIds([top, second]), 2), {
+      marketDividendPer10: marketDividendForPool({ type: "QUINELLA", runners: [top, second], entry, config }),
       cashEligible: true,
       rationale: "两匹包办前二且不限顺序，只在强支撑结构中小注。",
     }));
-    candidates.push(candidate("FORECAST", [top, second], estimateForecastProbability(top, second), {
-      marketDividendPer10: positiveNumber(config.forecastDividendPer10),
+    candidates.push(candidate("FORECAST", [top, second], rankingModel.orderedProbability(horseIds([top, second])), {
+      marketDividendPer10: marketDividendForPool({ type: "FORECAST", runners: [top, second], entry, config }),
       cashEligible: false,
       rationale: "需要精确冠亚顺序；目前作为顺序能力观察。",
     }));
   }
 
   if (third) {
-    candidates.push(candidate("TRIO", [top, second, third], estimateTrioProbability([top, second, third], placeProbabilities), {
-      marketDividendPer10: positiveNumber(config.trioDividendPer10),
+    candidates.push(candidate("QUINELLA_PLACE", [top, third], rankingModel.unorderedTopKProbability(horseIds([top, third]), placeCutoff), {
+      marketDividendPer10: marketDividendForPool({ type: "QUINELLA_PLACE", runners: [top, third], entry, config }),
+      cashEligible: true,
+      rationale: "头号马搭第三候选；只有派彩足够时才执行。",
+    }));
+    if (second) {
+      candidates.push(candidate("QUINELLA_PLACE", [second, third], rankingModel.unorderedTopKProbability(horseIds([second, third]), placeCutoff), {
+        marketDividendPer10: marketDividendForPool({ type: "QUINELLA_PLACE", runners: [second, third], entry, config }),
+        cashEligible: true,
+        rationale: "两匹支撑马同时进入位置名次，用来对冲头号马失位风险。",
+      }));
+    }
+    candidates.push(candidate("TRIO", [top, second, third], rankingModel.unorderedTopKProbability(horseIds([top, second, third]), 3), {
+      marketDividendPer10: marketDividendForPool({ type: "TRIO", runners: [top, second, third], entry, config }),
       cashEligible: false,
       rationale: "三匹包办前三，不限顺序；先纸上复盘命中率。",
     }));
-    candidates.push(candidate("TIERCE", [top, second, third], estimateTierceProbability([top, second, third]), {
-      marketDividendPer10: positiveNumber(config.tierceDividendPer10),
+    candidates.push(candidate("TIERCE", [top, second, third], rankingModel.orderedProbability(horseIds([top, second, third])), {
+      marketDividendPer10: marketDividendForPool({ type: "TIERCE", runners: [top, second, third], entry, config }),
       cashEligible: false,
       rationale: "三匹前三顺序完全正确，波动过高，暂不实注。",
     }));
   }
 
   if (fourth) {
-    candidates.push(candidate("FIRST4", [top, second, third, fourth], estimateFirst4Probability([top, second, third, fourth], placeProbabilities), {
-      marketDividendPer10: positiveNumber(config.first4DividendPer10),
+    candidates.push(candidate("FIRST4", [top, second, third, fourth], rankingModel.unorderedTopKProbability(horseIds([top, second, third, fourth]), 4), {
+      marketDividendPer10: marketDividendForPool({ type: "FIRST4", runners: [top, second, third, fourth], entry, config }),
       cashEligible: false,
       rationale: "四匹包办前四，不限顺序；当前只作纸上统计。",
     }));
-    candidates.push(candidate("QUARTET", [top, second, third, fourth], estimateQuartetProbability([top, second, third, fourth]), {
-      marketDividendPer10: positiveNumber(config.quartetDividendPer10),
+    candidates.push(candidate("QUARTET", [top, second, third, fourth], rankingModel.orderedProbability(horseIds([top, second, third, fourth])), {
+      marketDividendPer10: marketDividendForPool({ type: "QUARTET", runners: [top, second, third, fourth], entry, config }),
       cashEligible: false,
       rationale: "四匹前四顺序完全正确，需要专门顺序模型，暂不实注。",
     }));
@@ -95,16 +119,17 @@ export function buildMultiPlayProbabilityBoard(entry, options = {}) {
 
   const enriched = candidates
     .map((item) => enrichCandidate(item, config))
-    .sort((a, b) => POOL_META[a.type].priority - POOL_META[b.type].priority);
+    .sort((a, b) => POOL_META[a.type].priority - POOL_META[b.type].priority || b.estimatedProbability - a.estimatedProbability);
 
   return {
     raceId: entry?.raceId ?? null,
     date: entry?.date ?? null,
     racecourse: entry?.racecourse ?? null,
     raceNo: entry?.raceNo ?? null,
+    probabilityModel: rankingModel.model,
     placeCutoff,
     candidates: enriched,
-    note: "概率由单马胜率外推为位置/组合/顺序玩法，派彩入场线需临场复核。",
+    note: "概率由 Harville/Plackett-Luce 排名模型外推为位置/组合/顺序玩法，派彩入场线需临场复核。",
   };
 }
 
@@ -130,7 +155,7 @@ export function buildStructuredBetPortfolio(entry, options = {}) {
   const cashCandidates = board.candidates.filter((candidate) => candidate.role === "cash");
   const cashLines = buildCashLines(cashCandidates, config);
   const totalStake = cashLines.reduce((sum, line) => sum + line.stake, 0);
-  const watchLines = cashCandidates.filter((candidate) => !cashLines.some((line) => line.type === candidate.type));
+  const watchLines = cashCandidates.filter((candidate) => !cashLines.some((line) => line.candidateKey === candidate.key));
   const paperLines = board.candidates.filter((candidate) => candidate.role === "paper");
 
   return {
@@ -150,41 +175,54 @@ export function buildStructuredBetPortfolio(entry, options = {}) {
 
 function buildCashLines(candidates, config) {
   const lines = [];
-  const byType = Object.fromEntries(candidates.map((candidate) => [candidate.type, candidate]));
+  const winCandidate = candidates.find((candidate) => candidate.type === "WIN");
+  const topHorseId = winCandidate?.selections?.[0]?.horseId ?? candidates[0]?.selections?.[0]?.horseId ?? null;
+  const placeCandidates = candidates.filter((candidate) => candidate.type === "PLACE");
+  const qplCandidates = candidates.filter((candidate) => candidate.type === "QUINELLA_PLACE");
+  const quinellaCandidates = candidates.filter((candidate) => candidate.type === "QUINELLA");
 
-  maybePush(lines, lineFromCandidate(byType.PLACE, placeStake(byType.PLACE, config), "主线"));
-  maybePush(lines, lineFromCandidate(byType.WIN, winStake(byType.WIN, config), "小额"));
-  maybePush(lines, lineFromCandidate(byType.QUINELLA_PLACE, qplStake(byType.QUINELLA_PLACE, config), "组合"));
-  maybePush(lines, lineFromCandidate(byType.QUINELLA, quinellaStake(byType.QUINELLA, config), "极小"));
+  const topPlace = placeCandidates.find((candidate) => firstHorseId(candidate) === topHorseId);
+  const supportPlace = placeCandidates.find((candidate) => firstHorseId(candidate) !== topHorseId && placeStake(candidate, config) > 0);
+  const topQpl = qplCandidates.find((candidate) => containsHorse(candidate, topHorseId) && qplStake(candidate, config) > 0);
+  const supportQpl = qplCandidates.find((candidate) => !containsHorse(candidate, topHorseId) && qplStake(candidate, config) > 0);
+  const quinella = quinellaCandidates.find((candidate) => quinellaStake(candidate, config) > 0);
 
-  return capLines(lines, config.maxBudget);
+  maybePush(lines, lineFromCandidate(topPlace, placeStake(topPlace, config), "主线"));
+  maybePush(lines, lineFromCandidate(supportPlace, Math.min(placeStake(supportPlace, config), 30), "对冲"));
+  maybePush(lines, lineFromCandidate(topQpl, qplStake(topQpl, config), "组合"));
+  maybePush(lines, lineFromCandidate(supportQpl, qplStake(supportQpl, config), "对冲"));
+  maybePush(lines, lineFromCandidate(winCandidate, winStake(winCandidate, config), "小额"));
+  maybePush(lines, lineFromCandidate(quinella, quinellaStake(quinella, config), "极小"));
+
+  const evRankedLines = lines.sort(compareLinesByExpectedRoi);
+  return limitCoreExposure(capLines(evRankedLines, config.maxBudget), topHorseId, config.maxCoreExposureShare);
 }
 
 function placeStake(candidate, config) {
   if (!candidate || candidate.estimatedProbability < config.minPlaceProbability) return 0;
   if (!hasUsableMarket(candidate)) return candidate.estimatedProbability >= 0.36 ? 20 : 10;
-  if (candidate.edge == null || candidate.edge < 0) return 0;
+  if (!clearsTargetExpectedRoi(candidate, config)) return 0;
   return candidate.estimatedProbability >= 0.45 ? 30 : 20;
 }
 
 function winStake(candidate, config) {
   if (!candidate || candidate.estimatedProbability < config.minWinProbability) return 0;
   if (!hasUsableMarket(candidate)) return 0;
-  if (candidate.edge == null || candidate.edge < 0) return 0;
+  if (!clearsTargetExpectedRoi(candidate, config)) return 0;
   return 10;
 }
 
 function qplStake(candidate, config) {
   if (!candidate || candidate.estimatedProbability < config.minQplProbability) return 0;
   if (!hasUsableMarket(candidate)) return 10;
-  if (candidate.edge == null || candidate.edge < 0) return 0;
+  if (!clearsTargetExpectedRoi(candidate, config)) return 0;
   return 10;
 }
 
 function quinellaStake(candidate, config) {
   if (!candidate || candidate.estimatedProbability < config.minQuinellaProbability) return 0;
   if (!hasUsableMarket(candidate)) return 0;
-  if (candidate.edge == null || candidate.edge < 0) return 0;
+  if (!clearsTargetExpectedRoi(candidate, config)) return 0;
   return 10;
 }
 
@@ -192,6 +230,8 @@ function lineFromCandidate(candidate, stake, lane) {
   if (!candidate || stake <= 0) return null;
   return {
     type: candidate.type,
+    key: candidate.key,
+    candidateKey: candidate.key,
     label: candidate.label,
     lane,
     stake,
@@ -200,7 +240,10 @@ function lineFromCandidate(candidate, stake, lane) {
     requiredDividendPer10: candidate.requiredDividendPer10,
     marketDividendPer10: candidate.marketDividendPer10,
     edge: candidate.edge,
-    status: candidate.edge == null ? "CONDITIONAL" : candidate.edge >= 0 ? "PLAY" : "PASS",
+    expectedRoi: candidate.expectedRoi,
+    targetRoi: candidate.targetRoi,
+    meetsEntryPrice: candidate.meetsEntryPrice,
+    status: candidate.status,
     rationale: candidate.rationale,
   };
 }
@@ -222,24 +265,29 @@ function capLines(lines, maxBudget) {
 
 function enrichCandidate(candidate, config) {
   const requiredDividendPer10 = requiredDividend(candidate.estimatedProbability, config.edgeBuffer);
-  const edge = candidate.marketDividendPer10
+  const expectedRoi = candidate.marketDividendPer10
     ? (candidate.estimatedProbability * candidate.marketDividendPer10 / 10) - 1
     : null;
   const role = candidate.cashEligible ? "cash" : "paper";
+  const meetsEntryPrice = expectedRoi == null ? null : expectedRoi >= config.edgeBuffer;
   return {
     ...candidate,
+    key: candidateKey(candidate),
     role,
     label: POOL_META[candidate.type].label,
     requiredDividendPer10,
-    edge,
-    status: statusFor(candidate.cashEligible, edge, candidate.marketDividendPer10),
+    edge: expectedRoi,
+    expectedRoi,
+    targetRoi: config.edgeBuffer,
+    meetsEntryPrice,
+    status: statusFor(candidate.cashEligible, expectedRoi, candidate.marketDividendPer10, config.edgeBuffer),
   };
 }
 
-function statusFor(cashEligible, edge, marketDividendPer10) {
+function statusFor(cashEligible, expectedRoi, marketDividendPer10, edgeBuffer) {
   if (!cashEligible) return "PAPER";
   if (!marketDividendPer10) return "CONDITIONAL";
-  return edge >= 0 ? "PLAY" : "WATCH";
+  return expectedRoi >= edgeBuffer ? "PLAY" : "WATCH";
 }
 
 function candidate(type, selections, estimatedProbability, extra) {
@@ -249,6 +297,10 @@ function candidate(type, selections, estimatedProbability, extra) {
     estimatedProbability: clamp(estimatedProbability, 0, 0.95),
     ...extra,
   };
+}
+
+function candidateKey(candidate) {
+  return `${candidate.type}:${candidate.selections.map((selection) => selection.horseId ?? selection.horseNo ?? selection.horseName ?? "").join("+")}`;
 }
 
 function selection(runner) {
@@ -264,6 +316,10 @@ function rankedPredictions(entry) {
   return [...(entry?.forecast?.predictions ?? [])]
     .filter((runner) => Number.isFinite(Number(runner.probability)))
     .sort((a, b) => Number(b.probability) - Number(a.probability));
+}
+
+function horseIds(runners) {
+  return runners.filter(Boolean).map((runner) => runner.horseId);
 }
 
 function estimatedPlaceCutoff(fieldSize) {
@@ -331,8 +387,125 @@ function marketDividend(runner, type) {
   return null;
 }
 
+function marketDividendForPool({ type, runners, entry, config }) {
+  const override = optionDividendPer10(type, config);
+  if (override) return override;
+
+  if ((type === "WIN" || type === "PLACE") && runners.length === 1) {
+    const directMarket = marketDividend(runners[0], type);
+    if (directMarket) return directMarket;
+  }
+
+  return officialDividendPer10(type, runners, entry?.settlement?.dividends);
+}
+
+function optionDividendPer10(type, config) {
+  const key = {
+    QUINELLA_PLACE: "qplDividendPer10",
+    QUINELLA: "quinellaDividendPer10",
+    FORECAST: "forecastDividendPer10",
+    TRIO: "trioDividendPer10",
+    TIERCE: "tierceDividendPer10",
+    FIRST4: "first4DividendPer10",
+    QUARTET: "quartetDividendPer10",
+  }[type];
+  return key ? positiveNumber(config[key]) : null;
+}
+
+function officialDividendPer10(type, runners, dividends) {
+  const poolKey = {
+    WIN: "win",
+    PLACE: "place",
+    QUINELLA_PLACE: "quinellaPlace",
+    QUINELLA: "quinella",
+    FORECAST: "forecast",
+    TRIO: "trio",
+    TIERCE: "tierce",
+    FIRST4: "first4",
+    QUARTET: "quartet",
+  }[type];
+  const pool = poolKey ? dividends?.[poolKey] : null;
+  if (!Array.isArray(pool)) return null;
+
+  const wanted = dividendCombinationKey(type, runners.map((runner) => runner.horseNo));
+  const match = pool.find((item) => dividendCombinationKey(type, item.combination) === wanted);
+  return positiveNumber(match?.dividendPer10);
+}
+
+function dividendCombinationKey(type, combination) {
+  const numbers = (combination ?? [])
+    .map((value) => Number(value))
+    .filter(Number.isFinite);
+  if (["QUINELLA_PLACE", "QUINELLA", "TRIO", "FIRST4"].includes(type)) {
+    numbers.sort((a, b) => a - b);
+  }
+  return numbers.join(",");
+}
+
 function hasUsableMarket(candidate) {
   return positiveNumber(candidate.marketDividendPer10);
+}
+
+function firstHorseId(candidate) {
+  return candidate?.selections?.[0]?.horseId ?? null;
+}
+
+function containsHorse(candidate, horseId) {
+  return Boolean(horseId) && candidate?.selections?.some((selection) => selection.horseId === horseId);
+}
+
+function clearsTargetExpectedRoi(candidate, config) {
+  return Number.isFinite(candidate?.expectedRoi) && candidate.expectedRoi >= config.edgeBuffer;
+}
+
+function compareLinesByExpectedRoi(a, b) {
+  const aRank = lineExpectedRoiRank(a);
+  const bRank = lineExpectedRoiRank(b);
+  return bRank - aRank || b.estimatedProbability - a.estimatedProbability;
+}
+
+function lineExpectedRoiRank(line) {
+  if (Number.isFinite(line?.expectedRoi)) return line.expectedRoi;
+  return -1 + Number(line?.estimatedProbability ?? 0) / 10;
+}
+
+function exposureShare(lines, horseId) {
+  const total = lines.reduce((sum, line) => sum + line.stake, 0);
+  if (!total || !horseId) return 0;
+  const exposed = lines
+    .filter((line) => containsHorse(line, horseId))
+    .reduce((sum, line) => sum + line.stake, 0);
+  return exposed / total;
+}
+
+function limitCoreExposure(lines, topHorseId, maxShare) {
+  const kept = [...lines];
+  const removablePriority = ["WIN", "QUINELLA", "QUINELLA_PLACE"];
+
+  while (exposureShare(kept, topHorseId) > maxShare) {
+    const removableIndex = findCoreExposureTrimIndex(kept, topHorseId, removablePriority);
+    if (removableIndex === -1) break;
+    kept.splice(removableIndex, 1);
+  }
+
+  return kept;
+}
+
+function findCoreExposureTrimIndex(lines, topHorseId, removablePriority) {
+  for (const type of removablePriority) {
+    let index = -1;
+    let lowestExpectedRoi = Infinity;
+    lines.forEach((line, lineIndex) => {
+      if (line.type !== type || !containsHorse(line, topHorseId)) return;
+      const expectedRoi = Number.isFinite(line.expectedRoi) ? line.expectedRoi : -1;
+      if (expectedRoi < lowestExpectedRoi) {
+        index = lineIndex;
+        lowestExpectedRoi = expectedRoi;
+      }
+    });
+    if (index !== -1) return index;
+  }
+  return -1;
 }
 
 function positiveNumber(value) {

@@ -22,9 +22,13 @@ It is a research and backtesting tool, not a guaranteed betting system.
 - `src/hkjc-parser.js` parses official HKJC fixtures, race cards, and local result HTML.
 - `src/model.js` scores horses, updates ratings, backtests, and calibrates weights.
 - `src/cli.js` provides refresh, weekly fetch, backtest, and calibration commands.
+- `src/sqlite-store.js` syncs official JSON files into the local SQLite research database.
+- `../ranking-probabilities.js` turns runner win probabilities into a
+  Harville/Plackett-Luce finishing-order distribution for multi-pool pricing.
 - `data/raw/` stores fetched official result JSON.
 - `data/upcoming/` stores fetched official race-card JSON before a meeting is settled.
 - `data/processed/` stores latest backtest and calibration reports.
+- `data/hkjc.sqlite` is the local durable SQLite database generated from raw/upcoming JSON.
 
 ## Weekly Flow
 
@@ -58,6 +62,46 @@ Generate the website dashboard data:
 ```bash
 npm run hkjc:dashboard -- --input hkjc-horse-model/data/raw --bankroll 1000 --minEdge 0 --minProbability 0.15
 ```
+
+Or use the SQLite-backed flow, which avoids repeatedly scanning/rebuilding from
+loose JSON files:
+
+```bash
+npm run hkjc:sync-db
+npm run hkjc:dashboard-db -- --bankroll 200 --minEdge 0 --minProbability 0.15 --maxStakePct 0.05
+```
+
+For scheduled local operation, run the combined command:
+
+```bash
+npm run hkjc:auto-run -- --bankroll 200 --minEdge 0 --minProbability 0.15 --maxStakePct 0.05 --finalEdgeBuffer 0.08
+```
+
+This syncs `data/raw` and `data/upcoming` into `data/hkjc.sqlite`, optionally
+imports normalized market snapshots with `--marketInput`, exports the website
+dashboard, records the latest recommendation run, and writes a post-race audit
+JSON next to the dashboard output unless `--auditOutput` is supplied.
+
+You can rerun only the recommendation audit after new results settle:
+
+```bash
+npm run hkjc:recommendation-audit
+```
+
+Pre-race odds and pool snapshots can be imported independently:
+
+```bash
+npm run hkjc:market-snapshot -- --input hkjc-horse-model/data/market-snapshot.json
+```
+
+The normalized file should contain `odds` and/or `pools` arrays with `raceId`,
+`capturedAt`, `minutesToPost`, `pool`, and either `combination + oddsValue` or
+`investment + sellStatus`. These snapshots are the bridge toward T-30/T-10/T-3
+expected-ROI decisions.
+
+The dashboard performance export includes probability calibration buckets plus
+Brier Score and Log Loss. These scoring rules are used to watch whether the
+model probability scale is trustworthy enough for EV/Kelly-style staking.
 
 Open the local dashboard:
 

@@ -708,6 +708,7 @@ function renderPortfolioLine(entry, line) {
         <p>${escapeHtml(line.rationale)}</p>
         <div class="portfolio-metrics">
           <em>命中率 ${formatPercent(line.estimatedProbability)}</em>
+          <em>期望ROI ${escapeHtml(formatExpectedRoi(line.expectedRoi, line.targetRoi))}</em>
           <em>最低派彩 ${formatHkd(line.requiredDividendPer10)}/10</em>
           <em>${line.marketDividendPer10 ? `当前 ${formatHkd(line.marketDividendPer10)}/10` : "等实时派彩"}</em>
         </div>
@@ -722,7 +723,7 @@ function renderPortfolioMiniLine(entry, line) {
   return `
     <div class="portfolio-mini-line">
       <span>${escapeHtml(formatRaceContext(entry))} · ${escapeHtml(line.label)} · ${escapeHtml(formatPoolSelections(line.selections))}</span>
-      <strong>${formatPercent(line.estimatedProbability)} · 入场 ${formatHkd(line.requiredDividendPer10)}/10</strong>
+      <strong>${formatPercent(line.estimatedProbability)} · EV ${escapeHtml(formatExpectedRoi(line.expectedRoi, line.targetRoi))} · 入场 ${formatHkd(line.requiredDividendPer10)}/10</strong>
     </div>
   `;
 }
@@ -733,6 +734,7 @@ function renderProbabilityCandidate(candidate) {
       <span>${escapeHtml(candidate.label)}</span>
       <strong>${formatPercent(candidate.estimatedProbability)}</strong>
       <em>${escapeHtml(formatPoolSelections(candidate.selections))}</em>
+      <em>EV ${escapeHtml(formatExpectedRoi(candidate.expectedRoi, candidate.targetRoi))} · 入场 ${formatHkd(candidate.requiredDividendPer10)}/10</em>
     </div>
   `;
 }
@@ -743,6 +745,12 @@ function portfolioStatusText(status) {
   if (status === "WATCH") return "等更好派彩";
   if (status === "PAPER") return "纸上";
   return status;
+}
+
+function formatExpectedRoi(expectedRoi, targetRoi) {
+  if (Number.isFinite(Number(expectedRoi))) return formatPercent(Number(expectedRoi));
+  if (Number.isFinite(Number(targetRoi))) return `目标 ${formatPercent(Number(targetRoi))}`;
+  return "-";
 }
 
 function renderAdaptiveStakingPanel(entries, selectedEntry) {
@@ -1317,6 +1325,7 @@ function renderPerformancePanel(snapshot) {
   const recent = performance.recent;
   const meetings = performance.byMeeting.slice(0, 5);
   const strategy = performance.stakingStrategy;
+  const scoring = performance.probabilityScoring;
   const strategyHitRate = (hits, bets) => (bets > 0 ? hits / bets : 0);
   const strategyNote = strategy?.roiNote
     ?? "全策略 ROI 会按官方 Win / Place / Quinella Place / Quinella 派彩结算；缺派彩的命中线会标记为待定。";
@@ -1387,6 +1396,16 @@ function renderPerformancePanel(snapshot) {
             ${performance.probabilityCalibration.map(renderCalibrationBar).join("")}
           </div>
         </div>
+        ${scoring ? `
+          <div>
+            <h4>概率评分</h4>
+            <div class="mini-record-list">
+              ${renderMiniRecordLine("Brier Score", numberLabel(scoring.brierScore, 4), "越低越好", -scoring.brierScore)}
+              ${renderMiniRecordLine("Log Loss", numberLabel(scoring.logLoss, 4), "惩罚过度自信", -scoring.logLoss)}
+              ${renderMiniRecordLine("均值 vs 实际", formatPercent(scoring.averageProbability), formatPercent(scoring.actualWinRate), -Math.abs(scoring.calibrationGap))}
+            </div>
+          </div>
+        ` : ""}
       </div>
       <div class="mini-record-list meeting-records">
         ${meetings.map((meeting) => renderMiniRecordLine(
@@ -1648,6 +1667,11 @@ function renderMissingData(error) {
 function formatPercent(value) {
   if (!Number.isFinite(value)) return "-";
   return `${(value * 100).toFixed(1)}%`;
+}
+
+function numberLabel(value, digits = 2) {
+  if (!Number.isFinite(Number(value))) return "-";
+  return Number(value).toFixed(digits);
 }
 
 function formatOdds(value) {

@@ -42,10 +42,30 @@ describe('staking strategy', () => {
     assert.equal(strategy.totalStake, 50);
     assert.deepEqual(strategy.bets.map((bet) => [bet.type, bet.amount, bet.horses.map((horse) => horse.horseId)]), [
       ['PLACE', 20, ['A']],
-      ['WIN', 10, ['A']],
+      ['PLACE', 10, ['B']],
       ['QUINELLA_PLACE', 10, ['A', 'B']],
-      ['QUINELLA_PLACE', 10, ['A', 'C']],
+      ['QUINELLA_PLACE', 10, ['B', 'C']],
     ]);
+  });
+
+  it('keeps a strong staking plan from depending entirely on the top horse', () => {
+    const strategy = buildStakingStrategy(entry([
+      runner('A', 'R1 Top Risk', 0.183, 7.5),
+      runner('B', 'R1 Support One', 0.162, 6.2),
+      runner('C', 'R1 Support Two', 0.161, 11),
+    ]));
+
+    const exposureByHorse = new Map();
+    for (const bet of strategy.bets) {
+      for (const horse of bet.horses) {
+        exposureByHorse.set(horse.horseId, (exposureByHorse.get(horse.horseId) ?? 0) + bet.amount);
+      }
+    }
+
+    assert(strategy.bets.some((bet) => bet.type === 'QUINELLA_PLACE' && bet.horses.every((horse) => ['B', 'C'].includes(horse.horseId))));
+    assert(strategy.bets.some((bet) => bet.type === 'PLACE' && bet.horses[0].horseId === 'B'));
+    assert(exposureByHorse.get('A') / strategy.totalStake <= 0.6);
+    assert(strategy.stopRules.some((rule) => /单一马匹|核心马/.test(rule)));
   });
 
   it('caps a very strong plan at HK$100', () => {

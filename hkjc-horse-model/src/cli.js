@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { backtestRaces, buildDashboardSnapshot, calibrateConfig } from './model.js';
+import { auditRecommendationRuns } from './recommendation-audit.js';
 import {
   fetchFixtureMeetings,
   fetchMeetingRaceCards,
@@ -11,12 +13,22 @@ import {
   normalizeRaceDate,
   parseRaceUrl,
 } from './hkjc-parser.js';
+import {
+  getDatabaseStats,
+  loadRacesFromDatabase,
+  loadRecommendationRuns,
+  recordOddsSnapshot,
+  recordPoolSnapshot,
+  recordRecommendationRun,
+  syncRaceFilesToDatabase,
+} from './sqlite-store.js';
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(dirname, '..');
 const rawDataDir = path.join(projectRoot, 'data', 'raw');
 const upcomingDataDir = path.join(projectRoot, 'data', 'upcoming');
 const processedDataDir = path.join(projectRoot, 'data', 'processed');
+const sqliteDbPath = path.join(projectRoot, 'data', 'hkjc.sqlite');
 
 async function main(argv) {
   const [command, ...rest] = argv;
@@ -47,6 +59,31 @@ async function main(argv) {
     return;
   }
 
+  if (command === 'auto-run') {
+    await autoRunCommand(args);
+    return;
+  }
+
+  if (command === 'sync-db') {
+    await syncDbCommand(args);
+    return;
+  }
+
+  if (command === 'dashboard-db') {
+    await dashboardDbCommand(args);
+    return;
+  }
+
+  if (command === 'market-snapshot') {
+    await marketSnapshotCommand(args);
+    return;
+  }
+
+  if (command === 'recommendation-audit') {
+    await recommendationAuditCommand(args);
+    return;
+  }
+
   if (command === 'backtest') {
     await backtestCommand(args);
     return;
@@ -63,6 +100,171 @@ async function main(argv) {
   }
 
   throw new Error(`Unknown command: ${command}`);
+}
+
+async function syncDbCommand(args) {
+  const dbPath = path.resolve(args.db ?? sqliteDbPath);
+  const inputPath = path.resolve(args.input ?? rawDataDir);
+  const upcomingPath = path.resolve(args.upcoming ?? upcomingDataDir);
+
+  let upcomingSummary = null;
+  if (!args.skipUpcoming && existsSync(upcomingPath)) {
+    upcomingSummary = syncRaceFilesToDatabase({
+      dbPath,
+      inputPath: upcomingPath,
+      sourceKind: 'upcoming',
+    });
+  }
+
+  const rawSummary = syncRaceFilesToDatabase({
+    dbPath,
+    inputPath,
+    sourceKind: 'raw',
+  });
+
+  const stats = getDatabaseStats(dbPath);
+  console.log(`SQLite database synced: ${dbPath}`);
+  console.log(`Raw files ${rawSummary.filesSeen}, races ${rawSummary.racesSeen}, runners ${rawSummary.runnersSeen}, dividends ${rawSummary.dividendsSeen}`);
+  if (upcomingSummary) {
+    console.log(`Upcoming files ${upcomingSummary.filesSeen}, races ${upcomingSummary.racesSeen}, runners ${upcomingSummary.runnersSeen}`);
+  }
+  console.log(`Database totals: ${stats.races} races (${stats.settledRaces} settled, ${stats.upcomingRaces} upcoming), ${stats.runners} runners, ${stats.dividends} dividends`);
+}
+
+async function autoRunCommand(args) {
+  await syncDbCommand(args);
+  const dashboardOutput = args.output ?? path.join(process.cwd(), 'data', 'dashboard.json');
+
+  if (args.marketInput) {
+    const marketInputPath = path.resolve(args.marketInput);
+    if (existsSync(marketInputPath)) {
+      await marketSnapshotCommand({
+        ...args,
+        input: marketInputPath,
+      });
+    } else {
+      console.log(`Market snapshot skipped: ${marketInputPath} does not exist`);
+    }
+  }
+
+  await dashboardDbCommand({
+    ...args,
+    output: dashboardOutput,
+  });
+
+  await recommendationAuditCommand({
+    ...args,
+    output: args.auditOutput ?? path.join(path.dirname(path.resolve(dashboardOutput)), 'latest-recommendation-audit.json'),
+  });
+
+  console.log('Auto run complete');
+}
+
+async function dashboardDbCommand(args) {
+  const dbPath = path.resolve(args.db ?? sqliteDbPath);
+  const settledRaces = loadRacesFromDatabase({ dbPath, status: 'settled' });
+  const upcomingRaces = loadRacesFromDatabase({ dbPath, status: 'upcoming' });
+  const snapshot = buildDashboardSnapshot(settledRaces, {
+    minEdge: args.minEdge == null ? 0 : Number(args.minEdge),
+    minProbability: args.minProbability == null ? 0.15 : Number(args.minProbability),
+    bankroll: args.bankroll == null ? 1000 : Number(args.bankroll),
+    maxStakePct: args.maxStakePct == null ? 0.0125 : Number(args.maxStakePct),
+    finalEdgeBuffer: args.finalEdgeBuffer == null ? 0.08 : Number(args.finalEdgeBuffer),
+    allowProbabilityOnly: args.allowProbabilityOnly !== 'false',
+    upcomingRaces,
+  });
+
+  snapshot.dataSource = {
+    source: 'sqlite',
+    database: publicDatabaseLabel(dbPath),
+    settledRaces: settledRaces.length,
+    upcomingRaces: upcomingRaces.length,
+  };
+
+  recordDashboardRecommendationRun({
+    dbPath,
+    snapshot,
+    args,
+  });
+
+  const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'dashboard.json'));
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeJson(outputPath, snapshot);
+
+  console.log(`Dashboard snapshot from SQLite: ${snapshot.summary.racesSettled} settled races`);
+  console.log(`Upcoming forecasts: ${snapshot.upcomingEntries.length}`);
+  console.log(`Saved dashboard data to ${outputPath}`);
+}
+
+function recordDashboardRecommendationRun({ dbPath, snapshot, args }) {
+  const forecast = snapshot.latestUpcomingForecast?.raceId
+    ? snapshot.latestUpcomingForecast
+    : snapshot.latestForecast;
+  if (!forecast?.raceId) return null;
+
+  return recordRecommendationRun({
+    dbPath,
+    run: {
+      raceId: forecast.raceId,
+      raceNo: forecast.raceNo,
+      date: forecast.date,
+      racecourse: forecast.racecourse,
+      generatedAt: snapshot.generatedAt,
+      modelVersion: 'hkjc-local-horse-model',
+      strategyVersion: forecast.finalBetPlan?.strategyVersion ?? 'ev-portfolio-v1',
+      bankroll: args.bankroll == null ? 1000 : Number(args.bankroll),
+      finalEdgeBuffer: args.finalEdgeBuffer == null ? 0.08 : Number(args.finalEdgeBuffer),
+      recommendations: extractRecommendationLines(forecast),
+      summary: {
+        status: forecast.status,
+        mode: forecast.finalBetPlan?.mode ?? forecast.recommendation?.action ?? 'unknown',
+        topPickHorseNo: forecast.topPick?.horseNo ?? null,
+        topPickHorseName: forecast.topPick?.horseName ?? null,
+        upcomingEntries: snapshot.upcomingEntries?.length ?? 0,
+      },
+    },
+  });
+}
+
+function extractRecommendationLines(forecast) {
+  if (Array.isArray(forecast.finalBetPlan?.cashLines)) return forecast.finalBetPlan.cashLines;
+  if (forecast.finalBetPlan) return [forecast.finalBetPlan];
+  if (forecast.recommendation) return [forecast.recommendation];
+  return [];
+}
+
+async function marketSnapshotCommand(args) {
+  const dbPath = path.resolve(args.db ?? sqliteDbPath);
+  const inputPath = path.resolve(args.input ?? path.join(projectRoot, 'data', 'market-snapshot.json'));
+  const payload = JSON.parse(await readFile(inputPath, 'utf8'));
+  const oddsSnapshots = normalizeMarketSnapshotItems(payload, ['odds', 'oddsSnapshots']);
+  const poolSnapshots = normalizeMarketSnapshotItems(payload, ['pools', 'poolSnapshots']);
+
+  for (const snapshot of oddsSnapshots) {
+    recordOddsSnapshot({ dbPath, snapshot });
+  }
+  for (const snapshot of poolSnapshots) {
+    recordPoolSnapshot({ dbPath, snapshot });
+  }
+
+  const stats = getDatabaseStats(dbPath);
+  console.log(`Market snapshots imported: ${oddsSnapshots.length} odds, ${poolSnapshots.length} pools`);
+  console.log(`Database market totals: ${stats.oddsSnapshots} odds snapshots, ${stats.poolSnapshots} pool snapshots`);
+}
+
+async function recommendationAuditCommand(args) {
+  const dbPath = path.resolve(args.db ?? sqliteDbPath);
+  const races = loadRacesFromDatabase({ dbPath, status: 'settled' });
+  const runs = loadRecommendationRuns({ dbPath });
+  const report = auditRecommendationRuns({ runs, races });
+  const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'latest-recommendation-audit.json'));
+
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeJson(outputPath, report);
+
+  console.log(`Saved recommendation audit to ${outputPath}`);
+  console.log(`Recommendation audit: ${report.summary.settledRuns}/${report.summary.runs} runs settled, stake ${money(report.summary.totalStake)}, return ${money(report.summary.totalReturn)}, profit ${formatSigned(report.summary.profit)}, ROI ${report.summary.roi == null ? 'n/a' : percent(report.summary.roi)}`);
+  console.log(`Lines: ${report.summary.hitLines} hit, ${report.summary.missLines} miss, ${report.summary.passLines} pass`);
 }
 
 async function fetchCommand(args) {
@@ -309,6 +511,14 @@ async function collectJsonFiles(inputPath) {
     .map((entry) => path.join(inputPath, entry.name));
 }
 
+function normalizeMarketSnapshotItems(payload, keys) {
+  if (Array.isArray(payload)) return payload;
+  for (const key of keys) {
+    if (Array.isArray(payload?.[key])) return payload[key];
+  }
+  return [];
+}
+
 function parseArgs(values) {
   const args = {};
   for (let index = 0; index < values.length; index += 1) {
@@ -406,6 +616,15 @@ function percent(value) {
   return `${(value * 100).toFixed(1)}%`;
 }
 
+function money(value) {
+  return Number(value ?? 0).toFixed(2);
+}
+
+function formatSigned(value) {
+  const number = Number(value ?? 0);
+  return `${number >= 0 ? '+' : ''}${number.toFixed(2)}`;
+}
+
 function printHelp() {
   console.log(`
 HKJC local horse model
@@ -414,6 +633,11 @@ Commands:
   fetch      --date 2026-01-04 --course ST --races 1-11
   fetch-racecard --date 2026-06-13 --course ST --races 1-11
   refresh    --historyDays 14 --futureDays 21 --bankroll 200 --minEdge 0 --minProbability 0.15
+  auto-run   --input hkjc-horse-model/data/raw --db hkjc-horse-model/data/hkjc.sqlite --output data/dashboard.json --auditOutput data/latest-recommendation-audit.json
+  sync-db    --input hkjc-horse-model/data/raw --upcoming hkjc-horse-model/data/upcoming --db hkjc-horse-model/data/hkjc.sqlite
+  dashboard-db --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/dashboard.json
+  market-snapshot --input hkjc-horse-model/data/market-snapshot.json --db hkjc-horse-model/data/hkjc.sqlite
+  recommendation-audit --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/latest-recommendation-audit.json
   fetch-url  https://racing.hkjc.com/en-us/local/information/localresults?RaceNo=2&Racecourse=ST&racedate=2026%2F01%2F04
   backtest   --input hkjc-horse-model/data/raw --minEdge 0
   calibrate  --input hkjc-horse-model/data/raw --top 5
@@ -425,6 +649,12 @@ Notes:
   - ST = Sha Tin, HV = Happy Valley.
   - Backtest predicts each race using only races seen earlier in chronological order.
 `);
+}
+
+function publicDatabaseLabel(dbPath) {
+  const relative = path.relative(process.cwd(), dbPath);
+  if (relative && !relative.startsWith('..') && !path.isAbsolute(relative)) return relative;
+  return path.basename(dbPath);
 }
 
 main(process.argv.slice(2)).catch((error) => {

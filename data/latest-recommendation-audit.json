@@ -1,0 +1,1357 @@
+{
+  "summary": {
+    "runs": 10,
+    "settledRuns": 3,
+    "openRuns": 7,
+    "totalStake": 0,
+    "totalReturn": 0,
+    "profit": 0,
+    "roi": null,
+    "hitLines": 0,
+    "missLines": 0,
+    "passLines": 3
+  },
+  "runs": [
+    {
+      "runId": "rec_0a6f6917345cf5e5",
+      "raceId": "2026-07-08-HV-1",
+      "date": "2026-07-08",
+      "racecourse": "HV",
+      "raceNo": 1,
+      "generatedAt": "2026-07-06T17:16:28.122Z",
+      "modelVersion": "hkjc-local-horse-model",
+      "strategyVersion": "ev-portfolio-v1",
+      "bankroll": 200,
+      "finalEdgeBuffer": 0.08,
+      "recommendations": [
+        {
+          "mode": "prepare",
+          "label": "PREP / 预备",
+          "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+          "betType": "WIN",
+          "horseId": "HK_2022_H436",
+          "horseName": "COUNTRY DANCER",
+          "horseNo": 1,
+          "modelProbability": 0.2303767074033227,
+          "fairOdds": 4.340716608338752,
+          "currentOdds": null,
+          "minimumOdds": 4.69,
+          "targetEdge": 0.08,
+          "plannedStake": 10,
+          "stakePct": 0.05,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "T-5 仍无实时赔率就不下注",
+          "checklist": [
+            "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
+            "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
+            "赔率缺失或跳动太乱时，只保留纸上模拟。"
+          ],
+          "stopRules": [
+            "最终赔率低于最低线，直接 PASS。",
+            "任何临场官方变化削弱模型条件，直接 PASS。"
+          ]
+        }
+      ],
+      "summary": {
+        "status": "upcoming",
+        "mode": "prepare",
+        "topPickHorseNo": 1,
+        "topPickHorseName": "COUNTRY DANCER",
+        "upcomingEntries": 9
+      },
+      "raw": {
+        "raceId": "2026-07-08-HV-1",
+        "raceNo": 1,
+        "date": "2026-07-08",
+        "racecourse": "HV",
+        "generatedAt": "2026-07-06T17:16:28.122Z",
+        "modelVersion": "hkjc-local-horse-model",
+        "strategyVersion": "ev-portfolio-v1",
+        "bankroll": 200,
+        "finalEdgeBuffer": 0.08,
+        "recommendations": [
+          {
+            "mode": "prepare",
+            "label": "PREP / 预备",
+            "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+            "betType": "WIN",
+            "horseId": "HK_2022_H436",
+            "horseName": "COUNTRY DANCER",
+            "horseNo": 1,
+            "modelProbability": 0.2303767074033227,
+            "fairOdds": 4.340716608338752,
+            "currentOdds": null,
+            "minimumOdds": 4.69,
+            "targetEdge": 0.08,
+            "plannedStake": 10,
+            "stakePct": 0.05,
+            "entryWindow": "开跑前 10-5 分钟",
+            "reviewWindow": "开跑前 15 分钟复核",
+            "cutoffWindow": "T-5 仍无实时赔率就不下注",
+            "checklist": [
+              "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
+              "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
+              "赔率缺失或跳动太乱时，只保留纸上模拟。"
+            ],
+            "stopRules": [
+              "最终赔率低于最低线，直接 PASS。",
+              "任何临场官方变化削弱模型条件，直接 PASS。"
+            ]
+          }
+        ],
+        "summary": {
+          "status": "upcoming",
+          "mode": "prepare",
+          "topPickHorseNo": 1,
+          "topPickHorseName": "COUNTRY DANCER",
+          "upcomingEntries": 9
+        }
+      },
+      "status": "OPEN",
+      "stake": 0,
+      "returned": 0,
+      "profit": 0,
+      "lines": [
+        {
+          "mode": "prepare",
+          "label": "PREP / 预备",
+          "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+          "betType": "WIN",
+          "horseId": "HK_2022_H436",
+          "horseName": "COUNTRY DANCER",
+          "horseNo": 1,
+          "modelProbability": 0.2303767074033227,
+          "fairOdds": 4.340716608338752,
+          "currentOdds": null,
+          "minimumOdds": 4.69,
+          "targetEdge": 0.08,
+          "plannedStake": 10,
+          "stakePct": 0.05,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "T-5 仍无实时赔率就不下注",
+          "checklist": [
+            "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
+            "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
+            "赔率缺失或跳动太乱时，只保留纸上模拟。"
+          ],
+          "stopRules": [
+            "最终赔率低于最低线，直接 PASS。",
+            "任何临场官方变化削弱模型条件，直接 PASS。"
+          ],
+          "status": "OPEN",
+          "stake": 10,
+          "returned": 0,
+          "profit": 0
+        }
+      ]
+    },
+    {
+      "runId": "rec_88a1c1f57e15f14f",
+      "raceId": "2026-07-08-HV-1",
+      "date": "2026-07-08",
+      "racecourse": "HV",
+      "raceNo": 1,
+      "generatedAt": "2026-07-06T07:58:17.726Z",
+      "modelVersion": "hkjc-local-horse-model",
+      "strategyVersion": "ev-portfolio-v1",
+      "bankroll": 200,
+      "finalEdgeBuffer": 0.08,
+      "recommendations": [
+        {
+          "mode": "prepare",
+          "label": "PREP / 预备",
+          "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+          "betType": "WIN",
+          "horseId": "HK_2022_H436",
+          "horseName": "COUNTRY DANCER",
+          "horseNo": 1,
+          "modelProbability": 0.2303767074033227,
+          "fairOdds": 4.340716608338752,
+          "currentOdds": null,
+          "minimumOdds": 4.69,
+          "targetEdge": 0.08,
+          "plannedStake": 10,
+          "stakePct": 0.05,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "T-5 仍无实时赔率就不下注",
+          "checklist": [
+            "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
+            "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
+            "赔率缺失或跳动太乱时，只保留纸上模拟。"
+          ],
+          "stopRules": [
+            "最终赔率低于最低线，直接 PASS。",
+            "任何临场官方变化削弱模型条件，直接 PASS。"
+          ]
+        }
+      ],
+      "summary": {
+        "status": "upcoming",
+        "mode": "prepare",
+        "topPickHorseNo": 1,
+        "topPickHorseName": "COUNTRY DANCER",
+        "upcomingEntries": 9
+      },
+      "raw": {
+        "raceId": "2026-07-08-HV-1",
+        "raceNo": 1,
+        "date": "2026-07-08",
+        "racecourse": "HV",
+        "generatedAt": "2026-07-06T07:58:17.726Z",
+        "modelVersion": "hkjc-local-horse-model",
+        "strategyVersion": "ev-portfolio-v1",
+        "bankroll": 200,
+        "finalEdgeBuffer": 0.08,
+        "recommendations": [
+          {
+            "mode": "prepare",
+            "label": "PREP / 预备",
+            "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+            "betType": "WIN",
+            "horseId": "HK_2022_H436",
+            "horseName": "COUNTRY DANCER",
+            "horseNo": 1,
+            "modelProbability": 0.2303767074033227,
+            "fairOdds": 4.340716608338752,
+            "currentOdds": null,
+            "minimumOdds": 4.69,
+            "targetEdge": 0.08,
+            "plannedStake": 10,
+            "stakePct": 0.05,
+            "entryWindow": "开跑前 10-5 分钟",
+            "reviewWindow": "开跑前 15 分钟复核",
+            "cutoffWindow": "T-5 仍无实时赔率就不下注",
+            "checklist": [
+              "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
+              "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
+              "赔率缺失或跳动太乱时，只保留纸上模拟。"
+            ],
+            "stopRules": [
+              "最终赔率低于最低线，直接 PASS。",
+              "任何临场官方变化削弱模型条件，直接 PASS。"
+            ]
+          }
+        ],
+        "summary": {
+          "status": "upcoming",
+          "mode": "prepare",
+          "topPickHorseNo": 1,
+          "topPickHorseName": "COUNTRY DANCER",
+          "upcomingEntries": 9
+        }
+      },
+      "status": "OPEN",
+      "stake": 0,
+      "returned": 0,
+      "profit": 0,
+      "lines": [
+        {
+          "mode": "prepare",
+          "label": "PREP / 预备",
+          "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+          "betType": "WIN",
+          "horseId": "HK_2022_H436",
+          "horseName": "COUNTRY DANCER",
+          "horseNo": 1,
+          "modelProbability": 0.2303767074033227,
+          "fairOdds": 4.340716608338752,
+          "currentOdds": null,
+          "minimumOdds": 4.69,
+          "targetEdge": 0.08,
+          "plannedStake": 10,
+          "stakePct": 0.05,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "T-5 仍无实时赔率就不下注",
+          "checklist": [
+            "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
+            "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
+            "赔率缺失或跳动太乱时，只保留纸上模拟。"
+          ],
+          "stopRules": [
+            "最终赔率低于最低线，直接 PASS。",
+            "任何临场官方变化削弱模型条件，直接 PASS。"
+          ],
+          "status": "OPEN",
+          "stake": 10,
+          "returned": 0,
+          "profit": 0
+        }
+      ]
+    },
+    {
+      "runId": "rec_cf79577a15589fe9",
+      "raceId": "2026-07-08-HV-1",
+      "date": "2026-07-08",
+      "racecourse": "HV",
+      "raceNo": 1,
+      "generatedAt": "2026-07-06T07:58:08.532Z",
+      "modelVersion": "hkjc-local-horse-model",
+      "strategyVersion": "ev-portfolio-v1",
+      "bankroll": 200,
+      "finalEdgeBuffer": 0.08,
+      "recommendations": [
+        {
+          "mode": "prepare",
+          "label": "PREP / 预备",
+          "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+          "betType": "WIN",
+          "horseId": "HK_2022_H436",
+          "horseName": "COUNTRY DANCER",
+          "horseNo": 1,
+          "modelProbability": 0.2303767074033227,
+          "fairOdds": 4.340716608338752,
+          "currentOdds": null,
+          "minimumOdds": 4.69,
+          "targetEdge": 0.08,
+          "plannedStake": 10,
+          "stakePct": 0.05,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "T-5 仍无实时赔率就不下注",
+          "checklist": [
+            "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
+            "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
+            "赔率缺失或跳动太乱时，只保留纸上模拟。"
+          ],
+          "stopRules": [
+            "最终赔率低于最低线，直接 PASS。",
+            "任何临场官方变化削弱模型条件，直接 PASS。"
+          ]
+        }
+      ],
+      "summary": {
+        "status": "upcoming",
+        "mode": "prepare",
+        "topPickHorseNo": 1,
+        "topPickHorseName": "COUNTRY DANCER",
+        "upcomingEntries": 9
+      },
+      "raw": {
+        "raceId": "2026-07-08-HV-1",
+        "raceNo": 1,
+        "date": "2026-07-08",
+        "racecourse": "HV",
+        "generatedAt": "2026-07-06T07:58:08.532Z",
+        "modelVersion": "hkjc-local-horse-model",
+        "strategyVersion": "ev-portfolio-v1",
+        "bankroll": 200,
+        "finalEdgeBuffer": 0.08,
+        "recommendations": [
+          {
+            "mode": "prepare",
+            "label": "PREP / 预备",
+            "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+            "betType": "WIN",
+            "horseId": "HK_2022_H436",
+            "horseName": "COUNTRY DANCER",
+            "horseNo": 1,
+            "modelProbability": 0.2303767074033227,
+            "fairOdds": 4.340716608338752,
+            "currentOdds": null,
+            "minimumOdds": 4.69,
+            "targetEdge": 0.08,
+            "plannedStake": 10,
+            "stakePct": 0.05,
+            "entryWindow": "开跑前 10-5 分钟",
+            "reviewWindow": "开跑前 15 分钟复核",
+            "cutoffWindow": "T-5 仍无实时赔率就不下注",
+            "checklist": [
+              "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
+              "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
+              "赔率缺失或跳动太乱时，只保留纸上模拟。"
+            ],
+            "stopRules": [
+              "最终赔率低于最低线，直接 PASS。",
+              "任何临场官方变化削弱模型条件，直接 PASS。"
+            ]
+          }
+        ],
+        "summary": {
+          "status": "upcoming",
+          "mode": "prepare",
+          "topPickHorseNo": 1,
+          "topPickHorseName": "COUNTRY DANCER",
+          "upcomingEntries": 9
+        }
+      },
+      "status": "OPEN",
+      "stake": 0,
+      "returned": 0,
+      "profit": 0,
+      "lines": [
+        {
+          "mode": "prepare",
+          "label": "PREP / 预备",
+          "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+          "betType": "WIN",
+          "horseId": "HK_2022_H436",
+          "horseName": "COUNTRY DANCER",
+          "horseNo": 1,
+          "modelProbability": 0.2303767074033227,
+          "fairOdds": 4.340716608338752,
+          "currentOdds": null,
+          "minimumOdds": 4.69,
+          "targetEdge": 0.08,
+          "plannedStake": 10,
+          "stakePct": 0.05,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "T-5 仍无实时赔率就不下注",
+          "checklist": [
+            "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
+            "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
+            "赔率缺失或跳动太乱时，只保留纸上模拟。"
+          ],
+          "stopRules": [
+            "最终赔率低于最低线，直接 PASS。",
+            "任何临场官方变化削弱模型条件，直接 PASS。"
+          ],
+          "status": "OPEN",
+          "stake": 10,
+          "returned": 0,
+          "profit": 0
+        }
+      ]
+    },
+    {
+      "runId": "rec_adcd51b5e128fdbd",
+      "raceId": "2026-07-08-HV-1",
+      "date": "2026-07-08",
+      "racecourse": "HV",
+      "raceNo": 1,
+      "generatedAt": "2026-07-06T07:56:03.906Z",
+      "modelVersion": "hkjc-local-horse-model",
+      "strategyVersion": "ev-portfolio-v1",
+      "bankroll": 200,
+      "finalEdgeBuffer": 0.08,
+      "recommendations": [
+        {
+          "mode": "prepare",
+          "label": "PREP / 预备",
+          "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+          "betType": "WIN",
+          "horseId": "HK_2022_H436",
+          "horseName": "COUNTRY DANCER",
+          "horseNo": 1,
+          "modelProbability": 0.2303767074033227,
+          "fairOdds": 4.340716608338752,
+          "currentOdds": null,
+          "minimumOdds": 4.69,
+          "targetEdge": 0.08,
+          "plannedStake": 10,
+          "stakePct": 0.05,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "T-5 仍无实时赔率就不下注",
+          "checklist": [
+            "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
+            "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
+            "赔率缺失或跳动太乱时，只保留纸上模拟。"
+          ],
+          "stopRules": [
+            "最终赔率低于最低线，直接 PASS。",
+            "任何临场官方变化削弱模型条件，直接 PASS。"
+          ]
+        }
+      ],
+      "summary": {
+        "status": "upcoming",
+        "mode": "prepare",
+        "topPickHorseNo": 1,
+        "topPickHorseName": "COUNTRY DANCER",
+        "upcomingEntries": 9
+      },
+      "raw": {
+        "raceId": "2026-07-08-HV-1",
+        "raceNo": 1,
+        "date": "2026-07-08",
+        "racecourse": "HV",
+        "generatedAt": "2026-07-06T07:56:03.906Z",
+        "modelVersion": "hkjc-local-horse-model",
+        "strategyVersion": "ev-portfolio-v1",
+        "bankroll": 200,
+        "finalEdgeBuffer": 0.08,
+        "recommendations": [
+          {
+            "mode": "prepare",
+            "label": "PREP / 预备",
+            "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+            "betType": "WIN",
+            "horseId": "HK_2022_H436",
+            "horseName": "COUNTRY DANCER",
+            "horseNo": 1,
+            "modelProbability": 0.2303767074033227,
+            "fairOdds": 4.340716608338752,
+            "currentOdds": null,
+            "minimumOdds": 4.69,
+            "targetEdge": 0.08,
+            "plannedStake": 10,
+            "stakePct": 0.05,
+            "entryWindow": "开跑前 10-5 分钟",
+            "reviewWindow": "开跑前 15 分钟复核",
+            "cutoffWindow": "T-5 仍无实时赔率就不下注",
+            "checklist": [
+              "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
+              "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
+              "赔率缺失或跳动太乱时，只保留纸上模拟。"
+            ],
+            "stopRules": [
+              "最终赔率低于最低线，直接 PASS。",
+              "任何临场官方变化削弱模型条件，直接 PASS。"
+            ]
+          }
+        ],
+        "summary": {
+          "status": "upcoming",
+          "mode": "prepare",
+          "topPickHorseNo": 1,
+          "topPickHorseName": "COUNTRY DANCER",
+          "upcomingEntries": 9
+        }
+      },
+      "status": "OPEN",
+      "stake": 0,
+      "returned": 0,
+      "profit": 0,
+      "lines": [
+        {
+          "mode": "prepare",
+          "label": "PREP / 预备",
+          "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+          "betType": "WIN",
+          "horseId": "HK_2022_H436",
+          "horseName": "COUNTRY DANCER",
+          "horseNo": 1,
+          "modelProbability": 0.2303767074033227,
+          "fairOdds": 4.340716608338752,
+          "currentOdds": null,
+          "minimumOdds": 4.69,
+          "targetEdge": 0.08,
+          "plannedStake": 10,
+          "stakePct": 0.05,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "T-5 仍无实时赔率就不下注",
+          "checklist": [
+            "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
+            "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
+            "赔率缺失或跳动太乱时，只保留纸上模拟。"
+          ],
+          "stopRules": [
+            "最终赔率低于最低线，直接 PASS。",
+            "任何临场官方变化削弱模型条件，直接 PASS。"
+          ],
+          "status": "OPEN",
+          "stake": 10,
+          "returned": 0,
+          "profit": 0
+        }
+      ]
+    },
+    {
+      "runId": "rec_808d7965652a000c",
+      "raceId": "2026-07-08-HV-1",
+      "date": "2026-07-08",
+      "racecourse": "HV",
+      "raceNo": 1,
+      "generatedAt": "2026-07-06T05:53:56.831Z",
+      "modelVersion": "hkjc-local-horse-model",
+      "strategyVersion": "ev-portfolio-v1",
+      "bankroll": 200,
+      "finalEdgeBuffer": 0.08,
+      "recommendations": [
+        {
+          "mode": "prepare",
+          "label": "PREP / 预备",
+          "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+          "betType": "WIN",
+          "horseId": "HK_2022_H436",
+          "horseName": "COUNTRY DANCER",
+          "horseNo": 1,
+          "modelProbability": 0.2303767074033227,
+          "fairOdds": 4.340716608338752,
+          "currentOdds": null,
+          "minimumOdds": 4.69,
+          "targetEdge": 0.08,
+          "plannedStake": 10,
+          "stakePct": 0.05,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "T-5 仍无实时赔率就不下注",
+          "checklist": [
+            "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
+            "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
+            "赔率缺失或跳动太乱时，只保留纸上模拟。"
+          ],
+          "stopRules": [
+            "最终赔率低于最低线，直接 PASS。",
+            "任何临场官方变化削弱模型条件，直接 PASS。"
+          ]
+        }
+      ],
+      "summary": {
+        "status": "upcoming",
+        "mode": "prepare",
+        "topPickHorseNo": 1,
+        "topPickHorseName": "COUNTRY DANCER",
+        "upcomingEntries": 9
+      },
+      "raw": {
+        "raceId": "2026-07-08-HV-1",
+        "raceNo": 1,
+        "date": "2026-07-08",
+        "racecourse": "HV",
+        "generatedAt": "2026-07-06T05:53:56.831Z",
+        "modelVersion": "hkjc-local-horse-model",
+        "strategyVersion": "ev-portfolio-v1",
+        "bankroll": 200,
+        "finalEdgeBuffer": 0.08,
+        "recommendations": [
+          {
+            "mode": "prepare",
+            "label": "PREP / 预备",
+            "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+            "betType": "WIN",
+            "horseId": "HK_2022_H436",
+            "horseName": "COUNTRY DANCER",
+            "horseNo": 1,
+            "modelProbability": 0.2303767074033227,
+            "fairOdds": 4.340716608338752,
+            "currentOdds": null,
+            "minimumOdds": 4.69,
+            "targetEdge": 0.08,
+            "plannedStake": 10,
+            "stakePct": 0.05,
+            "entryWindow": "开跑前 10-5 分钟",
+            "reviewWindow": "开跑前 15 分钟复核",
+            "cutoffWindow": "T-5 仍无实时赔率就不下注",
+            "checklist": [
+              "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
+              "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
+              "赔率缺失或跳动太乱时，只保留纸上模拟。"
+            ],
+            "stopRules": [
+              "最终赔率低于最低线，直接 PASS。",
+              "任何临场官方变化削弱模型条件，直接 PASS。"
+            ]
+          }
+        ],
+        "summary": {
+          "status": "upcoming",
+          "mode": "prepare",
+          "topPickHorseNo": 1,
+          "topPickHorseName": "COUNTRY DANCER",
+          "upcomingEntries": 9
+        }
+      },
+      "status": "OPEN",
+      "stake": 0,
+      "returned": 0,
+      "profit": 0,
+      "lines": [
+        {
+          "mode": "prepare",
+          "label": "PREP / 预备",
+          "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+          "betType": "WIN",
+          "horseId": "HK_2022_H436",
+          "horseName": "COUNTRY DANCER",
+          "horseNo": 1,
+          "modelProbability": 0.2303767074033227,
+          "fairOdds": 4.340716608338752,
+          "currentOdds": null,
+          "minimumOdds": 4.69,
+          "targetEdge": 0.08,
+          "plannedStake": 10,
+          "stakePct": 0.05,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "T-5 仍无实时赔率就不下注",
+          "checklist": [
+            "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
+            "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
+            "赔率缺失或跳动太乱时，只保留纸上模拟。"
+          ],
+          "stopRules": [
+            "最终赔率低于最低线，直接 PASS。",
+            "任何临场官方变化削弱模型条件，直接 PASS。"
+          ],
+          "status": "OPEN",
+          "stake": 10,
+          "returned": 0,
+          "profit": 0
+        }
+      ]
+    },
+    {
+      "runId": "rec_9e3d91f8d10391e9",
+      "raceId": "2026-07-08-HV-1",
+      "date": "2026-07-08",
+      "racecourse": "HV",
+      "raceNo": 1,
+      "generatedAt": "2026-07-06T05:51:57.475Z",
+      "modelVersion": "hkjc-local-horse-model",
+      "strategyVersion": "ev-portfolio-v1",
+      "bankroll": 200,
+      "finalEdgeBuffer": 0.08,
+      "recommendations": [
+        {
+          "mode": "prepare",
+          "label": "PREP / 预备",
+          "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+          "betType": "WIN",
+          "horseId": "HK_2022_H436",
+          "horseName": "COUNTRY DANCER",
+          "horseNo": 1,
+          "modelProbability": 0.2303767074033227,
+          "fairOdds": 4.340716608338752,
+          "currentOdds": null,
+          "minimumOdds": 4.69,
+          "targetEdge": 0.08,
+          "plannedStake": 10,
+          "stakePct": 0.05,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "T-5 仍无实时赔率就不下注",
+          "checklist": [
+            "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
+            "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
+            "赔率缺失或跳动太乱时，只保留纸上模拟。"
+          ],
+          "stopRules": [
+            "最终赔率低于最低线，直接 PASS。",
+            "任何临场官方变化削弱模型条件，直接 PASS。"
+          ]
+        }
+      ],
+      "summary": {
+        "status": "upcoming",
+        "mode": "prepare",
+        "topPickHorseNo": 1,
+        "topPickHorseName": "COUNTRY DANCER",
+        "upcomingEntries": 9
+      },
+      "raw": {
+        "raceId": "2026-07-08-HV-1",
+        "raceNo": 1,
+        "date": "2026-07-08",
+        "racecourse": "HV",
+        "generatedAt": "2026-07-06T05:51:57.475Z",
+        "modelVersion": "hkjc-local-horse-model",
+        "strategyVersion": "ev-portfolio-v1",
+        "bankroll": 200,
+        "finalEdgeBuffer": 0.08,
+        "recommendations": [
+          {
+            "mode": "prepare",
+            "label": "PREP / 预备",
+            "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+            "betType": "WIN",
+            "horseId": "HK_2022_H436",
+            "horseName": "COUNTRY DANCER",
+            "horseNo": 1,
+            "modelProbability": 0.2303767074033227,
+            "fairOdds": 4.340716608338752,
+            "currentOdds": null,
+            "minimumOdds": 4.69,
+            "targetEdge": 0.08,
+            "plannedStake": 10,
+            "stakePct": 0.05,
+            "entryWindow": "开跑前 10-5 分钟",
+            "reviewWindow": "开跑前 15 分钟复核",
+            "cutoffWindow": "T-5 仍无实时赔率就不下注",
+            "checklist": [
+              "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
+              "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
+              "赔率缺失或跳动太乱时，只保留纸上模拟。"
+            ],
+            "stopRules": [
+              "最终赔率低于最低线，直接 PASS。",
+              "任何临场官方变化削弱模型条件，直接 PASS。"
+            ]
+          }
+        ],
+        "summary": {
+          "status": "upcoming",
+          "mode": "prepare",
+          "topPickHorseNo": 1,
+          "topPickHorseName": "COUNTRY DANCER",
+          "upcomingEntries": 9
+        }
+      },
+      "status": "OPEN",
+      "stake": 0,
+      "returned": 0,
+      "profit": 0,
+      "lines": [
+        {
+          "mode": "prepare",
+          "label": "PREP / 预备",
+          "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+          "betType": "WIN",
+          "horseId": "HK_2022_H436",
+          "horseName": "COUNTRY DANCER",
+          "horseNo": 1,
+          "modelProbability": 0.2303767074033227,
+          "fairOdds": 4.340716608338752,
+          "currentOdds": null,
+          "minimumOdds": 4.69,
+          "targetEdge": 0.08,
+          "plannedStake": 10,
+          "stakePct": 0.05,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "T-5 仍无实时赔率就不下注",
+          "checklist": [
+            "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
+            "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
+            "赔率缺失或跳动太乱时，只保留纸上模拟。"
+          ],
+          "stopRules": [
+            "最终赔率低于最低线，直接 PASS。",
+            "任何临场官方变化削弱模型条件，直接 PASS。"
+          ],
+          "status": "OPEN",
+          "stake": 10,
+          "returned": 0,
+          "profit": 0
+        }
+      ]
+    },
+    {
+      "runId": "rec_ba3fbcc9a7933251",
+      "raceId": "2026-07-08-HV-1",
+      "date": "2026-07-08",
+      "racecourse": "HV",
+      "raceNo": 1,
+      "generatedAt": "2026-07-06T04:53:01.518Z",
+      "modelVersion": "hkjc-local-horse-model",
+      "strategyVersion": "ev-portfolio-v1",
+      "bankroll": 200,
+      "finalEdgeBuffer": 0.08,
+      "recommendations": [
+        {
+          "mode": "prepare",
+          "label": "PREP / 预备",
+          "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+          "betType": "WIN",
+          "horseId": "HK_2022_H436",
+          "horseName": "COUNTRY DANCER",
+          "horseNo": 1,
+          "modelProbability": 0.2303767074033227,
+          "fairOdds": 4.340716608338752,
+          "currentOdds": null,
+          "minimumOdds": 4.69,
+          "targetEdge": 0.08,
+          "plannedStake": 10,
+          "stakePct": 0.05,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "T-5 仍无实时赔率就不下注",
+          "checklist": [
+            "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
+            "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
+            "赔率缺失或跳动太乱时，只保留纸上模拟。"
+          ],
+          "stopRules": [
+            "最终赔率低于最低线，直接 PASS。",
+            "任何临场官方变化削弱模型条件，直接 PASS。"
+          ]
+        }
+      ],
+      "summary": {
+        "status": "upcoming",
+        "mode": "prepare",
+        "topPickHorseNo": 1,
+        "topPickHorseName": "COUNTRY DANCER",
+        "upcomingEntries": 9
+      },
+      "raw": {
+        "raceId": "2026-07-08-HV-1",
+        "raceNo": 1,
+        "date": "2026-07-08",
+        "racecourse": "HV",
+        "generatedAt": "2026-07-06T04:53:01.518Z",
+        "modelVersion": "hkjc-local-horse-model",
+        "strategyVersion": "ev-portfolio-v1",
+        "bankroll": 200,
+        "finalEdgeBuffer": 0.08,
+        "recommendations": [
+          {
+            "mode": "prepare",
+            "label": "PREP / 预备",
+            "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+            "betType": "WIN",
+            "horseId": "HK_2022_H436",
+            "horseName": "COUNTRY DANCER",
+            "horseNo": 1,
+            "modelProbability": 0.2303767074033227,
+            "fairOdds": 4.340716608338752,
+            "currentOdds": null,
+            "minimumOdds": 4.69,
+            "targetEdge": 0.08,
+            "plannedStake": 10,
+            "stakePct": 0.05,
+            "entryWindow": "开跑前 10-5 分钟",
+            "reviewWindow": "开跑前 15 分钟复核",
+            "cutoffWindow": "T-5 仍无实时赔率就不下注",
+            "checklist": [
+              "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
+              "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
+              "赔率缺失或跳动太乱时，只保留纸上模拟。"
+            ],
+            "stopRules": [
+              "最终赔率低于最低线，直接 PASS。",
+              "任何临场官方变化削弱模型条件，直接 PASS。"
+            ]
+          }
+        ],
+        "summary": {
+          "status": "upcoming",
+          "mode": "prepare",
+          "topPickHorseNo": 1,
+          "topPickHorseName": "COUNTRY DANCER",
+          "upcomingEntries": 9
+        }
+      },
+      "status": "OPEN",
+      "stake": 0,
+      "returned": 0,
+      "profit": 0,
+      "lines": [
+        {
+          "mode": "prepare",
+          "label": "PREP / 预备",
+          "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+          "betType": "WIN",
+          "horseId": "HK_2022_H436",
+          "horseName": "COUNTRY DANCER",
+          "horseNo": 1,
+          "modelProbability": 0.2303767074033227,
+          "fairOdds": 4.340716608338752,
+          "currentOdds": null,
+          "minimumOdds": 4.69,
+          "targetEdge": 0.08,
+          "plannedStake": 10,
+          "stakePct": 0.05,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "T-5 仍无实时赔率就不下注",
+          "checklist": [
+            "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
+            "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
+            "赔率缺失或跳动太乱时，只保留纸上模拟。"
+          ],
+          "stopRules": [
+            "最终赔率低于最低线，直接 PASS。",
+            "任何临场官方变化削弱模型条件，直接 PASS。"
+          ],
+          "status": "OPEN",
+          "stake": 10,
+          "returned": 0,
+          "profit": 0
+        }
+      ]
+    },
+    {
+      "runId": "rec_b965be8cfb86e19a",
+      "raceId": "2026-07-04-ST-11",
+      "date": "2026-07-04",
+      "racecourse": "ST",
+      "raceNo": 11,
+      "generatedAt": "2026-07-06T04:51:01.322Z",
+      "modelVersion": "hkjc-local-horse-model",
+      "strategyVersion": "ev-portfolio-v1",
+      "bankroll": 200,
+      "finalEdgeBuffer": 0.08,
+      "recommendations": [
+        {
+          "mode": "pass",
+          "label": "NO BET / 不买",
+          "headline": "保留本金；这场没有通过最终下注规则。",
+          "betType": "WIN",
+          "horseId": null,
+          "horseName": null,
+          "horseNo": null,
+          "modelProbability": 0.14048309060961792,
+          "fairOdds": 7.118294420065506,
+          "currentOdds": 2.7,
+          "minimumOdds": 7.69,
+          "targetEdge": 0.08,
+          "plannedStake": 0,
+          "stakePct": 0,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "不强行下注",
+          "checklist": [
+            "实时赔率没有正期望值，不下独赢。",
+            "这场只用于赛后复盘和模型学习。"
+          ],
+          "stopRules": [
+            "没有 edge，就不下注。",
+            "不要为了有动作，把 PASS 换成低质量选择。"
+          ]
+        }
+      ],
+      "summary": {
+        "status": "settled",
+        "mode": "pass",
+        "topPickHorseNo": 1,
+        "topPickHorseName": "CHILL EASY",
+        "upcomingEntries": 0
+      },
+      "raw": {
+        "raceId": "2026-07-04-ST-11",
+        "raceNo": 11,
+        "date": "2026-07-04",
+        "racecourse": "ST",
+        "generatedAt": "2026-07-06T04:51:01.322Z",
+        "modelVersion": "hkjc-local-horse-model",
+        "strategyVersion": "ev-portfolio-v1",
+        "bankroll": 200,
+        "finalEdgeBuffer": 0.08,
+        "recommendations": [
+          {
+            "mode": "pass",
+            "label": "NO BET / 不买",
+            "headline": "保留本金；这场没有通过最终下注规则。",
+            "betType": "WIN",
+            "horseId": null,
+            "horseName": null,
+            "horseNo": null,
+            "modelProbability": 0.14048309060961792,
+            "fairOdds": 7.118294420065506,
+            "currentOdds": 2.7,
+            "minimumOdds": 7.69,
+            "targetEdge": 0.08,
+            "plannedStake": 0,
+            "stakePct": 0,
+            "entryWindow": "开跑前 10-5 分钟",
+            "reviewWindow": "开跑前 15 分钟复核",
+            "cutoffWindow": "不强行下注",
+            "checklist": [
+              "实时赔率没有正期望值，不下独赢。",
+              "这场只用于赛后复盘和模型学习。"
+            ],
+            "stopRules": [
+              "没有 edge，就不下注。",
+              "不要为了有动作，把 PASS 换成低质量选择。"
+            ]
+          }
+        ],
+        "summary": {
+          "status": "settled",
+          "mode": "pass",
+          "topPickHorseNo": 1,
+          "topPickHorseName": "CHILL EASY",
+          "upcomingEntries": 0
+        }
+      },
+      "status": "SETTLED",
+      "stake": 0,
+      "returned": 0,
+      "profit": 0,
+      "lines": [
+        {
+          "mode": "pass",
+          "label": "NO BET / 不买",
+          "headline": "保留本金；这场没有通过最终下注规则。",
+          "betType": "WIN",
+          "horseId": null,
+          "horseName": null,
+          "horseNo": null,
+          "modelProbability": 0.14048309060961792,
+          "fairOdds": 7.118294420065506,
+          "currentOdds": 2.7,
+          "minimumOdds": 7.69,
+          "targetEdge": 0.08,
+          "plannedStake": 0,
+          "stakePct": 0,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "不强行下注",
+          "checklist": [
+            "实时赔率没有正期望值，不下独赢。",
+            "这场只用于赛后复盘和模型学习。"
+          ],
+          "stopRules": [
+            "没有 edge，就不下注。",
+            "不要为了有动作，把 PASS 换成低质量选择。"
+          ],
+          "status": "PASS",
+          "stake": 0,
+          "returned": 0,
+          "profit": 0
+        }
+      ]
+    },
+    {
+      "runId": "rec_1f7efea150614cbb",
+      "raceId": "2026-07-04-ST-11",
+      "date": "2026-07-04",
+      "racecourse": "ST",
+      "raceNo": 11,
+      "generatedAt": "2026-07-06T03:57:33.847Z",
+      "modelVersion": "hkjc-local-horse-model",
+      "strategyVersion": "ev-portfolio-v1",
+      "bankroll": 200,
+      "finalEdgeBuffer": 0.08,
+      "recommendations": [
+        {
+          "mode": "pass",
+          "label": "NO BET / 不买",
+          "headline": "保留本金；这场没有通过最终下注规则。",
+          "betType": "WIN",
+          "horseId": null,
+          "horseName": null,
+          "horseNo": null,
+          "modelProbability": 0.14048309060961792,
+          "fairOdds": 7.118294420065506,
+          "currentOdds": 2.7,
+          "minimumOdds": 7.69,
+          "targetEdge": 0.08,
+          "plannedStake": 0,
+          "stakePct": 0,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "不强行下注",
+          "checklist": [
+            "实时赔率没有正期望值，不下独赢。",
+            "这场只用于赛后复盘和模型学习。"
+          ],
+          "stopRules": [
+            "没有 edge，就不下注。",
+            "不要为了有动作，把 PASS 换成低质量选择。"
+          ]
+        }
+      ],
+      "summary": {
+        "status": "settled",
+        "mode": "pass",
+        "topPickHorseNo": 1,
+        "topPickHorseName": "CHILL EASY",
+        "upcomingEntries": 0
+      },
+      "raw": {
+        "raceId": "2026-07-04-ST-11",
+        "raceNo": 11,
+        "date": "2026-07-04",
+        "racecourse": "ST",
+        "generatedAt": "2026-07-06T03:57:33.847Z",
+        "modelVersion": "hkjc-local-horse-model",
+        "strategyVersion": "ev-portfolio-v1",
+        "bankroll": 200,
+        "finalEdgeBuffer": 0.08,
+        "recommendations": [
+          {
+            "mode": "pass",
+            "label": "NO BET / 不买",
+            "headline": "保留本金；这场没有通过最终下注规则。",
+            "betType": "WIN",
+            "horseId": null,
+            "horseName": null,
+            "horseNo": null,
+            "modelProbability": 0.14048309060961792,
+            "fairOdds": 7.118294420065506,
+            "currentOdds": 2.7,
+            "minimumOdds": 7.69,
+            "targetEdge": 0.08,
+            "plannedStake": 0,
+            "stakePct": 0,
+            "entryWindow": "开跑前 10-5 分钟",
+            "reviewWindow": "开跑前 15 分钟复核",
+            "cutoffWindow": "不强行下注",
+            "checklist": [
+              "实时赔率没有正期望值，不下独赢。",
+              "这场只用于赛后复盘和模型学习。"
+            ],
+            "stopRules": [
+              "没有 edge，就不下注。",
+              "不要为了有动作，把 PASS 换成低质量选择。"
+            ]
+          }
+        ],
+        "summary": {
+          "status": "settled",
+          "mode": "pass",
+          "topPickHorseNo": 1,
+          "topPickHorseName": "CHILL EASY",
+          "upcomingEntries": 0
+        }
+      },
+      "status": "SETTLED",
+      "stake": 0,
+      "returned": 0,
+      "profit": 0,
+      "lines": [
+        {
+          "mode": "pass",
+          "label": "NO BET / 不买",
+          "headline": "保留本金；这场没有通过最终下注规则。",
+          "betType": "WIN",
+          "horseId": null,
+          "horseName": null,
+          "horseNo": null,
+          "modelProbability": 0.14048309060961792,
+          "fairOdds": 7.118294420065506,
+          "currentOdds": 2.7,
+          "minimumOdds": 7.69,
+          "targetEdge": 0.08,
+          "plannedStake": 0,
+          "stakePct": 0,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "不强行下注",
+          "checklist": [
+            "实时赔率没有正期望值，不下独赢。",
+            "这场只用于赛后复盘和模型学习。"
+          ],
+          "stopRules": [
+            "没有 edge，就不下注。",
+            "不要为了有动作，把 PASS 换成低质量选择。"
+          ],
+          "status": "PASS",
+          "stake": 0,
+          "returned": 0,
+          "profit": 0
+        }
+      ]
+    },
+    {
+      "runId": "rec_67e512d95aa31931",
+      "raceId": "2026-07-04-ST-11",
+      "date": "2026-07-04",
+      "racecourse": "ST",
+      "raceNo": 11,
+      "generatedAt": "2026-07-06T03:56:44.952Z",
+      "modelVersion": "hkjc-local-horse-model",
+      "strategyVersion": "ev-portfolio-v1",
+      "bankroll": 200,
+      "finalEdgeBuffer": 0.08,
+      "recommendations": [
+        {
+          "mode": "pass",
+          "label": "NO BET / 不买",
+          "headline": "保留本金；这场没有通过最终下注规则。",
+          "betType": "WIN",
+          "horseId": null,
+          "horseName": null,
+          "horseNo": null,
+          "modelProbability": 0.14048309060961792,
+          "fairOdds": 7.118294420065506,
+          "currentOdds": 2.7,
+          "minimumOdds": 7.69,
+          "targetEdge": 0.08,
+          "plannedStake": 0,
+          "stakePct": 0,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "不强行下注",
+          "checklist": [
+            "实时赔率没有正期望值，不下独赢。",
+            "这场只用于赛后复盘和模型学习。"
+          ],
+          "stopRules": [
+            "没有 edge，就不下注。",
+            "不要为了有动作，把 PASS 换成低质量选择。"
+          ]
+        }
+      ],
+      "summary": {
+        "status": "settled",
+        "mode": "pass",
+        "topPickHorseNo": 1,
+        "topPickHorseName": "CHILL EASY",
+        "upcomingEntries": 0
+      },
+      "raw": {
+        "raceId": "2026-07-04-ST-11",
+        "raceNo": 11,
+        "date": "2026-07-04",
+        "racecourse": "ST",
+        "generatedAt": "2026-07-06T03:56:44.952Z",
+        "modelVersion": "hkjc-local-horse-model",
+        "strategyVersion": "ev-portfolio-v1",
+        "bankroll": 200,
+        "finalEdgeBuffer": 0.08,
+        "recommendations": [
+          {
+            "mode": "pass",
+            "label": "NO BET / 不买",
+            "headline": "保留本金；这场没有通过最终下注规则。",
+            "betType": "WIN",
+            "horseId": null,
+            "horseName": null,
+            "horseNo": null,
+            "modelProbability": 0.14048309060961792,
+            "fairOdds": 7.118294420065506,
+            "currentOdds": 2.7,
+            "minimumOdds": 7.69,
+            "targetEdge": 0.08,
+            "plannedStake": 0,
+            "stakePct": 0,
+            "entryWindow": "开跑前 10-5 分钟",
+            "reviewWindow": "开跑前 15 分钟复核",
+            "cutoffWindow": "不强行下注",
+            "checklist": [
+              "实时赔率没有正期望值，不下独赢。",
+              "这场只用于赛后复盘和模型学习。"
+            ],
+            "stopRules": [
+              "没有 edge，就不下注。",
+              "不要为了有动作，把 PASS 换成低质量选择。"
+            ]
+          }
+        ],
+        "summary": {
+          "status": "settled",
+          "mode": "pass",
+          "topPickHorseNo": 1,
+          "topPickHorseName": "CHILL EASY",
+          "upcomingEntries": 0
+        }
+      },
+      "status": "SETTLED",
+      "stake": 0,
+      "returned": 0,
+      "profit": 0,
+      "lines": [
+        {
+          "mode": "pass",
+          "label": "NO BET / 不买",
+          "headline": "保留本金；这场没有通过最终下注规则。",
+          "betType": "WIN",
+          "horseId": null,
+          "horseName": null,
+          "horseNo": null,
+          "modelProbability": 0.14048309060961792,
+          "fairOdds": 7.118294420065506,
+          "currentOdds": 2.7,
+          "minimumOdds": 7.69,
+          "targetEdge": 0.08,
+          "plannedStake": 0,
+          "stakePct": 0,
+          "entryWindow": "开跑前 10-5 分钟",
+          "reviewWindow": "开跑前 15 分钟复核",
+          "cutoffWindow": "不强行下注",
+          "checklist": [
+            "实时赔率没有正期望值，不下独赢。",
+            "这场只用于赛后复盘和模型学习。"
+          ],
+          "stopRules": [
+            "没有 edge，就不下注。",
+            "不要为了有动作，把 PASS 换成低质量选择。"
+          ],
+          "status": "PASS",
+          "stake": 0,
+          "returned": 0,
+          "profit": 0
+        }
+      ]
+    }
+  ]
+}

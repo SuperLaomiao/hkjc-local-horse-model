@@ -24,6 +24,7 @@ export function buildPerformanceSnapshot(entries, options = {}) {
     byMeeting: groupByMeeting(entries),
     topPickOddsBuckets: groupTopPickOddsBuckets(entries),
     probabilityCalibration: buildProbabilityCalibration(entries),
+    probabilityScoring: buildProbabilityScoring(entries),
     stakingStrategy: buildStakingStrategyPerformance(entries),
     warning: 'Historical ROI is a paper-simulation signal, not proof of a stable edge or future profit.',
   };
@@ -175,6 +176,41 @@ export function buildProbabilityCalibration(entries) {
       calibrationGap: bucketEntries.length > 0 ? round(ratio(wins, bucketEntries.length) - probabilityTotal / bucketEntries.length, 4) : 0,
     };
   });
+}
+
+export function buildProbabilityScoring(entries) {
+  const scored = entries
+    .map((entry) => {
+      const probability = Number(entry.forecast?.topPick?.probability);
+      if (!Number.isFinite(probability)) return null;
+      return {
+        probability: clampProbability(probability),
+        outcome: entry.settlement?.topPickHit ? 1 : 0,
+      };
+    })
+    .filter(Boolean);
+
+  const races = scored.length;
+  const probabilityTotal = sum(scored, (item) => item.probability);
+  const wins = sum(scored, (item) => item.outcome);
+  const brierScore = races > 0
+    ? round(sum(scored, (item) => (item.probability - item.outcome) ** 2) / races, 4)
+    : 0;
+  const logLoss = races > 0
+    ? round(sum(scored, (item) => logLossFor(item.probability, item.outcome)) / races, 4)
+    : 0;
+  const averageProbability = races > 0 ? round(probabilityTotal / races, 4) : 0;
+  const actualWinRate = round(ratio(wins, races), 4);
+
+  return {
+    races,
+    brierScore,
+    logLoss,
+    averageProbability,
+    actualWinRate,
+    calibrationGap: races > 0 ? round(actualWinRate - averageProbability, 4) : 0,
+    note: 'Lower Brier score and log loss mean better calibrated probability forecasts.',
+  };
 }
 
 function settleStrategyEntry(entry) {
@@ -368,4 +404,16 @@ function round(value, digits = 2) {
   if (!Number.isFinite(value)) return 0;
   const multiplier = 10 ** digits;
   return Math.round(value * multiplier) / multiplier;
+}
+
+function clampProbability(value) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return 0;
+  return Math.max(0, Math.min(1, number));
+}
+
+function logLossFor(probability, outcome) {
+  const epsilon = 1e-15;
+  const clipped = Math.max(epsilon, Math.min(1 - epsilon, probability));
+  return outcome === 1 ? -Math.log(clipped) : -Math.log(1 - clipped);
 }
