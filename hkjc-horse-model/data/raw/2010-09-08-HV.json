@@ -1,0 +1,2615 @@
+[
+  {
+    "raceId": "2010-09-08-HV-1",
+    "date": "2010-09-08",
+    "racecourse": "HV",
+    "raceNo": 1,
+    "raceIndex": 11,
+    "raceClass": 4,
+    "distance": 1000,
+    "ratingBand": "60-40",
+    "surface": "TURF",
+    "course": "TURF - \"A\" Course",
+    "going": "GOOD",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 5,
+        "horseId": "HK_2008_K251",
+        "brandNo": null,
+        "horseName": "KARBRIDGE  (CK251)",
+        "jockey": "C Y Ho",
+        "trainer": "C Fownes",
+        "actualWeight": 115,
+        "declaredHorseWeight": 1101,
+        "draw": 5,
+        "lbw": 0,
+        "runningPosition": [
+          3,
+          4,
+          1
+        ],
+        "finishSeconds": 57.25,
+        "winOdds": 3.6
+      },
+      {
+        "placing": 2,
+        "horseNo": 4,
+        "horseId": "HK_2008_K411",
+        "brandNo": null,
+        "horseName": "KHARU  (CK411)",
+        "jockey": "H W Lai",
+        "trainer": "L Ho",
+        "actualWeight": 124,
+        "declaredHorseWeight": 1090,
+        "draw": 3,
+        "lbw": 2.5,
+        "runningPosition": [
+          6,
+          6,
+          2
+        ],
+        "finishSeconds": 57.63,
+        "winOdds": 37
+      },
+      {
+        "placing": 3,
+        "horseNo": 3,
+        "horseId": "HK_2007_J301",
+        "brandNo": null,
+        "horseName": "MEGABUCKS  (CJ301)",
+        "jockey": "B Doyle",
+        "trainer": "T W Leung",
+        "actualWeight": 127,
+        "declaredHorseWeight": 1152,
+        "draw": 7,
+        "lbw": 2.5,
+        "runningPosition": [
+          4,
+          1,
+          3
+        ],
+        "finishSeconds": 57.65,
+        "winOdds": 4.3
+      },
+      {
+        "placing": 4,
+        "horseNo": 1,
+        "horseId": "HK_2003_D330",
+        "brandNo": null,
+        "horseName": "CLASSIC NAVIGATOR  (CD330)",
+        "jockey": "W M Lai",
+        "trainer": "T K Ng",
+        "actualWeight": 131,
+        "declaredHorseWeight": 1120,
+        "draw": 8,
+        "lbw": 2.5,
+        "runningPosition": [
+          2,
+          2,
+          4
+        ],
+        "finishSeconds": 57.66,
+        "winOdds": 4.8
+      },
+      {
+        "placing": 5,
+        "horseNo": 6,
+        "horseId": "HK_2005_G254",
+        "brandNo": null,
+        "horseName": "NOT QUITE PERFECT  (CG254)",
+        "jockey": "M L Yeung",
+        "trainer": "A Lee",
+        "actualWeight": 117,
+        "declaredHorseWeight": 1045,
+        "draw": 4,
+        "lbw": 3,
+        "runningPosition": [
+          5,
+          5,
+          5
+        ],
+        "finishSeconds": 57.72,
+        "winOdds": 3.6
+      },
+      {
+        "placing": 6,
+        "horseNo": 7,
+        "horseId": "HK_2009_L280",
+        "brandNo": null,
+        "horseName": "FLOREAT DAYS  (CL280)",
+        "jockey": "M Chadwick",
+        "trainer": "J Size",
+        "actualWeight": 119,
+        "declaredHorseWeight": 922,
+        "draw": 1,
+        "lbw": 5.25,
+        "runningPosition": [
+          7,
+          7,
+          6
+        ],
+        "finishSeconds": 58.07,
+        "winOdds": 31
+      },
+      {
+        "placing": 7,
+        "horseNo": 8,
+        "horseId": "HK_2005_G159",
+        "brandNo": null,
+        "horseName": "ESPERANZA  (CG159)",
+        "jockey": "C K Tong",
+        "trainer": "T W Leung",
+        "actualWeight": 115,
+        "declaredHorseWeight": 1042,
+        "draw": 2,
+        "lbw": 5.75,
+        "runningPosition": [
+          8,
+          8,
+          7
+        ],
+        "finishSeconds": 58.15,
+        "winOdds": 22
+      },
+      {
+        "placing": 8,
+        "horseNo": 2,
+        "horseId": "HK_2009_L149",
+        "brandNo": null,
+        "horseName": "WIN THE CASH  (CL149)",
+        "jockey": "D Whyte",
+        "trainer": "Y S Tsui",
+        "actualWeight": 128,
+        "declaredHorseWeight": 1141,
+        "draw": 6,
+        "lbw": 7.25,
+        "runningPosition": [
+          1,
+          3,
+          8
+        ],
+        "finishSeconds": 58.43,
+        "winOdds": 8.1
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            5
+          ],
+          "dividendPer10": 36
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            5
+          ],
+          "dividendPer10": 16
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            4
+          ],
+          "dividendPer10": 87.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            3
+          ],
+          "dividendPer10": 14.5
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            4,
+            5
+          ],
+          "dividendPer10": 845
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            4,
+            5
+          ],
+          "dividendPer10": 200.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            3,
+            5
+          ],
+          "dividendPer10": 34
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            3,
+            4
+          ],
+          "dividendPer10": 214
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            5,
+            4,
+            3
+          ],
+          "dividendPer10": 4757
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            3,
+            4,
+            5
+          ],
+          "dividendPer10": 748
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            1,
+            3,
+            4,
+            5
+          ],
+          "dividendPer10": 346
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2010%2F09%2F08&Racecourse=HV&RaceNo=1"
+  },
+  {
+    "raceId": "2010-09-08-HV-2",
+    "date": "2010-09-08",
+    "racecourse": "HV",
+    "raceNo": 2,
+    "raceIndex": 12,
+    "raceClass": 5,
+    "distance": 1200,
+    "ratingBand": "40-15",
+    "surface": "TURF",
+    "course": "TURF - \"A\" Course",
+    "going": "GOOD",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 1,
+        "horseId": "HK_2009_L019",
+        "brandNo": null,
+        "horseName": "ALL THE WINNERS  (CL019)",
+        "jockey": "T H So",
+        "trainer": "L Ho",
+        "actualWeight": 126,
+        "declaredHorseWeight": 1115,
+        "draw": 4,
+        "lbw": 0,
+        "runningPosition": [
+          1,
+          1,
+          1
+        ],
+        "finishSeconds": 69.99,
+        "winOdds": 7.1
+      },
+      {
+        "placing": 2,
+        "horseNo": 9,
+        "horseId": "HK_2008_K105",
+        "brandNo": null,
+        "horseName": "DR UNION  (CK105)",
+        "jockey": "W M Lai",
+        "trainer": "T K Ng",
+        "actualWeight": 120,
+        "declaredHorseWeight": 1072,
+        "draw": 8,
+        "lbw": 0.5,
+        "runningPosition": [
+          7,
+          7,
+          2
+        ],
+        "finishSeconds": 70.09,
+        "winOdds": 28
+      },
+      {
+        "placing": 3,
+        "horseNo": 10,
+        "horseId": "HK_2004_E275",
+        "brandNo": null,
+        "horseName": "MUTUAL GAIN  (CE275)",
+        "jockey": "H W Lai",
+        "trainer": "T W Leung",
+        "actualWeight": 112,
+        "declaredHorseWeight": 1049,
+        "draw": 5,
+        "lbw": 2.5,
+        "runningPosition": [
+          5,
+          5,
+          3
+        ],
+        "finishSeconds": 70.4,
+        "winOdds": 7.9
+      },
+      {
+        "placing": 4,
+        "horseNo": 4,
+        "horseId": "HK_2009_L018",
+        "brandNo": null,
+        "horseName": "FAIRY DRAGON  (CL018)",
+        "jockey": "B Prebble",
+        "trainer": "Y S Tsui",
+        "actualWeight": 130,
+        "declaredHorseWeight": 1142,
+        "draw": 10,
+        "lbw": 2.75,
+        "runningPosition": [
+          4,
+          4,
+          4
+        ],
+        "finishSeconds": 70.43,
+        "winOdds": 44
+      },
+      {
+        "placing": 5,
+        "horseNo": 7,
+        "horseId": "HK_2006_H026",
+        "brandNo": null,
+        "horseName": "MARVELLOUS  (CH026)",
+        "jockey": "K C Leung",
+        "trainer": "B K Ng",
+        "actualWeight": 120,
+        "declaredHorseWeight": 1064,
+        "draw": 1,
+        "lbw": 3.75,
+        "runningPosition": [
+          3,
+          3,
+          5
+        ],
+        "finishSeconds": 70.61,
+        "winOdds": 6.8
+      },
+      {
+        "placing": 6,
+        "horseNo": 5,
+        "horseId": "HK_2009_L113",
+        "brandNo": null,
+        "horseName": "GOOD JOB  (CL113)",
+        "jockey": "W C Marwing",
+        "trainer": "D E Ferraris",
+        "actualWeight": 129,
+        "declaredHorseWeight": 1084,
+        "draw": 7,
+        "lbw": 4.5,
+        "runningPosition": [
+          8,
+          8,
+          6
+        ],
+        "finishSeconds": 70.72,
+        "winOdds": 4.7
+      },
+      {
+        "placing": 7,
+        "horseNo": 8,
+        "horseId": "HK_2007_J353",
+        "brandNo": null,
+        "horseName": "WINNING STRATEGY  (CJ353)",
+        "jockey": "Y T Cheng",
+        "trainer": "C H Yip",
+        "actualWeight": 121,
+        "declaredHorseWeight": 1151,
+        "draw": 3,
+        "lbw": 5,
+        "runningPosition": [
+          9,
+          9,
+          7
+        ],
+        "finishSeconds": 70.81,
+        "winOdds": 6.7
+      },
+      {
+        "placing": 8,
+        "horseNo": 3,
+        "horseId": "HK_2007_J244",
+        "brandNo": null,
+        "horseName": "KEEP GOING  (CJ244)",
+        "jockey": "O Doleuze",
+        "trainer": "C W Chang",
+        "actualWeight": 131,
+        "declaredHorseWeight": 1132,
+        "draw": 9,
+        "lbw": 5.75,
+        "runningPosition": [
+          2,
+          2,
+          8
+        ],
+        "finishSeconds": 70.91,
+        "winOdds": 8.8
+      },
+      {
+        "placing": 9,
+        "horseNo": 2,
+        "horseId": "HK_2008_K162",
+        "brandNo": null,
+        "horseName": "KIMBER FORTUNE  (CK162)",
+        "jockey": "D Whyte",
+        "trainer": "K W Lui",
+        "actualWeight": 133,
+        "declaredHorseWeight": 1082,
+        "draw": 2,
+        "lbw": 6.5,
+        "runningPosition": [
+          6,
+          6,
+          9
+        ],
+        "finishSeconds": 71.03,
+        "winOdds": 4
+      },
+      {
+        "placing": 10,
+        "horseNo": 6,
+        "horseId": "HK_2007_J168",
+        "brandNo": null,
+        "horseName": "BERNINI  (CJ168)",
+        "jockey": "M W Leung",
+        "trainer": "K L Man",
+        "actualWeight": 122,
+        "declaredHorseWeight": 1097,
+        "draw": 6,
+        "lbw": 14,
+        "runningPosition": [
+          10,
+          10,
+          10
+        ],
+        "finishSeconds": 72.23,
+        "winOdds": 42
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            1
+          ],
+          "dividendPer10": 71
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            1
+          ],
+          "dividendPer10": 26
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            9
+          ],
+          "dividendPer10": 69.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            10
+          ],
+          "dividendPer10": 26.5
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            1,
+            9
+          ],
+          "dividendPer10": 1185.5
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            9
+          ],
+          "dividendPer10": 274.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            10
+          ],
+          "dividendPer10": 97
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            9,
+            10
+          ],
+          "dividendPer10": 254.5
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            1,
+            9,
+            10
+          ],
+          "dividendPer10": 13492
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            1,
+            9,
+            10
+          ],
+          "dividendPer10": 2553
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            1,
+            4,
+            9,
+            10
+          ],
+          "dividendPer10": 7975
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2010%2F09%2F08&Racecourse=HV&RaceNo=2"
+  },
+  {
+    "raceId": "2010-09-08-HV-3",
+    "date": "2010-09-08",
+    "racecourse": "HV",
+    "raceNo": 3,
+    "raceIndex": 13,
+    "raceClass": 2,
+    "distance": 1200,
+    "ratingBand": "100-80",
+    "surface": "TURF",
+    "course": "TURF - \"A\" Course",
+    "going": "GOOD",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 2,
+        "horseId": "HK_2009_L014",
+        "brandNo": null,
+        "horseName": "PERFECT GEAR  (CL014)",
+        "jockey": "B Prebble",
+        "trainer": "C Fownes",
+        "actualWeight": 128,
+        "declaredHorseWeight": 1114,
+        "draw": 7,
+        "lbw": 0,
+        "runningPosition": [
+          2,
+          2,
+          1
+        ],
+        "finishSeconds": 69.75,
+        "winOdds": 2.5
+      },
+      {
+        "placing": 2,
+        "horseNo": 6,
+        "horseId": "HK_2008_K405",
+        "brandNo": null,
+        "horseName": "SUPER BOY  (CK405)",
+        "jockey": "J Lloyd",
+        "trainer": "K L Man",
+        "actualWeight": 120,
+        "declaredHorseWeight": 1134,
+        "draw": 3,
+        "lbw": 0.5,
+        "runningPosition": [
+          1,
+          1,
+          2
+        ],
+        "finishSeconds": 69.83,
+        "winOdds": 16
+      },
+      {
+        "placing": 3,
+        "horseNo": 7,
+        "horseId": "HK_2007_J351",
+        "brandNo": null,
+        "horseName": "GOOD STRIKE  (CJ351)",
+        "jockey": "M L Yeung",
+        "trainer": "A Lee",
+        "actualWeight": 111,
+        "declaredHorseWeight": 1122,
+        "draw": 6,
+        "lbw": 0.5,
+        "runningPosition": [
+          7,
+          7,
+          3
+        ],
+        "finishSeconds": 69.85,
+        "winOdds": 10
+      },
+      {
+        "placing": 4,
+        "horseNo": 4,
+        "horseId": "HK_2008_K288",
+        "brandNo": null,
+        "horseName": "ALWAYS SOMETHING  (CK288)",
+        "jockey": "D Whyte",
+        "trainer": "J Size",
+        "actualWeight": 125,
+        "declaredHorseWeight": 1053,
+        "draw": 2,
+        "lbw": 1,
+        "runningPosition": [
+          5,
+          5,
+          4
+        ],
+        "finishSeconds": 69.93,
+        "winOdds": 5.4
+      },
+      {
+        "placing": 5,
+        "horseNo": 5,
+        "horseId": "HK_2008_K085",
+        "brandNo": null,
+        "horseName": "ELITE SIXTY-SIX  (CK085)",
+        "jockey": "D Beadman",
+        "trainer": "J Moore",
+        "actualWeight": 121,
+        "declaredHorseWeight": 1042,
+        "draw": 5,
+        "lbw": 1.75,
+        "runningPosition": [
+          4,
+          4,
+          5
+        ],
+        "finishSeconds": 70.02,
+        "winOdds": 10
+      },
+      {
+        "placing": 6,
+        "horseNo": 1,
+        "horseId": "HK_2007_J231",
+        "brandNo": null,
+        "horseName": "NORMAN INVADER  (CJ231)",
+        "jockey": "M Chadwick",
+        "trainer": "A S Cruz",
+        "actualWeight": 130,
+        "declaredHorseWeight": 1101,
+        "draw": 1,
+        "lbw": 2.25,
+        "runningPosition": [
+          3,
+          3,
+          6
+        ],
+        "finishSeconds": 70.11,
+        "winOdds": 4.3
+      },
+      {
+        "placing": 7,
+        "horseNo": 3,
+        "horseId": "HK_2008_K184",
+        "brandNo": null,
+        "horseName": "ROYAL FLUSH  (CK184)",
+        "jockey": "Z Purton",
+        "trainer": "A T Millard",
+        "actualWeight": 128,
+        "declaredHorseWeight": 1066,
+        "draw": 4,
+        "lbw": 5,
+        "runningPosition": [
+          6,
+          6,
+          7
+        ],
+        "finishSeconds": 70.56,
+        "winOdds": 6.4
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            2
+          ],
+          "dividendPer10": 25.5
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            2
+          ],
+          "dividendPer10": 12.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            6
+          ],
+          "dividendPer10": 43.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            7
+          ],
+          "dividendPer10": 29
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            2,
+            6
+          ],
+          "dividendPer10": 210
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            2,
+            6
+          ],
+          "dividendPer10": 70
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            2,
+            7
+          ],
+          "dividendPer10": 44.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            6,
+            7
+          ],
+          "dividendPer10": 152.5
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            2,
+            6,
+            7
+          ],
+          "dividendPer10": 1436
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            2,
+            6,
+            7
+          ],
+          "dividendPer10": 427
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            2,
+            4,
+            6,
+            7
+          ],
+          "dividendPer10": 322
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2010%2F09%2F08&Racecourse=HV&RaceNo=3"
+  },
+  {
+    "raceId": "2010-09-08-HV-4",
+    "date": "2010-09-08",
+    "racecourse": "HV",
+    "raceNo": 4,
+    "raceIndex": 14,
+    "raceClass": 5,
+    "distance": 1650,
+    "ratingBand": "40-15",
+    "surface": "TURF",
+    "course": "TURF - \"A\" Course",
+    "going": "GOOD",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 3,
+        "horseId": "HK_2008_K296",
+        "brandNo": null,
+        "horseName": "HAPPY CHA CHA  (CK296)",
+        "jockey": "D Whyte",
+        "trainer": "Y S Tsui",
+        "actualWeight": 128,
+        "declaredHorseWeight": 1011,
+        "draw": 12,
+        "lbw": 0,
+        "runningPosition": [
+          8,
+          8,
+          7,
+          1
+        ],
+        "finishSeconds": 102.07,
+        "winOdds": 4.8
+      },
+      {
+        "placing": 2,
+        "horseNo": 12,
+        "horseId": "HK_2007_J272",
+        "brandNo": null,
+        "horseName": "ICE FIRE  (CJ272)",
+        "jockey": "J Lloyd",
+        "trainer": "T K Ng",
+        "actualWeight": 118,
+        "declaredHorseWeight": 1042,
+        "draw": 6,
+        "lbw": 0.05,
+        "runningPosition": [
+          6,
+          6,
+          3,
+          2
+        ],
+        "finishSeconds": 102.12,
+        "winOdds": 14
+      },
+      {
+        "placing": 3,
+        "horseNo": 11,
+        "horseId": "HK_2008_K012",
+        "brandNo": null,
+        "horseName": "MASTER TOWER  (CK012)",
+        "jockey": "T H So",
+        "trainer": "L Ho",
+        "actualWeight": 113,
+        "declaredHorseWeight": 1028,
+        "draw": 11,
+        "lbw": 1.75,
+        "runningPosition": [
+          1,
+          1,
+          1,
+          3
+        ],
+        "finishSeconds": 102.36,
+        "winOdds": 25
+      },
+      {
+        "placing": 4,
+        "horseNo": 9,
+        "horseId": "HK_2006_H204",
+        "brandNo": null,
+        "horseName": "SAMMY'S FORTUNE  (CH204)",
+        "jockey": "W M Lai",
+        "trainer": "A Schutz",
+        "actualWeight": 119,
+        "declaredHorseWeight": 1132,
+        "draw": 1,
+        "lbw": 2.5,
+        "runningPosition": [
+          7,
+          7,
+          8,
+          4
+        ],
+        "finishSeconds": 102.49000000000001,
+        "winOdds": 24
+      },
+      {
+        "placing": 5,
+        "horseNo": 1,
+        "horseId": "HK_2007_J113",
+        "brandNo": null,
+        "horseName": "GRAND GENERAL  (CJ113)",
+        "jockey": "Z Purton",
+        "trainer": "B K Ng",
+        "actualWeight": 130,
+        "declaredHorseWeight": 1157,
+        "draw": 3,
+        "lbw": 2.75,
+        "runningPosition": [
+          12,
+          10,
+          11,
+          5
+        ],
+        "finishSeconds": 102.5,
+        "winOdds": 8.7
+      },
+      {
+        "placing": 6,
+        "horseNo": 4,
+        "horseId": "HK_2007_J342",
+        "brandNo": null,
+        "horseName": "HEALTHY CONTENDER  (CJ342)",
+        "jockey": "D Beadman",
+        "trainer": "D Cruz",
+        "actualWeight": 126,
+        "declaredHorseWeight": 1215,
+        "draw": 7,
+        "lbw": 3.25,
+        "runningPosition": [
+          10,
+          12,
+          10,
+          6
+        ],
+        "finishSeconds": 102.6,
+        "winOdds": 3.5
+      },
+      {
+        "placing": 7,
+        "horseNo": 10,
+        "horseId": "HK_2009_L034",
+        "brandNo": null,
+        "horseName": "SOLAR WONDER  (CL034)",
+        "jockey": "H W Lai",
+        "trainer": "P F Yiu",
+        "actualWeight": 119,
+        "declaredHorseWeight": 1165,
+        "draw": 10,
+        "lbw": 4,
+        "runningPosition": [
+          4,
+          2,
+          2,
+          7
+        ],
+        "finishSeconds": 102.71000000000001,
+        "winOdds": 19
+      },
+      {
+        "placing": 8,
+        "horseNo": 5,
+        "horseId": "HK_2006_H082",
+        "brandNo": null,
+        "horseName": "LIGHTNING MOUNT  (CH082)",
+        "jockey": "K C Leung",
+        "trainer": "S Woods",
+        "actualWeight": 121,
+        "declaredHorseWeight": 1101,
+        "draw": 5,
+        "lbw": 4.75,
+        "runningPosition": [
+          3,
+          3,
+          5,
+          8
+        ],
+        "finishSeconds": 102.81,
+        "winOdds": 62
+      },
+      {
+        "placing": 9,
+        "horseNo": 8,
+        "horseId": "HK_2007_J265",
+        "brandNo": null,
+        "horseName": "HUMONGUS  (CJ265)",
+        "jockey": "B Doyle",
+        "trainer": "T W Leung",
+        "actualWeight": 123,
+        "declaredHorseWeight": 1004,
+        "draw": 8,
+        "lbw": 5,
+        "runningPosition": [
+          11,
+          11,
+          12,
+          9
+        ],
+        "finishSeconds": 102.88,
+        "winOdds": 8.7
+      },
+      {
+        "placing": 10,
+        "horseNo": 6,
+        "horseId": "HK_2007_J204",
+        "brandNo": null,
+        "horseName": "DRAGON BOY  (CJ204)",
+        "jockey": "W C Marwing",
+        "trainer": "D E Ferraris",
+        "actualWeight": 125,
+        "declaredHorseWeight": 1084,
+        "draw": 2,
+        "lbw": 7.25,
+        "runningPosition": [
+          2,
+          4,
+          4,
+          10
+        ],
+        "finishSeconds": 103.25,
+        "winOdds": 10
+      },
+      {
+        "placing": 11,
+        "horseNo": 7,
+        "horseId": "HK_2005_G118",
+        "brandNo": null,
+        "horseName": "FRAMES DEPOT  (CG118)",
+        "jockey": "B Prebble",
+        "trainer": "C W Chang",
+        "actualWeight": 123,
+        "declaredHorseWeight": 1113,
+        "draw": 4,
+        "lbw": 8.75,
+        "runningPosition": [
+          5,
+          5,
+          9,
+          11
+        ],
+        "finishSeconds": 103.47999999999999,
+        "winOdds": 9.6
+      },
+      {
+        "placing": 12,
+        "horseNo": 2,
+        "horseId": "HK_2008_K177",
+        "brandNo": null,
+        "horseName": "LUCKY AMICI  (CK177)",
+        "jockey": "O Doleuze",
+        "trainer": "S Woods",
+        "actualWeight": 129,
+        "declaredHorseWeight": 1025,
+        "draw": 9,
+        "lbw": 10.5,
+        "runningPosition": [
+          9,
+          9,
+          6,
+          12
+        ],
+        "finishSeconds": 103.74000000000001,
+        "winOdds": 13
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            3
+          ],
+          "dividendPer10": 48.5
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            3
+          ],
+          "dividendPer10": 19.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            12
+          ],
+          "dividendPer10": 42.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            11
+          ],
+          "dividendPer10": 74.5
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            3,
+            12
+          ],
+          "dividendPer10": 329
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            3,
+            12
+          ],
+          "dividendPer10": 122.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            3,
+            11
+          ],
+          "dividendPer10": 177
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            11,
+            12
+          ],
+          "dividendPer10": 412.5
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            3,
+            12,
+            11
+          ],
+          "dividendPer10": 12589
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            3,
+            11,
+            12
+          ],
+          "dividendPer10": 2915
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            3,
+            9,
+            11,
+            12
+          ],
+          "dividendPer10": 12026
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2010%2F09%2F08&Racecourse=HV&RaceNo=4"
+  },
+  {
+    "raceId": "2010-09-08-HV-5",
+    "date": "2010-09-08",
+    "racecourse": "HV",
+    "raceNo": 5,
+    "raceIndex": 15,
+    "raceClass": 4,
+    "distance": 1200,
+    "ratingBand": "60-40",
+    "surface": "TURF",
+    "course": "TURF - \"A\" Course",
+    "going": "GOOD",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 3,
+        "horseId": "HK_2007_J190",
+        "brandNo": null,
+        "horseName": "ACHILLES OF TROY  (CJ190)",
+        "jockey": "C Y Ho",
+        "trainer": "C Fownes",
+        "actualWeight": 121,
+        "declaredHorseWeight": 1203,
+        "draw": 8,
+        "lbw": 0,
+        "runningPosition": [
+          3,
+          3,
+          1
+        ],
+        "finishSeconds": 70.49,
+        "winOdds": 5.2
+      },
+      {
+        "placing": 2,
+        "horseNo": 8,
+        "horseId": "HK_2005_G212",
+        "brandNo": null,
+        "horseName": "BRILLIANT ONE  (CG212)",
+        "jockey": "W M Lai",
+        "trainer": "T K Ng",
+        "actualWeight": 125,
+        "declaredHorseWeight": 1071,
+        "draw": 2,
+        "lbw": 1.25,
+        "runningPosition": [
+          8,
+          7,
+          2
+        ],
+        "finishSeconds": 70.65,
+        "winOdds": 11
+      },
+      {
+        "placing": 3,
+        "horseNo": 10,
+        "horseId": "HK_2008_K284",
+        "brandNo": null,
+        "horseName": "JOYFUL JOYFUL  (CK284)",
+        "jockey": "Z Purton",
+        "trainer": "A Lee",
+        "actualWeight": 123,
+        "declaredHorseWeight": 1119,
+        "draw": 7,
+        "lbw": 2,
+        "runningPosition": [
+          2,
+          2,
+          3
+        ],
+        "finishSeconds": 70.81,
+        "winOdds": 7.4
+      },
+      {
+        "placing": 4,
+        "horseNo": 7,
+        "horseId": "HK_2006_H246",
+        "brandNo": null,
+        "horseName": "ASIAN CITRUS  (CH246)",
+        "jockey": "W C Marwing",
+        "trainer": "D E Ferraris",
+        "actualWeight": 127,
+        "declaredHorseWeight": 1120,
+        "draw": 4,
+        "lbw": 3.25,
+        "runningPosition": [
+          9,
+          9,
+          4
+        ],
+        "finishSeconds": 71.01,
+        "winOdds": 10
+      },
+      {
+        "placing": 5,
+        "horseNo": 4,
+        "horseId": "HK_2008_K214",
+        "brandNo": null,
+        "horseName": "KING OF HEARTS  (CK214)",
+        "jockey": "D Beadman",
+        "trainer": "J Moore",
+        "actualWeight": 130,
+        "declaredHorseWeight": 1048,
+        "draw": 6,
+        "lbw": 3.25,
+        "runningPosition": [
+          5,
+          4,
+          5
+        ],
+        "finishSeconds": 71.02,
+        "winOdds": 3.6
+      },
+      {
+        "placing": 6,
+        "horseNo": 11,
+        "horseId": "HK_2009_L177",
+        "brandNo": null,
+        "horseName": "FUN AND FAST  (CL177)",
+        "jockey": "H W Lai",
+        "trainer": "L Ho",
+        "actualWeight": 114,
+        "declaredHorseWeight": 1085,
+        "draw": 12,
+        "lbw": 3.5,
+        "runningPosition": [
+          4,
+          5,
+          6
+        ],
+        "finishSeconds": 71.05,
+        "winOdds": 38
+      },
+      {
+        "placing": 7,
+        "horseNo": 2,
+        "horseId": "HK_2009_L302",
+        "brandNo": null,
+        "horseName": "PROJECT RUNWAY  (CL302)",
+        "jockey": "D Whyte",
+        "trainer": "J Size",
+        "actualWeight": 132,
+        "declaredHorseWeight": 1088,
+        "draw": 9,
+        "lbw": 3.75,
+        "runningPosition": [
+          7,
+          8,
+          7
+        ],
+        "finishSeconds": 71.07,
+        "winOdds": 18
+      },
+      {
+        "placing": 8,
+        "horseNo": 9,
+        "horseId": "HK_2005_G234",
+        "brandNo": null,
+        "horseName": "REWARDING STAR  (CG234)",
+        "jockey": "J Lloyd",
+        "trainer": "C W Chang",
+        "actualWeight": 124,
+        "declaredHorseWeight": 1137,
+        "draw": 3,
+        "lbw": 4,
+        "runningPosition": [
+          10,
+          10,
+          8
+        ],
+        "finishSeconds": 71.11,
+        "winOdds": 48
+      },
+      {
+        "placing": 9,
+        "horseNo": 6,
+        "horseId": "HK_2006_H118",
+        "brandNo": null,
+        "horseName": "COSMO SUCCESSOR  (CH118)",
+        "jockey": "T H So",
+        "trainer": "Y S Tsui",
+        "actualWeight": 121,
+        "declaredHorseWeight": 1091,
+        "draw": 1,
+        "lbw": 4.25,
+        "runningPosition": [
+          1,
+          1,
+          9
+        ],
+        "finishSeconds": 71.17,
+        "winOdds": 8.6
+      },
+      {
+        "placing": 10,
+        "horseNo": 5,
+        "horseId": "HK_2009_L139",
+        "brandNo": null,
+        "horseName": "MAKE IT  (CL139)",
+        "jockey": "B Doyle",
+        "trainer": "T W Leung",
+        "actualWeight": 129,
+        "declaredHorseWeight": 1084,
+        "draw": 11,
+        "lbw": 5.75,
+        "runningPosition": [
+          12,
+          12,
+          10
+        ],
+        "finishSeconds": 71.41,
+        "winOdds": 20
+      },
+      {
+        "placing": 11,
+        "horseNo": 1,
+        "horseId": "HK_2008_K221",
+        "brandNo": null,
+        "horseName": "JUST CHILL  (CK221)",
+        "jockey": "M L Yeung",
+        "trainer": "B K Ng",
+        "actualWeight": 126,
+        "declaredHorseWeight": 1065,
+        "draw": 10,
+        "lbw": 7,
+        "runningPosition": [
+          11,
+          11,
+          11
+        ],
+        "finishSeconds": 71.6,
+        "winOdds": 6.8
+      },
+      {
+        "placing": 12,
+        "horseNo": 12,
+        "horseId": "HK_2009_L230",
+        "brandNo": null,
+        "horseName": "LUCKY ARMY  (CL230)",
+        "jockey": "C W Wong",
+        "trainer": "C H Yip",
+        "actualWeight": 112,
+        "declaredHorseWeight": 1031,
+        "draw": 5,
+        "lbw": 8.5,
+        "runningPosition": [
+          6,
+          6,
+          12
+        ],
+        "finishSeconds": 71.85,
+        "winOdds": 95
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            3
+          ],
+          "dividendPer10": 52.5
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            3
+          ],
+          "dividendPer10": 21
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            8
+          ],
+          "dividendPer10": 33
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            10
+          ],
+          "dividendPer10": 23
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            3,
+            8
+          ],
+          "dividendPer10": 297
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            3,
+            8
+          ],
+          "dividendPer10": 92.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            3,
+            10
+          ],
+          "dividendPer10": 65.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            8,
+            10
+          ],
+          "dividendPer10": 128
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            3,
+            8,
+            10
+          ],
+          "dividendPer10": 3885
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            3,
+            8,
+            10
+          ],
+          "dividendPer10": 600
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            3,
+            7,
+            8,
+            10
+          ],
+          "dividendPer10": 1546
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2010%2F09%2F08&Racecourse=HV&RaceNo=5"
+  },
+  {
+    "raceId": "2010-09-08-HV-6",
+    "date": "2010-09-08",
+    "racecourse": "HV",
+    "raceNo": 6,
+    "raceIndex": 16,
+    "raceClass": 3,
+    "distance": 1650,
+    "ratingBand": "80-60",
+    "surface": "TURF",
+    "course": "TURF - \"A\" Course",
+    "going": "GOOD",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 7,
+        "horseId": "HK_2008_K231",
+        "brandNo": null,
+        "horseName": "FUN RIDER  (CK231)",
+        "jockey": "B Doyle",
+        "trainer": "D Cruz",
+        "actualWeight": 120,
+        "declaredHorseWeight": 1069,
+        "draw": 3,
+        "lbw": 0,
+        "runningPosition": [
+          7,
+          7,
+          8,
+          1
+        ],
+        "finishSeconds": 100.56,
+        "winOdds": 3.6
+      },
+      {
+        "placing": 2,
+        "horseNo": 2,
+        "horseId": "HK_2007_J061",
+        "brandNo": null,
+        "horseName": "FLUKE  (CJ061)",
+        "jockey": "T H So",
+        "trainer": "L Ho",
+        "actualWeight": 119,
+        "declaredHorseWeight": 1096,
+        "draw": 6,
+        "lbw": 0.75,
+        "runningPosition": [
+          9,
+          9,
+          9,
+          2
+        ],
+        "finishSeconds": 100.7,
+        "winOdds": 5.6
+      },
+      {
+        "placing": 3,
+        "horseNo": 9,
+        "horseId": "HK_2006_H071",
+        "brandNo": null,
+        "horseName": "YOUNG HERO  (CH071)",
+        "jockey": "J Lloyd",
+        "trainer": "A Lee",
+        "actualWeight": 116,
+        "declaredHorseWeight": 1078,
+        "draw": 7,
+        "lbw": 3,
+        "runningPosition": [
+          8,
+          8,
+          6,
+          3
+        ],
+        "finishSeconds": 101.05,
+        "winOdds": 20
+      },
+      {
+        "placing": 4,
+        "horseNo": 8,
+        "horseId": "HK_2006_H242",
+        "brandNo": null,
+        "horseName": "PRIME TARGET  (CH242)",
+        "jockey": "C Y Ho",
+        "trainer": "C Fownes",
+        "actualWeight": 111,
+        "declaredHorseWeight": 1089,
+        "draw": 5,
+        "lbw": 4.25,
+        "runningPosition": [
+          5,
+          5,
+          4,
+          4
+        ],
+        "finishSeconds": 101.22999999999999,
+        "winOdds": 8.4
+      },
+      {
+        "placing": 5,
+        "horseNo": 3,
+        "horseId": "HK_2009_L007",
+        "brandNo": null,
+        "horseName": "BEST MILITARY  (CL007)",
+        "jockey": "Z Purton",
+        "trainer": "C S Shum",
+        "actualWeight": 124,
+        "declaredHorseWeight": 1094,
+        "draw": 1,
+        "lbw": 4.75,
+        "runningPosition": [
+          4,
+          3,
+          3,
+          5
+        ],
+        "finishSeconds": 101.32,
+        "winOdds": 12
+      },
+      {
+        "placing": 6,
+        "horseNo": 1,
+        "horseId": "HK_2008_K410",
+        "brandNo": null,
+        "horseName": "REGENCY WINNER  (CK410)",
+        "jockey": "M Chadwick",
+        "trainer": "A S Cruz",
+        "actualWeight": 130,
+        "declaredHorseWeight": 1097,
+        "draw": 8,
+        "lbw": 5.5,
+        "runningPosition": [
+          1,
+          1,
+          1,
+          6
+        ],
+        "finishSeconds": 101.44,
+        "winOdds": 9.7
+      },
+      {
+        "placing": 7,
+        "horseNo": 6,
+        "horseId": "HK_2008_K367",
+        "brandNo": null,
+        "horseName": "UPGRADING  (CK367)",
+        "jockey": "D Whyte",
+        "trainer": "A Schutz",
+        "actualWeight": 122,
+        "declaredHorseWeight": 1003,
+        "draw": 4,
+        "lbw": 6,
+        "runningPosition": [
+          6,
+          6,
+          7,
+          7
+        ],
+        "finishSeconds": 101.53999999999999,
+        "winOdds": 4.5
+      },
+      {
+        "placing": 8,
+        "horseNo": 4,
+        "horseId": "HK_2008_K150",
+        "brandNo": null,
+        "horseName": "MATSUKAZE  (CK150)",
+        "jockey": "H W Lai",
+        "trainer": "P F Yiu",
+        "actualWeight": 120,
+        "declaredHorseWeight": 1141,
+        "draw": 2,
+        "lbw": 6.25,
+        "runningPosition": [
+          3,
+          4,
+          5,
+          8
+        ],
+        "finishSeconds": 101.58,
+        "winOdds": 9.5
+      },
+      {
+        "placing": 9,
+        "horseNo": 5,
+        "horseId": "HK_2004_E126",
+        "brandNo": null,
+        "horseName": "SILVER SUN  (CE126)",
+        "jockey": "Y T Cheng",
+        "trainer": "Y S Tsui",
+        "actualWeight": 120,
+        "declaredHorseWeight": 1138,
+        "draw": 9,
+        "lbw": 6.5,
+        "runningPosition": [
+          2,
+          2,
+          2,
+          9
+        ],
+        "finishSeconds": 101.59,
+        "winOdds": 11
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            7
+          ],
+          "dividendPer10": 36.5
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            7
+          ],
+          "dividendPer10": 14
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            2
+          ],
+          "dividendPer10": 15.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            9
+          ],
+          "dividendPer10": 53.5
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            2,
+            7
+          ],
+          "dividendPer10": 99.5
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            2,
+            7
+          ],
+          "dividendPer10": 40.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            7,
+            9
+          ],
+          "dividendPer10": 142
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            2,
+            9
+          ],
+          "dividendPer10": 138.5
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            7,
+            2,
+            9
+          ],
+          "dividendPer10": 2045
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            2,
+            7,
+            9
+          ],
+          "dividendPer10": 621
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            2,
+            7,
+            8,
+            9
+          ],
+          "dividendPer10": 850
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2010%2F09%2F08&Racecourse=HV&RaceNo=6"
+  },
+  {
+    "raceId": "2010-09-08-HV-7",
+    "date": "2010-09-08",
+    "racecourse": "HV",
+    "raceNo": 7,
+    "raceIndex": 17,
+    "raceClass": 4,
+    "distance": 1650,
+    "ratingBand": "60-40",
+    "surface": "TURF",
+    "course": "TURF - \"A\" Course",
+    "going": "GOOD",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 10,
+        "horseId": "HK_2006_H076",
+        "brandNo": null,
+        "horseName": "JOLLY WONGCHOY  (CH076)",
+        "jockey": "M Chadwick",
+        "trainer": "A Schutz",
+        "actualWeight": 119,
+        "declaredHorseWeight": 1137,
+        "draw": 6,
+        "lbw": 0,
+        "runningPosition": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "finishSeconds": 100.72,
+        "winOdds": 5.2
+      },
+      {
+        "placing": 2,
+        "horseNo": 11,
+        "horseId": "HK_2008_K073",
+        "brandNo": null,
+        "horseName": "BLEDISLOE  (CK073)",
+        "jockey": "W C Marwing",
+        "trainer": "D E Ferraris",
+        "actualWeight": 121,
+        "declaredHorseWeight": 1209,
+        "draw": 7,
+        "lbw": 0.2,
+        "runningPosition": [
+          4,
+          3,
+          3,
+          2
+        ],
+        "finishSeconds": 100.74000000000001,
+        "winOdds": 10
+      },
+      {
+        "placing": 3,
+        "horseNo": 9,
+        "horseId": "HK_2009_L171",
+        "brandNo": null,
+        "horseName": "HOME WITH GLORY  (CL171)",
+        "jockey": "O Doleuze",
+        "trainer": "T W Leung",
+        "actualWeight": 123,
+        "declaredHorseWeight": 1050,
+        "draw": 10,
+        "lbw": 1.5,
+        "runningPosition": [
+          10,
+          9,
+          8,
+          3
+        ],
+        "finishSeconds": 100.95,
+        "winOdds": 7.8
+      },
+      {
+        "placing": 4,
+        "horseNo": 8,
+        "horseId": "HK_2007_J308",
+        "brandNo": null,
+        "horseName": "ABLE DRAGON  (CJ308)",
+        "jockey": "M L Yeung",
+        "trainer": "A Lee",
+        "actualWeight": 119,
+        "declaredHorseWeight": 1111,
+        "draw": 2,
+        "lbw": 3,
+        "runningPosition": [
+          9,
+          10,
+          9,
+          4
+        ],
+        "finishSeconds": 101.22,
+        "winOdds": 8.5
+      },
+      {
+        "placing": 5,
+        "horseNo": 3,
+        "horseId": "HK_2008_K023",
+        "brandNo": null,
+        "horseName": "AMITYSHIP  (CK023)",
+        "jockey": "B Prebble",
+        "trainer": "P F Yiu",
+        "actualWeight": 130,
+        "declaredHorseWeight": 1142,
+        "draw": 9,
+        "lbw": 3.25,
+        "runningPosition": [
+          3,
+          4,
+          2,
+          5
+        ],
+        "finishSeconds": 101.22999999999999,
+        "winOdds": 8.3
+      },
+      {
+        "placing": 6,
+        "horseNo": 2,
+        "horseId": "HK_2008_K267",
+        "brandNo": null,
+        "horseName": "CLASSA  (CK267)",
+        "jockey": "H W Lai",
+        "trainer": "L Ho",
+        "actualWeight": 130,
+        "declaredHorseWeight": 1082,
+        "draw": 1,
+        "lbw": 4.5,
+        "runningPosition": [
+          8,
+          5,
+          4,
+          6
+        ],
+        "finishSeconds": 101.46000000000001,
+        "winOdds": 8
+      },
+      {
+        "placing": 7,
+        "horseNo": 5,
+        "horseId": "HK_2003_D019",
+        "brandNo": null,
+        "horseName": "HARRY HARRY  (CD019)",
+        "jockey": "Z Purton",
+        "trainer": "K L Man",
+        "actualWeight": 129,
+        "declaredHorseWeight": 1143,
+        "draw": 5,
+        "lbw": 7.25,
+        "runningPosition": [
+          5,
+          6,
+          7,
+          7
+        ],
+        "finishSeconds": 101.88,
+        "winOdds": 18
+      },
+      {
+        "placing": 8,
+        "horseNo": 1,
+        "horseId": "HK_2008_K202",
+        "brandNo": null,
+        "horseName": "RECORD HIGH  (CK202)",
+        "jockey": "Y T Cheng",
+        "trainer": "Y S Tsui",
+        "actualWeight": 131,
+        "declaredHorseWeight": 1207,
+        "draw": 8,
+        "lbw": 9.5,
+        "runningPosition": [
+          2,
+          2,
+          5,
+          8
+        ],
+        "finishSeconds": 102.25,
+        "winOdds": 7.4
+      },
+      {
+        "placing": 9,
+        "horseNo": 7,
+        "horseId": "HK_2007_J162",
+        "brandNo": null,
+        "horseName": "WARM EMBRACES  (CJ162)",
+        "jockey": "D Whyte",
+        "trainer": "T K Ng",
+        "actualWeight": 127,
+        "declaredHorseWeight": 971,
+        "draw": 3,
+        "lbw": 11.75,
+        "runningPosition": [
+          6,
+          7,
+          6,
+          9
+        ],
+        "finishSeconds": 102.59,
+        "winOdds": 6.4
+      },
+      {
+        "placing": 10,
+        "horseNo": 6,
+        "horseId": "HK_2008_K057",
+        "brandNo": null,
+        "horseName": "MEDIC FORTUNE  (CK057)",
+        "jockey": "K C Leung",
+        "trainer": "P O'Sullivan",
+        "actualWeight": 123,
+        "declaredHorseWeight": 1013,
+        "draw": 12,
+        "lbw": 11.75,
+        "runningPosition": [
+          11,
+          11,
+          11,
+          10
+        ],
+        "finishSeconds": 102.6,
+        "winOdds": 21
+      },
+      {
+        "placing": 11,
+        "horseNo": 4,
+        "horseId": "HK_2005_G320",
+        "brandNo": null,
+        "horseName": "STEEL NERVES  (CG320)",
+        "jockey": "M W Leung",
+        "trainer": "C W Chang",
+        "actualWeight": 127,
+        "declaredHorseWeight": 1166,
+        "draw": 4,
+        "lbw": 25.75,
+        "runningPosition": [
+          7,
+          8,
+          10,
+          11
+        ],
+        "finishSeconds": 104.83,
+        "winOdds": 37
+      },
+      {
+        "placing": 12,
+        "horseNo": 12,
+        "horseId": "HK_2008_K281",
+        "brandNo": null,
+        "horseName": "THISTLE SPIRIT  (CK281)",
+        "jockey": "J Lloyd",
+        "trainer": "J Size",
+        "actualWeight": 118,
+        "declaredHorseWeight": 1098,
+        "draw": 11,
+        "lbw": 28.25,
+        "runningPosition": [
+          12,
+          12,
+          12,
+          12
+        ],
+        "finishSeconds": 105.25999999999999,
+        "winOdds": 44
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            10
+          ],
+          "dividendPer10": 52.5
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            10
+          ],
+          "dividendPer10": 18
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            11
+          ],
+          "dividendPer10": 33.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            9
+          ],
+          "dividendPer10": 32
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            10,
+            11
+          ],
+          "dividendPer10": 327
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            10,
+            11
+          ],
+          "dividendPer10": 108
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            9,
+            10
+          ],
+          "dividendPer10": 94
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            9,
+            11
+          ],
+          "dividendPer10": 177.5
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            10,
+            11,
+            9
+          ],
+          "dividendPer10": 4338
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            9,
+            10,
+            11
+          ],
+          "dividendPer10": 905
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "dividendPer10": 1455
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2010%2F09%2F08&Racecourse=HV&RaceNo=7"
+  },
+  {
+    "raceId": "2010-09-08-HV-8",
+    "date": "2010-09-08",
+    "racecourse": "HV",
+    "raceNo": 8,
+    "raceIndex": 18,
+    "raceClass": 3,
+    "distance": 1000,
+    "ratingBand": "80-60",
+    "surface": "TURF",
+    "course": "TURF - \"A\" Course",
+    "going": "SOFT",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 1,
+        "horseId": "HK_2008_K123",
+        "brandNo": null,
+        "horseName": "GOLDEN BAUHINIA  (CK123)",
+        "jockey": "Z Purton",
+        "trainer": "Y S Tsui",
+        "actualWeight": 133,
+        "declaredHorseWeight": 1068,
+        "draw": 7,
+        "lbw": 0,
+        "runningPosition": [
+          1,
+          1,
+          1
+        ],
+        "finishSeconds": 57.72,
+        "winOdds": 39
+      },
+      {
+        "placing": 2,
+        "horseNo": 5,
+        "horseId": "HK_2007_J310",
+        "brandNo": null,
+        "horseName": "MY TIME  (CJ310)",
+        "jockey": "B Prebble",
+        "trainer": "K L Man",
+        "actualWeight": 122,
+        "declaredHorseWeight": 1124,
+        "draw": 4,
+        "lbw": 0.75,
+        "runningPosition": [
+          6,
+          6,
+          2
+        ],
+        "finishSeconds": 57.86,
+        "winOdds": 7.6
+      },
+      {
+        "placing": 3,
+        "horseNo": 8,
+        "horseId": "HK_2007_J191",
+        "brandNo": null,
+        "horseName": "WINDICATOR RETURNS  (CJ191)",
+        "jockey": "C Y Ho",
+        "trainer": "C Fownes",
+        "actualWeight": 111,
+        "declaredHorseWeight": 1018,
+        "draw": 10,
+        "lbw": 1,
+        "runningPosition": [
+          2,
+          2,
+          3
+        ],
+        "finishSeconds": 57.89,
+        "winOdds": 3.3
+      },
+      {
+        "placing": 4,
+        "horseNo": 3,
+        "horseId": "HK_2009_L049",
+        "brandNo": null,
+        "horseName": "FREE AND EASY  (CL049)",
+        "jockey": "O Doleuze",
+        "trainer": "K W Lui",
+        "actualWeight": 129,
+        "declaredHorseWeight": 1076,
+        "draw": 1,
+        "lbw": 1.75,
+        "runningPosition": [
+          4,
+          3,
+          4
+        ],
+        "finishSeconds": 57.99,
+        "winOdds": 2.8
+      },
+      {
+        "placing": 5,
+        "horseNo": 11,
+        "horseId": "HK_2008_K300",
+        "brandNo": null,
+        "horseName": "RAINBOW SEEKER  (CK300)",
+        "jockey": "J Lloyd",
+        "trainer": "S Woods",
+        "actualWeight": 115,
+        "declaredHorseWeight": 1074,
+        "draw": 9,
+        "lbw": 2,
+        "runningPosition": [
+          11,
+          9,
+          5
+        ],
+        "finishSeconds": 58.03,
+        "winOdds": 14
+      },
+      {
+        "placing": 6,
+        "horseNo": 2,
+        "horseId": "HK_2008_K348",
+        "brandNo": null,
+        "horseName": "CARS KING PRAWN  (CK348)",
+        "jockey": "D Whyte",
+        "trainer": "J Size",
+        "actualWeight": 129,
+        "declaredHorseWeight": 1025,
+        "draw": 8,
+        "lbw": 2.25,
+        "runningPosition": [
+          7,
+          8,
+          6
+        ],
+        "finishSeconds": 58.08,
+        "winOdds": 23
+      },
+      {
+        "placing": 7,
+        "horseNo": 6,
+        "horseId": "HK_2006_H126",
+        "brandNo": null,
+        "horseName": "FLY HIGH  (CH126)",
+        "jockey": "T H So",
+        "trainer": "L Ho",
+        "actualWeight": 112,
+        "declaredHorseWeight": 1161,
+        "draw": 2,
+        "lbw": 3,
+        "runningPosition": [
+          5,
+          5,
+          7
+        ],
+        "finishSeconds": 58.19,
+        "winOdds": 18
+      },
+      {
+        "placing": 8,
+        "horseNo": 9,
+        "horseId": "HK_2004_E100",
+        "brandNo": null,
+        "horseName": "HAR HAR CHARMS  (CE100)",
+        "jockey": "W M Lai",
+        "trainer": "T K Ng",
+        "actualWeight": 114,
+        "declaredHorseWeight": 1156,
+        "draw": 3,
+        "lbw": 3,
+        "runningPosition": [
+          3,
+          4,
+          8
+        ],
+        "finishSeconds": 58.21,
+        "winOdds": 12
+      },
+      {
+        "placing": 9,
+        "horseNo": 4,
+        "horseId": "HK_2006_H276",
+        "brandNo": null,
+        "horseName": "TEAM WORK  (CH276)",
+        "jockey": "M L Yeung",
+        "trainer": "Y S Tsui",
+        "actualWeight": 121,
+        "declaredHorseWeight": 1081,
+        "draw": 6,
+        "lbw": 3.75,
+        "runningPosition": [
+          10,
+          11,
+          9
+        ],
+        "finishSeconds": 58.34,
+        "winOdds": 12
+      },
+      {
+        "placing": 10,
+        "horseNo": 7,
+        "horseId": "HK_2009_L070",
+        "brandNo": null,
+        "horseName": "LUCKY FOLLOW ME  (CL070)",
+        "jockey": "C K Tong",
+        "trainer": "T W Leung",
+        "actualWeight": 116,
+        "declaredHorseWeight": 1081,
+        "draw": 11,
+        "lbw": 4,
+        "runningPosition": [
+          9,
+          7,
+          10
+        ],
+        "finishSeconds": 58.38,
+        "winOdds": 31
+      },
+      {
+        "placing": 11,
+        "horseNo": 10,
+        "horseId": "HK_2009_L301",
+        "brandNo": null,
+        "horseName": "MULTIPROUD  (CL301)",
+        "jockey": "M Chadwick",
+        "trainer": "A S Cruz",
+        "actualWeight": 112,
+        "declaredHorseWeight": 1106,
+        "draw": 5,
+        "lbw": 7.5,
+        "runningPosition": [
+          8,
+          10,
+          11
+        ],
+        "finishSeconds": 58.91,
+        "winOdds": 28
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            1
+          ],
+          "dividendPer10": 394.5
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            1
+          ],
+          "dividendPer10": 103
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            5
+          ],
+          "dividendPer10": 24
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            8
+          ],
+          "dividendPer10": 16.5
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            1,
+            5
+          ],
+          "dividendPer10": 1553.5
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            5
+          ],
+          "dividendPer10": 381.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            8
+          ],
+          "dividendPer10": 232.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            5,
+            8
+          ],
+          "dividendPer10": 83
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            1,
+            5,
+            8
+          ],
+          "dividendPer10": 17826
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            1,
+            5,
+            8
+          ],
+          "dividendPer10": 2155
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            1,
+            3,
+            5,
+            8
+          ],
+          "dividendPer10": 1149
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2010%2F09%2F08&Racecourse=HV&RaceNo=8"
+  }
+]

@@ -1,0 +1,3767 @@
+[
+  {
+    "raceId": "2022-05-07-ST-1",
+    "date": "2022-05-07",
+    "racecourse": "ST",
+    "raceNo": 1,
+    "raceIndex": 644,
+    "raceClass": 3,
+    "distance": 1200,
+    "ratingBand": "80-60",
+    "surface": "TURF",
+    "course": "TURF - \"C\" Course",
+    "going": "GOOD",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 2,
+        "horseId": "HK_2021_G065",
+        "brandNo": "G065",
+        "horseName": "SUPER FORTUNE",
+        "jockey": "K Teetan",
+        "trainer": "A S Cruz",
+        "actualWeight": 126,
+        "declaredHorseWeight": 1191,
+        "draw": 2,
+        "lbw": 0,
+        "runningPosition": [
+          1,
+          1,
+          1
+        ],
+        "finishSeconds": 69.4,
+        "winOdds": 2
+      },
+      {
+        "placing": 2,
+        "horseNo": 6,
+        "horseId": "HK_2018_C102",
+        "brandNo": "C102",
+        "horseName": "EIGHT TRIGRAMS",
+        "jockey": "M F Poon",
+        "trainer": "D J Hall",
+        "actualWeight": 117,
+        "declaredHorseWeight": 1163,
+        "draw": 4,
+        "lbw": 0.5,
+        "runningPosition": [
+          3,
+          3,
+          2
+        ],
+        "finishSeconds": 69.49,
+        "winOdds": 19
+      },
+      {
+        "placing": 3,
+        "horseNo": 3,
+        "horseId": "HK_2020_E309",
+        "brandNo": "E309",
+        "horseName": "RED TITAN",
+        "jockey": "Z Purton",
+        "trainer": "J Size",
+        "actualWeight": 123,
+        "declaredHorseWeight": 1086,
+        "draw": 7,
+        "lbw": 1,
+        "runningPosition": [
+          8,
+          7,
+          3
+        ],
+        "finishSeconds": 69.57,
+        "winOdds": 16
+      },
+      {
+        "placing": 4,
+        "horseNo": 8,
+        "horseId": "HK_2019_D498",
+        "brandNo": "D498",
+        "horseName": "FORTE",
+        "jockey": "V Borges",
+        "trainer": "D A Hayes",
+        "actualWeight": 117,
+        "declaredHorseWeight": 1191,
+        "draw": 6,
+        "lbw": 2,
+        "runningPosition": [
+          7,
+          6,
+          4
+        ],
+        "finishSeconds": 69.7,
+        "winOdds": 13
+      },
+      {
+        "placing": 5,
+        "horseNo": 5,
+        "horseId": "HK_2021_G303",
+        "brandNo": "G303",
+        "horseName": "BILLIONAIRE SECRET",
+        "jockey": "L Hewitson",
+        "trainer": "D J Whyte",
+        "actualWeight": 119,
+        "declaredHorseWeight": 1037,
+        "draw": 5,
+        "lbw": 3,
+        "runningPosition": [
+          5,
+          5,
+          5
+        ],
+        "finishSeconds": 69.89,
+        "winOdds": 42
+      },
+      {
+        "placing": 6,
+        "horseNo": 4,
+        "horseId": "HK_2021_G308",
+        "brandNo": "G308",
+        "horseName": "YOUNG LIFE FOREVER",
+        "jockey": "J Moreira",
+        "trainer": "C Fownes",
+        "actualWeight": 120,
+        "declaredHorseWeight": 1181,
+        "draw": 8,
+        "lbw": 3.75,
+        "runningPosition": [
+          2,
+          2,
+          6
+        ],
+        "finishSeconds": 70,
+        "winOdds": 7.9
+      },
+      {
+        "placing": 7,
+        "horseNo": 1,
+        "horseId": "HK_2020_E423",
+        "brandNo": "E423",
+        "horseName": "FIVE ELEMENTS",
+        "jockey": "B Shinn",
+        "trainer": "F C Lor",
+        "actualWeight": 133,
+        "declaredHorseWeight": 1030,
+        "draw": 1,
+        "lbw": 13.75,
+        "runningPosition": [
+          4,
+          4,
+          7
+        ],
+        "finishSeconds": 71.61,
+        "winOdds": 2.7
+      },
+      {
+        "placing": 8,
+        "horseNo": 7,
+        "horseId": "HK_2020_E465",
+        "brandNo": "E465",
+        "horseName": "SUPREME SUPREME",
+        "jockey": "R Maia",
+        "trainer": "C H Yip",
+        "actualWeight": 119,
+        "declaredHorseWeight": 960,
+        "draw": 3,
+        "lbw": 92,
+        "runningPosition": [
+          6,
+          8,
+          8
+        ],
+        "finishSeconds": 84.12,
+        "winOdds": 92
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            2
+          ],
+          "dividendPer10": 20.5
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            2
+          ],
+          "dividendPer10": 10.1
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            6
+          ],
+          "dividendPer10": 31
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            3
+          ],
+          "dividendPer10": 33.5
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            2,
+            6
+          ],
+          "dividendPer10": 156.5
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            2,
+            6
+          ],
+          "dividendPer10": 42
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            2,
+            3
+          ],
+          "dividendPer10": 47.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            3,
+            6
+          ],
+          "dividendPer10": 209
+        }
+      ],
+      "forecast": [
+        {
+          "pool": "FORECAST",
+          "combination": [
+            2,
+            6
+          ],
+          "dividendPer10": 253
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            2,
+            6,
+            3
+          ],
+          "dividendPer10": 1912
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            2,
+            3,
+            6
+          ],
+          "dividendPer10": 331
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            2,
+            3,
+            6,
+            8
+          ],
+          "dividendPer10": 670
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            2,
+            6,
+            3,
+            8
+          ],
+          "dividendPer10": 10218
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2022%2F05%2F07&Racecourse=ST&RaceNo=1"
+  },
+  {
+    "raceId": "2022-05-07-ST-2",
+    "date": "2022-05-07",
+    "racecourse": "ST",
+    "raceNo": 2,
+    "raceIndex": 645,
+    "raceClass": 5,
+    "distance": 1600,
+    "ratingBand": "40-0",
+    "surface": "TURF",
+    "course": "TURF - \"C\" Course",
+    "going": "GOOD",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 1,
+        "horseId": "HK_2020_E095",
+        "brandNo": "E095",
+        "horseName": "VUKAN",
+        "jockey": "K C Leung",
+        "trainer": "P O'Sullivan",
+        "actualWeight": 133,
+        "declaredHorseWeight": 1235,
+        "draw": 14,
+        "lbw": 0,
+        "runningPosition": [
+          6,
+          6,
+          6,
+          1
+        ],
+        "finishSeconds": 95.28,
+        "winOdds": 13
+      },
+      {
+        "placing": 2,
+        "horseNo": 10,
+        "horseId": "HK_2019_D070",
+        "brandNo": "D070",
+        "horseName": "DAILY BEAUTY",
+        "jockey": "J Moreira",
+        "trainer": "C Fownes",
+        "actualWeight": 125,
+        "declaredHorseWeight": 1134,
+        "draw": 9,
+        "lbw": 0.5,
+        "runningPosition": [
+          8,
+          8,
+          8,
+          2
+        ],
+        "finishSeconds": 95.39,
+        "winOdds": 9.5
+      },
+      {
+        "placing": 3,
+        "horseNo": 13,
+        "horseId": "HK_2019_D080",
+        "brandNo": "D080",
+        "horseName": "GORGEOUS INHERITOR",
+        "jockey": "M F Poon",
+        "trainer": "C H Yip",
+        "actualWeight": 112,
+        "declaredHorseWeight": 1185,
+        "draw": 4,
+        "lbw": 3,
+        "runningPosition": [
+          11,
+          11,
+          9,
+          3
+        ],
+        "finishSeconds": 95.77000000000001,
+        "winOdds": 27
+      },
+      {
+        "placing": 4,
+        "horseNo": 7,
+        "horseId": "HK_2017_B162",
+        "brandNo": "B162",
+        "horseName": "FLASH FAMOUS",
+        "jockey": "R Maia",
+        "trainer": "C H Yip",
+        "actualWeight": 128,
+        "declaredHorseWeight": 1182,
+        "draw": 1,
+        "lbw": 3.25,
+        "runningPosition": [
+          9,
+          9,
+          11,
+          4
+        ],
+        "finishSeconds": 95.8,
+        "winOdds": 14
+      },
+      {
+        "placing": 5,
+        "horseNo": 11,
+        "horseId": "HK_2018_C110",
+        "brandNo": "C110",
+        "horseName": "WINWIN THIRTYTHREE",
+        "jockey": "M Chadwick",
+        "trainer": "P F Yiu",
+        "actualWeight": 122,
+        "declaredHorseWeight": 994,
+        "draw": 12,
+        "lbw": 3.25,
+        "runningPosition": [
+          13,
+          13,
+          13,
+          5
+        ],
+        "finishSeconds": 95.82,
+        "winOdds": 16
+      },
+      {
+        "placing": 6,
+        "horseNo": 9,
+        "horseId": "HK_2017_B222",
+        "brandNo": "B222",
+        "horseName": "JOY MASTER",
+        "jockey": "K H Chan",
+        "trainer": "W Y So",
+        "actualWeight": 121,
+        "declaredHorseWeight": 1093,
+        "draw": 2,
+        "lbw": 3.5,
+        "runningPosition": [
+          10,
+          10,
+          10,
+          6
+        ],
+        "finishSeconds": 95.85,
+        "winOdds": 24
+      },
+      {
+        "placing": 7,
+        "horseNo": 3,
+        "horseId": "HK_2016_A201",
+        "brandNo": "A201",
+        "horseName": "MISTER MONTE",
+        "jockey": "H T Mo",
+        "trainer": "C W Chang",
+        "actualWeight": 129,
+        "declaredHorseWeight": 1069,
+        "draw": 7,
+        "lbw": 3.5,
+        "runningPosition": [
+          3,
+          2,
+          2,
+          7
+        ],
+        "finishSeconds": 95.86,
+        "winOdds": 21
+      },
+      {
+        "placing": 8,
+        "horseNo": 2,
+        "horseId": "HK_2020_E244",
+        "brandNo": "E244",
+        "horseName": "GO GO SIXTEEN",
+        "jockey": "B Shinn",
+        "trainer": "K W Lui",
+        "actualWeight": 132,
+        "declaredHorseWeight": 1263,
+        "draw": 8,
+        "lbw": 3.75,
+        "runningPosition": [
+          12,
+          12,
+          12,
+          8
+        ],
+        "finishSeconds": 95.87,
+        "winOdds": 5.5
+      },
+      {
+        "placing": 9,
+        "horseNo": 12,
+        "horseId": "HK_2020_E086",
+        "brandNo": "E086",
+        "horseName": "WAH MAY LUCK",
+        "jockey": "L Ferraris",
+        "trainer": "A S Cruz",
+        "actualWeight": 121,
+        "declaredHorseWeight": 1127,
+        "draw": 6,
+        "lbw": 5.25,
+        "runningPosition": [
+          4,
+          3,
+          3,
+          9
+        ],
+        "finishSeconds": 96.13,
+        "winOdds": 11
+      },
+      {
+        "placing": 10,
+        "horseNo": 8,
+        "horseId": "HK_2021_G029",
+        "brandNo": "G029",
+        "horseName": "JUBILATION",
+        "jockey": "K Teetan",
+        "trainer": "L Ho",
+        "actualWeight": 128,
+        "declaredHorseWeight": 1048,
+        "draw": 13,
+        "lbw": 6.25,
+        "runningPosition": [
+          14,
+          14,
+          14,
+          10
+        ],
+        "finishSeconds": 96.3,
+        "winOdds": 62
+      },
+      {
+        "placing": 11,
+        "horseNo": 14,
+        "horseId": "HK_2018_C496",
+        "brandNo": "C496",
+        "horseName": "ANONYMA",
+        "jockey": "V Borges",
+        "trainer": "A T Millard",
+        "actualWeight": 114,
+        "declaredHorseWeight": 1046,
+        "draw": 11,
+        "lbw": 10.25,
+        "runningPosition": [
+          1,
+          1,
+          1,
+          11
+        ],
+        "finishSeconds": 96.94,
+        "winOdds": 44
+      },
+      {
+        "placing": 12,
+        "horseNo": 4,
+        "horseId": "HK_2017_B477",
+        "brandNo": "B477",
+        "horseName": "INCREDIBLE",
+        "jockey": "H Bentley",
+        "trainer": "T P Yung",
+        "actualWeight": 130,
+        "declaredHorseWeight": 1194,
+        "draw": 5,
+        "lbw": 16.5,
+        "runningPosition": [
+          5,
+          5,
+          4,
+          12
+        ],
+        "finishSeconds": 97.94,
+        "winOdds": 5.4
+      },
+      {
+        "placing": 13,
+        "horseNo": 6,
+        "horseId": "HK_2018_C403",
+        "brandNo": "C403",
+        "horseName": "MOON PEAKS",
+        "jockey": "H W Lai",
+        "trainer": "Y S Tsui",
+        "actualWeight": 129,
+        "declaredHorseWeight": 1162,
+        "draw": 10,
+        "lbw": 17.5,
+        "runningPosition": [
+          2,
+          4,
+          5,
+          13
+        ],
+        "finishSeconds": 98.11,
+        "winOdds": 34
+      },
+      {
+        "placing": 14,
+        "horseNo": 5,
+        "horseId": "HK_2017_B030",
+        "brandNo": "B030",
+        "horseName": "SEIZE THE SPIRIT",
+        "jockey": "Z Purton",
+        "trainer": "Y S Tsui",
+        "actualWeight": 130,
+        "declaredHorseWeight": 1115,
+        "draw": 3,
+        "lbw": 21.5,
+        "runningPosition": [
+          7,
+          7,
+          7,
+          14
+        ],
+        "finishSeconds": 98.74000000000001,
+        "winOdds": 3.8
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            1
+          ],
+          "dividendPer10": 133
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            1
+          ],
+          "dividendPer10": 43.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            10
+          ],
+          "dividendPer10": 26.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            13
+          ],
+          "dividendPer10": 65
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            1,
+            10
+          ],
+          "dividendPer10": 700.5
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            10
+          ],
+          "dividendPer10": 202.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            13
+          ],
+          "dividendPer10": 513.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            10,
+            13
+          ],
+          "dividendPer10": 301
+        }
+      ],
+      "forecast": [
+        {
+          "pool": "FORECAST",
+          "combination": [
+            1,
+            10
+          ],
+          "dividendPer10": 1071
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            1,
+            10,
+            13
+          ],
+          "dividendPer10": 27405
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            1,
+            10,
+            13
+          ],
+          "dividendPer10": 4985
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            1,
+            7,
+            10,
+            13
+          ],
+          "dividendPer10": 10558
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            1,
+            10,
+            13,
+            7
+          ],
+          "dividendPer10": 246331
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2022%2F05%2F07&Racecourse=ST&RaceNo=2"
+  },
+  {
+    "raceId": "2022-05-07-ST-3",
+    "date": "2022-05-07",
+    "racecourse": "ST",
+    "raceNo": 3,
+    "raceIndex": 646,
+    "raceClass": 2,
+    "distance": 1400,
+    "ratingBand": "105-80",
+    "surface": "TURF",
+    "course": "TURF - \"C\" Course",
+    "going": "GOOD",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 6,
+        "horseId": "HK_2019_D228",
+        "brandNo": "D228",
+        "horseName": "GOOD LUCK FRIEND",
+        "jockey": "K Teetan",
+        "trainer": "P F Yiu",
+        "actualWeight": 113,
+        "declaredHorseWeight": 1159,
+        "draw": 7,
+        "lbw": 0,
+        "runningPosition": [
+          2,
+          2,
+          2,
+          1
+        ],
+        "finishSeconds": 81.56,
+        "winOdds": 11
+      },
+      {
+        "placing": 2,
+        "horseNo": 4,
+        "horseId": "HK_2020_E379",
+        "brandNo": "E379",
+        "horseName": "THE GOLDEN SCENERY",
+        "jockey": "L Ferraris",
+        "trainer": "A S Cruz",
+        "actualWeight": 118,
+        "declaredHorseWeight": 1066,
+        "draw": 4,
+        "lbw": 0.1,
+        "runningPosition": [
+          7,
+          6,
+          7,
+          2
+        ],
+        "finishSeconds": 81.58,
+        "winOdds": 10
+      },
+      {
+        "placing": 3,
+        "horseNo": 8,
+        "horseId": "HK_2020_E178",
+        "brandNo": "E178",
+        "horseName": "WINNER METHOD",
+        "jockey": "M F Poon",
+        "trainer": "C S Shum",
+        "actualWeight": 111,
+        "declaredHorseWeight": 1271,
+        "draw": 5,
+        "lbw": 1,
+        "runningPosition": [
+          6,
+          7,
+          8,
+          3
+        ],
+        "finishSeconds": 81.74,
+        "winOdds": 3.5
+      },
+      {
+        "placing": 4,
+        "horseNo": 5,
+        "horseId": "HK_2020_E142",
+        "brandNo": "E142",
+        "horseName": "MASTER MONTARO",
+        "jockey": "C Y Ho",
+        "trainer": "D A Hayes",
+        "actualWeight": 117,
+        "declaredHorseWeight": 1282,
+        "draw": 6,
+        "lbw": 2,
+        "runningPosition": [
+          8,
+          8,
+          6,
+          4
+        ],
+        "finishSeconds": 81.88,
+        "winOdds": 13
+      },
+      {
+        "placing": 5,
+        "horseNo": 2,
+        "horseId": "HK_2020_E131",
+        "brandNo": "E131",
+        "horseName": "SILVER EXPRESS",
+        "jockey": "V Borges",
+        "trainer": "J Size",
+        "actualWeight": 128,
+        "declaredHorseWeight": 1050,
+        "draw": 8,
+        "lbw": 3.5,
+        "runningPosition": [
+          3,
+          5,
+          3,
+          5
+        ],
+        "finishSeconds": 82.1,
+        "winOdds": 12
+      },
+      {
+        "placing": 6,
+        "horseNo": 1,
+        "horseId": "HK_2019_D276",
+        "brandNo": "D276",
+        "horseName": "CALIFORNIADEEPSHOT",
+        "jockey": "K H Chan",
+        "trainer": "A S Cruz",
+        "actualWeight": 128,
+        "declaredHorseWeight": 1167,
+        "draw": 3,
+        "lbw": 4,
+        "runningPosition": [
+          1,
+          1,
+          1,
+          6
+        ],
+        "finishSeconds": 82.21000000000001,
+        "winOdds": 8.4
+      },
+      {
+        "placing": 7,
+        "horseNo": 7,
+        "horseId": "HK_2018_C001",
+        "brandNo": "C001",
+        "horseName": "HINCHINLOVE",
+        "jockey": "M Chadwick",
+        "trainer": "T P Yung",
+        "actualWeight": 113,
+        "declaredHorseWeight": 1196,
+        "draw": 2,
+        "lbw": 4.5,
+        "runningPosition": [
+          4,
+          3,
+          4,
+          7
+        ],
+        "finishSeconds": 82.28999999999999,
+        "winOdds": 20
+      },
+      {
+        "placing": 8,
+        "horseNo": 3,
+        "horseId": "HK_2019_D476",
+        "brandNo": "D476",
+        "horseName": "IMA SINGLE MAN",
+        "jockey": "Z Purton",
+        "trainer": "A S Cruz",
+        "actualWeight": 120,
+        "declaredHorseWeight": 1118,
+        "draw": 1,
+        "lbw": 9.25,
+        "runningPosition": [
+          5,
+          4,
+          5,
+          8
+        ],
+        "finishSeconds": 83.06,
+        "winOdds": 2.4
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            6
+          ],
+          "dividendPer10": 110
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            6
+          ],
+          "dividendPer10": 27
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            4
+          ],
+          "dividendPer10": 23.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            8
+          ],
+          "dividendPer10": 14.5
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            4,
+            6
+          ],
+          "dividendPer10": 423.5
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            4,
+            6
+          ],
+          "dividendPer10": 103
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            6,
+            8
+          ],
+          "dividendPer10": 59
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            4,
+            8
+          ],
+          "dividendPer10": 42.5
+        }
+      ],
+      "forecast": [
+        {
+          "pool": "FORECAST",
+          "combination": [
+            6,
+            4
+          ],
+          "dividendPer10": 871
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            6,
+            4,
+            8
+          ],
+          "dividendPer10": 3199
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            4,
+            6,
+            8
+          ],
+          "dividendPer10": 421
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            4,
+            5,
+            6,
+            8
+          ],
+          "dividendPer10": 726
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            6,
+            4,
+            8,
+            5
+          ],
+          "dividendPer10": 20697
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2022%2F05%2F07&Racecourse=ST&RaceNo=3"
+  },
+  {
+    "raceId": "2022-05-07-ST-4",
+    "date": "2022-05-07",
+    "racecourse": "ST",
+    "raceNo": 4,
+    "raceIndex": 647,
+    "raceClass": 4,
+    "distance": 1200,
+    "ratingBand": "60-40",
+    "surface": "TURF",
+    "course": "TURF - \"C\" Course",
+    "going": "GOOD",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 1,
+        "horseId": "HK_2021_G258",
+        "brandNo": "G258",
+        "horseName": "MAJESTIC KNIGHT",
+        "jockey": "L Hewitson",
+        "trainer": "D J Whyte",
+        "actualWeight": 133,
+        "declaredHorseWeight": 1182,
+        "draw": 12,
+        "lbw": 0,
+        "runningPosition": [
+          1,
+          1,
+          1
+        ],
+        "finishSeconds": 69.45,
+        "winOdds": 15
+      },
+      {
+        "placing": 2,
+        "horseNo": 11,
+        "horseId": "HK_2020_E211",
+        "brandNo": "E211",
+        "horseName": "DRAGON KINGDOM",
+        "jockey": "K Teetan",
+        "trainer": "Y S Tsui",
+        "actualWeight": 114,
+        "declaredHorseWeight": 1124,
+        "draw": 2,
+        "lbw": 3.25,
+        "runningPosition": [
+          3,
+          3,
+          2
+        ],
+        "finishSeconds": 69.96000000000001,
+        "winOdds": 2.7
+      },
+      {
+        "placing": 3,
+        "horseNo": 7,
+        "horseId": "HK_2021_G323",
+        "brandNo": "G323",
+        "horseName": "WIDE BLUE YONDER",
+        "jockey": "Z Purton",
+        "trainer": "D A Hayes",
+        "actualWeight": 125,
+        "declaredHorseWeight": 1125,
+        "draw": 9,
+        "lbw": 4.5,
+        "runningPosition": [
+          10,
+          11,
+          3
+        ],
+        "finishSeconds": 70.15,
+        "winOdds": 11
+      },
+      {
+        "placing": 4,
+        "horseNo": 2,
+        "horseId": "HK_2020_E245",
+        "brandNo": "E245",
+        "horseName": "MARADO",
+        "jockey": "R Maia",
+        "trainer": "P O'Sullivan",
+        "actualWeight": 131,
+        "declaredHorseWeight": 1020,
+        "draw": 5,
+        "lbw": 4.5,
+        "runningPosition": [
+          5,
+          4,
+          4
+        ],
+        "finishSeconds": 70.16,
+        "winOdds": 9.3
+      },
+      {
+        "placing": 5,
+        "horseNo": 12,
+        "horseId": "HK_2019_D186",
+        "brandNo": "D186",
+        "horseName": "STRIVE FOR GLORY",
+        "jockey": "M Chadwick",
+        "trainer": "W Y So",
+        "actualWeight": 114,
+        "declaredHorseWeight": 1072,
+        "draw": 8,
+        "lbw": 4.5,
+        "runningPosition": [
+          4,
+          5,
+          5
+        ],
+        "finishSeconds": 70.17,
+        "winOdds": 7.9
+      },
+      {
+        "placing": 6,
+        "horseNo": 3,
+        "horseId": "HK_2019_D098",
+        "brandNo": "D098",
+        "horseName": "GRACYLOVE",
+        "jockey": "L Currie",
+        "trainer": "D J Hall",
+        "actualWeight": 130,
+        "declaredHorseWeight": 1196,
+        "draw": 1,
+        "lbw": 5.5,
+        "runningPosition": [
+          9,
+          6,
+          6
+        ],
+        "finishSeconds": 70.33,
+        "winOdds": 17
+      },
+      {
+        "placing": 7,
+        "horseNo": 9,
+        "horseId": "HK_2021_G042",
+        "brandNo": "G042",
+        "horseName": "ALL IS READY",
+        "jockey": "M F Poon",
+        "trainer": "P F Yiu",
+        "actualWeight": 121,
+        "declaredHorseWeight": 1193,
+        "draw": 3,
+        "lbw": 6,
+        "runningPosition": [
+          8,
+          9,
+          7
+        ],
+        "finishSeconds": 70.42,
+        "winOdds": 23
+      },
+      {
+        "placing": 8,
+        "horseNo": 10,
+        "horseId": "HK_2017_B384",
+        "brandNo": "B384",
+        "horseName": "GOOD BEAUTY",
+        "jockey": "K C Leung",
+        "trainer": "K L Man",
+        "actualWeight": 120,
+        "declaredHorseWeight": 1073,
+        "draw": 10,
+        "lbw": 6.5,
+        "runningPosition": [
+          7,
+          7,
+          8
+        ],
+        "finishSeconds": 70.47,
+        "winOdds": 21
+      },
+      {
+        "placing": 9,
+        "horseNo": 8,
+        "horseId": "HK_2021_G084",
+        "brandNo": "G084",
+        "horseName": "YOUNG EXPLORER",
+        "jockey": "A Hamelin",
+        "trainer": "K H Ting",
+        "actualWeight": 125,
+        "declaredHorseWeight": 1086,
+        "draw": 4,
+        "lbw": 6.75,
+        "runningPosition": [
+          11,
+          10,
+          9
+        ],
+        "finishSeconds": 70.52,
+        "winOdds": 88
+      },
+      {
+        "placing": 10,
+        "horseNo": 5,
+        "horseId": "HK_2017_B475",
+        "brandNo": "B475",
+        "horseName": "GLENEALY GENERALS",
+        "jockey": "H Bentley",
+        "trainer": "C H Yip",
+        "actualWeight": 125,
+        "declaredHorseWeight": 1149,
+        "draw": 11,
+        "lbw": 7.5,
+        "runningPosition": [
+          12,
+          12,
+          10
+        ],
+        "finishSeconds": 70.66,
+        "winOdds": 43
+      },
+      {
+        "placing": 11,
+        "horseNo": 6,
+        "horseId": "HK_2021_G321",
+        "brandNo": "G321",
+        "horseName": "HA LEE CHARM",
+        "jockey": "V Borges",
+        "trainer": "J Size",
+        "actualWeight": 125,
+        "declaredHorseWeight": 1229,
+        "draw": 6,
+        "lbw": 10,
+        "runningPosition": [
+          6,
+          8,
+          11
+        ],
+        "finishSeconds": 71.05,
+        "winOdds": 30
+      },
+      {
+        "placing": 12,
+        "horseNo": 4,
+        "horseId": "HK_2021_G260",
+        "brandNo": "G260",
+        "horseName": "DREAM BOSS",
+        "jockey": "J Moreira",
+        "trainer": "C Fownes",
+        "actualWeight": 125,
+        "declaredHorseWeight": 1207,
+        "draw": 7,
+        "lbw": 11.75,
+        "runningPosition": [
+          2,
+          2,
+          12
+        ],
+        "finishSeconds": 71.34,
+        "winOdds": 4.2
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            1
+          ],
+          "dividendPer10": 150
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            1
+          ],
+          "dividendPer10": 42
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            11
+          ],
+          "dividendPer10": 14
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            7
+          ],
+          "dividendPer10": 32
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            1,
+            11
+          ],
+          "dividendPer10": 215.5
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            11
+          ],
+          "dividendPer10": 85
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            7
+          ],
+          "dividendPer10": 246.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            7,
+            11
+          ],
+          "dividendPer10": 74
+        }
+      ],
+      "forecast": [
+        {
+          "pool": "FORECAST",
+          "combination": [
+            1,
+            11
+          ],
+          "dividendPer10": 493
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            1,
+            11,
+            7
+          ],
+          "dividendPer10": 6738
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            1,
+            7,
+            11
+          ],
+          "dividendPer10": 953
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            1,
+            2,
+            7,
+            11
+          ],
+          "dividendPer10": 1823
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            1,
+            11,
+            7,
+            2
+          ],
+          "dividendPer10": 53050
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2022%2F05%2F07&Racecourse=ST&RaceNo=4"
+  },
+  {
+    "raceId": "2022-05-07-ST-5",
+    "date": "2022-05-07",
+    "racecourse": "ST",
+    "raceNo": 5,
+    "raceIndex": 648,
+    "raceClass": 4,
+    "distance": 1800,
+    "ratingBand": "60-40",
+    "surface": "TURF",
+    "course": "TURF - \"C\" Course",
+    "going": "GOOD",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 9,
+        "horseId": "HK_2016_A005",
+        "brandNo": "A005",
+        "horseName": "RED ELYSEES",
+        "jockey": "J Moreira",
+        "trainer": "K L Man",
+        "actualWeight": 121,
+        "declaredHorseWeight": 1156,
+        "draw": 6,
+        "lbw": 0,
+        "runningPosition": [
+          9,
+          9,
+          10,
+          7,
+          1
+        ],
+        "finishSeconds": 108.66,
+        "winOdds": 6.5
+      },
+      {
+        "placing": 2,
+        "horseNo": 1,
+        "horseId": "HK_2020_E458",
+        "brandNo": "E458",
+        "horseName": "BORN THE SAME DAY",
+        "jockey": "B Shinn",
+        "trainer": "K W Lui",
+        "actualWeight": 133,
+        "declaredHorseWeight": 1099,
+        "draw": 4,
+        "lbw": 1,
+        "runningPosition": [
+          10,
+          7,
+          11,
+          11,
+          2
+        ],
+        "finishSeconds": 108.82,
+        "winOdds": 32
+      },
+      {
+        "placing": 3,
+        "horseNo": 3,
+        "horseId": "HK_2019_D203",
+        "brandNo": "D203",
+        "horseName": "TOYCOON",
+        "jockey": "H Bentley",
+        "trainer": "P F Yiu",
+        "actualWeight": 128,
+        "declaredHorseWeight": 1043,
+        "draw": 7,
+        "lbw": 1.25,
+        "runningPosition": [
+          3,
+          3,
+          2,
+          1,
+          3
+        ],
+        "finishSeconds": 108.87,
+        "winOdds": 29
+      },
+      {
+        "placing": 4,
+        "horseNo": 7,
+        "horseId": "HK_2021_G037",
+        "brandNo": "G037",
+        "horseName": "RIGHT AS RAIN",
+        "jockey": "Z Purton",
+        "trainer": "C W Chang",
+        "actualWeight": 124,
+        "declaredHorseWeight": 1072,
+        "draw": 14,
+        "lbw": 1.5,
+        "runningPosition": [
+          12,
+          12,
+          8,
+          9,
+          4
+        ],
+        "finishSeconds": 108.9,
+        "winOdds": 3.8
+      },
+      {
+        "placing": 5,
+        "horseNo": 14,
+        "horseId": "HK_2020_E197",
+        "brandNo": "E197",
+        "horseName": "TURQUOISE ALPHA",
+        "jockey": "K Teetan",
+        "trainer": "P O'Sullivan",
+        "actualWeight": 117,
+        "declaredHorseWeight": 1012,
+        "draw": 13,
+        "lbw": 2,
+        "runningPosition": [
+          14,
+          14,
+          12,
+          12,
+          5
+        ],
+        "finishSeconds": 108.97,
+        "winOdds": 12
+      },
+      {
+        "placing": 6,
+        "horseNo": 5,
+        "horseId": "HK_2017_B370",
+        "brandNo": "B370",
+        "horseName": "PAKISTAN FRIEND",
+        "jockey": "L Ferraris",
+        "trainer": "W Y So",
+        "actualWeight": 126,
+        "declaredHorseWeight": 1065,
+        "draw": 5,
+        "lbw": 2.75,
+        "runningPosition": [
+          1,
+          2,
+          3,
+          5,
+          6
+        ],
+        "finishSeconds": 109.09,
+        "winOdds": 9.1
+      },
+      {
+        "placing": 7,
+        "horseNo": 10,
+        "horseId": "HK_2019_D398",
+        "brandNo": "D398",
+        "horseName": "DAILY CHARM",
+        "jockey": "M Chadwick",
+        "trainer": "C S Shum",
+        "actualWeight": 118,
+        "declaredHorseWeight": 1119,
+        "draw": 10,
+        "lbw": 3.5,
+        "runningPosition": [
+          8,
+          11,
+          6,
+          4,
+          7
+        ],
+        "finishSeconds": 109.22,
+        "winOdds": 12
+      },
+      {
+        "placing": 8,
+        "horseNo": 8,
+        "horseId": "HK_2019_D241",
+        "brandNo": "D241",
+        "horseName": "SUPER HONG KONG",
+        "jockey": "A Hamelin",
+        "trainer": "A T Millard",
+        "actualWeight": 124,
+        "declaredHorseWeight": 999,
+        "draw": 2,
+        "lbw": 3.5,
+        "runningPosition": [
+          4,
+          5,
+          5,
+          6,
+          8
+        ],
+        "finishSeconds": 109.22,
+        "winOdds": 10
+      },
+      {
+        "placing": 9,
+        "horseNo": 12,
+        "horseId": "HK_2020_E372",
+        "brandNo": "E372",
+        "horseName": "EEVEE",
+        "jockey": "C Y Ho",
+        "trainer": "D A Hayes",
+        "actualWeight": 117,
+        "declaredHorseWeight": 1057,
+        "draw": 1,
+        "lbw": 3.75,
+        "runningPosition": [
+          7,
+          4,
+          7,
+          8,
+          9
+        ],
+        "finishSeconds": 109.28,
+        "winOdds": 7.5
+      },
+      {
+        "placing": 10,
+        "horseNo": 4,
+        "horseId": "HK_2021_G077",
+        "brandNo": "G077",
+        "horseName": "BARON ZEE",
+        "jockey": "R Maia",
+        "trainer": "R Gibson",
+        "actualWeight": 126,
+        "declaredHorseWeight": 1062,
+        "draw": 3,
+        "lbw": 4.25,
+        "runningPosition": [
+          6,
+          6,
+          9,
+          10,
+          10
+        ],
+        "finishSeconds": 109.32,
+        "winOdds": 71
+      },
+      {
+        "placing": 11,
+        "horseNo": 13,
+        "horseId": "HK_2020_E313",
+        "brandNo": "E313",
+        "horseName": "MAKE IT TURBO",
+        "jockey": "L Hewitson",
+        "trainer": "D J Hall",
+        "actualWeight": 117,
+        "declaredHorseWeight": 1215,
+        "draw": 11,
+        "lbw": 5.75,
+        "runningPosition": [
+          11,
+          13,
+          13,
+          13,
+          11
+        ],
+        "finishSeconds": 109.59,
+        "winOdds": 25
+      },
+      {
+        "placing": 12,
+        "horseNo": 6,
+        "horseId": "HK_2018_C227",
+        "brandNo": "C227",
+        "horseName": "JOYFUL HEART",
+        "jockey": "K C Leung",
+        "trainer": "F C Lor",
+        "actualWeight": 124,
+        "declaredHorseWeight": 1172,
+        "draw": 9,
+        "lbw": 6.25,
+        "runningPosition": [
+          5,
+          8,
+          4,
+          3,
+          12
+        ],
+        "finishSeconds": 109.65,
+        "winOdds": 19
+      },
+      {
+        "placing": 13,
+        "horseNo": 2,
+        "horseId": "HK_2017_B114",
+        "brandNo": "B114",
+        "horseName": "SHANGHAI DRAGON",
+        "jockey": "M F Poon",
+        "trainer": "T P Yung",
+        "actualWeight": 126,
+        "declaredHorseWeight": 1233,
+        "draw": 8,
+        "lbw": 7,
+        "runningPosition": [
+          2,
+          1,
+          1,
+          2,
+          13
+        ],
+        "finishSeconds": 109.75999999999999,
+        "winOdds": 8.5
+      },
+      {
+        "placing": 14,
+        "horseNo": 11,
+        "horseId": "HK_2018_C208",
+        "brandNo": "C208",
+        "horseName": "DRAGON COMMANDER",
+        "jockey": "H T Mo",
+        "trainer": "Y S Tsui",
+        "actualWeight": 116,
+        "declaredHorseWeight": 1090,
+        "draw": 12,
+        "lbw": 11.75,
+        "runningPosition": [
+          13,
+          10,
+          14,
+          14,
+          14
+        ],
+        "finishSeconds": 110.53,
+        "winOdds": 83
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            9
+          ],
+          "dividendPer10": 65.5
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            9
+          ],
+          "dividendPer10": 21.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            1
+          ],
+          "dividendPer10": 90
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            3
+          ],
+          "dividendPer10": 66.5
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            1,
+            9
+          ],
+          "dividendPer10": 1097.5
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            9
+          ],
+          "dividendPer10": 367.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            3,
+            9
+          ],
+          "dividendPer10": 270
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            3
+          ],
+          "dividendPer10": 1034.5
+        }
+      ],
+      "forecast": [
+        {
+          "pool": "FORECAST",
+          "combination": [
+            9,
+            1
+          ],
+          "dividendPer10": 1663
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            9,
+            1,
+            3
+          ],
+          "dividendPer10": 45528
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            1,
+            3,
+            9
+          ],
+          "dividendPer10": 9028
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            1,
+            3,
+            7,
+            9
+          ],
+          "dividendPer10": 6202
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            9,
+            1,
+            3,
+            7
+          ],
+          "dividendPer10": 180953
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2022%2F05%2F07&Racecourse=ST&RaceNo=5"
+  },
+  {
+    "raceId": "2022-05-07-ST-6",
+    "date": "2022-05-07",
+    "racecourse": "ST",
+    "raceNo": 6,
+    "raceIndex": 649,
+    "raceClass": 4,
+    "distance": 1200,
+    "ratingBand": "60-40",
+    "surface": "TURF",
+    "course": "TURF - \"C\" Course",
+    "going": "GOOD",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 2,
+        "horseId": "HK_2021_G153",
+        "brandNo": "G153",
+        "horseName": "FAULDS",
+        "jockey": "C Wong",
+        "trainer": "C H Yip",
+        "actualWeight": 126,
+        "declaredHorseWeight": 1220,
+        "draw": 7,
+        "lbw": 0,
+        "runningPosition": [
+          6,
+          6,
+          1
+        ],
+        "finishSeconds": 69.5,
+        "winOdds": 35
+      },
+      {
+        "placing": 2,
+        "horseNo": 1,
+        "horseId": "HK_2021_G219",
+        "brandNo": "G219",
+        "horseName": "ENCHANTING IBIS",
+        "jockey": "A Hamelin",
+        "trainer": "A T Millard",
+        "actualWeight": 133,
+        "declaredHorseWeight": 1140,
+        "draw": 8,
+        "lbw": 2.75,
+        "runningPosition": [
+          8,
+          8,
+          2
+        ],
+        "finishSeconds": 69.92,
+        "winOdds": 5.1
+      },
+      {
+        "placing": 3,
+        "horseNo": 4,
+        "horseId": "HK_2021_G160",
+        "brandNo": "G160",
+        "horseName": "CALIFORNIA VANES",
+        "jockey": "Z Purton",
+        "trainer": "A S Cruz",
+        "actualWeight": 125,
+        "declaredHorseWeight": 1217,
+        "draw": 9,
+        "lbw": 3,
+        "runningPosition": [
+          1,
+          1,
+          3
+        ],
+        "finishSeconds": 69.96000000000001,
+        "winOdds": 2.2
+      },
+      {
+        "placing": 4,
+        "horseNo": 8,
+        "horseId": "HK_2019_D051",
+        "brandNo": "D051",
+        "horseName": "JIANGXI STAMINA",
+        "jockey": "M Chadwick",
+        "trainer": "W Y So",
+        "actualWeight": 122,
+        "declaredHorseWeight": 1191,
+        "draw": 10,
+        "lbw": 3,
+        "runningPosition": [
+          12,
+          10,
+          4
+        ],
+        "finishSeconds": 69.97,
+        "winOdds": 7.4
+      },
+      {
+        "placing": 5,
+        "horseNo": 9,
+        "horseId": "HK_2021_G016",
+        "brandNo": "G016",
+        "horseName": "SUGAR SUGAR",
+        "jockey": "L Ferraris",
+        "trainer": "C Fownes",
+        "actualWeight": 120,
+        "declaredHorseWeight": 1056,
+        "draw": 1,
+        "lbw": 4.5,
+        "runningPosition": [
+          3,
+          2,
+          5
+        ],
+        "finishSeconds": 70.23,
+        "winOdds": 7.2
+      },
+      {
+        "placing": 6,
+        "horseNo": 11,
+        "horseId": "HK_2021_G025",
+        "brandNo": "G025",
+        "horseName": "THE GOOD DEAL",
+        "jockey": "K Teetan",
+        "trainer": "C W Chang",
+        "actualWeight": 117,
+        "declaredHorseWeight": 1097,
+        "draw": 5,
+        "lbw": 4.75,
+        "runningPosition": [
+          4,
+          5,
+          6
+        ],
+        "finishSeconds": 70.24,
+        "winOdds": 29
+      },
+      {
+        "placing": 7,
+        "horseNo": 3,
+        "horseId": "HK_2021_G079",
+        "brandNo": "G079",
+        "horseName": "BLISSFUL LIFE",
+        "jockey": "K C Leung",
+        "trainer": "K L Man",
+        "actualWeight": 128,
+        "declaredHorseWeight": 1098,
+        "draw": 3,
+        "lbw": 5,
+        "runningPosition": [
+          7,
+          7,
+          7
+        ],
+        "finishSeconds": 70.28999999999999,
+        "winOdds": 38
+      },
+      {
+        "placing": 8,
+        "horseNo": 7,
+        "horseId": "HK_2021_G058",
+        "brandNo": "G058",
+        "horseName": "DAZZLING FELLOW",
+        "jockey": "L Currie",
+        "trainer": "D J Hall",
+        "actualWeight": 124,
+        "declaredHorseWeight": 1197,
+        "draw": 4,
+        "lbw": 5.25,
+        "runningPosition": [
+          9,
+          11,
+          8
+        ],
+        "finishSeconds": 70.33,
+        "winOdds": 18
+      },
+      {
+        "placing": 9,
+        "horseNo": 10,
+        "horseId": "HK_2021_G005",
+        "brandNo": "G005",
+        "horseName": "QUORUM",
+        "jockey": "L Hewitson",
+        "trainer": "R Gibson",
+        "actualWeight": 119,
+        "declaredHorseWeight": 1241,
+        "draw": 6,
+        "lbw": 6,
+        "runningPosition": [
+          11,
+          12,
+          9
+        ],
+        "finishSeconds": 70.46000000000001,
+        "winOdds": 44
+      },
+      {
+        "placing": 10,
+        "horseNo": 6,
+        "horseId": "HK_2021_G277",
+        "brandNo": "G277",
+        "horseName": "TO INFINITY",
+        "jockey": "R Maia",
+        "trainer": "P O'Sullivan",
+        "actualWeight": 125,
+        "declaredHorseWeight": 1005,
+        "draw": 11,
+        "lbw": 7.25,
+        "runningPosition": [
+          10,
+          9,
+          10
+        ],
+        "finishSeconds": 70.66,
+        "winOdds": 55
+      },
+      {
+        "placing": 11,
+        "horseNo": 12,
+        "horseId": "HK_2020_E293",
+        "brandNo": "E293",
+        "horseName": "FANTASY SPRING",
+        "jockey": "H T Mo",
+        "trainer": "Y S Tsui",
+        "actualWeight": 112,
+        "declaredHorseWeight": 1172,
+        "draw": 2,
+        "lbw": 7.5,
+        "runningPosition": [
+          5,
+          4,
+          11
+        ],
+        "finishSeconds": 70.7,
+        "winOdds": 65
+      },
+      {
+        "placing": 12,
+        "horseNo": 5,
+        "horseId": "HK_2021_G264",
+        "brandNo": "G264",
+        "horseName": "KING ECCELLENTE",
+        "jockey": "B Shinn",
+        "trainer": "D J Whyte",
+        "actualWeight": 125,
+        "declaredHorseWeight": 1090,
+        "draw": 12,
+        "lbw": 7.5,
+        "runningPosition": [
+          2,
+          3,
+          12
+        ],
+        "finishSeconds": 70.71000000000001,
+        "winOdds": 10
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            2
+          ],
+          "dividendPer10": 356
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            2
+          ],
+          "dividendPer10": 73
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            1
+          ],
+          "dividendPer10": 16
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            4
+          ],
+          "dividendPer10": 12
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            1,
+            2
+          ],
+          "dividendPer10": 759.5
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            2
+          ],
+          "dividendPer10": 204
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            2,
+            4
+          ],
+          "dividendPer10": 121
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            4
+          ],
+          "dividendPer10": 29
+        }
+      ],
+      "forecast": [
+        {
+          "pool": "FORECAST",
+          "combination": [
+            2,
+            1
+          ],
+          "dividendPer10": 1113
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            2,
+            1,
+            4
+          ],
+          "dividendPer10": 3429
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            1,
+            2,
+            4
+          ],
+          "dividendPer10": 453
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            1,
+            2,
+            4,
+            8
+          ],
+          "dividendPer10": 523
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            2,
+            1,
+            4,
+            8
+          ],
+          "dividendPer10": 20223
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2022%2F05%2F07&Racecourse=ST&RaceNo=6"
+  },
+  {
+    "raceId": "2022-05-07-ST-7",
+    "date": "2022-05-07",
+    "racecourse": "ST",
+    "raceNo": 7,
+    "raceIndex": 650,
+    "raceClass": 3,
+    "distance": 1000,
+    "ratingBand": "80-60",
+    "surface": "TURF",
+    "course": "TURF - \"C\" Course",
+    "going": "GOOD",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 10,
+        "horseId": "HK_2020_E301",
+        "brandNo": "E301",
+        "horseName": "POWER KOEPP",
+        "jockey": "J Moreira",
+        "trainer": "J Size",
+        "actualWeight": 116,
+        "declaredHorseWeight": 1073,
+        "draw": 8,
+        "lbw": 0,
+        "runningPosition": [
+          9,
+          8,
+          1
+        ],
+        "finishSeconds": 55.95,
+        "winOdds": 5.5
+      },
+      {
+        "placing": 2,
+        "horseNo": 6,
+        "horseId": "HK_2017_B089",
+        "brandNo": "B089",
+        "horseName": "SEVEN HEAVENS",
+        "jockey": "B Shinn",
+        "trainer": "C Fownes",
+        "actualWeight": 122,
+        "declaredHorseWeight": 1091,
+        "draw": 10,
+        "lbw": 0.05,
+        "runningPosition": [
+          7,
+          6,
+          2
+        ],
+        "finishSeconds": 55.96,
+        "winOdds": 18
+      },
+      {
+        "placing": 3,
+        "horseNo": 1,
+        "horseId": "HK_2019_D387",
+        "brandNo": "D387",
+        "horseName": "METRO WARRIOR",
+        "jockey": "C Y Ho",
+        "trainer": "D A Hayes",
+        "actualWeight": 133,
+        "declaredHorseWeight": 1160,
+        "draw": 6,
+        "lbw": 0.5,
+        "runningPosition": [
+          1,
+          2,
+          3
+        ],
+        "finishSeconds": 56.06,
+        "winOdds": 9.9
+      },
+      {
+        "placing": 4,
+        "horseNo": 2,
+        "horseId": "HK_2020_E322",
+        "brandNo": "E322",
+        "horseName": "RUN RUN COOL",
+        "jockey": "Z Purton",
+        "trainer": "F C Lor",
+        "actualWeight": 133,
+        "declaredHorseWeight": 1219,
+        "draw": 5,
+        "lbw": 0.75,
+        "runningPosition": [
+          5,
+          4,
+          4
+        ],
+        "finishSeconds": 56.1,
+        "winOdds": 2.1
+      },
+      {
+        "placing": 5,
+        "horseNo": 4,
+        "horseId": "HK_2018_C377",
+        "brandNo": "C377",
+        "horseName": "PING HAI GALAXY",
+        "jockey": "V Borges",
+        "trainer": "J Size",
+        "actualWeight": 124,
+        "declaredHorseWeight": 1117,
+        "draw": 7,
+        "lbw": 1,
+        "runningPosition": [
+          3,
+          1,
+          5
+        ],
+        "finishSeconds": 56.13,
+        "winOdds": 49
+      },
+      {
+        "placing": 6,
+        "horseNo": 7,
+        "horseId": "HK_2020_E221",
+        "brandNo": "E221",
+        "horseName": "SUMMIT CHEERS",
+        "jockey": "L Currie",
+        "trainer": "D J Hall",
+        "actualWeight": 119,
+        "declaredHorseWeight": 1159,
+        "draw": 1,
+        "lbw": 1.5,
+        "runningPosition": [
+          2,
+          3,
+          6
+        ],
+        "finishSeconds": 56.19,
+        "winOdds": 6.8
+      },
+      {
+        "placing": 7,
+        "horseNo": 3,
+        "horseId": "HK_2016_A354",
+        "brandNo": "A354",
+        "horseName": "ALCARI",
+        "jockey": "K Teetan",
+        "trainer": "P F Yiu",
+        "actualWeight": 129,
+        "declaredHorseWeight": 1228,
+        "draw": 4,
+        "lbw": 1.75,
+        "runningPosition": [
+          4,
+          7,
+          7
+        ],
+        "finishSeconds": 56.23,
+        "winOdds": 7.6
+      },
+      {
+        "placing": 8,
+        "horseNo": 5,
+        "horseId": "HK_2018_C511",
+        "brandNo": "C511",
+        "horseName": "HIGH RISE SOLDIER",
+        "jockey": "A Hamelin",
+        "trainer": "K W Lui",
+        "actualWeight": 122,
+        "declaredHorseWeight": 1078,
+        "draw": 2,
+        "lbw": 2,
+        "runningPosition": [
+          6,
+          9,
+          8
+        ],
+        "finishSeconds": 56.29,
+        "winOdds": 76
+      },
+      {
+        "placing": 9,
+        "horseNo": 8,
+        "horseId": "HK_2020_E475",
+        "brandNo": "E475",
+        "horseName": "CALIFORNIA FOREST",
+        "jockey": "L Ferraris",
+        "trainer": "A S Cruz",
+        "actualWeight": 118,
+        "declaredHorseWeight": 1087,
+        "draw": 3,
+        "lbw": 2.25,
+        "runningPosition": [
+          10,
+          10,
+          9
+        ],
+        "finishSeconds": 56.31,
+        "winOdds": 58
+      },
+      {
+        "placing": 10,
+        "horseNo": 9,
+        "horseId": "HK_2021_G309",
+        "brandNo": "G309",
+        "horseName": "JUMBO GOAL",
+        "jockey": "L Hewitson",
+        "trainer": "C Fownes",
+        "actualWeight": 116,
+        "declaredHorseWeight": 1170,
+        "draw": 9,
+        "lbw": 4.75,
+        "runningPosition": [
+          8,
+          5,
+          10
+        ],
+        "finishSeconds": 56.73,
+        "winOdds": 11
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            10
+          ],
+          "dividendPer10": 55.5
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            10
+          ],
+          "dividendPer10": 17
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            6
+          ],
+          "dividendPer10": 41
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            1
+          ],
+          "dividendPer10": 26.5
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            6,
+            10
+          ],
+          "dividendPer10": 437.5
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            6,
+            10
+          ],
+          "dividendPer10": 107.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            10
+          ],
+          "dividendPer10": 73
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            6
+          ],
+          "dividendPer10": 170
+        }
+      ],
+      "forecast": [
+        {
+          "pool": "FORECAST",
+          "combination": [
+            10,
+            6
+          ],
+          "dividendPer10": 572
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            10,
+            6,
+            1
+          ],
+          "dividendPer10": 4357
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            1,
+            6,
+            10
+          ],
+          "dividendPer10": 1040
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            1,
+            2,
+            6,
+            10
+          ],
+          "dividendPer10": 421
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            10,
+            6,
+            1,
+            2
+          ],
+          "dividendPer10": 14371
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2022%2F05%2F07&Racecourse=ST&RaceNo=7"
+  },
+  {
+    "raceId": "2022-05-07-ST-8",
+    "date": "2022-05-07",
+    "racecourse": "ST",
+    "raceNo": 8,
+    "raceIndex": 651,
+    "raceClass": 3,
+    "distance": 1600,
+    "ratingBand": "80-60",
+    "surface": "TURF",
+    "course": "TURF - \"C\" Course",
+    "going": "GOOD",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 8,
+        "horseId": "HK_2021_G151",
+        "brandNo": "G151",
+        "horseName": "LOOKING COOL",
+        "jockey": "K Teetan",
+        "trainer": "F C Lor",
+        "actualWeight": 114,
+        "declaredHorseWeight": 1124,
+        "draw": 6,
+        "lbw": 0,
+        "runningPosition": [
+          4,
+          5,
+          4,
+          1
+        ],
+        "finishSeconds": 94.25999999999999,
+        "winOdds": 5.6
+      },
+      {
+        "placing": 2,
+        "horseNo": 4,
+        "horseId": "HK_2021_G132",
+        "brandNo": "G132",
+        "horseName": "COPARTNER ELITES",
+        "jockey": "C Y Ho",
+        "trainer": "C S Shum",
+        "actualWeight": 128,
+        "declaredHorseWeight": 1057,
+        "draw": 7,
+        "lbw": 0.1,
+        "runningPosition": [
+          9,
+          10,
+          10,
+          2
+        ],
+        "finishSeconds": 94.28999999999999,
+        "winOdds": 3.9
+      },
+      {
+        "placing": 3,
+        "horseNo": 3,
+        "horseId": "HK_2021_G227",
+        "brandNo": "G227",
+        "horseName": "MR ASCENDENCY",
+        "jockey": "Z Purton",
+        "trainer": "P F Yiu",
+        "actualWeight": 129,
+        "declaredHorseWeight": 1119,
+        "draw": 9,
+        "lbw": 3.25,
+        "runningPosition": [
+          6,
+          6,
+          6,
+          3
+        ],
+        "finishSeconds": 94.77000000000001,
+        "winOdds": 4.6
+      },
+      {
+        "placing": 4,
+        "horseNo": 9,
+        "horseId": "HK_2020_E132",
+        "brandNo": "E132",
+        "horseName": "LET'S DO IT",
+        "jockey": "H T Mo",
+        "trainer": "D J Hall",
+        "actualWeight": 111,
+        "declaredHorseWeight": 1080,
+        "draw": 2,
+        "lbw": 3.5,
+        "runningPosition": [
+          2,
+          2,
+          1,
+          4
+        ],
+        "finishSeconds": 94.8,
+        "winOdds": 11
+      },
+      {
+        "placing": 5,
+        "horseNo": 6,
+        "horseId": "HK_2018_C414",
+        "brandNo": "C414",
+        "horseName": "PARTY EVERYDAY",
+        "jockey": "M Chadwick",
+        "trainer": "A S Cruz",
+        "actualWeight": 123,
+        "declaredHorseWeight": 1133,
+        "draw": 1,
+        "lbw": 4.25,
+        "runningPosition": [
+          7,
+          8,
+          9,
+          5
+        ],
+        "finishSeconds": 94.96000000000001,
+        "winOdds": 18
+      },
+      {
+        "placing": 6,
+        "horseNo": 1,
+        "horseId": "HK_2020_E365",
+        "brandNo": "E365",
+        "horseName": "BOURBONAIRE",
+        "jockey": "V Borges",
+        "trainer": "J Size",
+        "actualWeight": 133,
+        "declaredHorseWeight": 1046,
+        "draw": 5,
+        "lbw": 4.5,
+        "runningPosition": [
+          8,
+          7,
+          8,
+          6
+        ],
+        "finishSeconds": 94.97,
+        "winOdds": 7.4
+      },
+      {
+        "placing": 7,
+        "horseNo": 2,
+        "horseId": "HK_2021_G170",
+        "brandNo": "G170",
+        "horseName": "ROCKET SPADE",
+        "jockey": "J Moreira",
+        "trainer": "C Fownes",
+        "actualWeight": 132,
+        "declaredHorseWeight": 1184,
+        "draw": 8,
+        "lbw": 5.5,
+        "runningPosition": [
+          10,
+          9,
+          7,
+          7
+        ],
+        "finishSeconds": 95.15,
+        "winOdds": 8
+      },
+      {
+        "placing": 8,
+        "horseNo": 10,
+        "horseId": "HK_2019_D281",
+        "brandNo": "D281",
+        "horseName": "MILLENNIUM FALCON",
+        "jockey": "M F Poon",
+        "trainer": "T P Yung",
+        "actualWeight": 111,
+        "declaredHorseWeight": 1158,
+        "draw": 4,
+        "lbw": 5.5,
+        "runningPosition": [
+          1,
+          3,
+          3,
+          8
+        ],
+        "finishSeconds": 95.16,
+        "winOdds": 12
+      },
+      {
+        "placing": 9,
+        "horseNo": 5,
+        "horseId": "HK_2019_D359",
+        "brandNo": "D359",
+        "horseName": "GALLANT CROWN",
+        "jockey": "A Hamelin",
+        "trainer": "A T Millard",
+        "actualWeight": 125,
+        "declaredHorseWeight": 1047,
+        "draw": 3,
+        "lbw": 8.25,
+        "runningPosition": [
+          5,
+          4,
+          5,
+          9
+        ],
+        "finishSeconds": 95.57,
+        "winOdds": 25
+      },
+      {
+        "placing": 10,
+        "horseNo": 7,
+        "horseId": "HK_2021_G220",
+        "brandNo": "G220",
+        "horseName": "BOOM ALLIANCE",
+        "jockey": "L Hewitson",
+        "trainer": "D J Whyte",
+        "actualWeight": 119,
+        "declaredHorseWeight": 1213,
+        "draw": 10,
+        "lbw": 12,
+        "runningPosition": [
+          3,
+          1,
+          2,
+          10
+        ],
+        "finishSeconds": 96.16,
+        "winOdds": 22
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            8
+          ],
+          "dividendPer10": 56
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            8
+          ],
+          "dividendPer10": 21
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            4
+          ],
+          "dividendPer10": 14.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            3
+          ],
+          "dividendPer10": 19.5
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            4,
+            8
+          ],
+          "dividendPer10": 108.5
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            4,
+            8
+          ],
+          "dividendPer10": 46
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            3,
+            8
+          ],
+          "dividendPer10": 59.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            3,
+            4
+          ],
+          "dividendPer10": 42.5
+        }
+      ],
+      "forecast": [
+        {
+          "pool": "FORECAST",
+          "combination": [
+            8,
+            4
+          ],
+          "dividendPer10": 283
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            8,
+            4,
+            3
+          ],
+          "dividendPer10": 1503
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            3,
+            4,
+            8
+          ],
+          "dividendPer10": 200
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            3,
+            4,
+            8,
+            9
+          ],
+          "dividendPer10": 396
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            8,
+            4,
+            3,
+            9
+          ],
+          "dividendPer10": 9200
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2022%2F05%2F07&Racecourse=ST&RaceNo=8"
+  },
+  {
+    "raceId": "2022-05-07-ST-9",
+    "date": "2022-05-07",
+    "racecourse": "ST",
+    "raceNo": 9,
+    "raceIndex": 652,
+    "raceClass": 4,
+    "distance": 1400,
+    "ratingBand": "60-40",
+    "surface": "TURF",
+    "course": "TURF - \"C\" Course",
+    "going": "GOOD",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 3,
+        "horseId": "HK_2020_E193",
+        "brandNo": "E193",
+        "horseName": "ERIMO",
+        "jockey": "J Moreira",
+        "trainer": "J Size",
+        "actualWeight": 130,
+        "declaredHorseWeight": 1089,
+        "draw": 2,
+        "lbw": 0,
+        "runningPosition": [
+          8,
+          8,
+          7,
+          1
+        ],
+        "finishSeconds": 82.28999999999999,
+        "winOdds": 2
+      },
+      {
+        "placing": 2,
+        "horseNo": 7,
+        "horseId": "HK_2018_C191",
+        "brandNo": "C191",
+        "horseName": "SUPER RED DRAGON",
+        "jockey": "C Y Ho",
+        "trainer": "W Y So",
+        "actualWeight": 125,
+        "declaredHorseWeight": 1158,
+        "draw": 9,
+        "lbw": 0.2,
+        "runningPosition": [
+          10,
+          9,
+          9,
+          2
+        ],
+        "finishSeconds": 82.32,
+        "winOdds": 28
+      },
+      {
+        "placing": 3,
+        "horseNo": 4,
+        "horseId": "HK_2020_E051",
+        "brandNo": "E051",
+        "horseName": "RAINBOW LIGHT",
+        "jockey": "L Hewitson",
+        "trainer": "D J Whyte",
+        "actualWeight": 129,
+        "declaredHorseWeight": 1100,
+        "draw": 7,
+        "lbw": 2,
+        "runningPosition": [
+          4,
+          5,
+          4,
+          3
+        ],
+        "finishSeconds": 82.61,
+        "winOdds": 17
+      },
+      {
+        "placing": 4,
+        "horseNo": 11,
+        "horseId": "HK_2021_G050",
+        "brandNo": "G050",
+        "horseName": "SUPER HIGHWAY",
+        "jockey": "K Teetan",
+        "trainer": "F C Lor",
+        "actualWeight": 121,
+        "declaredHorseWeight": 1195,
+        "draw": 3,
+        "lbw": 2.25,
+        "runningPosition": [
+          11,
+          11,
+          10,
+          4
+        ],
+        "finishSeconds": 82.64,
+        "winOdds": 8.2
+      },
+      {
+        "placing": 5,
+        "horseNo": 12,
+        "horseId": "HK_2018_C304",
+        "brandNo": "C304",
+        "horseName": "RED BRICK FIGHTER",
+        "jockey": "Z Purton",
+        "trainer": "D J Hall",
+        "actualWeight": 120,
+        "declaredHorseWeight": 1075,
+        "draw": 5,
+        "lbw": 2.25,
+        "runningPosition": [
+          5,
+          6,
+          6,
+          5
+        ],
+        "finishSeconds": 82.64,
+        "winOdds": 4.6
+      },
+      {
+        "placing": 6,
+        "horseNo": 13,
+        "horseId": "HK_2019_D136",
+        "brandNo": "D136",
+        "horseName": "APEX TOP",
+        "jockey": "M Chadwick",
+        "trainer": "A T Millard",
+        "actualWeight": 114,
+        "declaredHorseWeight": 1174,
+        "draw": 14,
+        "lbw": 3,
+        "runningPosition": [
+          1,
+          4,
+          3,
+          6
+        ],
+        "finishSeconds": 82.76,
+        "winOdds": 11
+      },
+      {
+        "placing": 7,
+        "horseNo": 9,
+        "horseId": "HK_2018_C036",
+        "brandNo": "C036",
+        "horseName": "LORIZ",
+        "jockey": "M F Poon",
+        "trainer": "P F Yiu",
+        "actualWeight": 121,
+        "declaredHorseWeight": 1252,
+        "draw": 4,
+        "lbw": 3.75,
+        "runningPosition": [
+          3,
+          2,
+          2,
+          7
+        ],
+        "finishSeconds": 82.9,
+        "winOdds": 16
+      },
+      {
+        "placing": 8,
+        "horseNo": 8,
+        "horseId": "HK_2016_A086",
+        "brandNo": "A086",
+        "horseName": "CITY LEGEND",
+        "jockey": "H Bentley",
+        "trainer": "T P Yung",
+        "actualWeight": 123,
+        "declaredHorseWeight": 1059,
+        "draw": 8,
+        "lbw": 4,
+        "runningPosition": [
+          14,
+          14,
+          13,
+          8
+        ],
+        "finishSeconds": 82.92,
+        "winOdds": 31
+      },
+      {
+        "placing": 9,
+        "horseNo": 2,
+        "horseId": "HK_2018_C436",
+        "brandNo": "C436",
+        "horseName": "DUBLIN STAR",
+        "jockey": "K C Leung",
+        "trainer": "K L Man",
+        "actualWeight": 132,
+        "declaredHorseWeight": 1258,
+        "draw": 11,
+        "lbw": 5,
+        "runningPosition": [
+          12,
+          10,
+          11,
+          9
+        ],
+        "finishSeconds": 83.08,
+        "winOdds": 34
+      },
+      {
+        "placing": 10,
+        "horseNo": 10,
+        "horseId": "HK_2020_E093",
+        "brandNo": "E093",
+        "horseName": "LEISURE AND GOLD",
+        "jockey": "V Borges",
+        "trainer": "C H Yip",
+        "actualWeight": 121,
+        "declaredHorseWeight": 1138,
+        "draw": 10,
+        "lbw": 8.75,
+        "runningPosition": [
+          13,
+          13,
+          14,
+          10
+        ],
+        "finishSeconds": 83.68,
+        "winOdds": 172
+      },
+      {
+        "placing": 11,
+        "horseNo": 5,
+        "horseId": "HK_2021_G091",
+        "brandNo": "G091",
+        "horseName": "BALLISTIC MAN",
+        "jockey": "R Maia",
+        "trainer": "K H Ting",
+        "actualWeight": 125,
+        "declaredHorseWeight": 1065,
+        "draw": 6,
+        "lbw": 9,
+        "runningPosition": [
+          6,
+          7,
+          8,
+          11
+        ],
+        "finishSeconds": 83.72,
+        "winOdds": 125
+      },
+      {
+        "placing": 12,
+        "horseNo": 14,
+        "horseId": "HK_2014_T380",
+        "brandNo": "T380",
+        "horseName": "GREAT TREASURE",
+        "jockey": "H T Mo",
+        "trainer": "Y S Tsui",
+        "actualWeight": 112,
+        "declaredHorseWeight": 1033,
+        "draw": 1,
+        "lbw": 10.75,
+        "runningPosition": [
+          9,
+          12,
+          12,
+          12
+        ],
+        "finishSeconds": 84.02,
+        "winOdds": 26
+      },
+      {
+        "placing": 13,
+        "horseNo": 1,
+        "horseId": "HK_2018_C134",
+        "brandNo": "C134",
+        "horseName": "TRUST ME",
+        "jockey": "K H Chan",
+        "trainer": "C H Yip",
+        "actualWeight": 128,
+        "declaredHorseWeight": 1120,
+        "draw": 13,
+        "lbw": 11,
+        "runningPosition": [
+          2,
+          1,
+          1,
+          13
+        ],
+        "finishSeconds": 84.05,
+        "winOdds": 37
+      },
+      {
+        "placing": 14,
+        "horseNo": 6,
+        "horseId": "HK_2020_E468",
+        "brandNo": "E468",
+        "horseName": "MANY WINS",
+        "jockey": "A Hamelin",
+        "trainer": "K W Lui",
+        "actualWeight": 125,
+        "declaredHorseWeight": 1233,
+        "draw": 12,
+        "lbw": 17.75,
+        "runningPosition": [
+          7,
+          3,
+          5,
+          14
+        ],
+        "finishSeconds": 85.14,
+        "winOdds": 212
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            3
+          ],
+          "dividendPer10": 20.5
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            3
+          ],
+          "dividendPer10": 11
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            7
+          ],
+          "dividendPer10": 52
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            4
+          ],
+          "dividendPer10": 29.5
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            3,
+            7
+          ],
+          "dividendPer10": 232
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            3,
+            7
+          ],
+          "dividendPer10": 85
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            3,
+            4
+          ],
+          "dividendPer10": 54
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            4,
+            7
+          ],
+          "dividendPer10": 299.5
+        }
+      ],
+      "forecast": [
+        {
+          "pool": "FORECAST",
+          "combination": [
+            3,
+            7
+          ],
+          "dividendPer10": 278
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            3,
+            7,
+            4
+          ],
+          "dividendPer10": 2149
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            3,
+            4,
+            7
+          ],
+          "dividendPer10": 552
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            3,
+            4,
+            7,
+            11
+          ],
+          "dividendPer10": 846
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            3,
+            7,
+            4,
+            11
+          ],
+          "dividendPer10": 11354
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2022%2F05%2F07&Racecourse=ST&RaceNo=9"
+  },
+  {
+    "raceId": "2022-05-07-ST-10",
+    "date": "2022-05-07",
+    "racecourse": "ST",
+    "raceNo": 10,
+    "raceIndex": 653,
+    "raceClass": 3,
+    "distance": 1400,
+    "ratingBand": "80-60",
+    "surface": "TURF",
+    "course": "TURF - \"C\" Course",
+    "going": "GOOD",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 8,
+        "horseId": "HK_2020_E110",
+        "brandNo": "E110",
+        "horseName": "DRAGON FORTUNE",
+        "jockey": "K Teetan",
+        "trainer": "F C Lor",
+        "actualWeight": 119,
+        "declaredHorseWeight": 1078,
+        "draw": 3,
+        "lbw": 0,
+        "runningPosition": [
+          5,
+          5,
+          6,
+          1
+        ],
+        "finishSeconds": 82.14,
+        "winOdds": 8.2
+      },
+      {
+        "placing": 2,
+        "horseNo": 10,
+        "horseId": "HK_2018_C526",
+        "brandNo": "C526",
+        "horseName": "KA YING EXCELLENT",
+        "jockey": "M F Poon",
+        "trainer": "T P Yung",
+        "actualWeight": 114,
+        "declaredHorseWeight": 1087,
+        "draw": 6,
+        "lbw": 0.05,
+        "runningPosition": [
+          3,
+          4,
+          5,
+          2
+        ],
+        "finishSeconds": 82.2,
+        "winOdds": 41
+      },
+      {
+        "placing": 3,
+        "horseNo": 5,
+        "horseId": "HK_2021_G139",
+        "brandNo": "G139",
+        "horseName": "STORM LEGEND",
+        "jockey": "L Currie",
+        "trainer": "C Fownes",
+        "actualWeight": 122,
+        "declaredHorseWeight": 1036,
+        "draw": 1,
+        "lbw": 1,
+        "runningPosition": [
+          7,
+          6,
+          4,
+          3
+        ],
+        "finishSeconds": 82.31,
+        "winOdds": 9.5
+      },
+      {
+        "placing": 4,
+        "horseNo": 9,
+        "horseId": "HK_2020_E113",
+        "brandNo": "E113",
+        "horseName": "THE ANOMALY",
+        "jockey": "M Chadwick",
+        "trainer": "K H Ting",
+        "actualWeight": 117,
+        "declaredHorseWeight": 1103,
+        "draw": 4,
+        "lbw": 1,
+        "runningPosition": [
+          4,
+          3,
+          2,
+          4
+        ],
+        "finishSeconds": 82.31,
+        "winOdds": 8.4
+      },
+      {
+        "placing": 5,
+        "horseNo": 11,
+        "horseId": "HK_2020_E109",
+        "brandNo": "E109",
+        "horseName": "OSCAR GLORY",
+        "jockey": "J Moreira",
+        "trainer": "F C Lor",
+        "actualWeight": 116,
+        "declaredHorseWeight": 1121,
+        "draw": 11,
+        "lbw": 2.25,
+        "runningPosition": [
+          1,
+          1,
+          1,
+          5
+        ],
+        "finishSeconds": 82.51,
+        "winOdds": 4.9
+      },
+      {
+        "placing": 6,
+        "horseNo": 1,
+        "horseId": "HK_2020_E218",
+        "brandNo": "E218",
+        "horseName": "COPARTNER AMBITION",
+        "jockey": "Z Purton",
+        "trainer": "A S Cruz",
+        "actualWeight": 133,
+        "declaredHorseWeight": 1097,
+        "draw": 5,
+        "lbw": 2.75,
+        "runningPosition": [
+          6,
+          7,
+          7,
+          6
+        ],
+        "finishSeconds": 82.59,
+        "winOdds": 3.9
+      },
+      {
+        "placing": 7,
+        "horseNo": 4,
+        "horseId": "HK_2018_C431",
+        "brandNo": "C431",
+        "horseName": "THE HULK",
+        "jockey": "B Shinn",
+        "trainer": "C Fownes",
+        "actualWeight": 124,
+        "declaredHorseWeight": 1137,
+        "draw": 2,
+        "lbw": 3.75,
+        "runningPosition": [
+          8,
+          9,
+          9,
+          7
+        ],
+        "finishSeconds": 82.74,
+        "winOdds": 16
+      },
+      {
+        "placing": 8,
+        "horseNo": 2,
+        "horseId": "HK_2020_E199",
+        "brandNo": "E199",
+        "horseName": "SUPER DYNAMITE",
+        "jockey": "C Y Ho",
+        "trainer": "P F Yiu",
+        "actualWeight": 130,
+        "declaredHorseWeight": 1128,
+        "draw": 8,
+        "lbw": 4.25,
+        "runningPosition": [
+          2,
+          2,
+          3,
+          8
+        ],
+        "finishSeconds": 82.83,
+        "winOdds": 7
+      },
+      {
+        "placing": 9,
+        "horseNo": 3,
+        "horseId": "HK_2019_D129",
+        "brandNo": "D129",
+        "horseName": "DECRYPT",
+        "jockey": "A Hamelin",
+        "trainer": "D A Hayes",
+        "actualWeight": 127,
+        "declaredHorseWeight": 1015,
+        "draw": 7,
+        "lbw": 7.75,
+        "runningPosition": [
+          9,
+          8,
+          8,
+          9
+        ],
+        "finishSeconds": 83.4,
+        "winOdds": 10
+      },
+      {
+        "placing": 10,
+        "horseNo": 6,
+        "horseId": "HK_2019_D061",
+        "brandNo": "D061",
+        "horseName": "HORSESAIN BOLT",
+        "jockey": "L Hewitson",
+        "trainer": "D J Whyte",
+        "actualWeight": 120,
+        "declaredHorseWeight": 1180,
+        "draw": 9,
+        "lbw": 8.25,
+        "runningPosition": [
+          11,
+          10,
+          10,
+          10
+        ],
+        "finishSeconds": 83.45,
+        "winOdds": 13
+      },
+      {
+        "placing": 11,
+        "horseNo": 7,
+        "horseId": "HK_2021_G301",
+        "brandNo": "G301",
+        "horseName": "COLOURFUL BARON",
+        "jockey": "R Maia",
+        "trainer": "R Gibson",
+        "actualWeight": 119,
+        "declaredHorseWeight": 1077,
+        "draw": 10,
+        "lbw": 12.5,
+        "runningPosition": [
+          10,
+          11,
+          11,
+          11
+        ],
+        "finishSeconds": 84.15,
+        "winOdds": 89
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            8
+          ],
+          "dividendPer10": 82
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            8
+          ],
+          "dividendPer10": 26
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            10
+          ],
+          "dividendPer10": 98
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            5
+          ],
+          "dividendPer10": 29.5
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            8,
+            10
+          ],
+          "dividendPer10": 1678
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            8,
+            10
+          ],
+          "dividendPer10": 460
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            5,
+            8
+          ],
+          "dividendPer10": 126
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            5,
+            10
+          ],
+          "dividendPer10": 637
+        }
+      ],
+      "forecast": [
+        {
+          "pool": "FORECAST",
+          "combination": [
+            8,
+            10
+          ],
+          "dividendPer10": 2691
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            8,
+            10,
+            5
+          ],
+          "dividendPer10": 22560
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            5,
+            8,
+            10
+          ],
+          "dividendPer10": 5128
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            5,
+            8,
+            9,
+            10
+          ],
+          "dividendPer10": 5777
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            8,
+            10,
+            5,
+            9
+          ],
+          "dividendPer10": 151741
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2022%2F05%2F07&Racecourse=ST&RaceNo=10"
+  }
+]

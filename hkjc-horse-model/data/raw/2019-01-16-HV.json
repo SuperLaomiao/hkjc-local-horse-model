@@ -1,0 +1,2853 @@
+[
+  {
+    "raceId": "2019-01-16-HV-1",
+    "date": "2019-01-16",
+    "racecourse": "HV",
+    "raceNo": 1,
+    "raceIndex": 340,
+    "raceClass": 4,
+    "distance": 2200,
+    "ratingBand": "60-40",
+    "surface": "TURF",
+    "course": "TURF - \"B\" Course",
+    "going": "GOOD",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 4,
+        "horseId": "HK_2017_B137",
+        "brandNo": "B137",
+        "horseName": "CLEMENT LEGEND",
+        "jockey": "K Teetan",
+        "trainer": "C S Shum",
+        "actualWeight": 122,
+        "declaredHorseWeight": 1119,
+        "draw": 3,
+        "lbw": 0,
+        "runningPosition": [
+          3,
+          5,
+          4,
+          4,
+          4,
+          1
+        ],
+        "finishSeconds": 137.92000000000002,
+        "winOdds": 1.8
+      },
+      {
+        "placing": 2,
+        "horseNo": 5,
+        "horseId": "HK_2015_V039",
+        "brandNo": "V039",
+        "horseName": "GARLIC YEAH",
+        "jockey": "J Moreira",
+        "trainer": "C H Yip",
+        "actualWeight": 117,
+        "declaredHorseWeight": 993,
+        "draw": 5,
+        "lbw": 0.2,
+        "runningPosition": [
+          2,
+          3,
+          2,
+          2,
+          2,
+          2
+        ],
+        "finishSeconds": 137.96,
+        "winOdds": 10
+      },
+      {
+        "placing": 3,
+        "horseNo": 6,
+        "horseId": "HK_2013_S147",
+        "brandNo": "S147",
+        "horseName": "HAPPY ROCKY",
+        "jockey": "C Schofield",
+        "trainer": "C W Chang",
+        "actualWeight": 117,
+        "declaredHorseWeight": 1107,
+        "draw": 7,
+        "lbw": 0.05,
+        "runningPosition": [
+          7,
+          6,
+          7,
+          7,
+          7,
+          3
+        ],
+        "finishSeconds": 137.97,
+        "winOdds": 10
+      },
+      {
+        "placing": 4,
+        "horseNo": 3,
+        "horseId": "HK_2013_S015",
+        "brandNo": "S015",
+        "horseName": "ISHVARA",
+        "jockey": "M L Yeung",
+        "trainer": "T P Yung",
+        "actualWeight": 121,
+        "declaredHorseWeight": 1107,
+        "draw": 4,
+        "lbw": 1.25,
+        "runningPosition": [
+          1,
+          2,
+          3,
+          3,
+          3,
+          4
+        ],
+        "finishSeconds": 138.11,
+        "winOdds": 22
+      },
+      {
+        "placing": 5,
+        "horseNo": 2,
+        "horseId": "HK_2016_A333",
+        "brandNo": "A333",
+        "horseName": "GOOD DAYS",
+        "jockey": "N Callan",
+        "trainer": "C S Shum",
+        "actualWeight": 126,
+        "declaredHorseWeight": 1113,
+        "draw": 1,
+        "lbw": 1.75,
+        "runningPosition": [
+          4,
+          4,
+          5,
+          5,
+          5,
+          5
+        ],
+        "finishSeconds": 138.21,
+        "winOdds": 11
+      },
+      {
+        "placing": 6,
+        "horseNo": 7,
+        "horseId": "HK_2017_B006",
+        "brandNo": "B006",
+        "horseName": "MANAGEMENT STAR",
+        "jockey": "S De Sousa",
+        "trainer": "K W Lui",
+        "actualWeight": 113,
+        "declaredHorseWeight": 1087,
+        "draw": 2,
+        "lbw": 5.5,
+        "runningPosition": [
+          5,
+          1,
+          1,
+          1,
+          1,
+          6
+        ],
+        "finishSeconds": 138.8,
+        "winOdds": 8.1
+      },
+      {
+        "placing": 7,
+        "horseNo": 1,
+        "horseId": "HK_2016_A160",
+        "brandNo": "A160",
+        "horseName": "SMART BABY",
+        "jockey": "Z Purton",
+        "trainer": "C Fownes",
+        "actualWeight": 133,
+        "declaredHorseWeight": 1248,
+        "draw": 6,
+        "lbw": 5.75,
+        "runningPosition": [
+          6,
+          7,
+          6,
+          6,
+          6,
+          7
+        ],
+        "finishSeconds": 138.84,
+        "winOdds": 4.7
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            4
+          ],
+          "dividendPer10": 18
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            4
+          ],
+          "dividendPer10": 10.1
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            5
+          ],
+          "dividendPer10": 21
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            6
+          ],
+          "dividendPer10": 25
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            4,
+            5
+          ],
+          "dividendPer10": 87.5
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            4,
+            5
+          ],
+          "dividendPer10": 33.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            4,
+            6
+          ],
+          "dividendPer10": 35.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            5,
+            6
+          ],
+          "dividendPer10": 92
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            4,
+            5,
+            6
+          ],
+          "dividendPer10": 578
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            4,
+            5,
+            6
+          ],
+          "dividendPer10": 185
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            3,
+            4,
+            5,
+            6
+          ],
+          "dividendPer10": 335
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            4,
+            5,
+            6,
+            3
+          ],
+          "dividendPer10": 3591
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2019%2F01%2F16&Racecourse=HV&RaceNo=1"
+  },
+  {
+    "raceId": "2019-01-16-HV-2",
+    "date": "2019-01-16",
+    "racecourse": "HV",
+    "raceNo": 2,
+    "raceIndex": 341,
+    "raceClass": 5,
+    "distance": 1000,
+    "ratingBand": "40-0",
+    "surface": "TURF",
+    "course": "TURF - \"B\" Course",
+    "going": "GOOD",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 4,
+        "horseId": "HK_2014_T436",
+        "brandNo": "T436",
+        "horseName": "SHOW MISSION",
+        "jockey": "Z Purton",
+        "trainer": "C W Chang",
+        "actualWeight": 127,
+        "declaredHorseWeight": 1099,
+        "draw": 5,
+        "lbw": 0,
+        "runningPosition": [
+          9,
+          7,
+          1
+        ],
+        "finishSeconds": 57.88,
+        "winOdds": 6.8
+      },
+      {
+        "placing": 2,
+        "horseNo": 10,
+        "horseId": "HK_2015_V305",
+        "brandNo": "V305",
+        "horseName": "CARRY TO WIN",
+        "jockey": "M Chadwick",
+        "trainer": "R Gibson",
+        "actualWeight": 117,
+        "declaredHorseWeight": 1164,
+        "draw": 9,
+        "lbw": 0.2,
+        "runningPosition": [
+          2,
+          2,
+          2
+        ],
+        "finishSeconds": 57.91,
+        "winOdds": 12
+      },
+      {
+        "placing": 3,
+        "horseNo": 5,
+        "horseId": "HK_2013_S185",
+        "brandNo": "S185",
+        "horseName": "TRENDIFUL",
+        "jockey": "K C Leung",
+        "trainer": "K H Ting",
+        "actualWeight": 126,
+        "declaredHorseWeight": 1164,
+        "draw": 11,
+        "lbw": 0.75,
+        "runningPosition": [
+          4,
+          4,
+          3
+        ],
+        "finishSeconds": 57.99,
+        "winOdds": 27
+      },
+      {
+        "placing": 4,
+        "horseNo": 3,
+        "horseId": "HK_2016_A059",
+        "brandNo": "A059",
+        "horseName": "REGENCY HONEY",
+        "jockey": "N Callan",
+        "trainer": "C S Shum",
+        "actualWeight": 129,
+        "declaredHorseWeight": 1067,
+        "draw": 2,
+        "lbw": 1.75,
+        "runningPosition": [
+          3,
+          3,
+          4
+        ],
+        "finishSeconds": 58.17,
+        "winOdds": 4.5
+      },
+      {
+        "placing": 5,
+        "horseNo": 6,
+        "horseId": "HK_2016_A423",
+        "brandNo": "A423",
+        "horseName": "GREAT SON",
+        "jockey": "H T Mo",
+        "trainer": "L Ho",
+        "actualWeight": 118,
+        "declaredHorseWeight": 1033,
+        "draw": 6,
+        "lbw": 2.25,
+        "runningPosition": [
+          7,
+          8,
+          5
+        ],
+        "finishSeconds": 58.24,
+        "winOdds": 6.8
+      },
+      {
+        "placing": 6,
+        "horseNo": 9,
+        "horseId": "HK_2013_S432",
+        "brandNo": "S432",
+        "horseName": "RUGBY DIAMOND",
+        "jockey": "C Schofield",
+        "trainer": "R Gibson",
+        "actualWeight": 118,
+        "declaredHorseWeight": 1084,
+        "draw": 1,
+        "lbw": 2.75,
+        "runningPosition": [
+          1,
+          1,
+          6
+        ],
+        "finishSeconds": 58.31,
+        "winOdds": 9.3
+      },
+      {
+        "placing": 7,
+        "horseNo": 1,
+        "horseId": "HK_2015_V143",
+        "brandNo": "V143",
+        "horseName": "NASHASHUK",
+        "jockey": "J Moreira",
+        "trainer": "J Size",
+        "actualWeight": 133,
+        "declaredHorseWeight": 1094,
+        "draw": 3,
+        "lbw": 3.5,
+        "runningPosition": [
+          8,
+          5,
+          7
+        ],
+        "finishSeconds": 58.46,
+        "winOdds": 4
+      },
+      {
+        "placing": 8,
+        "horseNo": 8,
+        "horseId": "HK_2016_A107",
+        "brandNo": "A107",
+        "horseName": "PADDINGTON",
+        "jockey": "K Teetan",
+        "trainer": "W Y So",
+        "actualWeight": 118,
+        "declaredHorseWeight": 1125,
+        "draw": 4,
+        "lbw": 3.5,
+        "runningPosition": [
+          5,
+          6,
+          8
+        ],
+        "finishSeconds": 58.46,
+        "winOdds": 10
+      },
+      {
+        "placing": 9,
+        "horseNo": 7,
+        "horseId": "HK_2017_B133",
+        "brandNo": "B133",
+        "horseName": "VICTORY MARCH",
+        "jockey": "C Y Ho",
+        "trainer": "C Fownes",
+        "actualWeight": 119,
+        "declaredHorseWeight": 1146,
+        "draw": 10,
+        "lbw": 4.25,
+        "runningPosition": [
+          10,
+          10,
+          9
+        ],
+        "finishSeconds": 58.56,
+        "winOdds": 24
+      },
+      {
+        "placing": 10,
+        "horseNo": 11,
+        "horseId": "HK_2016_A255",
+        "brandNo": "A255",
+        "horseName": "HAPPY OUT THERE",
+        "jockey": "M F Poon",
+        "trainer": "C W Chang",
+        "actualWeight": 111,
+        "declaredHorseWeight": 1105,
+        "draw": 8,
+        "lbw": 5,
+        "runningPosition": [
+          6,
+          9,
+          10
+        ],
+        "finishSeconds": 58.68,
+        "winOdds": 57
+      },
+      {
+        "placing": 11,
+        "horseNo": 2,
+        "horseId": "HK_2016_A369",
+        "brandNo": "A369",
+        "horseName": "JUMBO BUS",
+        "jockey": "M L Yeung",
+        "trainer": "T P Yung",
+        "actualWeight": 130,
+        "declaredHorseWeight": 1168,
+        "draw": 7,
+        "lbw": 6.5,
+        "runningPosition": [
+          11,
+          11,
+          11
+        ],
+        "finishSeconds": 58.94,
+        "winOdds": 14
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            4
+          ],
+          "dividendPer10": 68
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            4
+          ],
+          "dividendPer10": 23
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            10
+          ],
+          "dividendPer10": 32.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            5
+          ],
+          "dividendPer10": 75
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            4,
+            10
+          ],
+          "dividendPer10": 325.5
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            4,
+            10
+          ],
+          "dividendPer10": 103.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            4,
+            5
+          ],
+          "dividendPer10": 234.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            5,
+            10
+          ],
+          "dividendPer10": 332.5
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            4,
+            10,
+            5
+          ],
+          "dividendPer10": 8346
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            4,
+            5,
+            10
+          ],
+          "dividendPer10": 1457
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            3,
+            4,
+            5,
+            10
+          ],
+          "dividendPer10": 2169
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            4,
+            10,
+            5,
+            3
+          ],
+          "dividendPer10": 54183
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2019%2F01%2F16&Racecourse=HV&RaceNo=2"
+  },
+  {
+    "raceId": "2019-01-16-HV-3",
+    "date": "2019-01-16",
+    "racecourse": "HV",
+    "raceNo": 3,
+    "raceIndex": 342,
+    "raceClass": 4,
+    "distance": 1650,
+    "ratingBand": "60-40",
+    "surface": "TURF",
+    "course": "TURF - \"B\" Course",
+    "going": "GOOD",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 8,
+        "horseId": "HK_2016_A426",
+        "brandNo": "A426",
+        "horseName": "CLEAR CHOICE",
+        "jockey": "K Teetan",
+        "trainer": "C S Shum",
+        "actualWeight": 121,
+        "declaredHorseWeight": 1078,
+        "draw": 8,
+        "lbw": 0,
+        "runningPosition": [
+          5,
+          4,
+          3,
+          1
+        ],
+        "finishSeconds": 100.28999999999999,
+        "winOdds": 3.8
+      },
+      {
+        "placing": 2,
+        "horseNo": 7,
+        "horseId": "HK_2016_A366",
+        "brandNo": "A366",
+        "horseName": "TAI SMART",
+        "jockey": "C Y Ho",
+        "trainer": "F C Lor",
+        "actualWeight": 121,
+        "declaredHorseWeight": 1233,
+        "draw": 10,
+        "lbw": 1,
+        "runningPosition": [
+          11,
+          10,
+          7,
+          2
+        ],
+        "finishSeconds": 100.46000000000001,
+        "winOdds": 18
+      },
+      {
+        "placing": 3,
+        "horseNo": 9,
+        "horseId": "HK_2016_A083",
+        "brandNo": "A083",
+        "horseName": "CURLING LUXURY",
+        "jockey": "M L Yeung",
+        "trainer": "Y S Tsui",
+        "actualWeight": 118,
+        "declaredHorseWeight": 1043,
+        "draw": 7,
+        "lbw": 1.75,
+        "runningPosition": [
+          1,
+          1,
+          1,
+          3
+        ],
+        "finishSeconds": 100.59,
+        "winOdds": 11
+      },
+      {
+        "placing": 4,
+        "horseNo": 4,
+        "horseId": "HK_2018_C089",
+        "brandNo": "C089",
+        "horseName": "FAMILY LEADER",
+        "jockey": "Z Purton",
+        "trainer": "C Fownes",
+        "actualWeight": 125,
+        "declaredHorseWeight": 1153,
+        "draw": 3,
+        "lbw": 2.5,
+        "runningPosition": [
+          3,
+          5,
+          4,
+          4
+        ],
+        "finishSeconds": 100.69,
+        "winOdds": 6.6
+      },
+      {
+        "placing": 5,
+        "horseNo": 6,
+        "horseId": "HK_2014_T336",
+        "brandNo": "T336",
+        "horseName": "GLORY STAR",
+        "jockey": "S De Sousa",
+        "trainer": "K H Ting",
+        "actualWeight": 124,
+        "declaredHorseWeight": 1112,
+        "draw": 4,
+        "lbw": 3.5,
+        "runningPosition": [
+          2,
+          2,
+          2,
+          5
+        ],
+        "finishSeconds": 100.86,
+        "winOdds": 2.2
+      },
+      {
+        "placing": 6,
+        "horseNo": 1,
+        "horseId": "HK_2015_V378",
+        "brandNo": "V378",
+        "horseName": "CROWN AVENUE",
+        "jockey": "U Rispoli",
+        "trainer": "C H Yip",
+        "actualWeight": 133,
+        "declaredHorseWeight": 1145,
+        "draw": 2,
+        "lbw": 7.5,
+        "runningPosition": [
+          9,
+          9,
+          5,
+          6
+        ],
+        "finishSeconds": 101.47999999999999,
+        "winOdds": 55
+      },
+      {
+        "placing": 7,
+        "horseNo": 3,
+        "horseId": "HK_2017_B435",
+        "brandNo": "B435",
+        "horseName": "CHAMPION SUPREME",
+        "jockey": "D Whyte",
+        "trainer": "J Moore",
+        "actualWeight": 126,
+        "declaredHorseWeight": 1083,
+        "draw": 6,
+        "lbw": 8.5,
+        "runningPosition": [
+          7,
+          8,
+          11,
+          7
+        ],
+        "finishSeconds": 101.67,
+        "winOdds": 12
+      },
+      {
+        "placing": 8,
+        "horseNo": 10,
+        "horseId": "HK_2017_B382",
+        "brandNo": "B382",
+        "horseName": "REAL GIANT",
+        "jockey": "M F Poon",
+        "trainer": "D J Hall",
+        "actualWeight": 112,
+        "declaredHorseWeight": 1121,
+        "draw": 9,
+        "lbw": 9.5,
+        "runningPosition": [
+          10,
+          11,
+          10,
+          8
+        ],
+        "finishSeconds": 101.83,
+        "winOdds": 163
+      },
+      {
+        "placing": 9,
+        "horseNo": 2,
+        "horseId": "HK_2016_A310",
+        "brandNo": "A310",
+        "horseName": "IMPECCABLE FELLOW",
+        "jockey": "M Chadwick",
+        "trainer": "R Gibson",
+        "actualWeight": 131,
+        "declaredHorseWeight": 1165,
+        "draw": 1,
+        "lbw": 14.25,
+        "runningPosition": [
+          8,
+          7,
+          8,
+          9
+        ],
+        "finishSeconds": 102.59,
+        "winOdds": 11
+      },
+      {
+        "placing": 10,
+        "horseNo": 5,
+        "horseId": "HK_2017_B298",
+        "brandNo": "B298",
+        "horseName": "SUNNY MAJOR",
+        "jockey": "J Moreira",
+        "trainer": "J Size",
+        "actualWeight": 125,
+        "declaredHorseWeight": 1131,
+        "draw": 5,
+        "lbw": 16.75,
+        "runningPosition": [
+          4,
+          6,
+          9,
+          10
+        ],
+        "finishSeconds": 102.96000000000001,
+        "winOdds": 52
+      },
+      {
+        "placing": 11,
+        "horseNo": 11,
+        "horseId": "HK_2016_A277",
+        "brandNo": "A277",
+        "horseName": "LEISURED FEET",
+        "jockey": "H N Wong",
+        "trainer": "W Y So",
+        "actualWeight": 111,
+        "declaredHorseWeight": 1182,
+        "draw": 11,
+        "lbw": 21.75,
+        "runningPosition": [
+          6,
+          3,
+          6,
+          11
+        ],
+        "finishSeconds": 103.78,
+        "winOdds": 171
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            8
+          ],
+          "dividendPer10": 38.5
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            8
+          ],
+          "dividendPer10": 15
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            7
+          ],
+          "dividendPer10": 42.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            9
+          ],
+          "dividendPer10": 30
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            7,
+            8
+          ],
+          "dividendPer10": 325
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            7,
+            8
+          ],
+          "dividendPer10": 90
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            8,
+            9
+          ],
+          "dividendPer10": 61
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            7,
+            9
+          ],
+          "dividendPer10": 226
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            8,
+            7,
+            9
+          ],
+          "dividendPer10": 3937
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            7,
+            8,
+            9
+          ],
+          "dividendPer10": 865
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            4,
+            7,
+            8,
+            9
+          ],
+          "dividendPer10": 964
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            8,
+            7,
+            9,
+            4
+          ],
+          "dividendPer10": 19902
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2019%2F01%2F16&Racecourse=HV&RaceNo=3"
+  },
+  {
+    "raceId": "2019-01-16-HV-4",
+    "date": "2019-01-16",
+    "racecourse": "HV",
+    "raceNo": 4,
+    "raceIndex": 343,
+    "raceClass": 4,
+    "distance": 1650,
+    "ratingBand": "60-40",
+    "surface": "TURF",
+    "course": "TURF - \"B\" Course",
+    "going": "GOOD",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 6,
+        "horseId": "HK_2015_V037",
+        "brandNo": "V037",
+        "horseName": "C P POWER",
+        "jockey": "G van Niekerk",
+        "trainer": "A T Millard",
+        "actualWeight": 122,
+        "declaredHorseWeight": 1052,
+        "draw": 4,
+        "lbw": 0,
+        "runningPosition": [
+          5,
+          5,
+          7,
+          1
+        ],
+        "finishSeconds": 100.41,
+        "winOdds": 10
+      },
+      {
+        "placing": 2,
+        "horseNo": 1,
+        "horseId": "HK_2014_T265",
+        "brandNo": "T265",
+        "horseName": "GOOD FOR YOU",
+        "jockey": "S De Sousa",
+        "trainer": "Y S Tsui",
+        "actualWeight": 133,
+        "declaredHorseWeight": 1052,
+        "draw": 8,
+        "lbw": 0.1,
+        "runningPosition": [
+          8,
+          8,
+          8,
+          2
+        ],
+        "finishSeconds": 100.42,
+        "winOdds": 5.8
+      },
+      {
+        "placing": 3,
+        "horseNo": 9,
+        "horseId": "HK_2014_T292",
+        "brandNo": "T292",
+        "horseName": "LETSGOFREE",
+        "jockey": "H T Mo",
+        "trainer": "K H Ting",
+        "actualWeight": 113,
+        "declaredHorseWeight": 974,
+        "draw": 5,
+        "lbw": 3,
+        "runningPosition": [
+          10,
+          11,
+          9,
+          3
+        ],
+        "finishSeconds": 100.9,
+        "winOdds": 4.4
+      },
+      {
+        "placing": 4,
+        "horseNo": 4,
+        "horseId": "HK_2017_B386",
+        "brandNo": "B386",
+        "horseName": "TENNESSEE BOSS",
+        "jockey": "M Chadwick",
+        "trainer": "R Gibson",
+        "actualWeight": 128,
+        "declaredHorseWeight": 1162,
+        "draw": 2,
+        "lbw": 3.75,
+        "runningPosition": [
+          7,
+          7,
+          6,
+          4
+        ],
+        "finishSeconds": 101.02000000000001,
+        "winOdds": 29
+      },
+      {
+        "placing": 5,
+        "horseNo": 8,
+        "horseId": "HK_2013_S260",
+        "brandNo": "S260",
+        "horseName": "HEROIC GURU",
+        "jockey": "J Moreira",
+        "trainer": "D J Hall",
+        "actualWeight": 121,
+        "declaredHorseWeight": 1069,
+        "draw": 9,
+        "lbw": 4.5,
+        "runningPosition": [
+          11,
+          10,
+          11,
+          5
+        ],
+        "finishSeconds": 101.12,
+        "winOdds": 10
+      },
+      {
+        "placing": 6,
+        "horseNo": 10,
+        "horseId": "HK_2015_V042",
+        "brandNo": "V042",
+        "horseName": "GENTRY",
+        "jockey": "M L Yeung",
+        "trainer": "C H Yip",
+        "actualWeight": 115,
+        "declaredHorseWeight": 1011,
+        "draw": 7,
+        "lbw": 4.5,
+        "runningPosition": [
+          3,
+          3,
+          4,
+          6
+        ],
+        "finishSeconds": 101.12,
+        "winOdds": 23
+      },
+      {
+        "placing": 7,
+        "horseNo": 11,
+        "horseId": "HK_2017_B322",
+        "brandNo": "B322",
+        "horseName": "SMART ROCKET",
+        "jockey": "M F Poon",
+        "trainer": "J Moore",
+        "actualWeight": 111,
+        "declaredHorseWeight": 1172,
+        "draw": 11,
+        "lbw": 5.25,
+        "runningPosition": [
+          9,
+          9,
+          10,
+          7
+        ],
+        "finishSeconds": 101.24000000000001,
+        "winOdds": 85
+      },
+      {
+        "placing": 8,
+        "horseNo": 5,
+        "horseId": "HK_2017_B095",
+        "brandNo": "B095",
+        "horseName": "PERFECT TO PLAY",
+        "jockey": "C Schofield",
+        "trainer": "W Y So",
+        "actualWeight": 126,
+        "declaredHorseWeight": 996,
+        "draw": 3,
+        "lbw": 5.5,
+        "runningPosition": [
+          4,
+          4,
+          3,
+          8
+        ],
+        "finishSeconds": 101.3,
+        "winOdds": 9.1
+      },
+      {
+        "placing": 9,
+        "horseNo": 3,
+        "horseId": "HK_2017_B162",
+        "brandNo": "B162",
+        "horseName": "FLASH FAMOUS",
+        "jockey": "K Teetan",
+        "trainer": "F C Lor",
+        "actualWeight": 130,
+        "declaredHorseWeight": 1122,
+        "draw": 1,
+        "lbw": 5.75,
+        "runningPosition": [
+          6,
+          6,
+          5,
+          9
+        ],
+        "finishSeconds": 101.35,
+        "winOdds": 7.5
+      },
+      {
+        "placing": 10,
+        "horseNo": 2,
+        "horseId": "HK_2016_A204",
+        "brandNo": "A204",
+        "horseName": "MULTIGOGO",
+        "jockey": "A Sanna",
+        "trainer": "A S Cruz",
+        "actualWeight": 131,
+        "declaredHorseWeight": 1143,
+        "draw": 10,
+        "lbw": 14.25,
+        "runningPosition": [
+          1,
+          2,
+          2,
+          10
+        ],
+        "finishSeconds": 102.69,
+        "winOdds": 17
+      },
+      {
+        "placing": 11,
+        "horseNo": 7,
+        "horseId": "HK_2016_A229",
+        "brandNo": "A229",
+        "horseName": "MARVEL JOY",
+        "jockey": "Z Purton",
+        "trainer": "C Fownes",
+        "actualWeight": 122,
+        "declaredHorseWeight": 1155,
+        "draw": 6,
+        "lbw": 21.25,
+        "runningPosition": [
+          2,
+          1,
+          1,
+          11
+        ],
+        "finishSeconds": 103.8,
+        "winOdds": 4.3
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            6
+          ],
+          "dividendPer10": 100.5
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            6
+          ],
+          "dividendPer10": 29
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            1
+          ],
+          "dividendPer10": 22
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            9
+          ],
+          "dividendPer10": 15
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            1,
+            6
+          ],
+          "dividendPer10": 368
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            6
+          ],
+          "dividendPer10": 98.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            6,
+            9
+          ],
+          "dividendPer10": 89
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            9
+          ],
+          "dividendPer10": 52.5
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            6,
+            1,
+            9
+          ],
+          "dividendPer10": 3054
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            1,
+            6,
+            9
+          ],
+          "dividendPer10": 475
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            1,
+            4,
+            6,
+            9
+          ],
+          "dividendPer10": 2621
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            6,
+            1,
+            9,
+            4
+          ],
+          "dividendPer10": 57237
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2019%2F01%2F16&Racecourse=HV&RaceNo=4"
+  },
+  {
+    "raceId": "2019-01-16-HV-5",
+    "date": "2019-01-16",
+    "racecourse": "HV",
+    "raceNo": 5,
+    "raceIndex": 344,
+    "raceClass": 4,
+    "distance": 1200,
+    "ratingBand": "60-40",
+    "surface": "TURF",
+    "course": "TURF - \"B\" Course",
+    "going": "GOOD",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 1,
+        "horseId": "HK_2015_V362",
+        "brandNo": "V362",
+        "horseName": "NAVAS",
+        "jockey": "Z Purton",
+        "trainer": "R Gibson",
+        "actualWeight": 133,
+        "declaredHorseWeight": 1073,
+        "draw": 7,
+        "lbw": 0,
+        "runningPosition": [
+          8,
+          8,
+          1
+        ],
+        "finishSeconds": 70.4,
+        "winOdds": 4.2
+      },
+      {
+        "placing": 2,
+        "horseNo": 8,
+        "horseId": "HK_2016_A305",
+        "brandNo": "A305",
+        "horseName": "DOLLAR REWARD",
+        "jockey": "N Callan",
+        "trainer": "C S Shum",
+        "actualWeight": 122,
+        "declaredHorseWeight": 1071,
+        "draw": 8,
+        "lbw": 0.05,
+        "runningPosition": [
+          6,
+          5,
+          2
+        ],
+        "finishSeconds": 70.4,
+        "winOdds": 5.6
+      },
+      {
+        "placing": 3,
+        "horseNo": 6,
+        "horseId": "HK_2016_A266",
+        "brandNo": "A266",
+        "horseName": "JOLLY BOUNTIFUL",
+        "jockey": "J Moreira",
+        "trainer": "J Size",
+        "actualWeight": 131,
+        "declaredHorseWeight": 987,
+        "draw": 12,
+        "lbw": 0.05,
+        "runningPosition": [
+          10,
+          9,
+          3
+        ],
+        "finishSeconds": 70.4,
+        "winOdds": 6.5
+      },
+      {
+        "placing": 4,
+        "horseNo": 2,
+        "horseId": "HK_2016_A128",
+        "brandNo": "A128",
+        "horseName": "PHANTOM FALCON",
+        "jockey": "H T Mo",
+        "trainer": "L Ho",
+        "actualWeight": 128,
+        "declaredHorseWeight": 1012,
+        "draw": 5,
+        "lbw": 0.05,
+        "runningPosition": [
+          3,
+          2,
+          4
+        ],
+        "finishSeconds": 70.47,
+        "winOdds": 9.4
+      },
+      {
+        "placing": 5,
+        "horseNo": 11,
+        "horseId": "HK_2016_A291",
+        "brandNo": "A291",
+        "horseName": "GOUTEN OF GARO",
+        "jockey": "S De Sousa",
+        "trainer": "D E Ferraris",
+        "actualWeight": 117,
+        "declaredHorseWeight": 1095,
+        "draw": 2,
+        "lbw": 0.5,
+        "runningPosition": [
+          4,
+          3,
+          5
+        ],
+        "finishSeconds": 70.48,
+        "winOdds": 5.8
+      },
+      {
+        "placing": 6,
+        "horseNo": 3,
+        "horseId": "HK_2013_S442",
+        "brandNo": "S442",
+        "horseName": "PAKISTAN BABY",
+        "jockey": "A Sanna",
+        "trainer": "A S Cruz",
+        "actualWeight": 132,
+        "declaredHorseWeight": 1041,
+        "draw": 1,
+        "lbw": 1.5,
+        "runningPosition": [
+          9,
+          10,
+          6
+        ],
+        "finishSeconds": 70.62,
+        "winOdds": 19
+      },
+      {
+        "placing": 7,
+        "horseNo": 9,
+        "horseId": "HK_2015_V010",
+        "brandNo": "V010",
+        "horseName": "MANFUL STAR",
+        "jockey": "U Rispoli",
+        "trainer": "P F Yiu",
+        "actualWeight": 119,
+        "declaredHorseWeight": 1132,
+        "draw": 9,
+        "lbw": 2.25,
+        "runningPosition": [
+          11,
+          11,
+          7
+        ],
+        "finishSeconds": 70.76,
+        "winOdds": 24
+      },
+      {
+        "placing": 8,
+        "horseNo": 5,
+        "horseId": "HK_2014_T361",
+        "brandNo": "T361",
+        "horseName": "FLYING MONKEY",
+        "jockey": "K C Leung",
+        "trainer": "T P Yung",
+        "actualWeight": 131,
+        "declaredHorseWeight": 1093,
+        "draw": 10,
+        "lbw": 3,
+        "runningPosition": [
+          5,
+          6,
+          8
+        ],
+        "finishSeconds": 70.86,
+        "winOdds": 23
+      },
+      {
+        "placing": 9,
+        "horseNo": 4,
+        "horseId": "HK_2014_T358",
+        "brandNo": "T358",
+        "horseName": "BACK IN BLACK",
+        "jockey": "M F Poon",
+        "trainer": "D J Hall",
+        "actualWeight": 128,
+        "declaredHorseWeight": 1065,
+        "draw": 3,
+        "lbw": 5.25,
+        "runningPosition": [
+          7,
+          7,
+          9
+        ],
+        "finishSeconds": 71.24,
+        "winOdds": 25
+      },
+      {
+        "placing": 10,
+        "horseNo": 10,
+        "horseId": "HK_2015_V313",
+        "brandNo": "V313",
+        "horseName": "SUPER EURO STAR",
+        "jockey": "K Teetan",
+        "trainer": "C W Chang",
+        "actualWeight": 118,
+        "declaredHorseWeight": 1083,
+        "draw": 4,
+        "lbw": 7.5,
+        "runningPosition": [
+          1,
+          1,
+          10
+        ],
+        "finishSeconds": 71.59,
+        "winOdds": 25
+      },
+      {
+        "placing": 11,
+        "horseNo": 12,
+        "horseId": "HK_2015_V409",
+        "brandNo": "V409",
+        "horseName": "DRAGON DANCE",
+        "jockey": "M L Yeung",
+        "trainer": "Y S Tsui",
+        "actualWeight": 114,
+        "declaredHorseWeight": 1098,
+        "draw": 6,
+        "lbw": 9.75,
+        "runningPosition": [
+          2,
+          4,
+          11
+        ],
+        "finishSeconds": 71.96000000000001,
+        "winOdds": 6.7
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            1
+          ],
+          "dividendPer10": 42.5
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            1
+          ],
+          "dividendPer10": 18
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            8
+          ],
+          "dividendPer10": 21.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            6
+          ],
+          "dividendPer10": 18.5
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            1,
+            8
+          ],
+          "dividendPer10": 194
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            8
+          ],
+          "dividendPer10": 73.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            1,
+            6
+          ],
+          "dividendPer10": 46.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            6,
+            8
+          ],
+          "dividendPer10": 74.5
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            1,
+            8,
+            6
+          ],
+          "dividendPer10": 1137
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            1,
+            6,
+            8
+          ],
+          "dividendPer10": 288
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            1,
+            2,
+            6,
+            8
+          ],
+          "dividendPer10": 454
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            1,
+            8,
+            6,
+            2
+          ],
+          "dividendPer10": 8444
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2019%2F01%2F16&Racecourse=HV&RaceNo=5"
+  },
+  {
+    "raceId": "2019-01-16-HV-6",
+    "date": "2019-01-16",
+    "racecourse": "HV",
+    "raceNo": 6,
+    "raceIndex": 345,
+    "raceClass": 3,
+    "distance": 1200,
+    "ratingBand": "80-60",
+    "surface": "TURF",
+    "course": "TURF - \"B\" Course",
+    "going": "GOOD",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 7,
+        "horseId": "HK_2016_A162",
+        "brandNo": "A162",
+        "horseName": "GAMECHANGERS",
+        "jockey": "J Moreira",
+        "trainer": "J Size",
+        "actualWeight": 123,
+        "declaredHorseWeight": 984,
+        "draw": 6,
+        "lbw": 0,
+        "runningPosition": [
+          7,
+          6,
+          1
+        ],
+        "finishSeconds": 69.86,
+        "winOdds": 3.3
+      },
+      {
+        "placing": 2,
+        "horseNo": 10,
+        "horseId": "HK_2017_B253",
+        "brandNo": "B253",
+        "horseName": "WALDORF",
+        "jockey": "K Teetan",
+        "trainer": "A S Cruz",
+        "actualWeight": 117,
+        "declaredHorseWeight": 1102,
+        "draw": 8,
+        "lbw": 0.1,
+        "runningPosition": [
+          8,
+          8,
+          2
+        ],
+        "finishSeconds": 69.88,
+        "winOdds": 4.1
+      },
+      {
+        "placing": 3,
+        "horseNo": 12,
+        "horseId": "HK_2017_B013",
+        "brandNo": "B013",
+        "horseName": "LADY FIRST",
+        "jockey": "K C Leung",
+        "trainer": "K H Ting",
+        "actualWeight": 115,
+        "declaredHorseWeight": 1011,
+        "draw": 7,
+        "lbw": 1.25,
+        "runningPosition": [
+          10,
+          10,
+          3
+        ],
+        "finishSeconds": 70.05,
+        "winOdds": 8.6
+      },
+      {
+        "placing": 4,
+        "horseNo": 1,
+        "horseId": "HK_2017_B089",
+        "brandNo": "B089",
+        "horseName": "SEVEN HEAVENS",
+        "jockey": "Z Purton",
+        "trainer": "C Fownes",
+        "actualWeight": 133,
+        "declaredHorseWeight": 1061,
+        "draw": 4,
+        "lbw": 1.25,
+        "runningPosition": [
+          4,
+          4,
+          4
+        ],
+        "finishSeconds": 70.08,
+        "winOdds": 4.2
+      },
+      {
+        "placing": 5,
+        "horseNo": 8,
+        "horseId": "HK_2015_V303",
+        "brandNo": "V303",
+        "horseName": "AMBITIOUS HEART",
+        "jockey": "G van Niekerk",
+        "trainer": "D E Ferraris",
+        "actualWeight": 119,
+        "declaredHorseWeight": 1186,
+        "draw": 10,
+        "lbw": 2.75,
+        "runningPosition": [
+          1,
+          1,
+          5
+        ],
+        "finishSeconds": 70.3,
+        "winOdds": 11
+      },
+      {
+        "placing": 6,
+        "horseNo": 5,
+        "horseId": "HK_2018_C125",
+        "brandNo": "C125",
+        "horseName": "HAPPY WIN WIN",
+        "jockey": "U Rispoli",
+        "trainer": "C H Yip",
+        "actualWeight": 126,
+        "declaredHorseWeight": 1009,
+        "draw": 2,
+        "lbw": 4.25,
+        "runningPosition": [
+          12,
+          12,
+          6
+        ],
+        "finishSeconds": 70.53,
+        "winOdds": 158
+      },
+      {
+        "placing": 7,
+        "horseNo": 2,
+        "horseId": "HK_2017_B469",
+        "brandNo": "B469",
+        "horseName": "HANDSOME REBEL",
+        "jockey": "D Whyte",
+        "trainer": "Y S Tsui",
+        "actualWeight": 129,
+        "declaredHorseWeight": 1054,
+        "draw": 12,
+        "lbw": 4.5,
+        "runningPosition": [
+          11,
+          11,
+          7
+        ],
+        "finishSeconds": 70.59,
+        "winOdds": 184
+      },
+      {
+        "placing": 8,
+        "horseNo": 11,
+        "horseId": "HK_2017_B220",
+        "brandNo": "B220",
+        "horseName": "BIG FORTUNE",
+        "jockey": "H T Mo",
+        "trainer": "L Ho",
+        "actualWeight": 110,
+        "declaredHorseWeight": 1047,
+        "draw": 5,
+        "lbw": 5,
+        "runningPosition": [
+          2,
+          2,
+          8
+        ],
+        "finishSeconds": 70.66,
+        "winOdds": 19
+      },
+      {
+        "placing": 9,
+        "horseNo": 9,
+        "horseId": "HK_2017_B468",
+        "brandNo": "B468",
+        "horseName": "PLAY TO WIN",
+        "jockey": "H N Wong",
+        "trainer": "C W Chang",
+        "actualWeight": 116,
+        "declaredHorseWeight": 1065,
+        "draw": 9,
+        "lbw": 6.5,
+        "runningPosition": [
+          6,
+          7,
+          9
+        ],
+        "finishSeconds": 70.89,
+        "winOdds": 348
+      },
+      {
+        "placing": 10,
+        "horseNo": 6,
+        "horseId": "HK_2017_B211",
+        "brandNo": "B211",
+        "horseName": "SPEED VISION",
+        "jockey": "C Y Ho",
+        "trainer": "F C Lor",
+        "actualWeight": 122,
+        "declaredHorseWeight": 1168,
+        "draw": 11,
+        "lbw": 6.75,
+        "runningPosition": [
+          3,
+          3,
+          10
+        ],
+        "finishSeconds": 70.94,
+        "winOdds": 32
+      },
+      {
+        "placing": 11,
+        "horseNo": 4,
+        "horseId": "HK_2017_B008",
+        "brandNo": "B008",
+        "horseName": "EIGHTY EIGHTY",
+        "jockey": "M F Poon",
+        "trainer": "W Y So",
+        "actualWeight": 123,
+        "declaredHorseWeight": 1132,
+        "draw": 1,
+        "lbw": 7.75,
+        "runningPosition": [
+          9,
+          9,
+          11
+        ],
+        "finishSeconds": 71.08,
+        "winOdds": 22
+      },
+      {
+        "placing": 12,
+        "horseNo": 3,
+        "horseId": "HK_2017_B106",
+        "brandNo": "B106",
+        "horseName": "EAGLE",
+        "jockey": "S De Sousa",
+        "trainer": "P F Yiu",
+        "actualWeight": 127,
+        "declaredHorseWeight": 1155,
+        "draw": 3,
+        "lbw": 8.75,
+        "runningPosition": [
+          5,
+          5,
+          12
+        ],
+        "finishSeconds": 71.25,
+        "winOdds": 11
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            7
+          ],
+          "dividendPer10": 33
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            7
+          ],
+          "dividendPer10": 14
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            10
+          ],
+          "dividendPer10": 17
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            12
+          ],
+          "dividendPer10": 25.5
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            7,
+            10
+          ],
+          "dividendPer10": 77.5
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            7,
+            10
+          ],
+          "dividendPer10": 34.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            7,
+            12
+          ],
+          "dividendPer10": 56
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            10,
+            12
+          ],
+          "dividendPer10": 56
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            7,
+            10,
+            12
+          ],
+          "dividendPer10": 757
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            7,
+            10,
+            12
+          ],
+          "dividendPer10": 175
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            1,
+            7,
+            10,
+            12
+          ],
+          "dividendPer10": 197
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            7,
+            10,
+            12,
+            1
+          ],
+          "dividendPer10": 3641
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2019%2F01%2F16&Racecourse=HV&RaceNo=6"
+  },
+  {
+    "raceId": "2019-01-16-HV-7",
+    "date": "2019-01-16",
+    "racecourse": "HV",
+    "raceNo": 7,
+    "raceIndex": 346,
+    "raceClass": 3,
+    "distance": 1200,
+    "ratingBand": "80-60",
+    "surface": "TURF",
+    "course": "TURF - \"B\" Course",
+    "going": "GOOD",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 10,
+        "horseId": "HK_2016_A171",
+        "brandNo": "A171",
+        "horseName": "STAR OF JOY",
+        "jockey": "G van Niekerk",
+        "trainer": "C S Shum",
+        "actualWeight": 120,
+        "declaredHorseWeight": 1070,
+        "draw": 7,
+        "lbw": 0,
+        "runningPosition": [
+          8,
+          7,
+          1
+        ],
+        "finishSeconds": 70.01,
+        "winOdds": 18
+      },
+      {
+        "placing": 2,
+        "horseNo": 9,
+        "horseId": "HK_2016_A009",
+        "brandNo": "A009",
+        "horseName": "POWERMAX",
+        "jockey": "Z Purton",
+        "trainer": "R Gibson",
+        "actualWeight": 121,
+        "declaredHorseWeight": 1132,
+        "draw": 2,
+        "lbw": 0.05,
+        "runningPosition": [
+          3,
+          3,
+          2
+        ],
+        "finishSeconds": 70.05,
+        "winOdds": 13
+      },
+      {
+        "placing": 3,
+        "horseNo": 8,
+        "horseId": "HK_2017_B290",
+        "brandNo": "B290",
+        "horseName": "BLITZING",
+        "jockey": "K Teetan",
+        "trainer": "A S Cruz",
+        "actualWeight": 121,
+        "declaredHorseWeight": 1173,
+        "draw": 12,
+        "lbw": 0.5,
+        "runningPosition": [
+          5,
+          2,
+          3
+        ],
+        "finishSeconds": 70.11,
+        "winOdds": 5.6
+      },
+      {
+        "placing": 4,
+        "horseNo": 11,
+        "horseId": "HK_2016_A308",
+        "brandNo": "A308",
+        "horseName": "GALLANT RETURN",
+        "jockey": "M F Poon",
+        "trainer": "D J Hall",
+        "actualWeight": 113,
+        "declaredHorseWeight": 1071,
+        "draw": 11,
+        "lbw": 0.75,
+        "runningPosition": [
+          12,
+          12,
+          4
+        ],
+        "finishSeconds": 70.13,
+        "winOdds": 43
+      },
+      {
+        "placing": 5,
+        "horseNo": 3,
+        "horseId": "HK_2017_B085",
+        "brandNo": "B085",
+        "horseName": "FEARLESS FIRE",
+        "jockey": "C Schofield",
+        "trainer": "C Fownes",
+        "actualWeight": 123,
+        "declaredHorseWeight": 1143,
+        "draw": 9,
+        "lbw": 1,
+        "runningPosition": [
+          10,
+          9,
+          5
+        ],
+        "finishSeconds": 70.17,
+        "winOdds": 12
+      },
+      {
+        "placing": 6,
+        "horseNo": 7,
+        "horseId": "HK_2016_A317",
+        "brandNo": "A317",
+        "horseName": "BUOYANT BOY",
+        "jockey": "S De Sousa",
+        "trainer": "K L Man",
+        "actualWeight": 123,
+        "declaredHorseWeight": 1032,
+        "draw": 10,
+        "lbw": 1,
+        "runningPosition": [
+          11,
+          11,
+          6
+        ],
+        "finishSeconds": 70.17,
+        "winOdds": 19
+      },
+      {
+        "placing": 7,
+        "horseNo": 4,
+        "horseId": "HK_2017_B349",
+        "brandNo": "B349",
+        "horseName": "PRANCE DRAGON",
+        "jockey": "U Rispoli",
+        "trainer": "A T Millard",
+        "actualWeight": 126,
+        "declaredHorseWeight": 1070,
+        "draw": 4,
+        "lbw": 1.5,
+        "runningPosition": [
+          7,
+          8,
+          7
+        ],
+        "finishSeconds": 70.24,
+        "winOdds": 2.9
+      },
+      {
+        "placing": 8,
+        "horseNo": 5,
+        "horseId": "HK_2017_B408",
+        "brandNo": "B408",
+        "horseName": "PERFECT BUDDY",
+        "jockey": "C Y Ho",
+        "trainer": "K W Lui",
+        "actualWeight": 123,
+        "declaredHorseWeight": 1160,
+        "draw": 5,
+        "lbw": 2.5,
+        "runningPosition": [
+          9,
+          10,
+          8
+        ],
+        "finishSeconds": 70.39,
+        "winOdds": 160
+      },
+      {
+        "placing": 9,
+        "horseNo": 2,
+        "horseId": "HK_2014_T372",
+        "brandNo": "T372",
+        "horseName": "HARRIER JET",
+        "jockey": "N Callan",
+        "trainer": "P O'Sullivan",
+        "actualWeight": 129,
+        "declaredHorseWeight": 1152,
+        "draw": 1,
+        "lbw": 2.5,
+        "runningPosition": [
+          4,
+          5,
+          9
+        ],
+        "finishSeconds": 70.43,
+        "winOdds": 13
+      },
+      {
+        "placing": 10,
+        "horseNo": 12,
+        "horseId": "HK_2017_B199",
+        "brandNo": "B199",
+        "horseName": "NOBLE DELIGHT",
+        "jockey": "J Moreira",
+        "trainer": "J Size",
+        "actualWeight": 116,
+        "declaredHorseWeight": 1019,
+        "draw": 6,
+        "lbw": 2.75,
+        "runningPosition": [
+          6,
+          4,
+          10
+        ],
+        "finishSeconds": 70.44,
+        "winOdds": 4.9
+      },
+      {
+        "placing": 11,
+        "horseNo": 1,
+        "horseId": "HK_2017_B069",
+        "brandNo": "B069",
+        "horseName": "LITTLE BIRD",
+        "jockey": "M Chadwick",
+        "trainer": "P F Yiu",
+        "actualWeight": 133,
+        "declaredHorseWeight": 1242,
+        "draw": 8,
+        "lbw": 2.75,
+        "runningPosition": [
+          1,
+          1,
+          11
+        ],
+        "finishSeconds": 70.44,
+        "winOdds": 10
+      },
+      {
+        "placing": 12,
+        "horseNo": 6,
+        "horseId": "HK_2015_V012",
+        "brandNo": "V012",
+        "horseName": "PRINCE HARMONY",
+        "jockey": "D Whyte",
+        "trainer": "W Y So",
+        "actualWeight": 124,
+        "declaredHorseWeight": 1146,
+        "draw": 3,
+        "lbw": 17.25,
+        "runningPosition": [
+          2,
+          6,
+          12
+        ],
+        "finishSeconds": 72.76,
+        "winOdds": 27
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            10
+          ],
+          "dividendPer10": 186
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            10
+          ],
+          "dividendPer10": 45.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            9
+          ],
+          "dividendPer10": 38.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            8
+          ],
+          "dividendPer10": 20.5
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            9,
+            10
+          ],
+          "dividendPer10": 995.5
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            9,
+            10
+          ],
+          "dividendPer10": 254.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            8,
+            10
+          ],
+          "dividendPer10": 152
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            8,
+            9
+          ],
+          "dividendPer10": 122
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            10,
+            9,
+            8
+          ],
+          "dividendPer10": 9286
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            8,
+            9,
+            10
+          ],
+          "dividendPer10": 1656
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "dividendPer10": 9891
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            10,
+            9,
+            8,
+            11
+          ],
+          "dividendPer10": 239965
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2019%2F01%2F16&Racecourse=HV&RaceNo=7"
+  },
+  {
+    "raceId": "2019-01-16-HV-8",
+    "date": "2019-01-16",
+    "racecourse": "HV",
+    "raceNo": 8,
+    "raceIndex": 347,
+    "raceClass": 3,
+    "distance": 1650,
+    "ratingBand": "80-60",
+    "surface": "TURF",
+    "course": "TURF - \"B\" Course",
+    "going": "GOOD",
+    "runners": [
+      {
+        "placing": 1,
+        "horseNo": 5,
+        "horseId": "HK_2017_B268",
+        "brandNo": "B268",
+        "horseName": "WARM THE VOICE",
+        "jockey": "C Y Ho",
+        "trainer": "K W Lui",
+        "actualWeight": 121,
+        "declaredHorseWeight": 1059,
+        "draw": 1,
+        "lbw": 0,
+        "runningPosition": [
+          6,
+          6,
+          5,
+          1
+        ],
+        "finishSeconds": 99.91,
+        "winOdds": 36
+      },
+      {
+        "placing": 2,
+        "horseNo": 2,
+        "horseId": "HK_2017_B413",
+        "brandNo": "B413",
+        "horseName": "GREEN LUCK",
+        "jockey": "Z Purton",
+        "trainer": "C Fownes",
+        "actualWeight": 132,
+        "declaredHorseWeight": 1050,
+        "draw": 7,
+        "lbw": 0.5,
+        "runningPosition": [
+          2,
+          4,
+          3,
+          2
+        ],
+        "finishSeconds": 100.02000000000001,
+        "winOdds": 2.8
+      },
+      {
+        "placing": 3,
+        "horseNo": 11,
+        "horseId": "HK_2016_A137",
+        "brandNo": "A137",
+        "horseName": "STARLIT KNIGHT",
+        "jockey": "H N Wong",
+        "trainer": "Y S Tsui",
+        "actualWeight": 111,
+        "declaredHorseWeight": 1114,
+        "draw": 4,
+        "lbw": 1.25,
+        "runningPosition": [
+          1,
+          1,
+          1,
+          3
+        ],
+        "finishSeconds": 100.11,
+        "winOdds": 17
+      },
+      {
+        "placing": 4,
+        "horseNo": 3,
+        "horseId": "HK_2017_B099",
+        "brandNo": "B099",
+        "horseName": "HAPPY DRAGON",
+        "jockey": "S De Sousa",
+        "trainer": "J Moore",
+        "actualWeight": 129,
+        "declaredHorseWeight": 1123,
+        "draw": 12,
+        "lbw": 2,
+        "runningPosition": [
+          12,
+          11,
+          11,
+          4
+        ],
+        "finishSeconds": 100.22,
+        "winOdds": 3.8
+      },
+      {
+        "placing": 5,
+        "horseNo": 9,
+        "horseId": "HK_2014_T353",
+        "brandNo": "T353",
+        "horseName": "NITRO EXPRESS",
+        "jockey": "G van Niekerk",
+        "trainer": "D E Ferraris",
+        "actualWeight": 116,
+        "declaredHorseWeight": 1184,
+        "draw": 3,
+        "lbw": 2,
+        "runningPosition": [
+          5,
+          5,
+          6,
+          5
+        ],
+        "finishSeconds": 100.24000000000001,
+        "winOdds": 22
+      },
+      {
+        "placing": 6,
+        "horseNo": 12,
+        "horseId": "HK_2014_T369",
+        "brandNo": "T369",
+        "horseName": "ACCLAIMED LIGHT",
+        "jockey": "H T Mo",
+        "trainer": "P O'Sullivan",
+        "actualWeight": 108,
+        "declaredHorseWeight": 1048,
+        "draw": 8,
+        "lbw": 2.25,
+        "runningPosition": [
+          9,
+          9,
+          8,
+          6
+        ],
+        "finishSeconds": 100.27000000000001,
+        "winOdds": 105
+      },
+      {
+        "placing": 7,
+        "horseNo": 8,
+        "horseId": "HK_2016_A178",
+        "brandNo": "A178",
+        "horseName": "RELENTLESS ME",
+        "jockey": "C Schofield",
+        "trainer": "W Y So",
+        "actualWeight": 119,
+        "declaredHorseWeight": 1158,
+        "draw": 2,
+        "lbw": 2.75,
+        "runningPosition": [
+          3,
+          3,
+          2,
+          7
+        ],
+        "finishSeconds": 100.33,
+        "winOdds": 14
+      },
+      {
+        "placing": 8,
+        "horseNo": 10,
+        "horseId": "HK_2017_B371",
+        "brandNo": "B371",
+        "horseName": "NORDIC WARRIOR",
+        "jockey": "M Chadwick",
+        "trainer": "R Gibson",
+        "actualWeight": 115,
+        "declaredHorseWeight": 1098,
+        "draw": 10,
+        "lbw": 3,
+        "runningPosition": [
+          10,
+          10,
+          9,
+          8
+        ],
+        "finishSeconds": 100.38,
+        "winOdds": 16
+      },
+      {
+        "placing": 9,
+        "horseNo": 7,
+        "horseId": "HK_2016_A228",
+        "brandNo": "A228",
+        "horseName": "BANK ON RED",
+        "jockey": "J Moreira",
+        "trainer": "J Size",
+        "actualWeight": 121,
+        "declaredHorseWeight": 1082,
+        "draw": 11,
+        "lbw": 5.5,
+        "runningPosition": [
+          7,
+          7,
+          4,
+          9
+        ],
+        "finishSeconds": 100.81,
+        "winOdds": 4.1
+      },
+      {
+        "placing": 10,
+        "horseNo": 6,
+        "horseId": "HK_2017_B235",
+        "brandNo": "B235",
+        "horseName": "SPIRIT",
+        "jockey": "K Teetan",
+        "trainer": "A T Millard",
+        "actualWeight": 122,
+        "declaredHorseWeight": 999,
+        "draw": 9,
+        "lbw": 6.25,
+        "runningPosition": [
+          11,
+          12,
+          12,
+          10
+        ],
+        "finishSeconds": 100.92,
+        "winOdds": 71
+      },
+      {
+        "placing": 11,
+        "horseNo": 4,
+        "horseId": "HK_2016_A140",
+        "brandNo": "A140",
+        "horseName": "LET'S TAKE IT EASY",
+        "jockey": "U Rispoli",
+        "trainer": "L Ho",
+        "actualWeight": 127,
+        "declaredHorseWeight": 1029,
+        "draw": 5,
+        "lbw": 8.25,
+        "runningPosition": [
+          8,
+          8,
+          10,
+          11
+        ],
+        "finishSeconds": 101.24000000000001,
+        "winOdds": 23
+      },
+      {
+        "placing": 12,
+        "horseNo": 1,
+        "horseId": "HK_2018_C077",
+        "brandNo": "C077",
+        "horseName": "CALIFORNIA TURBO",
+        "jockey": "A Sanna",
+        "trainer": "A S Cruz",
+        "actualWeight": 133,
+        "declaredHorseWeight": 1153,
+        "draw": 6,
+        "lbw": 26.25,
+        "runningPosition": [
+          4,
+          2,
+          7,
+          12
+        ],
+        "finishSeconds": 104.11,
+        "winOdds": 54
+      }
+    ],
+    "dividends": {
+      "win": [
+        {
+          "pool": "WIN",
+          "combination": [
+            5
+          ],
+          "dividendPer10": 364.5
+        }
+      ],
+      "place": [
+        {
+          "pool": "PLACE",
+          "combination": [
+            5
+          ],
+          "dividendPer10": 74.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            2
+          ],
+          "dividendPer10": 13.5
+        },
+        {
+          "pool": "PLACE",
+          "combination": [
+            11
+          ],
+          "dividendPer10": 35
+        }
+      ],
+      "quinella": [
+        {
+          "pool": "QUINELLA",
+          "combination": [
+            2,
+            5
+          ],
+          "dividendPer10": 550
+        }
+      ],
+      "quinellaPlace": [
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            2,
+            5
+          ],
+          "dividendPer10": 190
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            5,
+            11
+          ],
+          "dividendPer10": 549.5
+        },
+        {
+          "pool": "QUINELLA PLACE",
+          "combination": [
+            2,
+            11
+          ],
+          "dividendPer10": 103.5
+        }
+      ],
+      "tierce": [
+        {
+          "pool": "TIERCE",
+          "combination": [
+            5,
+            2,
+            11
+          ],
+          "dividendPer10": 19407
+        }
+      ],
+      "trio": [
+        {
+          "pool": "TRIO",
+          "combination": [
+            2,
+            5,
+            11
+          ],
+          "dividendPer10": 2459
+        }
+      ],
+      "first4": [
+        {
+          "pool": "FIRST 4",
+          "combination": [
+            2,
+            3,
+            5,
+            11
+          ],
+          "dividendPer10": 1558
+        }
+      ],
+      "quartet": [
+        {
+          "pool": "QUARTET",
+          "combination": [
+            5,
+            2,
+            11,
+            3
+          ],
+          "dividendPer10": 54045
+        }
+      ]
+    },
+    "source": "https://racing.hkjc.com/en-us/local/information/localresults?racedate=2019%2F01%2F16&Racecourse=HV&RaceNo=8"
+  }
+]
