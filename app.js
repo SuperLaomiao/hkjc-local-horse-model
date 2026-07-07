@@ -19,6 +19,11 @@ import {
 } from "./betting-products.js";
 
 const DATA_URL = "./data/dashboard.json";
+const RESEARCH_REPORT_URLS = {
+  leaderboard: "./hkjc-horse-model/data/processed/model-leaderboard.json",
+  training: "./hkjc-horse-model/data/processed/model-training-report.json",
+  strategyRisk: "./hkjc-horse-model/data/processed/strategy-risk-report.json",
+};
 const appRoot = document.querySelector("#hkjc-app");
 const STORAGE_KEYS = {
   userPicks: "hkjc.selfTest.userPicks.v1",
@@ -36,6 +41,14 @@ const uiState = {
   lockedForecasts: [],
   selectedPoolType: "PLACE",
   selectedToolId: "multi-play-portfolio",
+  researchReports: {
+    status: "idle",
+    loadedAt: null,
+    error: null,
+    leaderboard: null,
+    training: null,
+    strategyRisk: null,
+  },
 };
 
 init();
@@ -175,6 +188,49 @@ function render() {
   `;
 
   bindEvents();
+  if (uiState.selectedToolId === "performance") {
+    void ensureResearchReports();
+  }
+}
+
+async function ensureResearchReports() {
+  if (uiState.researchReports.status !== "idle") return;
+  uiState.researchReports = {
+    ...uiState.researchReports,
+    status: "loading",
+    error: null,
+  };
+  render();
+
+  const loaded = await Promise.all(Object.entries(RESEARCH_REPORT_URLS).map(async ([key, url]) => {
+    try {
+      const response = await fetch(`${url}?t=${Date.now()}`, { cache: "no-store" });
+      if (!response.ok) throw new Error(`${key}: ${response.status}`);
+      return [key, await response.json(), null];
+    } catch (error) {
+      return [key, null, error.message];
+    }
+  }));
+
+  const nextReports = {
+    status: "ready",
+    loadedAt: new Date().toISOString(),
+    error: null,
+    leaderboard: null,
+    training: null,
+    strategyRisk: null,
+  };
+  const errors = [];
+  for (const [key, value, error] of loaded) {
+    nextReports[key] = value;
+    if (error) errors.push(error);
+  }
+  if (!nextReports.leaderboard && !nextReports.training && !nextReports.strategyRisk) {
+    nextReports.status = "error";
+  }
+  nextReports.error = errors.length ? errors.join("; ") : null;
+  uiState.researchReports = nextReports;
+  render();
 }
 
 function renderRaceButton(entry, selectedRaceId) {
@@ -1415,10 +1471,125 @@ function renderPerformancePanel(snapshot) {
           meeting.valueRoi,
         )).join("")}
       </div>
+      ${renderResearchSummaryPanel(uiState.researchReports)}
       <p class="fine-print">${escapeHtml(performance.warning)}</p>
       ${strategy ? `<p class="fine-print">${escapeHtml(strategyNote)}</p>` : ""}
     </section>
   `;
+}
+
+function renderResearchSummaryPanel(research) {
+  if (!research || research.status === "idle" || research.status === "loading") {
+    return `
+      <div class="research-summary">
+        <div class="research-summary-header">
+          <h4>训练研究摘要</h4>
+          <span>加载中</span>
+        </div>
+        <p class="fine-print">正在按需加载模型训练和策略风险报告；首页不会加载大历史数据。</p>
+      </div>
+    `;
+  }
+
+  if (research.status === "error") {
+    return `
+      <div class="research-summary">
+        <div class="research-summary-header">
+          <h4>训练研究摘要</h4>
+          <span>暂不可用</span>
+        </div>
+        <p class="fine-print">${escapeHtml(research.error ?? "研究报告未发布，现有 dashboard 仍可正常使用。")}</p>
+      </div>
+    `;
+  }
+
+  const heuristic = research.leaderboard?.models?.find((model) => model.modelId === "heuristic-current");
+  const heuristicHoldout = heuristic?.metrics?.bySplit?.holdout;
+  const logitHoldout = research.training?.metrics?.bySplit?.holdout;
+  const risk = research.strategyRisk?.summary;
+  const riskPools = research.strategyRisk?.byPool;
+  const hitDelta = Number(logitHoldout?.topPickWinRate ?? NaN) - Number(heuristicHoldout?.topPickWinRate ?? NaN);
+  const logLossDelta = Number(logitHoldout?.logLoss ?? NaN) - Number(heuristicHoldout?.logLoss ?? NaN);
+  const modelNote = research.training && heuristic
+    ? modelResearchNote(hitDelta, logLossDelta)
+    : "等待训练报告和 leaderboard 同时发布后显示模型对比。";
+  const riskWarning = risk
+    ? strategyRiskWarning(risk)
+    : "等待策略风险报告发布后显示回撤和玩法归因。";
+
+  return `
+    <div class="research-summary">
+      <div class="research-summary-header">
+        <div>
+          <h4>训练研究摘要</h4>
+          <p>离线训练 + 多玩法风险诊断，供优化算法用，不直接等于现金下注信号。</p>
+        </div>
+        <span>${research.loadedAt ? formatDateTime(research.loadedAt) : "已加载"}</span>
+      </div>
+      <div class="performance-grid is-compact research-metric-grid">
+        ${renderPerformanceMetric("Heuristic Holdout", heuristicHoldout ? formatPercent(heuristicHoldout.topPickWinRate) : "-", heuristicHoldout ? `LogLoss ${numberLabel(heuristicHoldout.logLoss, 4)} · ${heuristicHoldout.races} 场` : "未发布", heuristicHoldout ? -heuristicHoldout.logLoss : 0)}
+        ${renderPerformanceMetric("Logit Holdout", logitHoldout ? formatPercent(logitHoldout.topPickWinRate) : "-", logitHoldout ? `LogLoss ${numberLabel(logitHoldout.logLoss, 4)} · ${logitHoldout.races} 场` : "未发布", logitHoldout ? -logitHoldout.logLoss : 0)}
+        ${renderPerformanceMetric("策略风险 ROI", risk ? formatPercent(risk.knownRoi) : "-", risk ? `${risk.activeRaces}/${risk.races} 场下注 · ${risk.passRaces} PASS` : "未发布", risk ? risk.knownRoi : 0)}
+        ${renderPerformanceMetric("最大回撤", risk ? formatHkd(risk.maxDrawdown) : "-", risk ? `最长连输 ${risk.longestLosingStreak} 场` : "未发布", risk ? -risk.maxDrawdown : 0)}
+      </div>
+      <div class="mini-record-grid research-mini-grid">
+        <div>
+          <h4>模型解释</h4>
+          <p class="fine-print">${escapeHtml(modelNote)}</p>
+        </div>
+        <div>
+          <h4>策略风险提示</h4>
+          <p class="fine-print">${escapeHtml(riskWarning)}</p>
+        </div>
+        ${riskPools ? `
+          <div>
+            <h4>玩法 ROI 归因</h4>
+            <div class="mini-record-list">
+              ${renderPoolRiskLine("独赢 Win", riskPools.WIN)}
+              ${renderPoolRiskLine("位置 Place", riskPools.PLACE)}
+              ${renderPoolRiskLine("位置Q QPL", riskPools.QUINELLA_PLACE)}
+              ${renderPoolRiskLine("连赢 Quinella", riskPools.QUINELLA)}
+            </div>
+          </div>
+        ` : ""}
+      </div>
+      ${research.error ? `<p class="fine-print">部分研究文件未加载：${escapeHtml(research.error)}</p>` : ""}
+    </div>
+  `;
+}
+
+function modelResearchNote(hitDelta, logLossDelta) {
+  if (!Number.isFinite(hitDelta) || !Number.isFinite(logLossDelta)) return "模型报告不足，暂不做结论。";
+  const hitText = `Logit 的 holdout Top Pick 胜率比当前 heuristic ${hitDelta >= 0 ? "高" : "低"} ${Math.abs(hitDelta * 100).toFixed(1)} 个百分点`;
+  const lossText = `Log Loss ${logLossDelta <= 0 ? "更好" : "更差"} ${Math.abs(logLossDelta).toFixed(4)}`;
+  if (hitDelta > 0 && logLossDelta > 0) {
+    return `${hitText}，但 ${lossText}；它更会排序，还没证明概率校准更准。`;
+  }
+  return `${hitText}，且 ${lossText}。`;
+}
+
+function strategyRiskWarning(risk) {
+  const parts = [
+    `已回放 ${risk.activeRaces}/${risk.races} 个下注场次，known ROI ${formatPercent(risk.knownRoi)}。`,
+    `最大回撤 ${formatHkd(risk.maxDrawdown)}，最长连输 ${risk.longestLosingStreak} 场。`,
+  ];
+  if (risk.knownRoi < 0) {
+    parts.push("当前组合不能因为命中率高就加码，下一步要提高入场门槛和赔率/派彩过滤。");
+  }
+  if (risk.unpricedPoolStake > 0) {
+    parts.push(`仍有 ${formatHkd(risk.unpricedPoolStake)} 注额依赖未完整派彩。`);
+  }
+  return parts.join(" ");
+}
+
+function renderPoolRiskLine(label, pool) {
+  if (!pool) return "";
+  return renderMiniRecordLine(
+    label,
+    formatPercent(pool.roi),
+    `${pool.hits}/${pool.bets} · ${formatHkd(pool.stake)}`,
+    pool.roi,
+  );
 }
 
 function renderSelfTestPanel(entry, entries) {

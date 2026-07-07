@@ -1,4 +1,4 @@
-const CACHE_NAME = "hkjc-model-v9";
+const CACHE_NAME = "hkjc-model-v10";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -34,7 +34,12 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
 
-  if (url.pathname.endsWith("/data/dashboard.json")) {
+  if (
+    url.pathname.endsWith("/data/dashboard.json")
+    || url.pathname.endsWith("/hkjc-horse-model/data/processed/model-leaderboard.json")
+    || url.pathname.endsWith("/hkjc-horse-model/data/processed/model-training-report.json")
+    || url.pathname.endsWith("/hkjc-horse-model/data/processed/strategy-risk-report.json")
+  ) {
     event.respondWith(networkFirst(event.request));
     return;
   }
