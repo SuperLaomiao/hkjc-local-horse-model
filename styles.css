@@ -1650,6 +1650,119 @@ tbody tr:hover {
   padding: 0;
 }
 
+.external-model-card {
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid rgba(14, 165, 233, 0.22);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.external-model-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.external-model-header h4,
+.external-model-header p {
+  margin: 0;
+}
+
+.external-model-header p {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.external-model-header span {
+  flex: 0 0 auto;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(14, 165, 233, 0.1);
+  color: var(--teal);
+  font-size: 0.7rem;
+  font-weight: 900;
+}
+
+.external-benchmark-grid {
+  margin: 10px 0 12px;
+}
+
+.external-benchmark-grid .performance-card strong {
+  font-size: 0.98rem;
+}
+
+.external-agreement-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--line);
+}
+
+.external-agreement-grid div {
+  min-width: 0;
+  padding: 10px;
+  background: var(--surface);
+}
+
+.external-agreement-grid span,
+.external-agreement-grid small,
+.external-race-row small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.external-agreement-grid strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.98rem;
+}
+
+.external-agreement-grid small {
+  margin-top: 3px;
+}
+
+.external-race-table {
+  display: grid;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--line);
+}
+
+.external-race-row {
+  display: grid;
+  grid-template-columns: 48px minmax(140px, 1.2fr) minmax(140px, 1.2fr) minmax(92px, 0.7fr) minmax(140px, 1.2fr);
+  gap: 1px;
+  background: var(--line);
+  font-size: 0.74rem;
+}
+
+.external-race-row > span {
+  min-width: 0;
+  padding: 9px 10px;
+  background: var(--surface-soft);
+  overflow-wrap: anywhere;
+}
+
+.external-race-row.is-header > span {
+  background: rgba(15, 23, 42, 0.05);
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
 .mini-record-grid h4 {
   margin: 0 0 8px;
   font-size: 0.82rem;
@@ -2098,9 +2211,22 @@ tbody tr:hover {
   .performance-grid,
   .performance-grid.is-compact,
   .mini-record-grid,
+  .external-agreement-grid,
   .research-metrics,
   .research-signal-list {
     grid-template-columns: 1fr;
+  }
+
+  .external-model-header {
+    display: grid;
+  }
+
+  .external-race-table {
+    overflow-x: auto;
+  }
+
+  .external-race-row {
+    min-width: 720px;
   }
 
   .panel-actions {

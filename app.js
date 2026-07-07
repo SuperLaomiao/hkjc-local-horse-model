@@ -7,7 +7,11 @@ import {
 } from "./self-test.js";
 import { buildStakingStrategy } from "./bet-strategy.js";
 import { buildAdaptiveRacePlan } from "./adaptive-staking.js";
-import { buildBettingAvailability, formatRaceContext, getDashboardLayoutSections } from "./dashboard-layout.js?v=20260707-research-lab";
+import { buildBettingAvailability, formatRaceContext, getDashboardLayoutSections } from "./dashboard-layout.js?v=20260708-external-models";
+import {
+  buildExternalComparisonSummary,
+  externalModelBenchmarkCards,
+} from "./external-model-summary.js?v=20260708-external-models";
 import { buildStructuredBetPortfolio } from "./multi-play-portfolio.js";
 import { buildMeetingCountdown } from "./meeting-countdown.js";
 import { buildResearchUpgradeProgram, summarizeResearchUpgradeProgram } from "./research-program.js";
@@ -24,6 +28,7 @@ const RESEARCH_REPORT_URLS = {
   leaderboard: "./hkjc-horse-model/data/processed/model-leaderboard.json",
   training: "./hkjc-horse-model/data/processed/model-training-report.json",
   strategyRisk: "./hkjc-horse-model/data/processed/strategy-risk-report.json",
+  externalComparison: "./hkjc-horse-model/data/processed/external-model-comparison-2026-07-08-HV.json",
 };
 const appRoot = document.querySelector("#hkjc-app");
 const STORAGE_KEYS = {
@@ -49,6 +54,7 @@ const uiState = {
     leaderboard: null,
     training: null,
     strategyRisk: null,
+    externalComparison: null,
   },
 };
 
@@ -220,13 +226,19 @@ async function ensureResearchReports() {
     leaderboard: null,
     training: null,
     strategyRisk: null,
+    externalComparison: null,
   };
   const errors = [];
   for (const [key, value, error] of loaded) {
     nextReports[key] = value;
     if (error) errors.push(error);
   }
-  if (!nextReports.leaderboard && !nextReports.training && !nextReports.strategyRisk) {
+  if (
+    !nextReports.leaderboard
+    && !nextReports.training
+    && !nextReports.strategyRisk
+    && !nextReports.externalComparison
+  ) {
     nextReports.status = "error";
   }
   nextReports.error = errors.length ? errors.join("; ") : null;
@@ -1654,9 +1666,93 @@ function renderResearchSummaryPanel(research) {
           </div>
         ` : ""}
       </div>
+      ${renderExternalModelComparisonPanel(research.externalComparison)}
       ${research.error ? `<p class="fine-print">部分研究文件未加载：${escapeHtml(research.error)}</p>` : ""}
     </div>
   `;
+}
+
+function renderExternalModelComparisonPanel(externalComparison) {
+  if (!externalComparison) {
+    return `
+      <div class="external-model-card">
+        <div class="external-model-header">
+          <div>
+            <h4>外部模型对比</h4>
+            <p>等待 external-model-comparison 报告发布后显示。</p>
+          </div>
+          <span>未加载</span>
+        </div>
+      </div>
+    `;
+  }
+
+  const summary = buildExternalComparisonSummary(externalComparison);
+  const benchmarkCards = externalModelBenchmarkCards(externalComparison);
+  const raceRows = summary.rows.slice(0, 9);
+
+  return `
+    <div class="external-model-card">
+      <div class="external-model-header">
+        <div>
+          <h4>外部模型对比 · 明日赛前预测</h4>
+          <p>把当前本地模型、catowabisabi 连赢思路、jerrydaphantom market-aware 思路放在同一张表里看。</p>
+        </div>
+        <span>${summary.generatedAt ? formatDateTime(summary.generatedAt) : "已生成"}</span>
+      </div>
+      <div class="performance-grid is-compact external-benchmark-grid">
+        ${benchmarkCards.length
+          ? benchmarkCards.map((card) => renderPerformanceMetric(card.label, card.primary, card.secondary, 0)).join("")
+          : renderPerformanceMetric("外部公开基准", "未发布", "生成器尚未携带 referenceMetrics", 0)}
+      </div>
+      <div class="external-agreement-grid">
+        ${renderExternalAgreementStat("赛前场次", `${summary.upcomingRaces} 场`, "已生成可比预测")}
+        ${renderExternalAgreementStat("Market-aware 可用", `${summary.marketAwareReadyRaces}/${summary.upcomingRaces}`, "依赖临场 WIN odds")}
+        ${renderExternalAgreementStat("当前 = catowabisabi", `${summary.currentVsCatSame}/${summary.upcomingRaces}`, "Top Pick 一致")}
+        ${renderExternalAgreementStat("当前 = market-aware", `${summary.currentVsMarketSame}/${summary.upcomingRaces}`, "Top Pick 一致")}
+      </div>
+      <div class="external-race-table" role="table" aria-label="外部模型赛前预测对比">
+        <div class="external-race-row is-header" role="row">
+          <span>场次</span>
+          <span>当前模型</span>
+          <span>catowabisabi</span>
+          <span>Q 位/连赢盒</span>
+          <span>jerrydaphantom</span>
+        </div>
+        ${raceRows.map(renderExternalRaceRow).join("")}
+      </div>
+      <p class="fine-print">注意：catowabisabi / jerrydaphantom 指的是公开项目的算法思路和公开 benchmark；这里的逐场输出是我们本地复现/代理模型，未等于它们原作者完整模型，也不等于实盘盈利保证。</p>
+    </div>
+  `;
+}
+
+function renderExternalAgreementStat(label, value, detail) {
+  return `
+    <div>
+      <span>${escapeHtml(label)}</span>
+      <strong>${escapeHtml(value)}</strong>
+      <small>${escapeHtml(detail)}</small>
+    </div>
+  `;
+}
+
+function renderExternalRaceRow(row) {
+  return `
+    <div class="external-race-row" role="row">
+      <span>R${escapeHtml(row.raceNo ?? "-")}</span>
+      <span>${renderExternalPick(row.currentTopPick)}</span>
+      <span>${renderExternalPick(row.catowabisabi)}</span>
+      <span>${escapeHtml(row.catowabisabi.topQuinellaBoxLabel)}</span>
+      <span>${renderExternalPick(row.jerrydaphantomMarketAware, row.jerrydaphantomMarketAware.status)}</span>
+    </div>
+  `;
+}
+
+function renderExternalPick(pick, status = "available") {
+  const statusText = status === "available" ? "" : ` · ${status}`;
+  const probability = Number.isFinite(pick?.probability) ? ` · ${formatPercent(pick.probability)}` : "";
+  const odds = Number.isFinite(pick?.winOdds) && pick.winOdds > 0 ? ` · odds ${numberLabel(pick.winOdds, 1)}` : "";
+  return `${escapeHtml(pick?.label ?? "-")}<small>${escapeHtml(`${probability}${odds}${statusText}`)}</small>`;
 }
 
 function modelResearchNote(hitDelta, logLossDelta) {

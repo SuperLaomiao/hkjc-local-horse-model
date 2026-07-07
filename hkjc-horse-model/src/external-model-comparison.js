@@ -14,6 +14,12 @@ const MODEL_DEFINITIONS = [
     status: 'proxy',
     source: 'catowabisabi/horse-racing-model-training',
     note: 'No-odds fundamental ranker plus top-2 Quinella box. This is not the original LightGBM artifact.',
+    referenceMetrics: {
+      headline: '+2.6% OOS ROI',
+      detail: 'Public project note: 2017 Quinella validation +7.9% ROI; 2018 H1 OOS +2.6% ROI. Local output is a proxy until independently replayed.',
+      quinellaRoi2017: 0.079,
+      quinellaRoi2018H1: 0.026,
+    },
   },
   {
     modelId: 'jerrydaphantom-market-free-calibrated-proxy',
@@ -28,6 +34,13 @@ const MODEL_DEFINITIONS = [
     status: 'pending-live-market',
     source: 'jerrydaphantom/hkjc-ml-research',
     note: 'Requires live WIN odds. Before T-30/T-10/T-3 market snapshots, this model is intentionally not emitted as a cash prediction.',
+    referenceMetrics: {
+      topPickWinRate: 0.327,
+      logLoss: 0.234958,
+      brierScore: 0.065478,
+      winnerInTop3Rate: 0.6214,
+      detail: 'Public market-aware CatBoost benchmark; local validation requires our own live odds and pool snapshots.',
+    },
   },
 ];
 
