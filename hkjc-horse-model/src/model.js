@@ -1,4 +1,8 @@
 import { buildPerformanceSnapshot } from './performance.js';
+import {
+  buildResearchUpgradeProgram,
+  summarizeResearchUpgradeProgram,
+} from '../../research-program.js';
 
 const DEFAULT_CONFIG = {
   baseRating: 65,
@@ -540,6 +544,8 @@ export function buildDashboardSnapshot(races, options = {}) {
   const rolling = buildRollingPredictionLedger(races, options);
   const latestEntry = rolling.entries.at(-1) ?? null;
   const trainedState = trainStateFromRaces(races, options);
+  const performance = buildPerformanceSnapshot(rolling.entries);
+  const researchProgram = buildResearchUpgradeProgram();
   const settledRaceIds = new Set(rolling.entries.map((entry) => entry.raceId));
   const upcomingEntries = uniqueRaces(options.upcomingRaces ?? [])
     .filter((race) => !settledRaceIds.has(race.raceId))
@@ -580,7 +586,11 @@ export function buildDashboardSnapshot(races, options = {}) {
     upcomingEntries,
     nextLocalMeetings: options.nextLocalMeetings ?? [],
     fixtureWindow: options.fixtureWindow ?? null,
-    performance: buildPerformanceSnapshot(rolling.entries),
+    performance,
+    research: {
+      ...researchProgram,
+      summary: summarizeResearchUpgradeProgram(researchProgram),
+    },
     ledger: raceSummaries,
     recentEntries: rolling.entries.slice(-12),
     assumptions: {

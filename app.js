@@ -7,9 +7,10 @@ import {
 } from "./self-test.js";
 import { buildStakingStrategy } from "./bet-strategy.js";
 import { buildAdaptiveRacePlan } from "./adaptive-staking.js";
-import { buildBettingAvailability, formatRaceContext, getDashboardLayoutSections } from "./dashboard-layout.js?v=20260702-bet-availability";
+import { buildBettingAvailability, formatRaceContext, getDashboardLayoutSections } from "./dashboard-layout.js?v=20260707-research-lab";
 import { buildStructuredBetPortfolio } from "./multi-play-portfolio.js";
 import { buildMeetingCountdown } from "./meeting-countdown.js";
+import { buildResearchUpgradeProgram, summarizeResearchUpgradeProgram } from "./research-program.js";
 import {
   buildPoolGuideRecommendation,
   getBetTypeGuide,
@@ -367,6 +368,10 @@ function renderToolDrawerContent(toolId, entry, entries, snapshot) {
         ${renderChartPanel(snapshot.ledger)}
       </div>
     `;
+  }
+
+  if (toolId === "research-lab") {
+    return renderResearchUpgradePanel(snapshot);
   }
 
   if (toolId === "discipline") {
@@ -908,6 +913,102 @@ function renderPoolInfo(label, value) {
       <strong>${escapeHtml(value)}</strong>
     </div>
   `;
+}
+
+function renderResearchUpgradePanel(snapshot) {
+  const program = snapshot.research ?? {
+    ...buildResearchUpgradeProgram(),
+  };
+  const summary = program.summary ?? summarizeResearchUpgradeProgram(program);
+  const activeItems = program.algorithmBorrowings.filter((item) => item.status === "active");
+  const nextItems = program.algorithmBorrowings.filter((item) => item.status === "next");
+  const researchOnlyItems = program.algorithmBorrowings.filter((item) => item.status === "research-only");
+
+  return `
+    <section class="panel research-panel">
+      <div class="panel-header">
+        <div>
+          <h3>研究升级 / Research Lab</h3>
+          <p>把 GitHub 和论文里的好方法拆成：已进入系统、下一步学习、只做研究观察。</p>
+        </div>
+        <span class="research-version">${escapeHtml(summary.version)}</span>
+      </div>
+      <div class="research-hero">
+        <span>研究状态</span>
+        <strong>${escapeHtml(summary.headline)}</strong>
+        <p>${escapeHtml(program.guardrail)}</p>
+      </div>
+      <div class="research-metrics">
+        ${renderResearchMetric("参考项目", summary.sourceCount)}
+        ${renderResearchMetric("已进入系统", summary.activeCount)}
+        ${renderResearchMetric("下一步", summary.nextCount)}
+        ${renderResearchMetric("研究观察", summary.researchOnlyCount)}
+      </div>
+      <div class="research-section">
+        <strong>从开源项目学习什么</strong>
+        <div class="research-source-list">
+          ${program.sources.map(renderResearchSource).join("")}
+        </div>
+      </div>
+      <div class="research-section">
+        <strong>算法借鉴路线</strong>
+        <div class="research-roadmap">
+          ${renderResearchGroup("已进入系统", activeItems)}
+          ${renderResearchGroup("下一步学习", nextItems)}
+          ${renderResearchGroup("研究观察", researchOnlyItems)}
+        </div>
+      </div>
+      <div class="research-section">
+        <strong>你在前端能感知到什么</strong>
+        <div class="research-signal-list">
+          ${program.frontendSignals.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
+        </div>
+      </div>
+      <p class="fine-print">下一焦点：${escapeHtml(summary.nextFocus)}。这些不会自动变成真实下注，必须先进入回测和复盘。</p>
+    </section>
+  `;
+}
+
+function renderResearchMetric(label, value) {
+  return `
+    <div>
+      <span>${escapeHtml(label)}</span>
+      <strong>${escapeHtml(value)}</strong>
+    </div>
+  `;
+}
+
+function renderResearchSource(source) {
+  return `
+    <article>
+      <a href="${escapeHtml(source.url)}" target="_blank" rel="noreferrer">${escapeHtml(source.name)}</a>
+      <span>${escapeHtml(source.type)}</span>
+      <p>${escapeHtml(source.lesson)}</p>
+      <em>借鉴：${escapeHtml(source.borrow)}</em>
+    </article>
+  `;
+}
+
+function renderResearchGroup(label, items) {
+  return `
+    <div class="research-group">
+      <h4>${escapeHtml(label)}</h4>
+      ${items.map((item) => `
+        <article>
+          <span class="research-status ${researchStatusClass(item.status)}">${escapeHtml(item.label)}</span>
+          <strong>${escapeHtml(item.concept)}</strong>
+          <p>${escapeHtml(item.userImpact)}</p>
+          <em>${escapeHtml(item.nextStep)}</em>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+
+function researchStatusClass(status) {
+  if (status === "active") return "is-active";
+  if (status === "next") return "is-next";
+  return "is-research";
 }
 
 function formatPoolSelections(selections) {

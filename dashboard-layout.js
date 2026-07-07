@@ -37,6 +37,12 @@ export const TOOL_TABS = [
     description: '集中看 ROI、命中率、派彩回报和资金曲线。',
   },
   {
+    id: 'research-lab',
+    label: '研究升级',
+    eyebrow: 'Research',
+    description: '把 GitHub、论文和算法借鉴点变成可追踪的模型升级路线。',
+  },
+  {
     id: 'discipline',
     label: '纪律',
     eyebrow: '风险线',

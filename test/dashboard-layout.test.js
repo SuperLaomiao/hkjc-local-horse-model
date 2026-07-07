@@ -25,6 +25,7 @@ describe('dashboard layout sections', () => {
     assert(layout.toolTabs.some((tab) => tab.id === 'multi-play-portfolio'));
     assert(layout.toolTabs.some((tab) => tab.id === 'pool-guide'));
     assert(layout.toolTabs.some((tab) => tab.id === 'review'));
+    assert(layout.toolTabs.some((tab) => tab.id === 'research-lab'));
   });
 
   it('falls back to the portfolio tool when a stale tab id is restored', () => {
@@ -33,6 +34,14 @@ describe('dashboard layout sections', () => {
     assert.equal(layout.activeTool.id, 'multi-play-portfolio');
     assert.deepEqual(TOOL_TAB_IDS.slice(0, 3), ['multi-play-portfolio', 'pool-guide', 'adaptive-route']);
     assert.equal(getToolTab('pool-guide').label, '玩法库');
+  });
+
+  it('exposes a research lab drawer so algorithm changes are visible on the front end', () => {
+    const researchTab = getToolTab('research-lab');
+
+    assert.equal(researchTab.label, '研究升级');
+    assert.equal(researchTab.eyebrow, 'Research');
+    assert.match(researchTab.description, /GitHub|论文|算法/);
   });
 
   it('formats betting advice with an explicit race context', () => {

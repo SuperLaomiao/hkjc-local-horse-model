@@ -1,13 +1,14 @@
-const CACHE_NAME = "hkjc-model-v9";
+const CACHE_NAME = "hkjc-model-v10";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=20260702-bet-availability",
-  "./app.js?v=20260702-bet-availability",
-  "./dashboard-layout.js?v=20260702-bet-availability",
+  "./styles.css?v=20260707-research-lab",
+  "./app.js?v=20260707-research-lab",
+  "./dashboard-layout.js?v=20260707-research-lab",
   "./adaptive-staking.js",
   "./meeting-countdown.js",
   "./multi-play-portfolio.js",
+  "./research-program.js",
   "./bet-strategy.js",
   "./betting-products.js",
   "./self-test.js",
