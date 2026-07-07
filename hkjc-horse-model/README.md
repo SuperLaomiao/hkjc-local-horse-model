@@ -99,9 +99,59 @@ The normalized file should contain `odds` and/or `pools` arrays with `raceId`,
 `investment + sellStatus`. These snapshots are the bridge toward T-30/T-10/T-3
 expected-ROI decisions.
 
+To check whether enough snapshots have actually been accumulated:
+
+```bash
+npm run hkjc:market-coverage -- --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/market-snapshot-coverage.json
+```
+
+The coverage report separates odds rows from pool-investment rows and groups
+them into T-60, T-30, T-10, T-3, and unknown windows.
+
 The dashboard performance export includes probability calibration buckets plus
 Brier Score and Log Loss. These scoring rules are used to watch whether the
 model probability scale is trustworthy enough for EV/Kelly-style staking.
+
+## Training dataset and model leaderboard
+
+`training-dataset` exports one row per runner using only races seen earlier in
+chronological order. This protects model training from post-race leakage.
+
+```bash
+npm run hkjc:training-dataset -- --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/training-dataset.json
+```
+
+`model-leaderboard` scores the current heuristic model by split:
+
+- train: through 2023-12-31
+- validation: 2024-01-01 through 2025-12-31
+- holdout: 2026-01-01 onward
+
+```bash
+npm run hkjc:model-leaderboard -- --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/model-leaderboard.json
+```
+
+Promotion to real-money recommendation logic requires calibration, turnover,
+drawdown, and market-price gates. Historical ROI alone is not enough.
+
+Train the first offline Python baseline:
+
+```bash
+npm run hkjc:train-model -- --input hkjc-horse-model/data/processed/training-dataset.json --output hkjc-horse-model/data/processed/model-training-report.json
+```
+
+This produces `logit-runner-v1`, a paper-mode probability baseline. It is used
+for comparison and calibration research, not automatic cash betting.
+
+Generate the current multi-play staking risk report:
+
+```bash
+npm run hkjc:strategy-risk-report -- --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/strategy-risk-report.json
+```
+
+Use this report before promoting any strategy change. It shows whether simulated
+ROI comes from broad repeated edge or from concentrated outliers, and separates
+Win, Place, Quinella Place, and Quinella contribution.
 
 Open the local dashboard:
 

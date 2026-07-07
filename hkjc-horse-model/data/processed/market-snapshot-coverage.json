@@ -1,0 +1,57 @@
+{
+  "generatedAt": "2026-07-07T05:06:29.650Z",
+  "summary": {
+    "races": 14230,
+    "racesWithOdds": 0,
+    "racesWithPools": 0,
+    "oddsSnapshots": 0,
+    "poolSnapshots": 0,
+    "oddsRaceCoverage": 0,
+    "poolRaceCoverage": 0,
+    "earliestCapturedAt": null,
+    "latestCapturedAt": null,
+    "readiness": "missing-market-data"
+  },
+  "byWindow": {
+    "T-60": {
+      "oddsSnapshots": 0,
+      "poolSnapshots": 0,
+      "racesWithOdds": 0,
+      "racesWithPools": 0
+    },
+    "T-30": {
+      "oddsSnapshots": 0,
+      "poolSnapshots": 0,
+      "racesWithOdds": 0,
+      "racesWithPools": 0
+    },
+    "T-10": {
+      "oddsSnapshots": 0,
+      "poolSnapshots": 0,
+      "racesWithOdds": 0,
+      "racesWithPools": 0
+    },
+    "T-3": {
+      "oddsSnapshots": 0,
+      "poolSnapshots": 0,
+      "racesWithOdds": 0,
+      "racesWithPools": 0
+    },
+    "unknown": {
+      "oddsSnapshots": 0,
+      "poolSnapshots": 0,
+      "racesWithOdds": 0,
+      "racesWithPools": 0
+    }
+  },
+  "byPool": {},
+  "gaps": [
+    "No market snapshots recorded yet. Import normalized T-30/T-10/T-3 odds and pool snapshots before training live expected-ROI gates."
+  ],
+  "note": "Coverage only says whether live market data exists; it does not prove the model has a betting edge.",
+  "dataSource": {
+    "source": "sqlite",
+    "database": "hkjc.sqlite",
+    "races": 14230
+  }
+}

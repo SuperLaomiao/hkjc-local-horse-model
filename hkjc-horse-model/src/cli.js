@@ -1,12 +1,23 @@
 #!/usr/bin/env node
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { backtestRaces, buildDashboardSnapshot, calibrateConfig } from './model.js';
+import { backtestRaces, buildDashboardSnapshot, buildRollingPredictionLedger, calibrateConfig } from './model.js';
 import { splitDashboardForPublishing } from './dashboard-publish.js';
 import { auditRecommendationRuns } from './recommendation-audit.js';
+import {
+  buildAsOfTrainingRows,
+  summarizeTrainingRows,
+} from './training-dataset.js';
+import {
+  buildModelLeaderboard,
+  predictionRowsFromLedger,
+} from './model-leaderboard.js';
+import { buildStrategyRiskReport } from './strategy-risk-report.js';
+import { buildMarketSnapshotCoverageReport } from './market-snapshot-coverage.js';
 import {
   fetchFixtureMeetings,
   fetchMeetingRaceCards,
@@ -17,6 +28,7 @@ import {
 import {
   getDatabaseStats,
   loadRacesFromDatabase,
+  loadMarketSnapshots,
   loadRecommendationRuns,
   recordOddsSnapshot,
   recordPoolSnapshot,
@@ -75,8 +87,33 @@ async function main(argv) {
     return;
   }
 
+  if (command === 'training-dataset') {
+    await trainingDatasetCommand(args);
+    return;
+  }
+
+  if (command === 'model-leaderboard') {
+    await modelLeaderboardCommand(args);
+    return;
+  }
+
+  if (command === 'train-model') {
+    await trainModelCommand(args);
+    return;
+  }
+
+  if (command === 'strategy-risk-report') {
+    await strategyRiskReportCommand(args);
+    return;
+  }
+
   if (command === 'market-snapshot') {
     await marketSnapshotCommand(args);
+    return;
+  }
+
+  if (command === 'market-coverage-report') {
+    await marketCoverageReportCommand(args);
     return;
   }
 
@@ -206,6 +243,127 @@ async function dashboardDbCommand(args) {
   console.log(`Saved dashboard history to ${historyOutputPath}`);
 }
 
+async function trainingDatasetCommand(args) {
+  const dbPath = path.resolve(args.db ?? sqliteDbPath);
+  const settledRaces = loadRacesFromDatabase({ dbPath, status: 'settled' });
+  const rows = buildAsOfTrainingRows(settledRaces);
+  const summary = summarizeTrainingRows(rows);
+  const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'training-dataset.json'));
+
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeJson(outputPath, {
+    generatedAt: summary.generatedAt,
+    dataSource: {
+      source: 'sqlite',
+      database: publicDatabaseLabel(dbPath),
+      settledRaces: settledRaces.length,
+    },
+    summary,
+    rows,
+  });
+
+  console.log(`Training dataset from SQLite: ${summary.rows} runner rows, ${summary.races} races`);
+  console.log(`Saved training dataset to ${outputPath}`);
+}
+
+async function modelLeaderboardCommand(args) {
+  const dbPath = path.resolve(args.db ?? sqliteDbPath);
+  const settledRaces = loadRacesFromDatabase({ dbPath, status: 'settled' });
+  const ledger = buildRollingPredictionLedger(settledRaces, {
+    minEdge: args.minEdge == null ? 0 : Number(args.minEdge),
+    minProbability: args.minProbability == null ? 0.15 : Number(args.minProbability),
+  });
+  const predictionRows = predictionRowsFromLedger(ledger.entries);
+  const leaderboard = buildModelLeaderboard([
+    {
+      modelId: 'heuristic-current',
+      label: 'Current heuristic rolling model',
+      rows: predictionRows,
+    },
+  ]);
+  const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'model-leaderboard.json'));
+
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeJson(outputPath, {
+    ...leaderboard,
+    dataSource: {
+      source: 'sqlite',
+      database: publicDatabaseLabel(dbPath),
+      settledRaces: settledRaces.length,
+    },
+  });
+
+  console.log(`Model leaderboard from SQLite: ${settledRaces.length} settled races`);
+  console.log(`Saved model leaderboard to ${outputPath}`);
+}
+
+async function trainModelCommand(args) {
+  const inputPath = path.resolve(args.input ?? path.join(processedDataDir, 'training-dataset.json'));
+  const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'model-training-report.json'));
+  const scriptPath = path.join(projectRoot, 'python', 'train_logit_model.py');
+  const result = spawnSync('python3', [
+    scriptPath,
+    '--input',
+    inputPath,
+    '--output',
+    outputPath,
+    '--iterations',
+    String(args.iterations ?? 160),
+    '--learningRate',
+    String(args.learningRate ?? 0.05),
+    '--l2',
+    String(args.l2 ?? 0.001),
+  ], {
+    encoding: 'utf8',
+  });
+
+  if (result.stdout) process.stdout.write(result.stdout);
+  if (result.stderr) process.stderr.write(result.stderr);
+  if (result.error) throw result.error;
+  if (result.status !== 0) {
+    throw new Error(`train-model failed with exit code ${result.status}`);
+  }
+}
+
+async function strategyRiskReportCommand(args) {
+  const dbPath = path.resolve(args.db ?? sqliteDbPath);
+  const settledRaces = loadRacesFromDatabase({ dbPath, status: 'settled' });
+  const ledger = buildRollingPredictionLedger(settledRaces, {
+    minEdge: args.minEdge == null ? 0 : Number(args.minEdge),
+    minProbability: args.minProbability == null ? 0.15 : Number(args.minProbability),
+    bankroll: args.bankroll == null ? 1000 : Number(args.bankroll),
+    maxStakePct: args.maxStakePct == null ? 0.0125 : Number(args.maxStakePct),
+    finalEdgeBuffer: args.finalEdgeBuffer == null ? 0.08 : Number(args.finalEdgeBuffer),
+    allowProbabilityOnly: args.allowProbabilityOnly !== 'false',
+  });
+  const report = buildStrategyRiskReport(ledger.entries, {
+    maxTimelineRows: args.maxTimelineRows == null ? 200 : Number(args.maxTimelineRows),
+  });
+  const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'strategy-risk-report.json'));
+
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeJson(outputPath, {
+    ...report,
+    dataSource: {
+      source: 'sqlite',
+      database: publicDatabaseLabel(dbPath),
+      settledRaces: settledRaces.length,
+    },
+    modelOptions: {
+      minEdge: args.minEdge == null ? 0 : Number(args.minEdge),
+      minProbability: args.minProbability == null ? 0.15 : Number(args.minProbability),
+      bankroll: args.bankroll == null ? 1000 : Number(args.bankroll),
+      maxStakePct: args.maxStakePct == null ? 0.0125 : Number(args.maxStakePct),
+      finalEdgeBuffer: args.finalEdgeBuffer == null ? 0.08 : Number(args.finalEdgeBuffer),
+      allowProbabilityOnly: args.allowProbabilityOnly !== 'false',
+    },
+  });
+
+  console.log(`Strategy risk report from SQLite: ${report.summary.activeRaces}/${report.summary.races} active races`);
+  console.log(`Known strategy profit ${formatSigned(report.summary.knownProfit)}, ROI ${percent(report.summary.knownRoi)}, max drawdown ${money(report.summary.maxDrawdown)}`);
+  console.log(`Saved strategy risk report to ${outputPath}`);
+}
+
 function recordDashboardRecommendationRun({ dbPath, snapshot, args }) {
   const forecast = snapshot.latestUpcomingForecast?.raceId
     ? snapshot.latestUpcomingForecast
@@ -260,6 +418,32 @@ async function marketSnapshotCommand(args) {
   const stats = getDatabaseStats(dbPath);
   console.log(`Market snapshots imported: ${oddsSnapshots.length} odds, ${poolSnapshots.length} pools`);
   console.log(`Database market totals: ${stats.oddsSnapshots} odds snapshots, ${stats.poolSnapshots} pool snapshots`);
+}
+
+async function marketCoverageReportCommand(args) {
+  const dbPath = path.resolve(args.db ?? sqliteDbPath);
+  const races = loadRacesFromDatabase({ dbPath });
+  const snapshots = loadMarketSnapshots({ dbPath });
+  const report = buildMarketSnapshotCoverageReport({
+    races,
+    odds: snapshots.odds,
+    pools: snapshots.pools,
+  });
+  const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'market-snapshot-coverage.json'));
+
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeJson(outputPath, {
+    ...report,
+    dataSource: {
+      source: 'sqlite',
+      database: publicDatabaseLabel(dbPath),
+      races: races.length,
+    },
+  });
+
+  console.log(`Market coverage report: ${report.summary.readiness}`);
+  console.log(`Odds coverage ${percent(report.summary.oddsRaceCoverage)}, pool coverage ${percent(report.summary.poolRaceCoverage)}`);
+  console.log(`Saved market snapshot coverage to ${outputPath}`);
 }
 
 async function recommendationAuditCommand(args) {
@@ -646,7 +830,12 @@ Commands:
   auto-run   --input hkjc-horse-model/data/raw --db hkjc-horse-model/data/hkjc.sqlite --output data/dashboard.json --auditOutput data/latest-recommendation-audit.json
   sync-db    --input hkjc-horse-model/data/raw --upcoming hkjc-horse-model/data/upcoming --db hkjc-horse-model/data/hkjc.sqlite
   dashboard-db --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/dashboard.json --historyOutput hkjc-horse-model/data/processed/dashboard-history.json
+  training-dataset --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/training-dataset.json
+  model-leaderboard --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/model-leaderboard.json
+  train-model --input hkjc-horse-model/data/processed/training-dataset.json --output hkjc-horse-model/data/processed/model-training-report.json
+  strategy-risk-report --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/strategy-risk-report.json
   market-snapshot --input hkjc-horse-model/data/market-snapshot.json --db hkjc-horse-model/data/hkjc.sqlite
+  market-coverage-report --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/market-snapshot-coverage.json
   recommendation-audit --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/latest-recommendation-audit.json
   fetch-url  https://racing.hkjc.com/en-us/local/information/localresults?RaceNo=2&Racecourse=ST&racedate=2026%2F01%2F04
   backtest   --input hkjc-horse-model/data/raw --minEdge 0

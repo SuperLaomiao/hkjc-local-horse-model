@@ -96,12 +96,63 @@ snapshots, pool snapshots, and recommendation-run audit records. The static
 website still reads `data/dashboard.json`; SQLite is used to build and replay
 the model before exporting that JSON.
 
+## Local model training exports
+
+The mobile dashboard intentionally stays lightweight. Full historical modelling
+runs locally from SQLite.
+
+Generate leakage-safe runner rows:
+
+```bash
+npm run hkjc:training-dataset -- --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/training-dataset.json
+```
+
+Generate the current baseline model leaderboard:
+
+```bash
+npm run hkjc:model-leaderboard -- --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/model-leaderboard.json
+```
+
+Train the first offline Python baseline:
+
+```bash
+npm run hkjc:train-model -- --input hkjc-horse-model/data/processed/training-dataset.json --output hkjc-horse-model/data/processed/model-training-report.json
+```
+
+This produces `logit-runner-v1`, a paper-mode probability baseline. It is used
+for comparison and calibration research, not automatic cash betting.
+
+Generate the multi-play staking risk report:
+
+```bash
+npm run hkjc:strategy-risk-report -- --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/strategy-risk-report.json
+```
+
+This report replays the current HK$10-100 Win / Place / Quinella Place /
+Quinella strategy, then exposes per-pool ROI, maximum drawdown, losing streaks,
+largest-race concentration, and whether headline profit depends on one or two
+outlier races.
+
+The first leaderboard is a baseline for research. It should not be treated as
+proof of a betting edge.
+
 Market snapshots can be imported once official odds/capital-pool data is
 available in normalized JSON:
 
 ```bash
 npm run hkjc:market-snapshot -- --input hkjc-horse-model/data/market-snapshot.json
 ```
+
+Check whether those snapshots are actually sufficient for T-30/T-10/T-3
+research:
+
+```bash
+npm run hkjc:market-coverage -- --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/market-snapshot-coverage.json
+```
+
+If this report says `missing-market-data`, the system should keep treating
+live-odds expected ROI as unavailable and continue accumulating normalized
+market snapshots.
 
 Expected shape:
 
@@ -181,10 +232,10 @@ rolling backtest health, market-favourite comparison, top-pick odds buckets,
 probability calibration, and the current HK$10-100 staking strategy replayed
 against settled historical races. Treat it as model diagnostics, not proof of a
 future edge. The strategy replay can truthfully settle the Win lines because the
-local historical data includes official Win odds. Full strategy ROI is marked as
-unavailable until Place, Quinella Place, and Quinella official dividends are
-parsed into the dataset; until then the page shows structural hit rates,
-unpriced-pool stake, and the break-even return gap.
+local historical data includes official Win odds. Place, Quinella Place, and
+Quinella returns are settled where official dividend rows are available; any
+missing dividend pools are still shown as unpriced-pool stake and break-even
+return gaps.
 
 ## Staking Strategy
 

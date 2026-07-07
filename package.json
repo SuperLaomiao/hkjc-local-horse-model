@@ -9,7 +9,12 @@
     "hkjc:dashboard": "node hkjc-horse-model/src/cli.js dashboard",
     "hkjc:sync-db": "node hkjc-horse-model/src/cli.js sync-db",
     "hkjc:dashboard-db": "node hkjc-horse-model/src/cli.js dashboard-db --output data/dashboard.json",
+    "hkjc:training-dataset": "node hkjc-horse-model/src/cli.js training-dataset",
+    "hkjc:model-leaderboard": "node hkjc-horse-model/src/cli.js model-leaderboard",
+    "hkjc:train-model": "node hkjc-horse-model/src/cli.js train-model",
+    "hkjc:strategy-risk-report": "node hkjc-horse-model/src/cli.js strategy-risk-report",
     "hkjc:market-snapshot": "node hkjc-horse-model/src/cli.js market-snapshot",
+    "hkjc:market-coverage": "node hkjc-horse-model/src/cli.js market-coverage-report",
     "hkjc:recommendation-audit": "node hkjc-horse-model/src/cli.js recommendation-audit",
     "hkjc:auto-run": "node hkjc-horse-model/src/cli.js auto-run --output data/dashboard.json"
   }
