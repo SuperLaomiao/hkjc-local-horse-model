@@ -11,6 +11,7 @@
     "hkjc:dashboard-db": "node hkjc-horse-model/src/cli.js dashboard-db --output data/dashboard.json",
     "hkjc:training-dataset": "node hkjc-horse-model/src/cli.js training-dataset",
     "hkjc:model-leaderboard": "node hkjc-horse-model/src/cli.js model-leaderboard",
+    "hkjc:train-model": "node hkjc-horse-model/src/cli.js train-model",
     "hkjc:market-snapshot": "node hkjc-horse-model/src/cli.js market-snapshot",
     "hkjc:recommendation-audit": "node hkjc-horse-model/src/cli.js recommendation-audit",
     "hkjc:auto-run": "node hkjc-horse-model/src/cli.js auto-run --output data/dashboard.json"

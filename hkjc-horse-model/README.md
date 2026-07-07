@@ -125,6 +125,15 @@ npm run hkjc:model-leaderboard -- --db hkjc-horse-model/data/hkjc.sqlite --outpu
 Promotion to real-money recommendation logic requires calibration, turnover,
 drawdown, and market-price gates. Historical ROI alone is not enough.
 
+Train the first offline Python baseline:
+
+```bash
+npm run hkjc:train-model -- --input hkjc-horse-model/data/processed/training-dataset.json --output hkjc-horse-model/data/processed/model-training-report.json
+```
+
+This produces `logit-runner-v1`, a paper-mode probability baseline. It is used
+for comparison and calibration research, not automatic cash betting.
+
 Open the local dashboard:
 
 ```bash

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -90,6 +91,11 @@ async function main(argv) {
 
   if (command === 'model-leaderboard') {
     await modelLeaderboardCommand(args);
+    return;
+  }
+
+  if (command === 'train-model') {
+    await trainModelCommand(args);
     return;
   }
 
@@ -276,6 +282,34 @@ async function modelLeaderboardCommand(args) {
 
   console.log(`Model leaderboard from SQLite: ${settledRaces.length} settled races`);
   console.log(`Saved model leaderboard to ${outputPath}`);
+}
+
+async function trainModelCommand(args) {
+  const inputPath = path.resolve(args.input ?? path.join(processedDataDir, 'training-dataset.json'));
+  const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'model-training-report.json'));
+  const scriptPath = path.join(projectRoot, 'python', 'train_logit_model.py');
+  const result = spawnSync('python3', [
+    scriptPath,
+    '--input',
+    inputPath,
+    '--output',
+    outputPath,
+    '--iterations',
+    String(args.iterations ?? 160),
+    '--learningRate',
+    String(args.learningRate ?? 0.05),
+    '--l2',
+    String(args.l2 ?? 0.001),
+  ], {
+    encoding: 'utf8',
+  });
+
+  if (result.stdout) process.stdout.write(result.stdout);
+  if (result.stderr) process.stderr.write(result.stderr);
+  if (result.error) throw result.error;
+  if (result.status !== 0) {
+    throw new Error(`train-model failed with exit code ${result.status}`);
+  }
 }
 
 function recordDashboardRecommendationRun({ dbPath, snapshot, args }) {
@@ -720,6 +754,7 @@ Commands:
   dashboard-db --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/dashboard.json --historyOutput hkjc-horse-model/data/processed/dashboard-history.json
   training-dataset --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/training-dataset.json
   model-leaderboard --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/model-leaderboard.json
+  train-model --input hkjc-horse-model/data/processed/training-dataset.json --output hkjc-horse-model/data/processed/model-training-report.json
   market-snapshot --input hkjc-horse-model/data/market-snapshot.json --db hkjc-horse-model/data/hkjc.sqlite
   recommendation-audit --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/latest-recommendation-audit.json
   fetch-url  https://racing.hkjc.com/en-us/local/information/localresults?RaceNo=2&Racecourse=ST&racedate=2026%2F01%2F04
