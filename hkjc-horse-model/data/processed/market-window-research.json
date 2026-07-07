@@ -1,0 +1,105 @@
+{
+  "generatedAt": "2026-07-07T08:14:56.098Z",
+  "status": "ready",
+  "methodology": {
+    "inspiration": "eprochasson A Day At The Races: test market odds windows and odds-cap filtering instead of betting every prediction.",
+    "window": "T-30 WIN odds",
+    "settlement": "official WIN dividend_per10 when the selected horse wins",
+    "stake": 10
+  },
+  "summary": {
+    "races": 14221,
+    "racesWithT30WinOdds": 1459
+  },
+  "strategies": {
+    "t30MarketFavourite": {
+      "label": "T-30 market favourite",
+      "bets": 1459,
+      "wins": 396,
+      "stake": 14590,
+      "return": 11526.5,
+      "profit": -3063.5,
+      "roi": -0.209973,
+      "hitRate": 0.271419,
+      "averageT30Odds": 3.2353
+    },
+    "t30FavouriteShortening": {
+      "label": "T-30 favourite shortened from T-60",
+      "bets": 644,
+      "wins": 167,
+      "stake": 6440,
+      "return": 5093,
+      "profit": -1347,
+      "roi": -0.209161,
+      "hitRate": 0.259317,
+      "averageT30Odds": 3.42
+    }
+  },
+  "byMaxOdds": {
+    "3": {
+      "label": "T-30 market favourite <= 3",
+      "bets": 679,
+      "wins": 230,
+      "stake": 6790,
+      "return": 5216.5,
+      "profit": -1573.5,
+      "roi": -0.231738,
+      "hitRate": 0.338733,
+      "averageT30Odds": 2.4324
+    },
+    "5": {
+      "label": "T-30 market favourite <= 5",
+      "bets": 1406,
+      "wins": 389,
+      "stake": 14060,
+      "return": 11190.5,
+      "profit": -2869.5,
+      "roi": -0.20409,
+      "hitRate": 0.276671,
+      "averageT30Odds": 3.1482
+    },
+    "10": {
+      "label": "T-30 market favourite <= 10",
+      "bets": 1459,
+      "wins": 396,
+      "stake": 14590,
+      "return": 11526.5,
+      "profit": -3063.5,
+      "roi": -0.209973,
+      "hitRate": 0.271419,
+      "averageT30Odds": 3.2353
+    },
+    "20": {
+      "label": "T-30 market favourite <= 20",
+      "bets": 1459,
+      "wins": 396,
+      "stake": 14590,
+      "return": 11526.5,
+      "profit": -3063.5,
+      "roi": -0.209973,
+      "hitRate": 0.271419,
+      "averageT30Odds": 3.2353
+    },
+    "7.5": {
+      "label": "T-30 market favourite <= 7.5",
+      "bets": 1459,
+      "wins": 396,
+      "stake": 14590,
+      "return": 11526.5,
+      "profit": -3063.5,
+      "roi": -0.209973,
+      "hitRate": 0.271419,
+      "averageT30Odds": 3.2353
+    }
+  },
+  "takeaways": [
+    "Odds cap 7.5 changed ROI by +0.0% versus betting every T-30 favourite.",
+    "T-60 to T-30 shortening filter produced 644 bets with ROI -20.9%."
+  ],
+  "dataSource": {
+    "source": "sqlite",
+    "database": "hkjc.sqlite",
+    "settledRaces": 14221,
+    "marketFeatureRows": 18272
+  }
+}

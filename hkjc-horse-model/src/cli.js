@@ -18,6 +18,7 @@ import {
 } from './model-leaderboard.js';
 import { buildStrategyRiskReport } from './strategy-risk-report.js';
 import { buildMarketSnapshotCoverageReport } from './market-snapshot-coverage.js';
+import { buildMarketWindowResearchReport } from './market-window-research.js';
 import {
   DEFAULT_EPROCHASSON_LIVE_ODDS_URL,
   DEFAULT_EPROCHASSON_RACES_URL,
@@ -126,6 +127,11 @@ async function main(argv) {
 
   if (command === 'market-coverage-report') {
     await marketCoverageReportCommand(args);
+    return;
+  }
+
+  if (command === 'market-window-research') {
+    await marketWindowResearchCommand(args);
     return;
   }
 
@@ -502,6 +508,35 @@ async function marketCoverageReportCommand(args) {
   console.log(`Saved market snapshot coverage to ${outputPath}`);
 }
 
+async function marketWindowResearchCommand(args) {
+  const dbPath = path.resolve(args.db ?? sqliteDbPath);
+  const races = loadRacesFromDatabase({ dbPath, status: 'settled' });
+  const marketFeatures = loadRunnerMarketFeatures({ dbPath });
+  const oddsCaps = parseNumberList(args.oddsCaps ?? '3,5,7.5,10,20');
+  const report = buildMarketWindowResearchReport({
+    races,
+    featuresByRunner: marketFeatures.featuresByRunner,
+    oddsCaps,
+    stake: args.stake == null ? 10 : Number(args.stake),
+  });
+  const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'market-window-research.json'));
+
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeJson(outputPath, {
+    ...report,
+    dataSource: {
+      source: 'sqlite',
+      database: publicDatabaseLabel(dbPath),
+      settledRaces: races.length,
+      marketFeatureRows: marketFeatures.summary.runnerFeatureRows,
+    },
+  });
+
+  console.log(`Market window research: ${report.summary.racesWithT30WinOdds}/${report.summary.races} races with T-30 WIN odds`);
+  console.log(`T-30 favourite ROI ${percent(report.strategies.t30MarketFavourite.roi ?? 0)}, odds<=7.5 ROI ${percent(report.byMaxOdds['7.5']?.roi ?? 0)}`);
+  console.log(`Saved market window research to ${outputPath}`);
+}
+
 async function recommendationAuditCommand(args) {
   const dbPath = path.resolve(args.db ?? sqliteDbPath);
   const races = loadRacesFromDatabase({ dbPath, status: 'settled' });
@@ -797,6 +832,13 @@ function parseRaceRange(value) {
   return text.split(',').map((item) => Number(item.trim())).filter(Number.isFinite);
 }
 
+function parseNumberList(value) {
+  return String(value ?? '')
+    .split(',')
+    .map((item) => Number(item.trim()))
+    .filter(Number.isFinite);
+}
+
 async function loadFixtureWindow(from, to) {
   const meetings = [];
   for (const { year, month } of monthsBetween(from, to)) {
@@ -893,6 +935,7 @@ Commands:
   market-snapshot --input hkjc-horse-model/data/market-snapshot.json --db hkjc-horse-model/data/hkjc.sqlite
   external-live-odds --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/external-live-odds-import.json
   market-coverage-report --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/market-snapshot-coverage.json
+  market-window-research --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/market-window-research.json
   recommendation-audit --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/latest-recommendation-audit.json
   fetch-url  https://racing.hkjc.com/en-us/local/information/localresults?RaceNo=2&Racecourse=ST&racedate=2026%2F01%2F04
   backtest   --input hkjc-horse-model/data/raw --minEdge 0

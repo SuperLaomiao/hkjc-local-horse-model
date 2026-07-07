@@ -162,6 +162,16 @@ research:
 npm run hkjc:market-coverage -- --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/market-snapshot-coverage.json
 ```
 
+Run an eprochasson-inspired market-window report that tests whether T-30 WIN
+market favourites, odds caps, and T-60 → T-30 odds shortening have useful ROI:
+
+```bash
+npm run hkjc:market-window-research -- --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/market-window-research.json
+```
+
+This report is deliberately a research guardrail: it tests simple market rules
+before they are allowed to influence cash recommendations.
+
 If this report says `missing-market-data`, the system should keep treating
 live-odds expected ROI as unavailable and continue accumulating normalized
 market snapshots.

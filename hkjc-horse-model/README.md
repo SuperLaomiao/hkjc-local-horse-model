@@ -119,6 +119,16 @@ npm run hkjc:market-coverage -- --db hkjc-horse-model/data/hkjc.sqlite --output 
 The coverage report separates odds rows from pool-investment rows and groups
 them into T-60, T-30, T-10, T-3, and unknown windows.
 
+Run an eprochasson-inspired market-window report that tests whether T-30 WIN
+market favourites, odds caps, and T-60 → T-30 odds shortening have useful ROI:
+
+```bash
+npm run hkjc:market-window-research -- --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/market-window-research.json
+```
+
+This report is deliberately a research guardrail: it tests simple market rules
+before they are allowed to influence cash recommendations.
+
 The dashboard performance export includes probability calibration buckets plus
 Brier Score and Log Loss. These scoring rules are used to watch whether the
 model probability scale is trustworthy enough for EV/Kelly-style staking.
