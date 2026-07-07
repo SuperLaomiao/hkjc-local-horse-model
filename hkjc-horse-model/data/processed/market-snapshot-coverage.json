@@ -1,57 +1,77 @@
 {
-  "generatedAt": "2026-07-07T05:06:29.650Z",
+  "generatedAt": "2026-07-07T07:51:47.146Z",
   "summary": {
     "races": 14230,
-    "racesWithOdds": 0,
+    "racesWithOdds": 1510,
     "racesWithPools": 0,
-    "oddsSnapshots": 0,
+    "oddsSnapshots": 6374047,
     "poolSnapshots": 0,
-    "oddsRaceCoverage": 0,
+    "oddsRaceCoverage": 0.1061,
     "poolRaceCoverage": 0,
-    "earliestCapturedAt": null,
-    "latestCapturedAt": null,
-    "readiness": "missing-market-data"
+    "earliestCapturedAt": "2016-09-27T05:18:23.528Z",
+    "latestCapturedAt": "2018-06-27T15:14:22.532Z",
+    "readiness": "partial-market-data"
   },
   "byWindow": {
     "T-60": {
-      "oddsSnapshots": 0,
+      "oddsSnapshots": 182212,
       "poolSnapshots": 0,
-      "racesWithOdds": 0,
+      "racesWithOdds": 1484,
       "racesWithPools": 0
     },
     "T-30": {
-      "oddsSnapshots": 0,
+      "oddsSnapshots": 148332,
       "poolSnapshots": 0,
-      "racesWithOdds": 0,
+      "racesWithOdds": 1484,
       "racesWithPools": 0
     },
     "T-10": {
-      "oddsSnapshots": 0,
+      "oddsSnapshots": 99641,
       "poolSnapshots": 0,
-      "racesWithOdds": 0,
+      "racesWithOdds": 1485,
       "racesWithPools": 0
     },
     "T-3": {
-      "oddsSnapshots": 0,
+      "oddsSnapshots": 36904,
       "poolSnapshots": 0,
-      "racesWithOdds": 0,
+      "racesWithOdds": 1481,
       "racesWithPools": 0
     },
     "unknown": {
-      "oddsSnapshots": 0,
+      "oddsSnapshots": 5906958,
       "poolSnapshots": 0,
-      "racesWithOdds": 0,
+      "racesWithOdds": 1510,
       "racesWithPools": 0
     }
   },
-  "byPool": {},
+  "byPool": {
+    "PLACE": {
+      "oddsSnapshots": 3187011,
+      "poolSnapshots": 0,
+      "racesWithOdds": 1510,
+      "racesWithPools": 0,
+      "oddsRaceCoverage": 0.1061,
+      "poolRaceCoverage": 0,
+      "latestCapturedAt": "2018-06-27T15:14:22.532Z"
+    },
+    "WIN": {
+      "oddsSnapshots": 3187036,
+      "poolSnapshots": 0,
+      "racesWithOdds": 1510,
+      "racesWithPools": 0,
+      "oddsRaceCoverage": 0.1061,
+      "poolRaceCoverage": 0,
+      "latestCapturedAt": "2018-06-27T15:14:22.532Z"
+    }
+  },
   "gaps": [
-    "No market snapshots recorded yet. Import normalized T-30/T-10/T-3 odds and pool snapshots before training live expected-ROI gates."
+    "Odds snapshots cover 10.6% of races in scope.",
+    "Pool snapshots cover 0.0% of races in scope."
   ],
   "note": "Coverage only says whether live market data exists; it does not prove the model has a betting edge.",
   "dataSource": {
     "source": "sqlite",
-    "database": "hkjc.sqlite",
+    "database": "hkjc-horse-model/data/hkjc.sqlite",
     "races": 14230
   }
 }

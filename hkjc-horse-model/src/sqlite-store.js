@@ -84,45 +84,36 @@ export function recordOddsSnapshot({ dbPath, snapshot }) {
   if (!snapshot?.raceId) throw new Error('recordOddsSnapshot requires snapshot.raceId');
   if (!snapshot?.pool) throw new Error('recordOddsSnapshot requires snapshot.pool');
 
-  const capturedAt = nullableText(snapshot.capturedAt) ?? new Date().toISOString();
-  const poolKey = normalizePoolKey(snapshot.pool);
-  const combination = normalizeCombination(snapshot.combination ?? snapshot.combString);
   const db = openDatabase(dbPath);
   try {
-    db.prepare(`
-      INSERT INTO odds_snapshots (
-        race_id, date, racecourse, race_no, captured_at, minutes_to_post,
-        pool_key, pool, combination_key, combination_json, odds_value, source, raw_json
-      )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      ON CONFLICT(race_id, captured_at, pool_key, combination_key) DO UPDATE SET
-        date = excluded.date,
-        racecourse = excluded.racecourse,
-        race_no = excluded.race_no,
-        minutes_to_post = excluded.minutes_to_post,
-        pool = excluded.pool,
-        combination_json = excluded.combination_json,
-        odds_value = excluded.odds_value,
-        source = excluded.source,
-        raw_json = excluded.raw_json
-    `).run(
-      snapshot.raceId,
-      nullableText(snapshot.date),
-      nullableText(snapshot.racecourse)?.toUpperCase() ?? null,
-      nullableInteger(snapshot.raceNo),
-      capturedAt,
-      nullableInteger(snapshot.minutesToPost),
-      poolKey,
-      nullableText(snapshot.pool),
-      combinationKey(combination, poolKey),
-      JSON.stringify(combination),
-      nullableNumber(snapshot.oddsValue),
-      nullableText(snapshot.source),
-      JSON.stringify(snapshot.raw ?? snapshot),
-    );
+    upsertOddsSnapshot(db, insertOddsSnapshotStatement(db), snapshot);
   } finally {
     db.close();
   }
+}
+
+export function recordOddsSnapshots({ dbPath, snapshots }) {
+  if (!dbPath) throw new Error('recordOddsSnapshots requires dbPath');
+  if (!Array.isArray(snapshots)) throw new Error('recordOddsSnapshots requires snapshots');
+
+  const db = openDatabase(dbPath);
+  const statement = insertOddsSnapshotStatement(db);
+  db.exec('BEGIN');
+  try {
+    for (const snapshot of snapshots) {
+      if (!snapshot?.raceId) throw new Error('recordOddsSnapshots requires every snapshot.raceId');
+      if (!snapshot?.pool) throw new Error('recordOddsSnapshots requires every snapshot.pool');
+      upsertOddsSnapshot(db, statement, snapshot);
+    }
+    db.exec('COMMIT');
+  } catch (error) {
+    db.exec('ROLLBACK');
+    throw error;
+  } finally {
+    db.close();
+  }
+
+  return { oddsSnapshots: snapshots.length };
 }
 
 export function recordPoolSnapshot({ dbPath, snapshot }) {
@@ -167,6 +158,47 @@ export function recordPoolSnapshot({ dbPath, snapshot }) {
   } finally {
     db.close();
   }
+}
+
+function insertOddsSnapshotStatement(db) {
+  return db.prepare(`
+    INSERT INTO odds_snapshots (
+      race_id, date, racecourse, race_no, captured_at, minutes_to_post,
+      pool_key, pool, combination_key, combination_json, odds_value, source, raw_json
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ON CONFLICT(race_id, captured_at, pool_key, combination_key) DO UPDATE SET
+      date = excluded.date,
+      racecourse = excluded.racecourse,
+      race_no = excluded.race_no,
+      minutes_to_post = excluded.minutes_to_post,
+      pool = excluded.pool,
+      combination_json = excluded.combination_json,
+      odds_value = excluded.odds_value,
+      source = excluded.source,
+      raw_json = excluded.raw_json
+  `);
+}
+
+function upsertOddsSnapshot(db, statement, snapshot) {
+  const capturedAt = nullableText(snapshot.capturedAt) ?? new Date().toISOString();
+  const poolKey = normalizePoolKey(snapshot.pool);
+  const combination = normalizeCombination(snapshot.combination ?? snapshot.combString);
+  statement.run(
+    snapshot.raceId,
+    nullableText(snapshot.date),
+    nullableText(snapshot.racecourse)?.toUpperCase() ?? null,
+    nullableInteger(snapshot.raceNo),
+    capturedAt,
+    nullableInteger(snapshot.minutesToPost),
+    poolKey,
+    nullableText(snapshot.pool),
+    combinationKey(combination, poolKey),
+    JSON.stringify(combination),
+    nullableNumber(snapshot.oddsValue),
+    nullableText(snapshot.source),
+    JSON.stringify(snapshot.raw ?? snapshot),
+  );
 }
 
 export function loadLatestMarketSnapshots({ dbPath, raceId }) {
@@ -229,6 +261,105 @@ export function loadMarketSnapshots({ dbPath, raceId = null } = {}) {
     return {
       odds: oddsRows.map(oddsSnapshotFromRow),
       pools: poolRows.map(poolSnapshotFromRow),
+    };
+  } finally {
+    db.close();
+  }
+}
+
+export function loadMarketSnapshotCoverageSummary({ dbPath } = {}) {
+  if (!dbPath) throw new Error('loadMarketSnapshotCoverageSummary requires dbPath');
+
+  const db = openDatabase(dbPath);
+  try {
+    const raceCount = Number(db.prepare('SELECT COUNT(*) AS count FROM races').get().count);
+    const denominator = raceCount > 0 ? raceCount : distinctSnapshotRaceCount(db);
+    const odds = tableSnapshotSummary(db, 'odds_snapshots');
+    const pools = tableSnapshotSummary(db, 'pool_snapshots');
+    const capturedAt = db.prepare(`
+      SELECT MIN(captured_at) AS earliest, MAX(captured_at) AS latest
+      FROM (
+        SELECT captured_at FROM odds_snapshots
+        UNION ALL
+        SELECT captured_at FROM pool_snapshots
+      )
+    `).get();
+    const summary = {
+      races: denominator,
+      racesWithOdds: odds.races,
+      racesWithPools: pools.races,
+      oddsSnapshots: odds.snapshots,
+      poolSnapshots: pools.snapshots,
+      oddsRaceCoverage: ratio(odds.races, denominator),
+      poolRaceCoverage: ratio(pools.races, denominator),
+      earliestCapturedAt: capturedAt.earliest ?? null,
+      latestCapturedAt: capturedAt.latest ?? null,
+      readiness: marketSnapshotReadiness({
+        oddsSnapshots: odds.snapshots,
+        poolSnapshots: pools.snapshots,
+        racesWithOdds: odds.races,
+        racesWithPools: pools.races,
+        denominator,
+      }),
+    };
+
+    return {
+      generatedAt: new Date().toISOString(),
+      summary,
+      byWindow: loadMarketWindowCoverage(db),
+      byPool: loadMarketPoolCoverage(db, denominator),
+      gaps: buildMarketCoverageGaps(summary),
+      note: 'Coverage only says whether live market data exists; it does not prove the model has a betting edge.',
+    };
+  } finally {
+    db.close();
+  }
+}
+
+export function loadRunnerMarketFeatures({ dbPath } = {}) {
+  if (!dbPath) throw new Error('loadRunnerMarketFeatures requires dbPath');
+
+  const db = openDatabase(dbPath);
+  try {
+    const featuresByRunner = new Map();
+    let marketOddsRows = 0;
+
+    for (const window of MARKET_FEATURE_WINDOWS) {
+      const rows = db.prepare(`
+        SELECT race_id, pool_key, combination_key, odds_value, minutes_to_post, captured_at
+        FROM (
+          SELECT
+            race_id,
+            pool_key,
+            combination_key,
+            odds_value,
+            minutes_to_post,
+            captured_at,
+            ROW_NUMBER() OVER (
+              PARTITION BY race_id, pool_key, combination_key
+              ORDER BY ABS(minutes_to_post - ?) ASC, captured_at DESC
+            ) AS rank_in_window
+          FROM odds_snapshots
+          WHERE pool_key IN ('win', 'place')
+            AND minutes_to_post BETWEEN ? AND ?
+            AND odds_value IS NOT NULL
+        )
+        WHERE rank_in_window = 1
+      `).all(window.target, window.min, window.max);
+      marketOddsRows += rows.length;
+      assignMarketFeatureWindow(featuresByRunner, rows, window);
+    }
+
+    attachMarketMovementFeatures(featuresByRunner);
+
+    return {
+      featuresByRunner,
+      summary: {
+        runnerFeatureRows: featuresByRunner.size,
+        marketOddsRows,
+        windows: MARKET_FEATURE_WINDOWS.map((window) => window.featureLabel),
+        pools: ['WIN', 'PLACE'],
+      },
     };
   } finally {
     db.close();
@@ -590,6 +721,207 @@ function countDividends(dividends) {
 function countTable(db, table, where = null) {
   const sql = `SELECT COUNT(*) AS count FROM ${table}${where ? ` WHERE ${where}` : ''}`;
   return Number(db.prepare(sql).get().count);
+}
+
+const MARKET_COVERAGE_WINDOWS = [
+  { label: 'T-60', min: 46, max: 75 },
+  { label: 'T-30', min: 21, max: 45 },
+  { label: 'T-10', min: 6, max: 20 },
+  { label: 'T-3', min: 0, max: 5 },
+];
+
+const MARKET_FEATURE_WINDOWS = [
+  { label: 'T-60', featureLabel: 'T60', target: 60, min: 46, max: 75 },
+  { label: 'T-30', featureLabel: 'T30', target: 30, min: 21, max: 45 },
+  { label: 'T-10', featureLabel: 'T10', target: 10, min: 6, max: 20 },
+  { label: 'T-3', featureLabel: 'T3', target: 3, min: 0, max: 5 },
+];
+
+const MARKET_POOL_FEATURE_LABELS = {
+  win: 'Win',
+  place: 'Place',
+};
+
+function distinctSnapshotRaceCount(db) {
+  return Number(db.prepare(`
+    SELECT COUNT(DISTINCT race_id) AS count
+    FROM (
+      SELECT race_id FROM odds_snapshots
+      UNION
+      SELECT race_id FROM pool_snapshots
+    )
+  `).get().count);
+}
+
+function tableSnapshotSummary(db, table) {
+  const row = db.prepare(`
+    SELECT COUNT(*) AS snapshots, COUNT(DISTINCT race_id) AS races
+    FROM ${table}
+  `).get();
+  return {
+    snapshots: Number(row.snapshots ?? 0),
+    races: Number(row.races ?? 0),
+  };
+}
+
+function loadMarketWindowCoverage(db) {
+  const labels = [...MARKET_COVERAGE_WINDOWS.map((window) => window.label), 'unknown'];
+  return Object.fromEntries(labels.map((label) => {
+    const window = MARKET_COVERAGE_WINDOWS.find((item) => item.label === label);
+    const where = window
+      ? 'minutes_to_post BETWEEN ? AND ?'
+      : `minutes_to_post IS NULL OR NOT (${MARKET_COVERAGE_WINDOWS.map(() => 'minutes_to_post BETWEEN ? AND ?').join(' OR ')})`;
+    const params = window
+      ? [window.min, window.max]
+      : MARKET_COVERAGE_WINDOWS.flatMap((item) => [item.min, item.max]);
+    const odds = tableCoverageWhere(db, 'odds_snapshots', where, params);
+    const pools = tableCoverageWhere(db, 'pool_snapshots', where, params);
+    return [label, {
+      oddsSnapshots: odds.snapshots,
+      poolSnapshots: pools.snapshots,
+      racesWithOdds: odds.races,
+      racesWithPools: pools.races,
+    }];
+  }));
+}
+
+function tableCoverageWhere(db, table, where, params) {
+  const row = db.prepare(`
+    SELECT COUNT(*) AS snapshots, COUNT(DISTINCT race_id) AS races
+    FROM ${table}
+    WHERE ${where}
+  `).get(...params);
+  return {
+    snapshots: Number(row.snapshots ?? 0),
+    races: Number(row.races ?? 0),
+  };
+}
+
+function loadMarketPoolCoverage(db, denominator) {
+  const coverage = {};
+  mergePoolCoverage(coverage, db.prepare(`
+    SELECT UPPER(pool_key) AS pool_key, COUNT(*) AS snapshots, COUNT(DISTINCT race_id) AS races, MAX(captured_at) AS latest
+    FROM odds_snapshots
+    GROUP BY UPPER(pool_key)
+  `).all(), 'odds', denominator);
+  mergePoolCoverage(coverage, db.prepare(`
+    SELECT UPPER(pool_key) AS pool_key, COUNT(*) AS snapshots, COUNT(DISTINCT race_id) AS races, MAX(captured_at) AS latest
+    FROM pool_snapshots
+    GROUP BY UPPER(pool_key)
+  `).all(), 'pools', denominator);
+  return Object.fromEntries(Object.entries(coverage).sort(([a], [b]) => a.localeCompare(b)));
+}
+
+function assignMarketFeatureWindow(featuresByRunner, rows, window) {
+  const byRacePool = new Map();
+  for (const row of rows) {
+    const poolLabel = MARKET_POOL_FEATURE_LABELS[row.pool_key];
+    const horseNo = nullableInteger(row.combination_key);
+    const odds = nullableNumber(row.odds_value);
+    if (!poolLabel || !Number.isInteger(horseNo) || !Number.isFinite(odds) || odds <= 0) continue;
+
+    const featureKey = `${row.race_id}|${horseNo}`;
+    const features = featuresByRunner.get(featureKey) ?? {};
+    features[`market${poolLabel}Odds${window.featureLabel}`] = round(odds, 4);
+    features[`market${poolLabel}ImpliedProb${window.featureLabel}`] = round(1 / odds, 6);
+    featuresByRunner.set(featureKey, features);
+
+    const rankKey = `${row.race_id}|${row.pool_key}`;
+    if (!byRacePool.has(rankKey)) byRacePool.set(rankKey, []);
+    byRacePool.get(rankKey).push({ featureKey, odds });
+  }
+
+  for (const [rankKey, runners] of byRacePool.entries()) {
+    const poolKey = rankKey.split('|').at(-1);
+    const poolLabel = MARKET_POOL_FEATURE_LABELS[poolKey];
+    runners.sort((a, b) => a.odds - b.odds);
+    runners.forEach((runner, index) => {
+      const features = featuresByRunner.get(runner.featureKey);
+      features[`market${poolLabel}Rank${window.featureLabel}`] = index + 1;
+    });
+  }
+}
+
+function attachMarketMovementFeatures(featuresByRunner) {
+  for (const features of featuresByRunner.values()) {
+    for (const poolLabel of Object.values(MARKET_POOL_FEATURE_LABELS)) {
+      const t60 = features[`market${poolLabel}OddsT60`];
+      const t30 = features[`market${poolLabel}OddsT30`];
+      if (Number.isFinite(t60) && Number.isFinite(t30) && t60 > 0) {
+        features[`market${poolLabel}OddsPctChangeT60ToT30`] = round((t30 - t60) / t60, 6);
+      }
+    }
+  }
+}
+
+function mergePoolCoverage(coverage, rows, kind, denominator) {
+  for (const row of rows) {
+    const key = row.pool_key;
+    if (!key) continue;
+    if (!coverage[key]) {
+      coverage[key] = {
+        oddsSnapshots: 0,
+        poolSnapshots: 0,
+        racesWithOdds: 0,
+        racesWithPools: 0,
+        oddsRaceCoverage: 0,
+        poolRaceCoverage: 0,
+        latestCapturedAt: null,
+      };
+    }
+    if (kind === 'odds') {
+      coverage[key].oddsSnapshots = Number(row.snapshots ?? 0);
+      coverage[key].racesWithOdds = Number(row.races ?? 0);
+      coverage[key].oddsRaceCoverage = ratio(coverage[key].racesWithOdds, denominator);
+    } else {
+      coverage[key].poolSnapshots = Number(row.snapshots ?? 0);
+      coverage[key].racesWithPools = Number(row.races ?? 0);
+      coverage[key].poolRaceCoverage = ratio(coverage[key].racesWithPools, denominator);
+    }
+    coverage[key].latestCapturedAt = maxText(coverage[key].latestCapturedAt, row.latest);
+  }
+}
+
+function marketSnapshotReadiness({ oddsSnapshots, poolSnapshots, racesWithOdds, racesWithPools, denominator }) {
+  if (oddsSnapshots === 0 && poolSnapshots === 0) return 'missing-market-data';
+  if (denominator > 0 && racesWithOdds >= denominator && racesWithPools >= denominator) {
+    return 'ready-for-live-market-research';
+  }
+  return 'partial-market-data';
+}
+
+function buildMarketCoverageGaps(summary) {
+  const gaps = [];
+  if (summary.readiness === 'missing-market-data') {
+    gaps.push('No market snapshots recorded yet. Import normalized T-30/T-10/T-3 odds and pool snapshots before training live expected-ROI gates.');
+    return gaps;
+  }
+  if (summary.oddsRaceCoverage < 1) {
+    gaps.push(`Odds snapshots cover ${(summary.oddsRaceCoverage * 100).toFixed(1)}% of races in scope.`);
+  }
+  if (summary.poolRaceCoverage < 1) {
+    gaps.push(`Pool snapshots cover ${(summary.poolRaceCoverage * 100).toFixed(1)}% of races in scope.`);
+  }
+  if (gaps.length === 0) {
+    gaps.push('Market snapshot coverage is complete for races in scope; next step is model-side feature engineering and EV gate backtesting.');
+  }
+  return gaps;
+}
+
+function ratio(numerator, denominator) {
+  return denominator > 0 ? round(Number(numerator ?? 0) / denominator, 4) : 0;
+}
+
+function round(value, digits = 4) {
+  if (!Number.isFinite(Number(value))) return 0;
+  const multiplier = 10 ** digits;
+  return Math.round(Number(value) * multiplier) / multiplier;
+}
+
+function maxText(left, right) {
+  if (!left) return right ?? null;
+  if (!right) return left;
+  return String(left) > String(right) ? left : right;
 }
 
 function runnerFromRow(row) {

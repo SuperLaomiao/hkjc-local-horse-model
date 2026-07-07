@@ -9,6 +9,7 @@ export function buildAsOfTrainingRows(races, options = {}) {
   const placeCutoffForRace = options.placeCutoffForRace ?? defaultPlaceCutoff;
   const state = createAsOfState();
   const rows = [];
+  const marketFeaturesForRunner = options.marketFeaturesForRunner ?? (() => ({}));
 
   for (const race of orderedRaces) {
     const fieldSize = race.runners.length;
@@ -22,6 +23,8 @@ export function buildAsOfTrainingRows(races, options = {}) {
       const jockeyStats = state.jockeys.get(jockeyId) ?? emptyStats();
       const trainerStats = state.trainers.get(trainerId) ?? emptyStats();
       const distanceSurfaceStats = state.distanceSurface.get(distanceSurfaceKey(horseId, race)) ?? emptyStats();
+
+      const marketFeatures = marketFeaturesForRunner({ race, runner }) ?? {};
 
       rows.push({
         raceId: race.raceId,
@@ -64,6 +67,7 @@ export function buildAsOfTrainingRows(races, options = {}) {
           distanceSurfaceStartsBefore: distanceSurfaceStats.runs,
           distanceSurfaceWinRateBefore: rate(distanceSurfaceStats.wins, distanceSurfaceStats.runs),
           distanceSurfacePlaceRateBefore: rate(distanceSurfaceStats.places, distanceSurfaceStats.runs),
+          ...marketFeatures,
         },
       });
     }

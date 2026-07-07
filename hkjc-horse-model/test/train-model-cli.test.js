@@ -38,6 +38,8 @@ describe('train-model CLI', () => {
       assert.equal(report.metrics.bySplit.validation.races, 1);
       assert.equal(report.metrics.bySplit.holdout.races, 1);
       assert.equal(report.features.includes('horseWinRateBefore'), true);
+      assert.equal(report.features.includes('marketWinOddsT30'), true);
+      assert.equal(report.features.includes('marketWinOddsPctChangeT60ToT30'), true);
       assert.equal(report.weights.length, report.features.length + 1);
     } finally {
       await rm(tempDir, { recursive: true, force: true });
@@ -90,6 +92,14 @@ function row(raceId, date, split, horseId, targetWin, features) {
       distanceSurfaceStartsBefore: 2,
       distanceSurfaceWinRateBefore: 0.1,
       distanceSurfacePlaceRateBefore: 0.2,
+      marketWinOddsT30: 4.2,
+      marketWinImpliedProbT30: 0.238095,
+      marketWinRankT30: 1,
+      marketWinOddsPctChangeT60ToT30: -0.125,
+      marketPlaceOddsT30: 1.6,
+      marketPlaceImpliedProbT30: 0.625,
+      marketPlaceRankT30: 1,
+      marketPlaceOddsPctChangeT60ToT30: -0.058824,
       ...features,
     },
   };

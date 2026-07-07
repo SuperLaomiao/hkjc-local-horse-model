@@ -99,6 +99,17 @@ The normalized file should contain `odds` and/or `pools` arrays with `raceId`,
 `investment + sellStatus`. These snapshots are the bridge toward T-30/T-10/T-3
 expected-ROI decisions.
 
+Historical HKJC WIN/PLACE live odds from `eprochasson/horserace_data` can be
+imported directly into the local SQLite research store:
+
+```bash
+npm run hkjc:external-live-odds -- --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/external-live-odds-import.json
+```
+
+This command keeps raw external CSV/GZ data out of the repo and writes only
+SQLite rows plus a compact import summary. The resulting T-60/T-30/T-10/T-3
+WIN/PLACE odds become runner-level market features in `training-dataset`.
+
 To check whether enough snapshots have actually been accumulated:
 
 ```bash

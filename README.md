@@ -143,6 +143,18 @@ available in normalized JSON:
 npm run hkjc:market-snapshot -- --input hkjc-horse-model/data/market-snapshot.json
 ```
 
+For local research, historical HKJC WIN/PLACE live odds can also be imported
+from the external `eprochasson/horserace_data` GitHub dataset:
+
+```bash
+npm run hkjc:external-live-odds -- --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/external-live-odds-import.json
+```
+
+This imports only into the local SQLite store and produces a small summary
+report. Do not commit or republish the raw external CSV/GZ files unless the
+dataset license is clarified. The imported live odds are used as market
+features in `training-dataset` exports.
+
 Check whether those snapshots are actually sufficient for T-30/T-10/T-3
 research:
 

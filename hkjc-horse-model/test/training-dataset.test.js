@@ -45,6 +45,27 @@ describe('as-of training dataset', () => {
     assert.equal(secondC.targetWin, 1);
   });
 
+  it('can attach pre-race market odds features without leaking race results', () => {
+    const rows = buildAsOfTrainingRows([
+      race('2024-01-07-ST-1', '2024-01-07', [
+        runner('A', 1, 'J1', 'T1', 2),
+        runner('C', 3, 'J3', 'T3', 1),
+      ]),
+    ], {
+      marketFeaturesForRunner: ({ race: currentRace, runner: currentRunner }) => ({
+        marketWinOddsT30: currentRace.raceId === '2024-01-07-ST-1' && currentRunner.horseNo === 1 ? 4.2 : null,
+        marketWinImpliedProbT30: currentRace.raceId === '2024-01-07-ST-1' && currentRunner.horseNo === 1 ? 0.2381 : null,
+      }),
+    });
+
+    const rowA = rows.find((row) => row.horseId === 'A');
+    const rowC = rows.find((row) => row.horseId === 'C');
+    assert.equal(rowA.features.marketWinOddsT30, 4.2);
+    assert.equal(rowA.features.marketWinImpliedProbT30, 0.2381);
+    assert.equal(rowC.features.marketWinOddsT30, null);
+    assert.equal(rowC.targetWin, 1);
+  });
+
   it('assigns fixed calendar splits and summarizes row counts', () => {
     const rows = splitTrainingRows([
       row('2023-12-31', 'a'),

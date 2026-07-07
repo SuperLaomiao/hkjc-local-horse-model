@@ -19,6 +19,11 @@ import {
 import { buildStrategyRiskReport } from './strategy-risk-report.js';
 import { buildMarketSnapshotCoverageReport } from './market-snapshot-coverage.js';
 import {
+  DEFAULT_EPROCHASSON_LIVE_ODDS_URL,
+  DEFAULT_EPROCHASSON_RACES_URL,
+  importExternalLiveOddsToDatabase,
+} from './external-live-odds-import.js';
+import {
   fetchFixtureMeetings,
   fetchMeetingRaceCards,
   fetchMeetingResults,
@@ -27,8 +32,10 @@ import {
 } from './hkjc-parser.js';
 import {
   getDatabaseStats,
+  loadMarketSnapshotCoverageSummary,
   loadRacesFromDatabase,
   loadMarketSnapshots,
+  loadRunnerMarketFeatures,
   loadRecommendationRuns,
   recordOddsSnapshot,
   recordPoolSnapshot,
@@ -109,6 +116,11 @@ async function main(argv) {
 
   if (command === 'market-snapshot') {
     await marketSnapshotCommand(args);
+    return;
+  }
+
+  if (command === 'external-live-odds') {
+    await externalLiveOddsCommand(args);
     return;
   }
 
@@ -246,7 +258,12 @@ async function dashboardDbCommand(args) {
 async function trainingDatasetCommand(args) {
   const dbPath = path.resolve(args.db ?? sqliteDbPath);
   const settledRaces = loadRacesFromDatabase({ dbPath, status: 'settled' });
-  const rows = buildAsOfTrainingRows(settledRaces);
+  const marketFeatures = loadRunnerMarketFeatures({ dbPath });
+  const rows = buildAsOfTrainingRows(settledRaces, {
+    marketFeaturesForRunner: ({ race, runner }) => (
+      marketFeatures.featuresByRunner.get(`${race.raceId}|${runner.horseNo}`) ?? {}
+    ),
+  });
   const summary = summarizeTrainingRows(rows);
   const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'training-dataset.json'));
 
@@ -258,6 +275,7 @@ async function trainingDatasetCommand(args) {
       database: publicDatabaseLabel(dbPath),
       settledRaces: settledRaces.length,
     },
+    marketFeatures: marketFeatures.summary,
     summary,
     rows,
   });
@@ -420,15 +438,53 @@ async function marketSnapshotCommand(args) {
   console.log(`Database market totals: ${stats.oddsSnapshots} odds snapshots, ${stats.poolSnapshots} pool snapshots`);
 }
 
+async function externalLiveOddsCommand(args) {
+  const dbPath = path.resolve(args.db ?? sqliteDbPath);
+  const racesPath = args.races ?? args.racesPath ?? DEFAULT_EPROCHASSON_RACES_URL;
+  const liveOddsPath = args.liveOdds ?? args.liveOddsPath ?? DEFAULT_EPROCHASSON_LIVE_ODDS_URL;
+  const source = args.source ?? 'eprochasson/horserace_data';
+
+  const result = await importExternalLiveOddsToDatabase({
+    dbPath,
+    racesPath,
+    liveOddsPath,
+    source,
+    limit: args.limit,
+  });
+  const stats = getDatabaseStats(dbPath);
+
+  if (args.output) {
+    const outputPath = path.resolve(args.output);
+    await mkdir(path.dirname(outputPath), { recursive: true });
+    await writeJson(outputPath, {
+      generatedAt: new Date().toISOString(),
+      dataSource: {
+        source,
+        races: publicInputLabel(racesPath),
+        liveOdds: publicInputLabel(liveOddsPath),
+        database: publicDatabaseLabel(dbPath),
+      },
+      summary: result.summary,
+      databaseTotals: {
+        oddsSnapshots: stats.oddsSnapshots,
+        poolSnapshots: stats.poolSnapshots,
+      },
+      notes: [
+        'External eprochasson capture_time is treated as UTC; Hong Kong race_time is converted to UTC for minutes_to_post.',
+        'Raw external CSV files are for local research only and should not be committed unless licensing is clarified.',
+      ],
+    });
+  }
+
+  console.log(`External live odds imported: ${result.summary.oddsSnapshots} odds snapshots`);
+  console.log(`Rows: ${result.summary.rowsMatched}/${result.summary.rowsSeen} matched, ${result.summary.rowsSkippedNoRace} no race time, ${result.summary.rowsSkippedBadData} bad/no odds`);
+  console.log(`Pools: ${Object.entries(result.summary.pools).map(([pool, count]) => `${pool} ${count}`).join(', ') || 'none'}`);
+  console.log(`Database market totals: ${stats.oddsSnapshots} odds snapshots, ${stats.poolSnapshots} pool snapshots`);
+}
+
 async function marketCoverageReportCommand(args) {
   const dbPath = path.resolve(args.db ?? sqliteDbPath);
-  const races = loadRacesFromDatabase({ dbPath });
-  const snapshots = loadMarketSnapshots({ dbPath });
-  const report = buildMarketSnapshotCoverageReport({
-    races,
-    odds: snapshots.odds,
-    pools: snapshots.pools,
-  });
+  const report = loadMarketSnapshotCoverageSummary({ dbPath });
   const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'market-snapshot-coverage.json'));
 
   await mkdir(path.dirname(outputPath), { recursive: true });
@@ -437,7 +493,7 @@ async function marketCoverageReportCommand(args) {
     dataSource: {
       source: 'sqlite',
       database: publicDatabaseLabel(dbPath),
-      races: races.length,
+      races: report.summary.races,
     },
   });
 
@@ -835,6 +891,7 @@ Commands:
   train-model --input hkjc-horse-model/data/processed/training-dataset.json --output hkjc-horse-model/data/processed/model-training-report.json
   strategy-risk-report --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/strategy-risk-report.json
   market-snapshot --input hkjc-horse-model/data/market-snapshot.json --db hkjc-horse-model/data/hkjc.sqlite
+  external-live-odds --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/external-live-odds-import.json
   market-coverage-report --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/market-snapshot-coverage.json
   recommendation-audit --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/latest-recommendation-audit.json
   fetch-url  https://racing.hkjc.com/en-us/local/information/localresults?RaceNo=2&Racecourse=ST&racedate=2026%2F01%2F04
@@ -854,6 +911,14 @@ function publicDatabaseLabel(dbPath) {
   const relative = path.relative(process.cwd(), dbPath);
   if (relative && !relative.startsWith('..') && !path.isAbsolute(relative)) return relative;
   return path.basename(dbPath);
+}
+
+function publicInputLabel(value) {
+  const text = String(value ?? '');
+  if (/^https?:\/\//i.test(text)) return text;
+  const relative = path.relative(process.cwd(), text);
+  if (relative && !relative.startsWith('..') && !path.isAbsolute(relative)) return relative;
+  return path.basename(text);
 }
 
 main(process.argv.slice(2)).catch((error) => {
