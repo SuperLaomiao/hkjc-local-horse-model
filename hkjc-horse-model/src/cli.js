@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { backtestRaces, buildDashboardSnapshot, calibrateConfig } from './model.js';
+import { splitDashboardForPublishing } from './dashboard-publish.js';
 import { auditRecommendationRuns } from './recommendation-audit.js';
 import {
   fetchFixtureMeetings,
@@ -188,12 +189,21 @@ async function dashboardDbCommand(args) {
   });
 
   const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'dashboard.json'));
+  const historyOutputPath = path.resolve(args.historyOutput ?? path.join(path.dirname(outputPath), 'dashboard-history.json'));
+  const { publicSnapshot, historySnapshot } = splitDashboardForPublishing(snapshot, {
+    embeddedLedgerLimit: args.embeddedLedgerLimit,
+    historyUrl: path.basename(historyOutputPath),
+  });
+
   await mkdir(path.dirname(outputPath), { recursive: true });
-  await writeJson(outputPath, snapshot);
+  await mkdir(path.dirname(historyOutputPath), { recursive: true });
+  await writeJson(outputPath, publicSnapshot);
+  await writeJson(historyOutputPath, historySnapshot);
 
   console.log(`Dashboard snapshot from SQLite: ${snapshot.summary.racesSettled} settled races`);
   console.log(`Upcoming forecasts: ${snapshot.upcomingEntries.length}`);
   console.log(`Saved dashboard data to ${outputPath}`);
+  console.log(`Saved dashboard history to ${historyOutputPath}`);
 }
 
 function recordDashboardRecommendationRun({ dbPath, snapshot, args }) {
@@ -635,7 +645,7 @@ Commands:
   refresh    --historyDays 14 --futureDays 21 --bankroll 200 --minEdge 0 --minProbability 0.15
   auto-run   --input hkjc-horse-model/data/raw --db hkjc-horse-model/data/hkjc.sqlite --output data/dashboard.json --auditOutput data/latest-recommendation-audit.json
   sync-db    --input hkjc-horse-model/data/raw --upcoming hkjc-horse-model/data/upcoming --db hkjc-horse-model/data/hkjc.sqlite
-  dashboard-db --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/dashboard.json
+  dashboard-db --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/dashboard.json --historyOutput hkjc-horse-model/data/processed/dashboard-history.json
   market-snapshot --input hkjc-horse-model/data/market-snapshot.json --db hkjc-horse-model/data/hkjc.sqlite
   recommendation-audit --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/latest-recommendation-audit.json
   fetch-url  https://racing.hkjc.com/en-us/local/information/localresults?RaceNo=2&Racecourse=ST&racedate=2026%2F01%2F04

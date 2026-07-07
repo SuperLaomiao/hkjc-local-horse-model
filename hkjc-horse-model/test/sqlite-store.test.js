@@ -149,6 +149,7 @@ describe('local SQLite race store', () => {
       const rawDir = path.join(tempDir, 'raw');
       const dbPath = path.join(tempDir, 'hkjc.sqlite');
       const dashboardPath = path.join(tempDir, 'dashboard.json');
+      const dashboardHistoryPath = path.join(tempDir, 'dashboard-history.json');
       await mkdir(rawDir, { recursive: true });
       await writeFile(path.join(rawDir, '2026-07-04-ST.json'), JSON.stringify([settledRace()], null, 2), 'utf8');
       syncRaceFilesToDatabase({ dbPath, inputPath: rawDir, sourceKind: 'raw' });
@@ -175,6 +176,14 @@ describe('local SQLite race store', () => {
       assert.equal(dashboard.dataSource.source, 'sqlite');
       assert.equal(dashboard.dataSource.database, 'hkjc.sqlite');
       assert.equal(dashboard.dataSource.database.includes(tempDir), false);
+      assert.equal(dashboard.history.ledgerUrl, 'dashboard-history.json');
+      assert.equal(dashboard.history.totalLedgerEntries, 1);
+      assert.equal(dashboard.history.embeddedLedgerEntries, 1);
+      assert.equal(dashboard.history.isLedgerTruncated, false);
+      const dashboardHistory = JSON.parse(await readFile(dashboardHistoryPath, 'utf8'));
+      assert.equal(dashboardHistory.summary.racesSettled, 1);
+      assert.equal(dashboardHistory.dataSource.database, 'hkjc.sqlite');
+      assert.equal(dashboardHistory.ledger.length, 1);
       assert.equal(getDatabaseStats(dbPath).recommendationRuns, 1);
       const runs = sqliteStore.loadRecommendationRuns({ dbPath });
       assert.equal(runs[0].raceId, dashboard.latestForecast.raceId);
