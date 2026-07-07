@@ -25,6 +25,13 @@ import {
   importExternalLiveOddsToDatabase,
 } from './external-live-odds-import.js';
 import {
+  DEFAULT_LIVE_MARKET_ODDS_TYPES,
+  buildLiveMarketSnapshotReport,
+  fetchLiveMarketPayload,
+  importLiveMarketSnapshotsToDatabase,
+  normalizeLiveMarketPayload,
+} from './live-market-snapshot.js';
+import {
   fetchFixtureMeetings,
   fetchMeetingRaceCards,
   fetchMeetingResults,
@@ -122,6 +129,11 @@ async function main(argv) {
 
   if (command === 'external-live-odds') {
     await externalLiveOddsCommand(args);
+    return;
+  }
+
+  if (command === 'live-market-snapshot') {
+    await liveMarketSnapshotCommand(args);
     return;
   }
 
@@ -488,6 +500,91 @@ async function externalLiveOddsCommand(args) {
   console.log(`Database market totals: ${stats.oddsSnapshots} odds snapshots, ${stats.poolSnapshots} pool snapshots`);
 }
 
+async function liveMarketSnapshotCommand(args) {
+  const dbPath = path.resolve(args.db ?? sqliteDbPath);
+  const date = normalizeRaceDate(args.date);
+  const venueCode = String(args.venue ?? args.course ?? args.venueCode ?? '').toUpperCase();
+  const raceNos = parseRaceRange(args.race ?? args.races ?? args.raceNo ?? '1');
+  const oddsTypes = parseStringList(args.pools ?? args.oddsTypes ?? DEFAULT_LIVE_MARKET_ODDS_TYPES.join(','));
+  const source = args.source ?? 'hkjc-live-graphql';
+  const capturedAt = args.capturedAt ?? new Date().toISOString();
+  let payload;
+  let sourceResults = [];
+
+  if (args.input) {
+    const inputPath = path.resolve(args.input);
+    payload = JSON.parse(await readFile(inputPath, 'utf8'));
+    sourceResults.push({
+      label: 'input',
+      ok: true,
+      input: publicInputLabel(inputPath),
+    });
+  } else {
+    if (!date || !venueCode) {
+      throw new Error('live-market-snapshot requires --date and --venue when --input is not provided');
+    }
+    const fetched = await fetchLiveMarketPayload({
+      date,
+      venueCode,
+      raceNos,
+      oddsTypes,
+      endpoint: args.endpoint,
+      requestTimeoutMs: args.requestTimeoutMs ?? 15000,
+    });
+    payload = fetched.payload;
+    sourceResults = fetched.sourceResults;
+  }
+
+  const normalized = normalizeLiveMarketPayload({
+    payload,
+    source,
+    capturedAt,
+    date,
+    venueCode,
+    raceNo: raceNos.join(','),
+  });
+
+  if (!args.dryRun) {
+    importLiveMarketSnapshotsToDatabase({
+      dbPath,
+      oddsSnapshots: normalized.oddsSnapshots,
+      poolSnapshots: normalized.poolSnapshots,
+    });
+  }
+
+  const report = buildLiveMarketSnapshotReport({
+    ...normalized,
+    sourceResults,
+    dryRun: Boolean(args.dryRun),
+    database: publicDatabaseLabel(dbPath),
+  });
+  const stats = args.dryRun ? null : getDatabaseStats(dbPath);
+
+  if (args.output) {
+    const outputPath = path.resolve(args.output);
+    await mkdir(path.dirname(outputPath), { recursive: true });
+    await writeJson(outputPath, {
+      ...report,
+      databaseTotals: stats ? {
+        oddsSnapshots: stats.oddsSnapshots,
+        poolSnapshots: stats.poolSnapshots,
+      } : null,
+      notes: [
+        'HKJC GraphQL calls must use whitelisted query shapes; arbitrary combined queries may return WHITELIST_ERROR.',
+        'Odds types are requested in small batches so live odds and pool investment calls stay stable.',
+      ],
+    });
+  }
+
+  const verb = args.dryRun ? 'normalized' : 'imported';
+  console.log(`Live market snapshots ${verb}: ${normalized.oddsSnapshots.length} odds, ${normalized.poolSnapshots.length} pools`);
+  console.log(`Races: ${normalized.summary.races.join(', ') || 'none'}`);
+  console.log(`Pools: ${Object.entries(normalized.summary.pools).map(([pool, count]) => `${pool} ${count}`).join(', ') || 'none'}`);
+  if (stats) {
+    console.log(`Database market totals: ${stats.oddsSnapshots} odds snapshots, ${stats.poolSnapshots} pool snapshots`);
+  }
+}
+
 async function marketCoverageReportCommand(args) {
   const dbPath = path.resolve(args.db ?? sqliteDbPath);
   const report = loadMarketSnapshotCoverageSummary({ dbPath });
@@ -839,6 +936,14 @@ function parseNumberList(value) {
     .filter(Number.isFinite);
 }
 
+function parseStringList(value) {
+  if (Array.isArray(value)) return value.map(String).filter(Boolean);
+  return String(value ?? '')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 async function loadFixtureWindow(from, to) {
   const meetings = [];
   for (const { year, month } of monthsBetween(from, to)) {
@@ -934,6 +1039,7 @@ Commands:
   strategy-risk-report --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/strategy-risk-report.json
   market-snapshot --input hkjc-horse-model/data/market-snapshot.json --db hkjc-horse-model/data/hkjc.sqlite
   external-live-odds --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/external-live-odds-import.json
+  live-market-snapshot --date 2026-07-08 --venue HV --race 1 --pools WIN,PLA,QIN,QPL --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/live-market-source-report.json
   market-coverage-report --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/market-snapshot-coverage.json
   market-window-research --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/market-window-research.json
   recommendation-audit --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/latest-recommendation-audit.json
