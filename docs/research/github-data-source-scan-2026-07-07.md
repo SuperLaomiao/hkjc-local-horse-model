@@ -116,6 +116,101 @@ local SQLite data before changing cash recommendations.
    - Require positive validation and holdout ROI after costs and drawdown gates
      before recommendations change.
 
+## External model/data benchmark protocol
+
+Use this protocol for every external project that claims better data coverage,
+winner hit rate, or positive expected ROI. The goal is not to copy the external
+project, but to reproduce its strongest idea, stress-test it against our local
+SQLite history, and only then decide whether our model should learn from it.
+
+### Step 1. Data coverage audit
+
+For each source, record:
+
+- date range, number of race days, races, runner rows, and bet/result rows;
+- which fields are genuinely pre-race versus final/post-race;
+- which pools are covered: WIN, PLA, QIN, QPL, FCT, TRI, TCE, FF, QTT, JKC,
+  TNC, multi-leg pools, and pool-investment snapshots;
+- whether odds are final dividends, morning odds, T-30/T-10/T-3 snapshots, or
+  post-close prices;
+- schema stability and source license.
+
+If the external data is broader than ours, first classify whether it adds:
+
+- **market data**: live odds, pool investments, odds movement;
+- **fundamental data**: race cards, sectionals, trials, trackwork, injuries,
+  horse profile, pedigree, jockey/trainer histories;
+- **settlement data**: dividends and winning combinations for more betting
+  pools.
+
+### Step 2. Leakage audit
+
+Any external result is rejected until we verify that the model did not use:
+
+- final odds as if they were pre-race odds;
+- post-race dividends, placings, finish times, or commentary in pre-race
+  features;
+- future races inside rolling horse/jockey/trainer features;
+- random train/test splits that mix future data into training.
+
+The default standard is chronological train/validation/holdout only.
+
+### Step 3. Reproduction before adoption
+
+For each promising external model:
+
+1. Rebuild its closest equivalent on our SQLite-backed training rows.
+2. Run our existing baseline beside it.
+3. Evaluate predictive quality and betting performance separately.
+4. Keep market-free and market-aware versions distinct.
+5. Save the full strategy matrix, not only the best-looking cell.
+
+This means a repo with a high headline ROI does not influence cash
+recommendations until the effect survives our own replay.
+
+### Step 4. Metrics that decide whether we learn from it
+
+Predictive metrics:
+
+- log loss, Brier score, calibration by probability bucket;
+- top-1 win rate, top-3 hit rate, rank correlation;
+- market-free versus market-aware incremental lift.
+
+Betting metrics:
+
+- expected ROI and realized ROI by pool;
+- turnover, number of bets, hit rate, average odds/dividend;
+- max drawdown, longest losing streak, profit concentration;
+- venue/distance/class stability;
+- sensitivity to stake sizing and odds filters.
+
+### Step 5. Promotion gates
+
+An external idea can move from research to our recommendation engine only if:
+
+- it beats our current baseline on validation and holdout, not just training;
+- sample size is large enough for the target pool;
+- no single race or tiny outlier group explains most profit;
+- drawdown is acceptable under HK$10-100 staking limits;
+- features are available before the betting cut-off, ideally by T-30;
+- it improves the portfolio as a whole, not only one isolated pool.
+
+### Step 6. How we turn better projects into our improvement
+
+Adopt in this order:
+
+1. **Data**: import or collect the missing fields locally.
+2. **Features**: reproduce the external feature family with leakage controls.
+3. **Model family**: test the algorithm under our split and metrics.
+4. **Strategy filter**: test only after the probability model is calibrated.
+5. **Shadow mode**: show recommendations as paper/research before cash mode.
+
+Our target is to learn the useful part of each stronger project, then combine
+it with our own multi-play portfolio, risk gates, T-30 execution workflow, and
+post-race audit loop. The bar is not “match their ROI claim”; the bar is
+“produce a more stable, better-calibrated, lower-drawdown recommendation system
+than any one external project alone.”
+
 ## Watch-outs
 
 - Public GitHub data projects may disappear or change schema.
@@ -124,4 +219,3 @@ local SQLite data before changing cash recommendations.
 - Any model using final odds or post-race data must be banned from pre-race cash
   recommendations.
 - Positive ROI claims from small windows are research leads, not proof.
-
