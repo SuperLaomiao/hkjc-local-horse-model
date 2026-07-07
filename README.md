@@ -96,6 +96,26 @@ snapshots, pool snapshots, and recommendation-run audit records. The static
 website still reads `data/dashboard.json`; SQLite is used to build and replay
 the model before exporting that JSON.
 
+## Local model training exports
+
+The mobile dashboard intentionally stays lightweight. Full historical modelling
+runs locally from SQLite.
+
+Generate leakage-safe runner rows:
+
+```bash
+npm run hkjc:training-dataset -- --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/training-dataset.json
+```
+
+Generate the current baseline model leaderboard:
+
+```bash
+npm run hkjc:model-leaderboard -- --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/model-leaderboard.json
+```
+
+The first leaderboard is a baseline for research. It should not be treated as
+proof of a betting edge.
+
 Market snapshots can be imported once official odds/capital-pool data is
 available in normalized JSON:
 

@@ -103,6 +103,28 @@ The dashboard performance export includes probability calibration buckets plus
 Brier Score and Log Loss. These scoring rules are used to watch whether the
 model probability scale is trustworthy enough for EV/Kelly-style staking.
 
+## Training dataset and model leaderboard
+
+`training-dataset` exports one row per runner using only races seen earlier in
+chronological order. This protects model training from post-race leakage.
+
+```bash
+npm run hkjc:training-dataset -- --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/training-dataset.json
+```
+
+`model-leaderboard` scores the current heuristic model by split:
+
+- train: through 2023-12-31
+- validation: 2024-01-01 through 2025-12-31
+- holdout: 2026-01-01 onward
+
+```bash
+npm run hkjc:model-leaderboard -- --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/model-leaderboard.json
+```
+
+Promotion to real-money recommendation logic requires calibration, turnover,
+drawdown, and market-price gates. Historical ROI alone is not enough.
+
 Open the local dashboard:
 
 ```bash
