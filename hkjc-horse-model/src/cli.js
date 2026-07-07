@@ -17,6 +17,7 @@ import {
   predictionRowsFromLedger,
 } from './model-leaderboard.js';
 import { buildStrategyRiskReport } from './strategy-risk-report.js';
+import { buildMarketSnapshotCoverageReport } from './market-snapshot-coverage.js';
 import {
   fetchFixtureMeetings,
   fetchMeetingRaceCards,
@@ -27,6 +28,7 @@ import {
 import {
   getDatabaseStats,
   loadRacesFromDatabase,
+  loadMarketSnapshots,
   loadRecommendationRuns,
   recordOddsSnapshot,
   recordPoolSnapshot,
@@ -107,6 +109,11 @@ async function main(argv) {
 
   if (command === 'market-snapshot') {
     await marketSnapshotCommand(args);
+    return;
+  }
+
+  if (command === 'market-coverage-report') {
+    await marketCoverageReportCommand(args);
     return;
   }
 
@@ -411,6 +418,32 @@ async function marketSnapshotCommand(args) {
   const stats = getDatabaseStats(dbPath);
   console.log(`Market snapshots imported: ${oddsSnapshots.length} odds, ${poolSnapshots.length} pools`);
   console.log(`Database market totals: ${stats.oddsSnapshots} odds snapshots, ${stats.poolSnapshots} pool snapshots`);
+}
+
+async function marketCoverageReportCommand(args) {
+  const dbPath = path.resolve(args.db ?? sqliteDbPath);
+  const races = loadRacesFromDatabase({ dbPath });
+  const snapshots = loadMarketSnapshots({ dbPath });
+  const report = buildMarketSnapshotCoverageReport({
+    races,
+    odds: snapshots.odds,
+    pools: snapshots.pools,
+  });
+  const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'market-snapshot-coverage.json'));
+
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeJson(outputPath, {
+    ...report,
+    dataSource: {
+      source: 'sqlite',
+      database: publicDatabaseLabel(dbPath),
+      races: races.length,
+    },
+  });
+
+  console.log(`Market coverage report: ${report.summary.readiness}`);
+  console.log(`Odds coverage ${percent(report.summary.oddsRaceCoverage)}, pool coverage ${percent(report.summary.poolRaceCoverage)}`);
+  console.log(`Saved market snapshot coverage to ${outputPath}`);
 }
 
 async function recommendationAuditCommand(args) {
@@ -802,6 +835,7 @@ Commands:
   train-model --input hkjc-horse-model/data/processed/training-dataset.json --output hkjc-horse-model/data/processed/model-training-report.json
   strategy-risk-report --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/strategy-risk-report.json
   market-snapshot --input hkjc-horse-model/data/market-snapshot.json --db hkjc-horse-model/data/hkjc.sqlite
+  market-coverage-report --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/market-snapshot-coverage.json
   recommendation-audit --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/latest-recommendation-audit.json
   fetch-url  https://racing.hkjc.com/en-us/local/information/localresults?RaceNo=2&Racecourse=ST&racedate=2026%2F01%2F04
   backtest   --input hkjc-horse-model/data/raw --minEdge 0

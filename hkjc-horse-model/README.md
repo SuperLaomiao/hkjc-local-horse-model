@@ -99,6 +99,15 @@ The normalized file should contain `odds` and/or `pools` arrays with `raceId`,
 `investment + sellStatus`. These snapshots are the bridge toward T-30/T-10/T-3
 expected-ROI decisions.
 
+To check whether enough snapshots have actually been accumulated:
+
+```bash
+npm run hkjc:market-coverage -- --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/market-snapshot-coverage.json
+```
+
+The coverage report separates odds rows from pool-investment rows and groups
+them into T-60, T-30, T-10, T-3, and unknown windows.
+
 The dashboard performance export includes probability calibration buckets plus
 Brier Score and Log Loss. These scoring rules are used to watch whether the
 model probability scale is trustworthy enough for EV/Kelly-style staking.

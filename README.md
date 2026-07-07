@@ -143,6 +143,17 @@ available in normalized JSON:
 npm run hkjc:market-snapshot -- --input hkjc-horse-model/data/market-snapshot.json
 ```
 
+Check whether those snapshots are actually sufficient for T-30/T-10/T-3
+research:
+
+```bash
+npm run hkjc:market-coverage -- --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/market-snapshot-coverage.json
+```
+
+If this report says `missing-market-data`, the system should keep treating
+live-odds expected ROI as unavailable and continue accumulating normalized
+market snapshots.
+
 Expected shape:
 
 ```json

@@ -199,6 +199,42 @@ export function loadLatestMarketSnapshots({ dbPath, raceId }) {
   }
 }
 
+export function loadMarketSnapshots({ dbPath, raceId = null } = {}) {
+  if (!dbPath) throw new Error('loadMarketSnapshots requires dbPath');
+
+  const db = openDatabase(dbPath);
+  try {
+    const oddsRows = raceId
+      ? db.prepare(`
+        SELECT * FROM odds_snapshots
+        WHERE race_id = ?
+        ORDER BY race_id, captured_at, pool_key, combination_key
+      `).all(raceId)
+      : db.prepare(`
+        SELECT * FROM odds_snapshots
+        ORDER BY race_id, captured_at, pool_key, combination_key
+      `).all();
+
+    const poolRows = raceId
+      ? db.prepare(`
+        SELECT * FROM pool_snapshots
+        WHERE race_id = ?
+        ORDER BY race_id, captured_at, pool_key
+      `).all(raceId)
+      : db.prepare(`
+        SELECT * FROM pool_snapshots
+        ORDER BY race_id, captured_at, pool_key
+      `).all();
+
+    return {
+      odds: oddsRows.map(oddsSnapshotFromRow),
+      pools: poolRows.map(poolSnapshotFromRow),
+    };
+  } finally {
+    db.close();
+  }
+}
+
 export function recordRecommendationRun({ dbPath, run }) {
   if (!dbPath) throw new Error('recordRecommendationRun requires dbPath');
   if (!run?.raceId) throw new Error('recordRecommendationRun requires run.raceId');
