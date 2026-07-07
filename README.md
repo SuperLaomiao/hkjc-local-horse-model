@@ -143,6 +143,19 @@ available in normalized JSON:
 npm run hkjc:market-snapshot -- --input hkjc-horse-model/data/market-snapshot.json
 ```
 
+For current HKJC race-day odds/pool capture, use the live GraphQL snapshot
+command. It writes directly to the local SQLite `odds_snapshots` and
+`pool_snapshots` tables; add `--dryRun` when you only want to inspect a report:
+
+```bash
+npm run hkjc:live-market-snapshot -- --date 2026-07-08 --venue HV --race 1-7 --pools WIN,PLA,QIN,QPL --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/live-market-source-report.json --dryRun
+```
+
+The command uses HKJC's whitelisted GraphQL query shapes and requests odds
+types in small batches. `PLA` is normalized to `PLACE`, `QIN` to `QUINELLA`,
+and `QPL` to `QUINELLA PLACE` so the existing market-feature code can read the
+snapshots consistently.
+
 For local research, historical HKJC WIN/PLACE live odds can also be imported
 from the external `eprochasson/horserace_data` GitHub dataset:
 

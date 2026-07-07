@@ -94,6 +94,16 @@ Pre-race odds and pool snapshots can be imported independently:
 npm run hkjc:market-snapshot -- --input hkjc-horse-model/data/market-snapshot.json
 ```
 
+For current HKJC race-day odds and pool snapshots, use the live GraphQL command:
+
+```bash
+npm run hkjc:live-market-snapshot -- --date 2026-07-08 --venue HV --race 1-7 --pools WIN,PLA,QIN,QPL --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/live-market-source-report.json --dryRun
+```
+
+Remove `--dryRun` to import into SQLite. The command uses HKJC's whitelisted
+GraphQL query shapes, batches requested odds types, and normalizes `PLA`,
+`QIN`, and `QPL` into the same pool labels used by market-feature training.
+
 The normalized file should contain `odds` and/or `pools` arrays with `raceId`,
 `capturedAt`, `minutesToPost`, `pool`, and either `combination + oddsValue` or
 `investment + sellStatus`. These snapshots are the bridge toward T-30/T-10/T-3

@@ -15,6 +15,7 @@
     "hkjc:strategy-risk-report": "node hkjc-horse-model/src/cli.js strategy-risk-report",
     "hkjc:market-snapshot": "node hkjc-horse-model/src/cli.js market-snapshot",
     "hkjc:external-live-odds": "node hkjc-horse-model/src/cli.js external-live-odds",
+    "hkjc:live-market-snapshot": "node hkjc-horse-model/src/cli.js live-market-snapshot",
     "hkjc:market-coverage": "node hkjc-horse-model/src/cli.js market-coverage-report",
     "hkjc:market-window-research": "node hkjc-horse-model/src/cli.js market-window-research",
     "hkjc:recommendation-audit": "node hkjc-horse-model/src/cli.js recommendation-audit",
