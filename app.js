@@ -991,6 +991,10 @@ function renderResearchUpgradePanel(snapshot) {
   const activeItems = program.algorithmBorrowings.filter((item) => item.status === "active");
   const nextItems = program.algorithmBorrowings.filter((item) => item.status === "next");
   const researchOnlyItems = program.algorithmBorrowings.filter((item) => item.status === "research-only");
+  const followUpActions = Array.isArray(program.followUpActions) ? program.followUpActions : [];
+  const followUpCount = summary.followUpCount ?? followUpActions.length;
+  const automationReadyCount = summary.automationReadyCount
+    ?? followUpActions.filter((item) => item.automationExecutable).length;
 
   return `
     <section class="panel research-panel">
@@ -1011,6 +1015,7 @@ function renderResearchUpgradePanel(snapshot) {
         ${renderResearchMetric("已进入系统", summary.activeCount)}
         ${renderResearchMetric("下一步", summary.nextCount)}
         ${renderResearchMetric("研究观察", summary.researchOnlyCount)}
+        ${renderResearchMetric("巡检队列", `${automationReadyCount}/${followUpCount}`)}
       </div>
       <div class="research-section">
         <strong>从开源项目学习什么</strong>
@@ -1026,6 +1031,14 @@ function renderResearchUpgradePanel(snapshot) {
           ${renderResearchGroup("研究观察", researchOnlyItems)}
         </div>
       </div>
+      ${followUpActions.length ? `
+        <div class="research-section">
+          <strong>Follow-up 研究 action 队列</strong>
+          <div class="research-action-list">
+            ${followUpActions.map(renderResearchFollowUpAction).join("")}
+          </div>
+        </div>
+      ` : ""}
       <div class="research-section">
         <strong>你在前端能感知到什么</strong>
         <div class="research-signal-list">
@@ -1034,6 +1047,26 @@ function renderResearchUpgradePanel(snapshot) {
       </div>
       <p class="fine-print">下一焦点：${escapeHtml(summary.nextFocus)}。这些不会自动变成真实下注，必须先进入回测和复盘。</p>
     </section>
+  `;
+}
+
+function renderResearchFollowUpAction(action) {
+  const automationLabel = action.automationExecutable ? "每日巡检可执行" : "研究观察";
+  const sourceRefs = Array.isArray(action.sourceRefs) ? action.sourceRefs.join(" / ") : "";
+
+  return `
+    <article>
+      <div class="research-action-meta">
+        <span class="research-status ${researchPriorityClass(action.priority)}">${escapeHtml(action.priority ?? "P?")}</span>
+        <span>${escapeHtml(action.automationPhase ?? "未排期")}</span>
+        <span>${escapeHtml(action.status ?? "queued")}</span>
+        <span>${escapeHtml(automationLabel)}</span>
+      </div>
+      <strong>${escapeHtml(action.title)}</strong>
+      <p>${escapeHtml(action.action)}</p>
+      <em>${escapeHtml(action.expectedOutcome)}</em>
+      ${sourceRefs ? `<small>参考：${escapeHtml(sourceRefs)}</small>` : ""}
+    </article>
   `;
 }
 
@@ -1053,6 +1086,7 @@ function renderResearchSource(source) {
       <span>${escapeHtml(source.type)}</span>
       <p>${escapeHtml(source.lesson)}</p>
       <em>借鉴：${escapeHtml(source.borrow)}</em>
+      ${source.accessNote ? `<small>${escapeHtml(source.accessNote)}</small>` : ""}
     </article>
   `;
 }
@@ -1077,6 +1111,12 @@ function researchStatusClass(status) {
   if (status === "active") return "is-active";
   if (status === "next") return "is-next";
   return "is-research";
+}
+
+function researchPriorityClass(priority) {
+  if (priority === "P0") return "is-p0";
+  if (priority === "P1") return "is-p1";
+  return "is-p2";
 }
 
 function formatPoolSelections(selections) {

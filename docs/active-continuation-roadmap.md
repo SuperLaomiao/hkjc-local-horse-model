@@ -21,16 +21,20 @@ Reach a tested, leakage-safe recommendation system that combines:
 - calibrated multi-play probabilities for WIN / PLACE / QIN / QPL,
 - EV gates, exposure caps, and post-race audit,
 - comparison against stronger public GitHub ideas before upgrading cash-mode recommendations.
+- Research Lab follow-up action queue, mirrored from `research-program.js`, so dashboard research items and daily continuation tasks stay aligned.
 
 ## Phase A — Race-day live market snapshot collection
 
 Goal: automatically accumulate the missing 2026 live market data that our ROI model needs.
 
-- [ ] Add a race-day snapshot planner that reads upcoming races from SQLite and returns due snapshot windows for T-30, T-10, and T-3.
+- [ ] Add a race-day snapshot planner that reads upcoming races from SQLite and returns due snapshot windows for T-30, T-10, and T-3. Research Lab action: `live-snapshot-planner` / P0.
   - Suggested files:
     - Create `hkjc-horse-model/src/live-snapshot-planner.js`
     - Create `hkjc-horse-model/test/live-snapshot-planner.test.js`
     - Modify `hkjc-horse-model/src/cli.js`
+  - Reference projects:
+    - `Bobosky2005/hkjc-api` odds and pool endpoint shape
+    - `stevwong/hkjc-punter` race-day logger and dashboard pattern
   - Acceptance:
     - A race at 18:30 returns due windows when current HK time is 18:00, 18:20, and 18:27.
     - A race outside the window is skipped.
@@ -46,6 +50,19 @@ Goal: automatically accumulate the missing 2026 live market data that our ROI mo
     - Without `--dryRun`, it calls the existing `live-market-snapshot` logic and imports snapshots.
     - Duplicate captures for the same race/window are skipped or overwritten idempotently.
 
+- [ ] Add pool-money feature builder for WIN / PLACE / QIN / QPL. Research Lab action: `pool-money-features` / P0.
+  - Suggested files:
+    - Create `hkjc-horse-model/src/pool-money-features.js`
+    - Create `hkjc-horse-model/test/pool-money-features.test.js`
+    - Modify `hkjc-horse-model/src/training-dataset.js`
+  - Reference projects:
+    - `Tang6133/hkjc-pool-tracker`
+    - `Bobosky2005/hkjc-api`
+  - Acceptance:
+    - Features include pool size, implied takeout, crowding ratio, pool imbalance, and odds/pool availability flags.
+    - Missing pool snapshots keep the row valid but mark feature availability as false.
+    - No post-race dividends or results leak into pre-race features.
+
 - [ ] Add a low-frequency race-day automation prompt or workflow step for due snapshots.
   - Acceptance:
     - It does not poll every few minutes.
@@ -56,13 +73,13 @@ Goal: automatically accumulate the missing 2026 live market data that our ROI mo
 
 Goal: reproduce the strongest public GitHub ideas on our own SQLite history before trusting them.
 
-- [ ] Add a benchmark registry for external ideas.
+- [ ] Add a benchmark registry for external ideas. Research Lab action: `benchmark-registry-refresh` / P0.
   - Suggested files:
     - Create `hkjc-horse-model/src/model-benchmark-registry.js`
     - Create `hkjc-horse-model/test/model-benchmark-registry.test.js`
     - Modify `hkjc-horse-model/src/cli.js`
   - Acceptance:
-    - Registry includes `catowabisabi-lgb-quinella`, `jerrydaphantom-catboost-calibration`, and `current-baseline`.
+    - Registry includes `catowabisabi-lgb-quinella`, `jerrydaphantom-catboost-calibration`, `neigh-speedpro-features`, `hkjc-pool-tracker-features`, `hkjc-edge-lab-clv`, and `current-baseline`.
     - Each entry records required data, leakage risks, metrics, and promotion gates.
 
 - [ ] Export a leakage-safe Python training matrix for tree models.
@@ -75,6 +92,7 @@ Goal: reproduce the strongest public GitHub ideas on our own SQLite history befo
     - Export works as JSONL or CSV without adding large generated files to git.
 
 - [ ] Implement `lightgbm-no-market-v1` or the closest available local tree-model fallback.
+  Research Lab action: `lightgbm-no-market-benchmark` / P1.
   - Suggested files:
     - Create `hkjc-horse-model/python/train_tree_model.py`
     - Create `hkjc-horse-model/python/evaluate_tree_model.py`
@@ -82,6 +100,19 @@ Goal: reproduce the strongest public GitHub ideas on our own SQLite history befo
   - Acceptance:
     - If LightGBM is unavailable, the command exits with a clear installation note and does not break `npm test`.
     - If available, it writes model metrics including log loss, Brier score, top-pick win rate, and split metrics.
+
+- [ ] Add SpeedPRO-style feature importer and mapper. Research Lab action: `speedpro-feature-importer` / P1.
+  - Suggested files:
+    - Create `hkjc-horse-model/src/speedpro-feature-importer.js`
+    - Create `hkjc-horse-model/test/speedpro-feature-importer.test.js`
+    - Modify `hkjc-horse-model/src/training-dataset.js`
+  - Reference projects:
+    - `larrysammii/neigh` for SpeedPRO schema and API ideas; webpage is readable, but 2026-07-08 `git ls-remote` returned repository-not-found, so confirm clone/package access before depending on it.
+    - `mag-dot/race-data`
+  - Acceptance:
+    - Maps sectional/pace/fitness/comment fields into normalized pre-race features when locally available.
+    - Keeps these features optional and leakage-safe.
+    - Records source coverage by race date so model reports can separate rows with/without SpeedPRO enrichment.
 
 - [ ] Reproduce the catowabisabi top-2 Quinella experiment on our data.
   - Suggested files:
@@ -92,11 +123,21 @@ Goal: reproduce the strongest public GitHub ideas on our own SQLite history befo
     - It reports bets, wins, hit rate, ROI, max drawdown, and profit concentration.
     - It separates validation and holdout results.
 
+- [ ] Research-only: design parimutuel stacker and copula-style exotic pricing notes. Research Lab action: `parimutuel-stacker-copula-study` / P2.
+  - Suggested files:
+    - Create `docs/research/parimutuel-stacker-copula-notes.md`
+  - Reference projects:
+    - `JonzieLo/hkjc-project`
+    - `xSynthesis/Multi_Place_Horse_Racing`
+  - Acceptance:
+    - Documents what data is missing before implementation.
+    - Does not promote any exact-order exotic pool into cash-mode recommendations.
+
 ## Phase C — Portfolio optimizer upgrade
 
 Goal: make recommendations robust instead of over-dependent on one horse.
 
-- [ ] Add EV gates that require live odds/pool data before cash-mode WIN/QIN/QPL recommendations.
+- [ ] Add EV gates that require live odds/pool data before cash-mode WIN/QIN/QPL recommendations. Research Lab action: `no-bet-clv-gate` / P1.
   - Acceptance:
     - If no live odds are present, output stays paper/research mode.
     - If odds are below fair odds plus buffer, the line is rejected.
@@ -106,6 +147,12 @@ Goal: make recommendations robust instead of over-dependent on one horse.
   - Acceptance:
     - A portfolio cannot lose 100% solely because one top horse misses unless explicitly marked "aggressive research".
     - Conservative mode prefers PLACE/QPL diversification over naked WIN.
+
+- [ ] Add Bayesian uncertainty tripwire before staking recommendations. Research Lab action: `bayesian-tripwire` / P1.
+  - Acceptance:
+    - When calibration drift, live-market gap, or model disagreement is high, recommendations downgrade to paper mode or reduce stake.
+    - Dashboard exposes the exact tripwire reason.
+    - Tests cover at least high-disagreement, missing-live-market, and normal-pass cases.
 
 - [ ] Add per-pool promotion gates.
   - Acceptance:
@@ -127,6 +174,21 @@ Goal: make progress visible and resumable.
     - Dashboard can display current baseline, latest tree-model candidate, and whether cash mode is allowed.
     - It shows "not ready" when ROI gates are not met.
 
+## Research Lab follow-up action queue
+
+This queue is mirrored in `research-program.js` and surfaced in the dashboard Research Lab. The daily continuation automation should treat the Phase checkboxes above as the executable source of truth; this table is the human-readable index.
+
+| Priority | Action id | Phase | Automation status | Purpose |
+| --- | --- | --- | --- | --- |
+| P0 | `live-snapshot-planner` | Phase A | queued, executable | Capture T-30/T-10/T-3 live odds/pool windows. |
+| P0 | `pool-money-features` | Phase A/B | queued, executable | Turn pool money and crowding into leakage-safe features. |
+| P0 | `benchmark-registry-refresh` | Phase B | queued, executable | Compare our baseline against stronger public ideas. |
+| P1 | `speedpro-feature-importer` | Phase B | queued, executable | Add sectional/pace/fitness enrichment when available. |
+| P1 | `lightgbm-no-market-benchmark` | Phase B | queued, executable | Build a non-market tree-model benchmark before live odds are complete. |
+| P1 | `no-bet-clv-gate` | Phase C | queued, executable | Reject lines without live edge and track closing-line value. |
+| P1 | `bayesian-tripwire` | Phase C | queued, executable | Reduce stake or paper-mode when uncertainty is too high. |
+| P2 | `parimutuel-stacker-copula-study` | Phase B/C | research-only | Document exotic-pool modeling before any implementation. |
+
 ## Latest continuation note
 
-- 2026-07-07: Daily automation `hkjc-2` updated to resume from this roadmap after inspection. Next executable task is Phase A item 1: implement `live-snapshot-planner` with tests.
+- 2026-07-08: Research Lab follow-up action queue added to `research-program.js` and mirrored here. Daily automation `hkjc-2` prompt was updated to continue from the first unchecked Phase/Research Lab action, currently `live-snapshot-planner`; post-race fetch automation `hkjc` should not execute these research actions.

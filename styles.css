@@ -1856,8 +1856,11 @@ tbody tr:hover {
 .research-hero span,
 .research-source-list span,
 .research-source-list em,
+.research-source-list small,
 .research-group em,
-.research-signal-list span {
+.research-signal-list span,
+.research-action-list em,
+.research-action-list small {
   color: var(--muted);
   font-size: 0.72rem;
   font-weight: 750;
@@ -1870,7 +1873,8 @@ tbody tr:hover {
 
 .research-hero p,
 .research-source-list p,
-.research-group p {
+.research-group p,
+.research-action-list p {
   margin: 0;
   color: var(--muted);
   font-size: 0.76rem;
@@ -1920,13 +1924,15 @@ tbody tr:hover {
 .research-source-list,
 .research-roadmap,
 .research-group,
-.research-signal-list {
+.research-signal-list,
+.research-action-list {
   display: grid;
   gap: 8px;
 }
 
 .research-source-list article,
-.research-group article {
+.research-group article,
+.research-action-list article {
   display: grid;
   gap: 6px;
   padding: 10px;
@@ -1936,7 +1942,8 @@ tbody tr:hover {
 }
 
 .research-source-list a,
-.research-group strong {
+.research-group strong,
+.research-action-list strong {
   color: var(--ink);
   font-size: 0.82rem;
   font-weight: 900;
@@ -1949,9 +1956,30 @@ tbody tr:hover {
 }
 
 .research-source-list em,
-.research-group em {
+.research-source-list small,
+.research-group em,
+.research-action-list em,
+.research-action-list small {
   font-style: normal;
   line-height: 1.4;
+}
+
+.research-action-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.research-action-meta span:not(.research-status) {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: #f5f7fb;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 850;
 }
 
 .research-group h4 {
@@ -1970,6 +1998,21 @@ tbody tr:hover {
 }
 
 .research-status.is-research {
+  background: #eef2ff;
+  color: #4050a0;
+}
+
+.research-status.is-p0 {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.research-status.is-p1 {
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+
+.research-status.is-p2 {
   background: #eef2ff;
   color: #4050a0;
 }
