@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-07T03:42:23.504Z",
+  "generatedAt": "2026-07-07T13:25:24.161Z",
   "selectionMetric": "holdout.logLoss then validation.logLoss",
   "models": [
     {
@@ -76,7 +76,7 @@
   ],
   "dataSource": {
     "source": "sqlite",
-    "database": "hkjc.sqlite",
+    "database": "hkjc-horse-model/data/hkjc.sqlite",
     "settledRaces": 14221
   }
 }
