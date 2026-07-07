@@ -213,7 +213,7 @@ export function buildProbabilityScoring(entries) {
   };
 }
 
-function settleStrategyEntry(entry) {
+export function settleStrategyEntry(entry) {
   const strategy = buildStakingStrategy(entry);
   const runnerById = new Map((entry.settlement?.runnerResults ?? []).map((runner) => [runner.horseId, runner]));
   const fieldSize = runnerById.size;

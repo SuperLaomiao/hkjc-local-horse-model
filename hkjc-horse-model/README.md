@@ -134,6 +134,16 @@ npm run hkjc:train-model -- --input hkjc-horse-model/data/processed/training-dat
 This produces `logit-runner-v1`, a paper-mode probability baseline. It is used
 for comparison and calibration research, not automatic cash betting.
 
+Generate the current multi-play staking risk report:
+
+```bash
+npm run hkjc:strategy-risk-report -- --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/strategy-risk-report.json
+```
+
+Use this report before promoting any strategy change. It shows whether simulated
+ROI comes from broad repeated edge or from concentrated outliers, and separates
+Win, Place, Quinella Place, and Quinella contribution.
+
 Open the local dashboard:
 
 ```bash

@@ -122,6 +122,17 @@ npm run hkjc:train-model -- --input hkjc-horse-model/data/processed/training-dat
 This produces `logit-runner-v1`, a paper-mode probability baseline. It is used
 for comparison and calibration research, not automatic cash betting.
 
+Generate the multi-play staking risk report:
+
+```bash
+npm run hkjc:strategy-risk-report -- --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/strategy-risk-report.json
+```
+
+This report replays the current HK$10-100 Win / Place / Quinella Place /
+Quinella strategy, then exposes per-pool ROI, maximum drawdown, losing streaks,
+largest-race concentration, and whether headline profit depends on one or two
+outlier races.
+
 The first leaderboard is a baseline for research. It should not be treated as
 proof of a betting edge.
 
@@ -210,10 +221,10 @@ rolling backtest health, market-favourite comparison, top-pick odds buckets,
 probability calibration, and the current HK$10-100 staking strategy replayed
 against settled historical races. Treat it as model diagnostics, not proof of a
 future edge. The strategy replay can truthfully settle the Win lines because the
-local historical data includes official Win odds. Full strategy ROI is marked as
-unavailable until Place, Quinella Place, and Quinella official dividends are
-parsed into the dataset; until then the page shows structural hit rates,
-unpriced-pool stake, and the break-even return gap.
+local historical data includes official Win odds. Place, Quinella Place, and
+Quinella returns are settled where official dividend rows are available; any
+missing dividend pools are still shown as unpriced-pool stake and break-even
+return gaps.
 
 ## Staking Strategy
 

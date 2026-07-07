@@ -1,0 +1,4947 @@
+{
+  "generatedAt": "2026-07-07T04:52:45.416Z",
+  "summary": {
+    "races": 14221,
+    "activeRaces": 14123,
+    "passRaces": 98,
+    "totalStake": 752350,
+    "knownReturn": 617184.2,
+    "knownProfit": -135165.8,
+    "knownRoi": -0.1797,
+    "cumulativeProfit": -135165.8,
+    "maxDrawdown": 135449.8,
+    "longestLosingStreak": 24,
+    "hits": 9304,
+    "hitRate": 0.6588,
+    "unpricedPoolStake": 2230,
+    "unpricedHits": 21
+  },
+  "byPool": {
+    "WIN": {
+      "stake": 91490,
+      "bets": 9149,
+      "hits": 1980,
+      "return": 72869.5,
+      "profit": -18620.5,
+      "roi": -0.2035
+    },
+    "PLACE": {
+      "stake": 427900,
+      "bets": 25771,
+      "hits": 11814,
+      "return": 360242.7,
+      "profit": -67657.3,
+      "roi": -0.1581
+    },
+    "QUINELLA_PLACE": {
+      "stake": 195180,
+      "bets": 15740,
+      "hits": 2532,
+      "return": 154768,
+      "profit": -40412,
+      "roi": -0.207
+    },
+    "QUINELLA": {
+      "stake": 37780,
+      "bets": 3778,
+      "hits": 353,
+      "return": 29304,
+      "profit": -8476,
+      "roi": -0.2244
+    }
+  },
+  "concentration": {
+    "largestRaceStake": 100,
+    "largestRaceStakeShare": 0.0001,
+    "largestPositiveRaceProfit": 1016.5,
+    "largestPositiveRaceProfitShare": 0.0046,
+    "topHorseStakeShares": [
+      {
+        "horseId": "HK_2013_S367",
+        "horseNo": 7,
+        "horseName": "GIDDY GIDDY",
+        "stakeInvolvingHorse": 1290,
+        "shareOfTotalStake": 0.0017
+      },
+      {
+        "horseId": "HK_2021_G129",
+        "horseNo": 9,
+        "horseName": "MEDIC ELITE",
+        "stakeInvolvingHorse": 1220,
+        "shareOfTotalStake": 0.0016
+      },
+      {
+        "horseId": "HK_2010_M191",
+        "horseNo": 3,
+        "horseName": "FLYING KEEPER  (CM191)",
+        "stakeInvolvingHorse": 1150,
+        "shareOfTotalStake": 0.0015
+      },
+      {
+        "horseId": "HK_2013_S205",
+        "horseNo": 7,
+        "horseName": "SWEET BEAN",
+        "stakeInvolvingHorse": 1120,
+        "shareOfTotalStake": 0.0015
+      },
+      {
+        "horseId": "HK_2017_B101",
+        "horseNo": 1,
+        "horseName": "EXULTANT",
+        "stakeInvolvingHorse": 1060,
+        "shareOfTotalStake": 0.0014
+      },
+      {
+        "horseId": "HK_2020_E486",
+        "horseNo": 1,
+        "horseName": "ROMANTIC WARRIOR",
+        "stakeInvolvingHorse": 1020,
+        "shareOfTotalStake": 0.0014
+      },
+      {
+        "horseId": "HK_2012_P269",
+        "horseNo": 11,
+        "horseName": "ORIENTAL FANTASIA",
+        "stakeInvolvingHorse": 1000,
+        "shareOfTotalStake": 0.0013
+      },
+      {
+        "horseId": "HK_2014_T140",
+        "horseNo": 9,
+        "horseName": "NEVER BETTER",
+        "stakeInvolvingHorse": 1000,
+        "shareOfTotalStake": 0.0013
+      },
+      {
+        "horseId": "HK_2011_N218",
+        "horseNo": 4,
+        "horseName": "HURRY HURRY UP",
+        "stakeInvolvingHorse": 980,
+        "shareOfTotalStake": 0.0013
+      },
+      {
+        "horseId": "HK_2014_T009",
+        "horseNo": 7,
+        "horseName": "EROICO",
+        "stakeInvolvingHorse": 970,
+        "shareOfTotalStake": 0.0013
+      }
+    ]
+  },
+  "timeline": [
+    {
+      "raceId": "2026-04-26-ST-3",
+      "date": "2026-04-26",
+      "racecourse": "ST",
+      "raceNo": 3,
+      "stake": 30,
+      "knownReturn": 39,
+      "knownProfit": 9,
+      "cumulativeProfit": -132738.3,
+      "drawdown": 132889.3,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K277",
+        "horseNo": 13,
+        "horseName": "BETTER AND BETTER",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 19,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-04-26-ST-4",
+      "date": "2026-04-26",
+      "racecourse": "ST",
+      "raceNo": 4,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -132768.3,
+      "drawdown": 132919.3,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2024_K559",
+        "horseNo": 3,
+        "horseName": "ROBOT STAR",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-04-26-ST-5",
+      "date": "2026-04-26",
+      "racecourse": "ST",
+      "raceNo": 5,
+      "stake": 100,
+      "knownReturn": 30.7,
+      "knownProfit": -69.3,
+      "cumulativeProfit": -132837.6,
+      "drawdown": 132988.6,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J358",
+        "horseNo": 4,
+        "horseName": "FAST NETWORK",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": 0.5,
+        "PLACE": -29.8,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-04-26-ST-6",
+      "date": "2026-04-26",
+      "racecourse": "ST",
+      "raceNo": 6,
+      "stake": 50,
+      "knownReturn": 29,
+      "knownProfit": -21,
+      "cumulativeProfit": -132858.6,
+      "drawdown": 133009.6,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J114",
+        "horseNo": 4,
+        "horseName": "GENEVA",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -1,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-04-26-ST-7",
+      "date": "2026-04-26",
+      "racecourse": "ST",
+      "raceNo": 7,
+      "stake": 100,
+      "knownReturn": 19.5,
+      "knownProfit": -80.5,
+      "cumulativeProfit": -132939.1,
+      "drawdown": 133090.1,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2021_G180",
+        "horseNo": 4,
+        "horseName": "LUCKY SWEYNESSE",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -30.5,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-04-26-ST-8",
+      "date": "2026-04-26",
+      "racecourse": "ST",
+      "raceNo": 8,
+      "stake": 50,
+      "knownReturn": 15.5,
+      "knownProfit": -34.5,
+      "cumulativeProfit": -132973.6,
+      "drawdown": 133124.6,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K312",
+        "horseNo": 7,
+        "horseName": "THE RED HARE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -14.5,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-04-26-ST-9",
+      "date": "2026-04-26",
+      "racecourse": "ST",
+      "raceNo": 9,
+      "stake": 30,
+      "knownReturn": 33.2,
+      "knownProfit": 3.2,
+      "cumulativeProfit": -132970.4,
+      "drawdown": 133121.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2020_E486",
+        "horseNo": 2,
+        "horseName": "ROMANTIC WARRIOR",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 3,
+        "PLACE": 0.2,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-04-26-ST-10",
+      "date": "2026-04-26",
+      "racecourse": "ST",
+      "raceNo": 10,
+      "stake": 100,
+      "knownReturn": 38,
+      "knownProfit": -62,
+      "cumulativeProfit": -133032.4,
+      "drawdown": 133183.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K033",
+        "horseNo": 3,
+        "horseName": "ENDUED",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -12,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-04-26-ST-11",
+      "date": "2026-04-26",
+      "racecourse": "ST",
+      "raceNo": 11,
+      "stake": 50,
+      "knownReturn": 29,
+      "knownProfit": -21,
+      "cumulativeProfit": -133053.4,
+      "drawdown": 133204.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K350",
+        "horseNo": 5,
+        "horseName": "WINNING OVATION",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -1,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-04-29-HV-1",
+      "date": "2026-04-29",
+      "racecourse": "HV",
+      "raceNo": 1,
+      "stake": 30,
+      "knownReturn": 61,
+      "knownProfit": 31,
+      "cumulativeProfit": -133022.4,
+      "drawdown": 133173.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2022_H447",
+        "horseNo": 5,
+        "horseName": "FAMILY FORTUNE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 41,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-04-29-HV-2",
+      "date": "2026-04-29",
+      "racecourse": "HV",
+      "raceNo": 2,
+      "stake": 30,
+      "knownReturn": 51.5,
+      "knownProfit": 21.5,
+      "cumulativeProfit": -133000.9,
+      "drawdown": 133151.9,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K283",
+        "horseNo": 4,
+        "horseName": "HONEST WITNESS",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 15.5,
+        "PLACE": 6,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-04-29-HV-3",
+      "date": "2026-04-29",
+      "racecourse": "HV",
+      "raceNo": 3,
+      "stake": 100,
+      "knownReturn": 36,
+      "knownProfit": -64,
+      "cumulativeProfit": -133064.9,
+      "drawdown": 133215.9,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2022_H168",
+        "horseNo": 11,
+        "horseName": "ROMANTIC FANTASY",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -14,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-04-29-HV-4",
+      "date": "2026-04-29",
+      "racecourse": "HV",
+      "raceNo": 4,
+      "stake": 30,
+      "knownReturn": 27,
+      "knownProfit": -3,
+      "cumulativeProfit": -133067.9,
+      "drawdown": 133218.9,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L022",
+        "horseNo": 1,
+        "horseName": "CROSSBORDERDUDE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 7,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-04-29-HV-5",
+      "date": "2026-04-29",
+      "racecourse": "HV",
+      "raceNo": 5,
+      "stake": 100,
+      "knownReturn": 95,
+      "knownProfit": -5,
+      "cumulativeProfit": -133072.9,
+      "drawdown": 133223.9,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2022_H356",
+        "horseNo": 8,
+        "horseName": "GAMEPLAYER ELITE",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -8,
+        "QUINELLA_PLACE": 23,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-04-29-HV-6",
+      "date": "2026-04-29",
+      "racecourse": "HV",
+      "raceNo": 6,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -133102.9,
+      "drawdown": 133253.9,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2024_K223",
+        "horseNo": 10,
+        "horseName": "VIVACIOUS WIN",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-04-29-HV-7",
+      "date": "2026-04-29",
+      "racecourse": "HV",
+      "raceNo": 7,
+      "stake": 100,
+      "knownReturn": 172,
+      "knownProfit": 72,
+      "cumulativeProfit": -133030.9,
+      "drawdown": 133181.9,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K227",
+        "horseNo": 2,
+        "horseName": "COLOURFUL KING",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 41,
+        "QUINELLA_PLACE": 51,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-04-29-HV-8",
+      "date": "2026-04-29",
+      "racecourse": "HV",
+      "raceNo": 8,
+      "stake": 50,
+      "knownReturn": 29,
+      "knownProfit": -21,
+      "cumulativeProfit": -133051.9,
+      "drawdown": 133202.9,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K451",
+        "horseNo": 4,
+        "horseName": "GIANT BALLON",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -1,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-04-29-HV-9",
+      "date": "2026-04-29",
+      "racecourse": "HV",
+      "raceNo": 9,
+      "stake": 30,
+      "knownReturn": 64,
+      "knownProfit": 34,
+      "cumulativeProfit": -133017.9,
+      "drawdown": 133168.9,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J364",
+        "horseNo": 5,
+        "horseName": "FANTASTIC FUN",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 44,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-03-ST-1",
+      "date": "2026-05-03",
+      "racecourse": "ST",
+      "raceNo": 1,
+      "stake": 50,
+      "knownReturn": 19.5,
+      "knownProfit": -30.5,
+      "cumulativeProfit": -133048.4,
+      "drawdown": 133199.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K189",
+        "horseNo": 5,
+        "horseName": "MAJESTIC DELIGHT",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -10.5,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-03-ST-2",
+      "date": "2026-05-03",
+      "racecourse": "ST",
+      "raceNo": 2,
+      "stake": 30,
+      "knownReturn": 34,
+      "knownProfit": 4,
+      "cumulativeProfit": -133044.4,
+      "drawdown": 133195.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L083",
+        "horseNo": 10,
+        "horseName": "LEADING DRAGON",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 14,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-03-ST-3",
+      "date": "2026-05-03",
+      "racecourse": "ST",
+      "raceNo": 3,
+      "stake": 50,
+      "knownReturn": 49,
+      "knownProfit": -1,
+      "cumulativeProfit": -133045.4,
+      "drawdown": 133196.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K239",
+        "horseNo": 3,
+        "horseName": "WINNING MACHINE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 19,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-03-ST-4",
+      "date": "2026-05-03",
+      "racecourse": "ST",
+      "raceNo": 4,
+      "stake": 30,
+      "knownReturn": 37,
+      "knownProfit": 7,
+      "cumulativeProfit": -133038.4,
+      "drawdown": 133189.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J403",
+        "horseNo": 13,
+        "horseName": "RIDING HIGH",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 17,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-03-ST-5",
+      "date": "2026-05-03",
+      "racecourse": "ST",
+      "raceNo": 5,
+      "stake": 30,
+      "knownReturn": 29,
+      "knownProfit": -1,
+      "cumulativeProfit": -133039.4,
+      "drawdown": 133190.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2022_H475",
+        "horseNo": 1,
+        "horseName": "CIRCUIT FIERY",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 9,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-03-ST-6",
+      "date": "2026-05-03",
+      "racecourse": "ST",
+      "raceNo": 6,
+      "stake": 100,
+      "knownReturn": 27,
+      "knownProfit": -73,
+      "cumulativeProfit": -133112.4,
+      "drawdown": 133263.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2022_H383",
+        "horseNo": 4,
+        "horseName": "JOY OF SPRING",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -23,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-05-03-ST-7",
+      "date": "2026-05-03",
+      "racecourse": "ST",
+      "raceNo": 7,
+      "stake": 50,
+      "knownReturn": 30,
+      "knownProfit": -20,
+      "cumulativeProfit": -133132.4,
+      "drawdown": 133283.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K184",
+        "horseNo": 2,
+        "horseName": "MR COOL",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 0,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-03-ST-8",
+      "date": "2026-05-03",
+      "racecourse": "ST",
+      "raceNo": 8,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -133162.4,
+      "drawdown": 133313.4,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2023_J514",
+        "horseNo": 9,
+        "horseName": "MAX QUE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-03-ST-9",
+      "date": "2026-05-03",
+      "racecourse": "ST",
+      "raceNo": 9,
+      "stake": 50,
+      "knownReturn": 20,
+      "knownProfit": -30,
+      "cumulativeProfit": -133192.4,
+      "drawdown": 133343.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K031",
+        "horseNo": 9,
+        "horseName": "SHAMUS STORM",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -10,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-03-ST-10",
+      "date": "2026-05-03",
+      "racecourse": "ST",
+      "raceNo": 10,
+      "stake": 50,
+      "knownReturn": 15,
+      "knownProfit": -35,
+      "cumulativeProfit": -133227.4,
+      "drawdown": 133378.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J391",
+        "horseNo": 2,
+        "horseName": "KA YING ATTACK",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -15,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-03-ST-11",
+      "date": "2026-05-03",
+      "racecourse": "ST",
+      "raceNo": 11,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -133257.4,
+      "drawdown": 133408.4,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2025_L004",
+        "horseNo": 2,
+        "horseName": "SMART GOLF",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-06-ST-1",
+      "date": "2026-05-06",
+      "racecourse": "ST",
+      "raceNo": 1,
+      "stake": 50,
+      "knownReturn": 31,
+      "knownProfit": -19,
+      "cumulativeProfit": -133276.4,
+      "drawdown": 133427.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2022_H234",
+        "horseNo": 9,
+        "horseName": "MEEPMEEP",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 1,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-06-ST-2",
+      "date": "2026-05-06",
+      "racecourse": "ST",
+      "raceNo": 2,
+      "stake": 50,
+      "knownReturn": 27,
+      "knownProfit": -23,
+      "cumulativeProfit": -133299.4,
+      "drawdown": 133450.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2021_G368",
+        "horseNo": 10,
+        "horseName": "VIVA CHALEUR",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -3,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-06-ST-3",
+      "date": "2026-05-06",
+      "racecourse": "ST",
+      "raceNo": 3,
+      "stake": 30,
+      "knownReturn": 57,
+      "knownProfit": 27,
+      "cumulativeProfit": -133272.4,
+      "drawdown": 133423.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K405",
+        "horseNo": 7,
+        "horseName": "JUICY DRAGON",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 20,
+        "PLACE": 7,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-06-ST-4",
+      "date": "2026-05-06",
+      "racecourse": "ST",
+      "raceNo": 4,
+      "stake": 50,
+      "knownReturn": 31,
+      "knownProfit": -19,
+      "cumulativeProfit": -133291.4,
+      "drawdown": 133442.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J183",
+        "horseNo": 10,
+        "horseName": "FIREFOOT",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 1,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-06-ST-5",
+      "date": "2026-05-06",
+      "racecourse": "ST",
+      "raceNo": 5,
+      "stake": 50,
+      "knownReturn": 32,
+      "knownProfit": -18,
+      "cumulativeProfit": -133309.4,
+      "drawdown": 133460.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K204",
+        "horseNo": 2,
+        "horseName": "LIGHT YEARS GLORY",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 2,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-06-ST-6",
+      "date": "2026-05-06",
+      "racecourse": "ST",
+      "raceNo": 6,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -133339.4,
+      "drawdown": 133490.4,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2024_K111",
+        "horseNo": 8,
+        "horseName": "SHOTGUN",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-06-ST-7",
+      "date": "2026-05-06",
+      "racecourse": "ST",
+      "raceNo": 7,
+      "stake": 10,
+      "knownReturn": 0,
+      "knownProfit": -10,
+      "cumulativeProfit": -133349.4,
+      "drawdown": 133500.4,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2025_L175",
+        "horseNo": 8,
+        "horseName": "MAPOGO",
+        "stakeInvolvingHorse": 10
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -10,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-06-ST-8",
+      "date": "2026-05-06",
+      "racecourse": "ST",
+      "raceNo": 8,
+      "stake": 50,
+      "knownReturn": 34,
+      "knownProfit": -16,
+      "cumulativeProfit": -133365.4,
+      "drawdown": 133516.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K054",
+        "horseNo": 7,
+        "horseName": "SKY VINO",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 4,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-06-ST-9",
+      "date": "2026-05-06",
+      "racecourse": "ST",
+      "raceNo": 9,
+      "stake": 100,
+      "knownReturn": 200,
+      "knownProfit": 100,
+      "cumulativeProfit": -133265.4,
+      "drawdown": 133416.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K097",
+        "horseNo": 4,
+        "horseName": "AURORA PATCH",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 34,
+        "QUINELLA_PLACE": 86,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-05-09-ST-1",
+      "date": "2026-05-09",
+      "racecourse": "ST",
+      "raceNo": 1,
+      "stake": 10,
+      "knownReturn": 31,
+      "knownProfit": 21,
+      "cumulativeProfit": -133244.4,
+      "drawdown": 133395.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L317",
+        "horseNo": 6,
+        "horseName": "EVER WEALTH",
+        "stakeInvolvingHorse": 10
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 21,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-09-ST-2",
+      "date": "2026-05-09",
+      "racecourse": "ST",
+      "raceNo": 2,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -133274.4,
+      "drawdown": 133425.4,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2025_L278",
+        "horseNo": 8,
+        "horseName": "SPIRITED STEED",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-09-ST-3",
+      "date": "2026-05-09",
+      "racecourse": "ST",
+      "raceNo": 3,
+      "stake": 30,
+      "knownReturn": 44,
+      "knownProfit": 14,
+      "cumulativeProfit": -133260.4,
+      "drawdown": 133411.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J218",
+        "horseNo": 13,
+        "horseName": "TEAM HAPPY",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 24,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-09-ST-4",
+      "date": "2026-05-09",
+      "racecourse": "ST",
+      "raceNo": 4,
+      "stake": 50,
+      "knownReturn": 0,
+      "knownProfit": -50,
+      "cumulativeProfit": -133310.4,
+      "drawdown": 133461.4,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2023_J299",
+        "horseNo": 3,
+        "horseName": "BEAUTY THUNDER",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -30,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-09-ST-5",
+      "date": "2026-05-09",
+      "racecourse": "ST",
+      "raceNo": 5,
+      "stake": 100,
+      "knownReturn": 0,
+      "knownProfit": -100,
+      "cumulativeProfit": -133410.4,
+      "drawdown": 133561.4,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2025_L106",
+        "horseNo": 1,
+        "horseName": "CONRAD PATCH",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -50,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-05-09-ST-6",
+      "date": "2026-05-09",
+      "racecourse": "ST",
+      "raceNo": 6,
+      "stake": 50,
+      "knownReturn": 0,
+      "knownProfit": -50,
+      "cumulativeProfit": -133460.4,
+      "drawdown": 133611.4,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2022_H465",
+        "horseNo": 13,
+        "horseName": "THE CONCENTRATION",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -30,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-09-ST-7",
+      "date": "2026-05-09",
+      "racecourse": "ST",
+      "raceNo": 7,
+      "stake": 10,
+      "knownReturn": 0,
+      "knownProfit": -10,
+      "cumulativeProfit": -133470.4,
+      "drawdown": 133621.4,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2025_L024",
+        "horseNo": 4,
+        "horseName": "TURIN CHAMPIONS",
+        "stakeInvolvingHorse": 10
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -10,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-09-ST-8",
+      "date": "2026-05-09",
+      "racecourse": "ST",
+      "raceNo": 8,
+      "stake": 100,
+      "knownReturn": 29,
+      "knownProfit": -71,
+      "cumulativeProfit": -133541.4,
+      "drawdown": 133692.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K469",
+        "horseNo": 4,
+        "horseName": "CHILL BUDDY",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -21,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-05-09-ST-9",
+      "date": "2026-05-09",
+      "racecourse": "ST",
+      "raceNo": 9,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -133571.4,
+      "drawdown": 133722.4,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2023_J295",
+        "horseNo": 1,
+        "horseName": "FAST RESPONDER",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-09-ST-10",
+      "date": "2026-05-09",
+      "racecourse": "ST",
+      "raceNo": 10,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -133601.4,
+      "drawdown": 133752.4,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2022_H376",
+        "horseNo": 1,
+        "horseName": "MISTER DAPPER",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-09-ST-11",
+      "date": "2026-05-09",
+      "racecourse": "ST",
+      "raceNo": 11,
+      "stake": 50,
+      "knownReturn": 34,
+      "knownProfit": -16,
+      "cumulativeProfit": -133617.4,
+      "drawdown": 133768.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J343",
+        "horseNo": 4,
+        "horseName": "PATCH OF STARS",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 4,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-13-HV-1",
+      "date": "2026-05-13",
+      "racecourse": "HV",
+      "raceNo": 1,
+      "stake": 50,
+      "knownReturn": 28.5,
+      "knownProfit": -21.5,
+      "cumulativeProfit": -133638.9,
+      "drawdown": 133789.9,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J309",
+        "horseNo": 7,
+        "horseName": "DOUBLE BINGO",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -1.5,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-13-HV-2",
+      "date": "2026-05-13",
+      "racecourse": "HV",
+      "raceNo": 2,
+      "stake": 100,
+      "knownReturn": 328.5,
+      "knownProfit": 228.5,
+      "cumulativeProfit": -133410.4,
+      "drawdown": 133561.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J413",
+        "horseNo": 4,
+        "horseName": "WORLD HERO",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": 19.5,
+        "PLACE": 52.5,
+        "QUINELLA_PLACE": 166.5,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-05-13-HV-3",
+      "date": "2026-05-13",
+      "racecourse": "HV",
+      "raceNo": 3,
+      "stake": 100,
+      "knownReturn": 73.5,
+      "knownProfit": -26.5,
+      "cumulativeProfit": -133436.9,
+      "drawdown": 133587.9,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L240",
+        "horseNo": 7,
+        "horseName": "ROMANTIC GLADIATOR",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 2,
+        "QUINELLA_PLACE": -8.5,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-05-13-HV-4",
+      "date": "2026-05-13",
+      "racecourse": "HV",
+      "raceNo": 4,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -133466.9,
+      "drawdown": 133617.9,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2023_J384",
+        "horseNo": 1,
+        "horseName": "MIGHTY STEED",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-13-HV-5",
+      "date": "2026-05-13",
+      "racecourse": "HV",
+      "raceNo": 5,
+      "stake": 100,
+      "knownReturn": 142.5,
+      "knownProfit": 42.5,
+      "cumulativeProfit": -133424.4,
+      "drawdown": 133575.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K156",
+        "horseNo": 1,
+        "horseName": "LIVEANDLETLIVE",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 15,
+        "QUINELLA_PLACE": 47.5,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-05-13-HV-6",
+      "date": "2026-05-13",
+      "racecourse": "HV",
+      "raceNo": 6,
+      "stake": 100,
+      "knownReturn": 137.5,
+      "knownProfit": 37.5,
+      "cumulativeProfit": -133386.9,
+      "drawdown": 133537.9,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J098",
+        "horseNo": 6,
+        "horseName": "TAKE ACTION",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 31,
+        "QUINELLA_PLACE": 26.5,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-05-13-HV-7",
+      "date": "2026-05-13",
+      "racecourse": "HV",
+      "raceNo": 7,
+      "stake": 100,
+      "knownReturn": 19.5,
+      "knownProfit": -80.5,
+      "cumulativeProfit": -133467.4,
+      "drawdown": 133618.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K064",
+        "horseNo": 7,
+        "horseName": "LUCKY MCQUEEN",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -30.5,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-05-13-HV-8",
+      "date": "2026-05-13",
+      "racecourse": "HV",
+      "raceNo": 8,
+      "stake": 100,
+      "knownReturn": 24,
+      "knownProfit": -76,
+      "cumulativeProfit": -133543.4,
+      "drawdown": 133694.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J503",
+        "horseNo": 10,
+        "horseName": "SOMELOVEFROMABOVE",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -26,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-05-13-HV-9",
+      "date": "2026-05-13",
+      "racecourse": "HV",
+      "raceNo": 9,
+      "stake": 30,
+      "knownReturn": 44,
+      "knownProfit": 14,
+      "cumulativeProfit": -133529.4,
+      "drawdown": 133680.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J260",
+        "horseNo": 10,
+        "horseName": "BEAUTY ALLIANCE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 24,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-17-ST-1",
+      "date": "2026-05-17",
+      "racecourse": "ST",
+      "raceNo": 1,
+      "stake": 50,
+      "knownReturn": 0,
+      "knownProfit": -50,
+      "cumulativeProfit": -133579.4,
+      "drawdown": 133730.4,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2022_H447",
+        "horseNo": 5,
+        "horseName": "FAMILY FORTUNE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -30,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-17-ST-2",
+      "date": "2026-05-17",
+      "racecourse": "ST",
+      "raceNo": 2,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -133609.4,
+      "drawdown": 133760.4,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2024_K552",
+        "horseNo": 1,
+        "horseName": "RUN RUN SUNRISE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-17-ST-3",
+      "date": "2026-05-17",
+      "racecourse": "ST",
+      "raceNo": 3,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -133639.4,
+      "drawdown": 133790.4,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2022_H430",
+        "horseNo": 9,
+        "horseName": "TRIUMPHANT WARRIOR",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-17-ST-4",
+      "date": "2026-05-17",
+      "racecourse": "ST",
+      "raceNo": 4,
+      "stake": 100,
+      "knownReturn": 36,
+      "knownProfit": -64,
+      "cumulativeProfit": -133703.4,
+      "drawdown": 133854.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L264",
+        "horseNo": 1,
+        "horseName": "PAPAYA BROSE",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -14,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-05-17-ST-5",
+      "date": "2026-05-17",
+      "racecourse": "ST",
+      "raceNo": 5,
+      "stake": 50,
+      "knownReturn": 30,
+      "knownProfit": -20,
+      "cumulativeProfit": -133723.4,
+      "drawdown": 133874.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K542",
+        "horseNo": 3,
+        "horseName": "LUCRATIVE EIGHT",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 0,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-17-ST-6",
+      "date": "2026-05-17",
+      "racecourse": "ST",
+      "raceNo": 6,
+      "stake": 30,
+      "knownReturn": 92.5,
+      "knownProfit": 62.5,
+      "cumulativeProfit": -133660.9,
+      "drawdown": 133811.9,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L121",
+        "horseNo": 10,
+        "horseName": "THUNDER KIT",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 43.5,
+        "PLACE": 19,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-17-ST-7",
+      "date": "2026-05-17",
+      "racecourse": "ST",
+      "raceNo": 7,
+      "stake": 50,
+      "knownReturn": 86,
+      "knownProfit": 36,
+      "cumulativeProfit": -133624.9,
+      "drawdown": 133775.9,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K355",
+        "horseNo": 2,
+        "horseName": "FORZA TORO",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -6.5,
+        "QUINELLA_PLACE": 42.5,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-17-ST-8",
+      "date": "2026-05-17",
+      "racecourse": "ST",
+      "raceNo": 8,
+      "stake": 30,
+      "knownReturn": 152,
+      "knownProfit": 122,
+      "cumulativeProfit": -133502.9,
+      "drawdown": 133653.9,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2022_H168",
+        "horseNo": 14,
+        "horseName": "ROMANTIC FANTASY",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 89,
+        "PLACE": 33,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-17-ST-9",
+      "date": "2026-05-17",
+      "racecourse": "ST",
+      "raceNo": 9,
+      "stake": 50,
+      "knownReturn": 0,
+      "knownProfit": -50,
+      "cumulativeProfit": -133552.9,
+      "drawdown": 133703.9,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2024_K307",
+        "horseNo": 11,
+        "horseName": "ACE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -30,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-17-ST-10",
+      "date": "2026-05-17",
+      "racecourse": "ST",
+      "raceNo": 10,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -133582.9,
+      "drawdown": 133733.9,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2022_H161",
+        "horseNo": 5,
+        "horseName": "ENDEARED",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-17-ST-11",
+      "date": "2026-05-17",
+      "racecourse": "ST",
+      "raceNo": 11,
+      "stake": 50,
+      "knownReturn": 0,
+      "knownProfit": -50,
+      "cumulativeProfit": -133632.9,
+      "drawdown": 133783.9,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2024_K172",
+        "horseNo": 1,
+        "horseName": "EVERYONE'S STAR",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -30,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-20-HV-1",
+      "date": "2026-05-20",
+      "racecourse": "HV",
+      "raceNo": 1,
+      "stake": 50,
+      "knownReturn": 27,
+      "knownProfit": -23,
+      "cumulativeProfit": -133655.9,
+      "drawdown": 133806.9,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K099",
+        "horseNo": 7,
+        "horseName": "KING ALLOY",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -3,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-20-HV-2",
+      "date": "2026-05-20",
+      "racecourse": "HV",
+      "raceNo": 2,
+      "stake": 100,
+      "knownReturn": 64,
+      "knownProfit": -36,
+      "cumulativeProfit": -133691.9,
+      "drawdown": 133842.9,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K305",
+        "horseNo": 11,
+        "horseName": "BULL ATTITUDE",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": 9.5,
+        "PLACE": -5.5,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-05-20-HV-3",
+      "date": "2026-05-20",
+      "racecourse": "HV",
+      "raceNo": 3,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -133721.9,
+      "drawdown": 133872.9,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2025_L142",
+        "horseNo": 6,
+        "horseName": "LIVE WIRE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-20-HV-4",
+      "date": "2026-05-20",
+      "racecourse": "HV",
+      "raceNo": 4,
+      "stake": 100,
+      "knownReturn": 40.5,
+      "knownProfit": -59.5,
+      "cumulativeProfit": -133781.4,
+      "drawdown": 133932.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K003",
+        "horseNo": 6,
+        "horseName": "FORTUNE STAR",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": 7.5,
+        "PLACE": -27,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-05-20-HV-5",
+      "date": "2026-05-20",
+      "racecourse": "HV",
+      "raceNo": 5,
+      "stake": 50,
+      "knownReturn": 11,
+      "knownProfit": -39,
+      "cumulativeProfit": -133820.4,
+      "drawdown": 133971.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L260",
+        "horseNo": 4,
+        "horseName": "BEAUTY SHOW",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -19,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-20-HV-6",
+      "date": "2026-05-20",
+      "racecourse": "HV",
+      "raceNo": 6,
+      "stake": 50,
+      "knownReturn": 39,
+      "knownProfit": -11,
+      "cumulativeProfit": -133831.4,
+      "drawdown": 133982.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2022_H459",
+        "horseNo": 5,
+        "horseName": "THE HEIR",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 9,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-20-HV-7",
+      "date": "2026-05-20",
+      "racecourse": "HV",
+      "raceNo": 7,
+      "stake": 100,
+      "knownReturn": 44,
+      "knownProfit": -56,
+      "cumulativeProfit": -133887.4,
+      "drawdown": 134038.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K054",
+        "horseNo": 1,
+        "horseName": "SKY VINO",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -6,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-05-20-HV-8",
+      "date": "2026-05-20",
+      "racecourse": "HV",
+      "raceNo": 8,
+      "stake": 100,
+      "knownReturn": 273,
+      "knownProfit": 173,
+      "cumulativeProfit": -133714.4,
+      "drawdown": 133865.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J290",
+        "horseNo": 6,
+        "horseName": "FLYING WROTE",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 31,
+        "QUINELLA_PLACE": 74.5,
+        "QUINELLA": 77.5
+      }
+    },
+    {
+      "raceId": "2026-05-20-HV-9",
+      "date": "2026-05-20",
+      "racecourse": "HV",
+      "raceNo": 9,
+      "stake": 50,
+      "knownReturn": 0,
+      "knownProfit": -50,
+      "cumulativeProfit": -133764.4,
+      "drawdown": 133915.4,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2025_L003",
+        "horseNo": 9,
+        "horseName": "SIGHT HERMOSO",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -30,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-24-ST-1",
+      "date": "2026-05-24",
+      "racecourse": "ST",
+      "raceNo": 1,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -133794.4,
+      "drawdown": 133945.4,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2022_H332",
+        "horseNo": 13,
+        "horseName": "HARRY'S HERO",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-24-ST-2",
+      "date": "2026-05-24",
+      "racecourse": "ST",
+      "raceNo": 2,
+      "stake": 30,
+      "knownReturn": 31,
+      "knownProfit": 1,
+      "cumulativeProfit": -133793.4,
+      "drawdown": 133944.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K438",
+        "horseNo": 2,
+        "horseName": "NYX GLUCK",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 11,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-24-ST-3",
+      "date": "2026-05-24",
+      "racecourse": "ST",
+      "raceNo": 3,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -133823.4,
+      "drawdown": 133974.4,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2023_J403",
+        "horseNo": 12,
+        "horseName": "RIDING HIGH",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-24-ST-4",
+      "date": "2026-05-24",
+      "racecourse": "ST",
+      "raceNo": 4,
+      "stake": 50,
+      "knownReturn": 0,
+      "knownProfit": -50,
+      "cumulativeProfit": -133873.4,
+      "drawdown": 134024.4,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2025_L083",
+        "horseNo": 8,
+        "horseName": "LEADING DRAGON",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -30,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-24-ST-5",
+      "date": "2026-05-24",
+      "racecourse": "ST",
+      "raceNo": 5,
+      "stake": 50,
+      "knownReturn": 33,
+      "knownProfit": -17,
+      "cumulativeProfit": -133890.4,
+      "drawdown": 134041.4,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K192",
+        "horseNo": 2,
+        "horseName": "BIG RETURN",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 3,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-24-ST-7",
+      "date": "2026-05-24",
+      "racecourse": "ST",
+      "raceNo": 7,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -133920.4,
+      "drawdown": 134071.4,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2024_K564",
+        "horseNo": 2,
+        "horseName": "AERODYNAMICS",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-24-ST-8",
+      "date": "2026-05-24",
+      "racecourse": "ST",
+      "raceNo": 8,
+      "stake": 100,
+      "knownReturn": 31.2,
+      "knownProfit": -68.8,
+      "cumulativeProfit": -133989.2,
+      "drawdown": 134140.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K385",
+        "horseNo": 8,
+        "horseName": "GENTLEMEN LEGACY",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": 1,
+        "PLACE": -29.8,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-05-24-ST-9",
+      "date": "2026-05-24",
+      "racecourse": "ST",
+      "raceNo": 9,
+      "stake": 100,
+      "knownReturn": 260,
+      "knownProfit": 160,
+      "cumulativeProfit": -133829.2,
+      "drawdown": 133980.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L153",
+        "horseNo": 7,
+        "horseName": "MIGHTY MASTS",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": 40.5,
+        "PLACE": 33.5,
+        "QUINELLA_PLACE": 96,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-05-24-ST-10",
+      "date": "2026-05-24",
+      "racecourse": "ST",
+      "raceNo": 10,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -133859.2,
+      "drawdown": 134010.2,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2025_L023",
+        "horseNo": 9,
+        "horseName": "ELITE GOLF",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-24-ST-11",
+      "date": "2026-05-24",
+      "racecourse": "ST",
+      "raceNo": 11,
+      "stake": 100,
+      "knownReturn": 47,
+      "knownProfit": -53,
+      "cumulativeProfit": -133912.2,
+      "drawdown": 134063.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L230",
+        "horseNo": 7,
+        "horseName": "BABY SAKURA",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -3,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-05-27-HV-1",
+      "date": "2026-05-27",
+      "racecourse": "HV",
+      "raceNo": 1,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -133942.2,
+      "drawdown": 134093.2,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2024_K399",
+        "horseNo": 4,
+        "horseName": "HAPPY ACTION",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-27-HV-2",
+      "date": "2026-05-27",
+      "racecourse": "HV",
+      "raceNo": 2,
+      "stake": 10,
+      "knownReturn": 19,
+      "knownProfit": 9,
+      "cumulativeProfit": -133933.2,
+      "drawdown": 134084.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J331",
+        "horseNo": 8,
+        "horseName": "PERFECT PAIRING",
+        "stakeInvolvingHorse": 10
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 9,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-27-HV-3",
+      "date": "2026-05-27",
+      "racecourse": "HV",
+      "raceNo": 3,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -133963.2,
+      "drawdown": 134114.2,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2024_K184",
+        "horseNo": 6,
+        "horseName": "MR COOL",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-27-HV-4",
+      "date": "2026-05-27",
+      "racecourse": "HV",
+      "raceNo": 4,
+      "stake": 50,
+      "knownReturn": 0,
+      "knownProfit": -50,
+      "cumulativeProfit": -134013.2,
+      "drawdown": 134164.2,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2022_H110",
+        "horseNo": 1,
+        "horseName": "FIND MY LOVE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -30,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-27-HV-5",
+      "date": "2026-05-27",
+      "racecourse": "HV",
+      "raceNo": 5,
+      "stake": 50,
+      "knownReturn": 21,
+      "knownProfit": -29,
+      "cumulativeProfit": -134042.2,
+      "drawdown": 134193.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K566",
+        "horseNo": 2,
+        "horseName": "ARMOR GOLDEN EAGLE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -9,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-27-HV-6",
+      "date": "2026-05-27",
+      "racecourse": "HV",
+      "raceNo": 6,
+      "stake": 100,
+      "knownReturn": 0,
+      "knownProfit": -100,
+      "cumulativeProfit": -134142.2,
+      "drawdown": 134293.2,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2023_J413",
+        "horseNo": 5,
+        "horseName": "WORLD HERO",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -50,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-05-27-HV-7",
+      "date": "2026-05-27",
+      "racecourse": "HV",
+      "raceNo": 7,
+      "stake": 100,
+      "knownReturn": 15,
+      "knownProfit": -85,
+      "cumulativeProfit": -134227.2,
+      "drawdown": 134378.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J427",
+        "horseNo": 2,
+        "horseName": "HAPPY SHOOTER",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -35,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-05-27-HV-8",
+      "date": "2026-05-27",
+      "racecourse": "HV",
+      "raceNo": 8,
+      "stake": 50,
+      "knownReturn": 101,
+      "knownProfit": 51,
+      "cumulativeProfit": -134176.2,
+      "drawdown": 134327.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J431",
+        "horseNo": 1,
+        "horseName": "HORSEPOWER",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 23,
+        "QUINELLA_PLACE": 28,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-27-HV-9",
+      "date": "2026-05-27",
+      "racecourse": "HV",
+      "raceNo": 9,
+      "stake": 50,
+      "knownReturn": 0,
+      "knownProfit": -50,
+      "cumulativeProfit": -134226.2,
+      "drawdown": 134377.2,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2024_K283",
+        "horseNo": 9,
+        "horseName": "HONEST WITNESS",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -30,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-31-ST-1",
+      "date": "2026-05-31",
+      "racecourse": "ST",
+      "raceNo": 1,
+      "stake": 10,
+      "knownReturn": 0,
+      "knownProfit": -10,
+      "cumulativeProfit": -134236.2,
+      "drawdown": 134387.2,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2025_L308",
+        "horseNo": 6,
+        "horseName": "SHARP PLANET",
+        "stakeInvolvingHorse": 10
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -10,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-31-ST-2",
+      "date": "2026-05-31",
+      "racecourse": "ST",
+      "raceNo": 2,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -134266.2,
+      "drawdown": 134417.2,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2023_J323",
+        "horseNo": 5,
+        "horseName": "GRAND NOVA",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-31-ST-3",
+      "date": "2026-05-31",
+      "racecourse": "ST",
+      "raceNo": 3,
+      "stake": 30,
+      "knownReturn": 53.5,
+      "knownProfit": 23.5,
+      "cumulativeProfit": -134242.7,
+      "drawdown": 134393.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L264",
+        "horseNo": 1,
+        "horseName": "PAPAYA BROSE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 15.5,
+        "PLACE": 8,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-31-ST-4",
+      "date": "2026-05-31",
+      "racecourse": "ST",
+      "raceNo": 4,
+      "stake": 100,
+      "knownReturn": 55,
+      "knownProfit": -45,
+      "cumulativeProfit": -134287.7,
+      "drawdown": 134438.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2022_H465",
+        "horseNo": 13,
+        "horseName": "THE CONCENTRATION",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 5,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-05-31-ST-5",
+      "date": "2026-05-31",
+      "racecourse": "ST",
+      "raceNo": 5,
+      "stake": 50,
+      "knownReturn": 112.5,
+      "knownProfit": 62.5,
+      "cumulativeProfit": -134225.2,
+      "drawdown": 134376.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J180",
+        "horseNo": 8,
+        "horseName": "AEROINVINCIBLE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 31.5,
+        "QUINELLA_PLACE": 31,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-31-ST-6",
+      "date": "2026-05-31",
+      "racecourse": "ST",
+      "raceNo": 6,
+      "stake": 50,
+      "knownReturn": 0,
+      "knownProfit": -50,
+      "cumulativeProfit": -134275.2,
+      "drawdown": 134426.2,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2022_H168",
+        "horseNo": 12,
+        "horseName": "ROMANTIC FANTASY",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -30,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-31-ST-7",
+      "date": "2026-05-31",
+      "racecourse": "ST",
+      "raceNo": 7,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -134305.2,
+      "drawdown": 134456.2,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2024_K032",
+        "horseNo": 7,
+        "horseName": "SKY JEWELLERY",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-05-31-ST-8",
+      "date": "2026-05-31",
+      "racecourse": "ST",
+      "raceNo": 8,
+      "stake": 100,
+      "knownReturn": 11.5,
+      "knownProfit": -88.5,
+      "cumulativeProfit": -134393.7,
+      "drawdown": 134544.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K318",
+        "horseNo": 2,
+        "horseName": "INVICTUS DRAGON",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -38.5,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-05-31-ST-9",
+      "date": "2026-05-31",
+      "racecourse": "ST",
+      "raceNo": 9,
+      "stake": 100,
+      "knownReturn": 54.5,
+      "knownProfit": -45.5,
+      "cumulativeProfit": -134439.2,
+      "drawdown": 134590.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K173",
+        "horseNo": 8,
+        "horseName": "CRIMSON FLASH",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": 18.5,
+        "PLACE": -24,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-05-31-ST-10",
+      "date": "2026-05-31",
+      "racecourse": "ST",
+      "raceNo": 10,
+      "stake": 100,
+      "knownReturn": 33,
+      "knownProfit": -67,
+      "cumulativeProfit": -134506.2,
+      "drawdown": 134657.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K033",
+        "horseNo": 3,
+        "horseName": "ENDUED",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -17,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-05-31-ST-11",
+      "date": "2026-05-31",
+      "racecourse": "ST",
+      "raceNo": 11,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -134536.2,
+      "drawdown": 134687.2,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2025_L004",
+        "horseNo": 2,
+        "horseName": "SMART GOLF",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-03-HV-1",
+      "date": "2026-06-03",
+      "racecourse": "HV",
+      "raceNo": 1,
+      "stake": 100,
+      "knownReturn": 53,
+      "knownProfit": -47,
+      "cumulativeProfit": -134583.2,
+      "drawdown": 134734.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J193",
+        "horseNo": 9,
+        "horseName": "WAH MAY WAI WAI",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": 17,
+        "PLACE": -24,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-06-03-HV-2",
+      "date": "2026-06-03",
+      "racecourse": "HV",
+      "raceNo": 2,
+      "stake": 30,
+      "knownReturn": 166,
+      "knownProfit": 136,
+      "cumulativeProfit": -134447.2,
+      "drawdown": 134598.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K189",
+        "horseNo": 4,
+        "horseName": "MAJESTIC DELIGHT",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 93,
+        "PLACE": 43,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-03-HV-3",
+      "date": "2026-06-03",
+      "racecourse": "HV",
+      "raceNo": 3,
+      "stake": 50,
+      "knownReturn": 189.5,
+      "knownProfit": 139.5,
+      "cumulativeProfit": -134307.7,
+      "drawdown": 134458.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K553",
+        "horseNo": 4,
+        "horseName": "LEADING AGILITY",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 35,
+        "QUINELLA_PLACE": 104.5,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-03-HV-4",
+      "date": "2026-06-03",
+      "racecourse": "HV",
+      "raceNo": 4,
+      "stake": 100,
+      "knownReturn": 50,
+      "knownProfit": -50,
+      "cumulativeProfit": -134357.7,
+      "drawdown": 134508.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J098",
+        "horseNo": 5,
+        "horseName": "TAKE ACTION",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 0,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-06-03-HV-5",
+      "date": "2026-06-03",
+      "racecourse": "HV",
+      "raceNo": 5,
+      "stake": 100,
+      "knownReturn": 71,
+      "knownProfit": -29,
+      "cumulativeProfit": -134386.7,
+      "drawdown": 134537.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2022_H173",
+        "horseNo": 10,
+        "horseName": "PODIUM",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": 16.5,
+        "PLACE": -5.5,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-06-03-HV-6",
+      "date": "2026-06-03",
+      "racecourse": "HV",
+      "raceNo": 6,
+      "stake": 30,
+      "knownReturn": 53.5,
+      "knownProfit": 23.5,
+      "cumulativeProfit": -134363.2,
+      "drawdown": 134514.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2022_H459",
+        "horseNo": 1,
+        "horseName": "THE HEIR",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 18.5,
+        "PLACE": 5,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-03-HV-7",
+      "date": "2026-06-03",
+      "racecourse": "HV",
+      "raceNo": 7,
+      "stake": 30,
+      "knownReturn": 46,
+      "knownProfit": 16,
+      "cumulativeProfit": -134347.2,
+      "drawdown": 134498.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J539",
+        "horseNo": 7,
+        "horseName": "KING PROFIT",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 26,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-03-HV-8",
+      "date": "2026-06-03",
+      "racecourse": "HV",
+      "raceNo": 8,
+      "stake": 50,
+      "knownReturn": 82.5,
+      "knownProfit": 32.5,
+      "cumulativeProfit": -134314.7,
+      "drawdown": 134465.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K566",
+        "horseNo": 9,
+        "horseName": "ARMOR GOLDEN EAGLE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -12,
+        "QUINELLA_PLACE": 44.5,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-03-HV-9",
+      "date": "2026-06-03",
+      "racecourse": "HV",
+      "raceNo": 9,
+      "stake": 50,
+      "knownReturn": 32,
+      "knownProfit": -18,
+      "cumulativeProfit": -134332.7,
+      "drawdown": 134483.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L151",
+        "horseNo": 4,
+        "horseName": "WITHOUT COMPARE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 2,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-07-ST-1",
+      "date": "2026-06-07",
+      "racecourse": "ST",
+      "raceNo": 1,
+      "stake": 100,
+      "knownReturn": 70.5,
+      "knownProfit": -29.5,
+      "cumulativeProfit": -134362.2,
+      "drawdown": 134513.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2022_H234",
+        "horseNo": 4,
+        "horseName": "MEEPMEEP",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": 18,
+        "PLACE": -7.5,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-06-07-ST-2",
+      "date": "2026-06-07",
+      "racecourse": "ST",
+      "raceNo": 2,
+      "stake": 30,
+      "knownReturn": 29,
+      "knownProfit": -1,
+      "cumulativeProfit": -134363.2,
+      "drawdown": 134514.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K239",
+        "horseNo": 1,
+        "horseName": "WINNING MACHINE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 9,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-07-ST-3",
+      "date": "2026-06-07",
+      "racecourse": "ST",
+      "raceNo": 3,
+      "stake": 100,
+      "knownReturn": 71.5,
+      "knownProfit": -28.5,
+      "cumulativeProfit": -134391.7,
+      "drawdown": 134542.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L159",
+        "horseNo": 2,
+        "horseName": "MASTER PAYMENT",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 2,
+        "QUINELLA_PLACE": -10.5,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-06-07-ST-4",
+      "date": "2026-06-07",
+      "racecourse": "ST",
+      "raceNo": 4,
+      "stake": 30,
+      "knownReturn": 34,
+      "knownProfit": 4,
+      "cumulativeProfit": -134387.7,
+      "drawdown": 134538.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K582",
+        "horseNo": 6,
+        "horseName": "MASTER LUCKY",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 14,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-07-ST-5",
+      "date": "2026-06-07",
+      "racecourse": "ST",
+      "raceNo": 5,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -134417.7,
+      "drawdown": 134568.7,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2023_J146",
+        "horseNo": 9,
+        "horseName": "YODA'S CHOICE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-07-ST-6",
+      "date": "2026-06-07",
+      "racecourse": "ST",
+      "raceNo": 6,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -134447.7,
+      "drawdown": 134598.7,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2023_J397",
+        "horseNo": 6,
+        "horseName": "BLING BLING GENIUS",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-07-ST-7",
+      "date": "2026-06-07",
+      "racecourse": "ST",
+      "raceNo": 7,
+      "stake": 50,
+      "knownReturn": 62,
+      "knownProfit": 12,
+      "cumulativeProfit": -134435.7,
+      "drawdown": 134586.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K391",
+        "horseNo": 4,
+        "horseName": "LITTLE MONSTER",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -13,
+        "QUINELLA_PLACE": 25,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-07-ST-8",
+      "date": "2026-06-07",
+      "racecourse": "ST",
+      "raceNo": 8,
+      "stake": 10,
+      "knownReturn": 0,
+      "knownProfit": -10,
+      "cumulativeProfit": -134445.7,
+      "drawdown": 134596.7,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2024_K180",
+        "horseNo": 5,
+        "horseName": "SUPER STRONG KID",
+        "stakeInvolvingHorse": 10
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -10,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-07-ST-9",
+      "date": "2026-06-07",
+      "racecourse": "ST",
+      "raceNo": 9,
+      "stake": 50,
+      "knownReturn": 0,
+      "knownProfit": -50,
+      "cumulativeProfit": -134495.7,
+      "drawdown": 134646.7,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2023_J396",
+        "horseNo": 11,
+        "horseName": "THRIVING BROTHERS",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -30,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-07-ST-10",
+      "date": "2026-06-07",
+      "racecourse": "ST",
+      "raceNo": 10,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -134525.7,
+      "drawdown": 134676.7,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2024_K236",
+        "horseNo": 6,
+        "horseName": "RISING FORCE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-07-ST-11",
+      "date": "2026-06-07",
+      "racecourse": "ST",
+      "raceNo": 11,
+      "stake": 100,
+      "knownReturn": 25,
+      "knownProfit": -75,
+      "cumulativeProfit": -134600.7,
+      "drawdown": 134751.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L121",
+        "horseNo": 4,
+        "horseName": "THUNDER KIT",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -25,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-06-10-HV-1",
+      "date": "2026-06-10",
+      "racecourse": "HV",
+      "raceNo": 1,
+      "stake": 50,
+      "knownReturn": 33,
+      "knownProfit": -17,
+      "cumulativeProfit": -134617.7,
+      "drawdown": 134768.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2022_H486",
+        "horseNo": 1,
+        "horseName": "KINGLY DEMEANOR",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 3,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-10-HV-2",
+      "date": "2026-06-10",
+      "racecourse": "HV",
+      "raceNo": 2,
+      "stake": 50,
+      "knownReturn": 0,
+      "knownProfit": -50,
+      "cumulativeProfit": -134667.7,
+      "drawdown": 134818.7,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2021_G292",
+        "horseNo": 11,
+        "horseName": "OUR LUCKY GLORY",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -30,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-10-HV-3",
+      "date": "2026-06-10",
+      "racecourse": "HV",
+      "raceNo": 3,
+      "stake": 10,
+      "knownReturn": 0,
+      "knownProfit": -10,
+      "cumulativeProfit": -134677.7,
+      "drawdown": 134828.7,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2025_L200",
+        "horseNo": 3,
+        "horseName": "BULLISH NOVA",
+        "stakeInvolvingHorse": 10
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -10,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-10-HV-5",
+      "date": "2026-06-10",
+      "racecourse": "HV",
+      "raceNo": 5,
+      "stake": 100,
+      "knownReturn": 17.5,
+      "knownProfit": -82.5,
+      "cumulativeProfit": -134760.2,
+      "drawdown": 134911.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J227",
+        "horseNo": 6,
+        "horseName": "THE AZURE",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -32.5,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-06-10-HV-6",
+      "date": "2026-06-10",
+      "racecourse": "HV",
+      "raceNo": 6,
+      "stake": 50,
+      "knownReturn": 46.5,
+      "knownProfit": -3.5,
+      "cumulativeProfit": -134763.7,
+      "drawdown": 134914.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K479",
+        "horseNo": 2,
+        "horseName": "SUPERB KING",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -16.5,
+        "QUINELLA_PLACE": 13,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-10-HV-7",
+      "date": "2026-06-10",
+      "racecourse": "HV",
+      "raceNo": 7,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -134793.7,
+      "drawdown": 134944.7,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2024_K004",
+        "horseNo": 3,
+        "horseName": "THE AUSPICIOUS",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-10-HV-8",
+      "date": "2026-06-10",
+      "racecourse": "HV",
+      "raceNo": 8,
+      "stake": 100,
+      "knownReturn": 24,
+      "knownProfit": -76,
+      "cumulativeProfit": -134869.7,
+      "drawdown": 135020.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L234",
+        "horseNo": 8,
+        "horseName": "TYCOON RESOURCES",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -26,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-06-10-HV-9",
+      "date": "2026-06-10",
+      "racecourse": "HV",
+      "raceNo": 9,
+      "stake": 50,
+      "knownReturn": 29,
+      "knownProfit": -21,
+      "cumulativeProfit": -134890.7,
+      "drawdown": 135041.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J290",
+        "horseNo": 1,
+        "horseName": "FLYING WROTE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -1,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-13-ST-1",
+      "date": "2026-06-13",
+      "racecourse": "ST",
+      "raceNo": 1,
+      "stake": 50,
+      "knownReturn": 72.5,
+      "knownProfit": 22.5,
+      "cumulativeProfit": -134868.2,
+      "drawdown": 135019.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L393",
+        "horseNo": 7,
+        "horseName": "QUANTUM WUKONG",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 3.5,
+        "QUINELLA_PLACE": 19,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-13-ST-2",
+      "date": "2026-06-13",
+      "racecourse": "ST",
+      "raceNo": 2,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -134898.2,
+      "drawdown": 135049.2,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2022_H464",
+        "horseNo": 3,
+        "horseName": "ROBOT KNIGHT",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-13-ST-3",
+      "date": "2026-06-13",
+      "racecourse": "ST",
+      "raceNo": 3,
+      "stake": 50,
+      "knownReturn": 281,
+      "knownProfit": 231,
+      "cumulativeProfit": -134667.2,
+      "drawdown": 134818.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K041",
+        "horseNo": 4,
+        "horseName": "SKY DEEP",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 88,
+        "QUINELLA_PLACE": 143,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-13-ST-4",
+      "date": "2026-06-13",
+      "racecourse": "ST",
+      "raceNo": 4,
+      "stake": 50,
+      "knownReturn": 60.5,
+      "knownProfit": 10.5,
+      "cumulativeProfit": -134656.7,
+      "drawdown": 134807.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K260",
+        "horseNo": 6,
+        "horseName": "ABSOLUTE HONOUR",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -14,
+        "QUINELLA_PLACE": 24.5,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-13-ST-5",
+      "date": "2026-06-13",
+      "racecourse": "ST",
+      "raceNo": 5,
+      "stake": 50,
+      "knownReturn": 25,
+      "knownProfit": -25,
+      "cumulativeProfit": -134681.7,
+      "drawdown": 134832.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K405",
+        "horseNo": 1,
+        "horseName": "JUICY DRAGON",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -5,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-13-ST-6",
+      "date": "2026-06-13",
+      "racecourse": "ST",
+      "raceNo": 6,
+      "stake": 50,
+      "knownReturn": 59,
+      "knownProfit": 9,
+      "cumulativeProfit": -134672.7,
+      "drawdown": 134823.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L087",
+        "horseNo": 11,
+        "horseName": "GORGEOUS VICTORY",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 9.5,
+        "QUINELLA_PLACE": -0.5,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-13-ST-7",
+      "date": "2026-06-13",
+      "racecourse": "ST",
+      "raceNo": 7,
+      "stake": 50,
+      "knownReturn": 62.5,
+      "knownProfit": 12.5,
+      "cumulativeProfit": -134660.2,
+      "drawdown": 134811.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K542",
+        "horseNo": 6,
+        "horseName": "LUCRATIVE EIGHT",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 12,
+        "QUINELLA_PLACE": 0.5,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-13-ST-8",
+      "date": "2026-06-13",
+      "racecourse": "ST",
+      "raceNo": 8,
+      "stake": 50,
+      "knownReturn": 0,
+      "knownProfit": -50,
+      "cumulativeProfit": -134710.2,
+      "drawdown": 134861.2,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2023_J514",
+        "horseNo": 5,
+        "horseName": "MAX QUE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -30,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-13-ST-9",
+      "date": "2026-06-13",
+      "racecourse": "ST",
+      "raceNo": 9,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -134740.2,
+      "drawdown": 134891.2,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2023_J540",
+        "horseNo": 1,
+        "horseName": "VICTORY SKY",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-13-ST-10",
+      "date": "2026-06-13",
+      "racecourse": "ST",
+      "raceNo": 10,
+      "stake": 50,
+      "knownReturn": 127,
+      "knownProfit": 77,
+      "cumulativeProfit": -134663.2,
+      "drawdown": 134814.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K192",
+        "horseNo": 8,
+        "horseName": "BIG RETURN",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 37.5,
+        "QUINELLA_PLACE": 39.5,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-13-ST-11",
+      "date": "2026-06-13",
+      "racecourse": "ST",
+      "raceNo": 11,
+      "stake": 30,
+      "knownReturn": 27,
+      "knownProfit": -3,
+      "cumulativeProfit": -134666.2,
+      "drawdown": 134817.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K245",
+        "horseNo": 3,
+        "horseName": "SUPER EXPRESS",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 7,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-21-ST-1",
+      "date": "2026-06-21",
+      "racecourse": "ST",
+      "raceNo": 1,
+      "stake": 30,
+      "knownReturn": 143.5,
+      "knownProfit": 113.5,
+      "cumulativeProfit": -134552.7,
+      "drawdown": 134703.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L204",
+        "horseNo": 5,
+        "horseName": "RAPID PHANTOM",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 82.5,
+        "PLACE": 31,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-21-ST-2",
+      "date": "2026-06-21",
+      "racecourse": "ST",
+      "raceNo": 2,
+      "stake": 30,
+      "knownReturn": 75,
+      "knownProfit": 45,
+      "cumulativeProfit": -134507.7,
+      "drawdown": 134658.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K239",
+        "horseNo": 2,
+        "horseName": "WINNING MACHINE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 30,
+        "PLACE": 15,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-21-ST-3",
+      "date": "2026-06-21",
+      "racecourse": "ST",
+      "raceNo": 3,
+      "stake": 30,
+      "knownReturn": 66.5,
+      "knownProfit": 36.5,
+      "cumulativeProfit": -134471.2,
+      "drawdown": 134622.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L013",
+        "horseNo": 1,
+        "horseName": "PACKING GLORY",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 25.5,
+        "PLACE": 11,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-21-ST-4",
+      "date": "2026-06-21",
+      "racecourse": "ST",
+      "raceNo": 4,
+      "stake": 30,
+      "knownReturn": 35,
+      "knownProfit": 5,
+      "cumulativeProfit": -134466.2,
+      "drawdown": 134617.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K105",
+        "horseNo": 3,
+        "horseName": "OLDTOWN",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 15,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-21-ST-5",
+      "date": "2026-06-21",
+      "racecourse": "ST",
+      "raceNo": 5,
+      "stake": 100,
+      "knownReturn": 31,
+      "knownProfit": -69,
+      "cumulativeProfit": -134535.2,
+      "drawdown": 134686.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K443",
+        "horseNo": 12,
+        "horseName": "LUCKY YEAR",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -19,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-06-21-ST-6",
+      "date": "2026-06-21",
+      "racecourse": "ST",
+      "raceNo": 6,
+      "stake": 30,
+      "knownReturn": 67,
+      "knownProfit": 37,
+      "cumulativeProfit": -134498.2,
+      "drawdown": 134649.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K121",
+        "horseNo": 3,
+        "horseName": "COME FAST FAY FAY",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 27,
+        "PLACE": 10,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-21-ST-7",
+      "date": "2026-06-21",
+      "racecourse": "ST",
+      "raceNo": 7,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -134528.2,
+      "drawdown": 134679.2,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2024_K061",
+        "horseNo": 10,
+        "horseName": "SIX PACK",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-21-ST-8",
+      "date": "2026-06-21",
+      "racecourse": "ST",
+      "raceNo": 8,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -134558.2,
+      "drawdown": 134709.2,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2024_K031",
+        "horseNo": 11,
+        "horseName": "SHAMUS STORM",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-21-ST-9",
+      "date": "2026-06-21",
+      "racecourse": "ST",
+      "raceNo": 9,
+      "stake": 100,
+      "knownReturn": 518.5,
+      "knownProfit": 418.5,
+      "cumulativeProfit": -134139.7,
+      "drawdown": 134290.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K012",
+        "horseNo": 11,
+        "horseName": "ROMANTIC THOR",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 53.5,
+        "QUINELLA_PLACE": 385,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-06-21-ST-10",
+      "date": "2026-06-21",
+      "racecourse": "ST",
+      "raceNo": 10,
+      "stake": 100,
+      "knownReturn": 38,
+      "knownProfit": -62,
+      "cumulativeProfit": -134201.7,
+      "drawdown": 134352.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K570",
+        "horseNo": 13,
+        "horseName": "PACKING KING",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -12,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-06-21-ST-11",
+      "date": "2026-06-21",
+      "racecourse": "ST",
+      "raceNo": 11,
+      "stake": 10,
+      "knownReturn": 0,
+      "knownProfit": -10,
+      "cumulativeProfit": -134211.7,
+      "drawdown": 134362.7,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2023_J421",
+        "horseNo": 10,
+        "horseName": "MONARCH COUNTY",
+        "stakeInvolvingHorse": 10
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -10,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-24-HV-1",
+      "date": "2026-06-24",
+      "racecourse": "HV",
+      "raceNo": 1,
+      "stake": 50,
+      "knownReturn": 0,
+      "knownProfit": -50,
+      "cumulativeProfit": -134261.7,
+      "drawdown": 134412.7,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2023_J508",
+        "horseNo": 2,
+        "horseName": "HAILTOTHEVICTORS",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -30,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-24-HV-2",
+      "date": "2026-06-24",
+      "racecourse": "HV",
+      "raceNo": 2,
+      "stake": 10,
+      "knownReturn": 0,
+      "knownProfit": -10,
+      "cumulativeProfit": -134271.7,
+      "drawdown": 134422.7,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2022_H419",
+        "horseNo": 8,
+        "horseName": "WINDICATOR FAMILY",
+        "stakeInvolvingHorse": 10
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -10,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-24-HV-3",
+      "date": "2026-06-24",
+      "racecourse": "HV",
+      "raceNo": 3,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -134301.7,
+      "drawdown": 134452.7,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2023_J098",
+        "horseNo": 6,
+        "horseName": "TAKE ACTION",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-24-HV-4",
+      "date": "2026-06-24",
+      "racecourse": "HV",
+      "raceNo": 4,
+      "stake": 100,
+      "knownReturn": 26,
+      "knownProfit": -74,
+      "cumulativeProfit": -134375.7,
+      "drawdown": 134526.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J137",
+        "horseNo": 4,
+        "horseName": "GLORIOUS JOURNEY",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -24,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-06-24-HV-5",
+      "date": "2026-06-24",
+      "racecourse": "HV",
+      "raceNo": 5,
+      "stake": 100,
+      "knownReturn": 149.5,
+      "knownProfit": 49.5,
+      "cumulativeProfit": -134326.2,
+      "drawdown": 134477.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J487",
+        "horseNo": 2,
+        "horseName": "MEOWTH",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 11,
+        "QUINELLA_PLACE": -2.5,
+        "QUINELLA": 51
+      }
+    },
+    {
+      "raceId": "2026-06-24-HV-6",
+      "date": "2026-06-24",
+      "racecourse": "HV",
+      "raceNo": 6,
+      "stake": 50,
+      "knownReturn": 0,
+      "knownProfit": -50,
+      "cumulativeProfit": -134376.2,
+      "drawdown": 134527.2,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2024_K007",
+        "horseNo": 1,
+        "horseName": "SPIRIT OF PEACE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -30,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-24-HV-7",
+      "date": "2026-06-24",
+      "racecourse": "HV",
+      "raceNo": 7,
+      "stake": 50,
+      "knownReturn": 22.5,
+      "knownProfit": -27.5,
+      "cumulativeProfit": -134403.7,
+      "drawdown": 134554.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J431",
+        "horseNo": 1,
+        "horseName": "HORSEPOWER",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -7.5,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-24-HV-8",
+      "date": "2026-06-24",
+      "racecourse": "HV",
+      "raceNo": 8,
+      "stake": 30,
+      "knownReturn": 28,
+      "knownProfit": -2,
+      "cumulativeProfit": -134405.7,
+      "drawdown": 134556.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2022_H459",
+        "horseNo": 7,
+        "horseName": "THE HEIR",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 8,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-24-HV-9",
+      "date": "2026-06-24",
+      "racecourse": "HV",
+      "raceNo": 9,
+      "stake": 30,
+      "knownReturn": 27,
+      "knownProfit": -3,
+      "cumulativeProfit": -134408.7,
+      "drawdown": 134559.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L240",
+        "horseNo": 5,
+        "horseName": "ROMANTIC GLADIATOR",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 7,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-27-ST-1",
+      "date": "2026-06-27",
+      "racecourse": "ST",
+      "raceNo": 1,
+      "stake": 30,
+      "knownReturn": 37,
+      "knownProfit": 7,
+      "cumulativeProfit": -134401.7,
+      "drawdown": 134552.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2022_H252",
+        "horseNo": 3,
+        "horseName": "ALWAYS FLUKE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 17,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-27-ST-2",
+      "date": "2026-06-27",
+      "racecourse": "ST",
+      "raceNo": 2,
+      "stake": 30,
+      "knownReturn": 59.5,
+      "knownProfit": 29.5,
+      "cumulativeProfit": -134372.2,
+      "drawdown": 134523.2,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J187",
+        "horseNo": 12,
+        "horseName": "VERBIER",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 19.5,
+        "PLACE": 10,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-27-ST-3",
+      "date": "2026-06-27",
+      "racecourse": "ST",
+      "raceNo": 3,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -134402.2,
+      "drawdown": 134553.2,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2024_K391",
+        "horseNo": 10,
+        "horseName": "LITTLE MONSTER",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-27-ST-4",
+      "date": "2026-06-27",
+      "racecourse": "ST",
+      "raceNo": 4,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -134432.2,
+      "drawdown": 134583.2,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2022_H382",
+        "horseNo": 2,
+        "horseName": "DOUBLE WIN",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-27-ST-5",
+      "date": "2026-06-27",
+      "racecourse": "ST",
+      "raceNo": 5,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -134462.2,
+      "drawdown": 134613.2,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2023_J533",
+        "horseNo": 1,
+        "horseName": "HAPPY UNIVERSE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-27-ST-6",
+      "date": "2026-06-27",
+      "racecourse": "ST",
+      "raceNo": 6,
+      "stake": 50,
+      "knownReturn": 0,
+      "knownProfit": -50,
+      "cumulativeProfit": -134512.2,
+      "drawdown": 134663.2,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2023_J222",
+        "horseNo": 10,
+        "horseName": "ENJOY GOLF",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -30,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-27-ST-7",
+      "date": "2026-06-27",
+      "racecourse": "ST",
+      "raceNo": 7,
+      "stake": 50,
+      "knownReturn": 21.5,
+      "knownProfit": -28.5,
+      "cumulativeProfit": -134540.7,
+      "drawdown": 134691.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L161",
+        "horseNo": 5,
+        "horseName": "GALLANT DESIGN",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -8.5,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-27-ST-8",
+      "date": "2026-06-27",
+      "racecourse": "ST",
+      "raceNo": 8,
+      "stake": 50,
+      "knownReturn": 44,
+      "knownProfit": -6,
+      "cumulativeProfit": -134546.7,
+      "drawdown": 134697.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J316",
+        "horseNo": 3,
+        "horseName": "BOTTOMUPTOGETHER",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 14,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-27-ST-9",
+      "date": "2026-06-27",
+      "racecourse": "ST",
+      "raceNo": 9,
+      "stake": 100,
+      "knownReturn": 17,
+      "knownProfit": -83,
+      "cumulativeProfit": -134629.7,
+      "drawdown": 134780.7,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K080",
+        "horseNo": 8,
+        "horseName": "RUN RUN SMART",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -33,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-06-27-ST-10",
+      "date": "2026-06-27",
+      "racecourse": "ST",
+      "raceNo": 10,
+      "stake": 50,
+      "knownReturn": 20.2,
+      "knownProfit": -29.8,
+      "cumulativeProfit": -134659.5,
+      "drawdown": 134810.5,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L232",
+        "horseNo": 6,
+        "horseName": "MR INCREDIBLE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -9.8,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-06-27-ST-11",
+      "date": "2026-06-27",
+      "racecourse": "ST",
+      "raceNo": 11,
+      "stake": 50,
+      "knownReturn": 71,
+      "knownProfit": 21,
+      "cumulativeProfit": -134638.5,
+      "drawdown": 134789.5,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J444",
+        "horseNo": 7,
+        "horseName": "DO YOUR PART",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -4.5,
+        "QUINELLA_PLACE": 25.5,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-07-01-ST-1",
+      "date": "2026-07-01",
+      "racecourse": "ST",
+      "raceNo": 1,
+      "stake": 50,
+      "knownReturn": 0,
+      "knownProfit": -50,
+      "cumulativeProfit": -134688.5,
+      "drawdown": 134839.5,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2022_H332",
+        "horseNo": 12,
+        "horseName": "HARRY'S HERO",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -30,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-07-01-ST-2",
+      "date": "2026-07-01",
+      "racecourse": "ST",
+      "raceNo": 2,
+      "stake": 50,
+      "knownReturn": 42,
+      "knownProfit": -8,
+      "cumulativeProfit": -134696.5,
+      "drawdown": 134847.5,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J535",
+        "horseNo": 4,
+        "horseName": "HE WAS ME",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 12,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-07-01-ST-3",
+      "date": "2026-07-01",
+      "racecourse": "ST",
+      "raceNo": 3,
+      "stake": 30,
+      "knownReturn": 31,
+      "knownProfit": 1,
+      "cumulativeProfit": -134695.5,
+      "drawdown": 134846.5,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K239",
+        "horseNo": 14,
+        "horseName": "WINNING MACHINE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 11,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-07-01-ST-4",
+      "date": "2026-07-01",
+      "racecourse": "ST",
+      "raceNo": 4,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -134725.5,
+      "drawdown": 134876.5,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2024_K277",
+        "horseNo": 13,
+        "horseName": "BETTER AND BETTER",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-07-01-ST-5",
+      "date": "2026-07-01",
+      "racecourse": "ST",
+      "raceNo": 5,
+      "stake": 100,
+      "knownReturn": 58,
+      "knownProfit": -42,
+      "cumulativeProfit": -134767.5,
+      "drawdown": 134918.5,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J481",
+        "horseNo": 6,
+        "horseName": "TOP DRAGON",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": 21,
+        "PLACE": -23,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-07-01-ST-6",
+      "date": "2026-07-01",
+      "racecourse": "ST",
+      "raceNo": 6,
+      "stake": 30,
+      "knownReturn": 28,
+      "knownProfit": -2,
+      "cumulativeProfit": -134769.5,
+      "drawdown": 134920.5,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L179",
+        "horseNo": 6,
+        "horseName": "STORM MIRROR",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 8,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-07-01-ST-7",
+      "date": "2026-07-01",
+      "racecourse": "ST",
+      "raceNo": 7,
+      "stake": 50,
+      "knownReturn": 113.5,
+      "knownProfit": 63.5,
+      "cumulativeProfit": -134706,
+      "drawdown": 134857,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L041",
+        "horseNo": 12,
+        "horseName": "LUCKY CANDY",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 31.5,
+        "QUINELLA_PLACE": 32,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-07-01-ST-8",
+      "date": "2026-07-01",
+      "racecourse": "ST",
+      "raceNo": 8,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -134736,
+      "drawdown": 134887,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2022_H475",
+        "horseNo": 1,
+        "horseName": "CIRCUIT FIERY",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-07-01-ST-9",
+      "date": "2026-07-01",
+      "racecourse": "ST",
+      "raceNo": 9,
+      "stake": 50,
+      "knownReturn": 0,
+      "knownProfit": -50,
+      "cumulativeProfit": -134786,
+      "drawdown": 134937,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2022_H447",
+        "horseNo": 13,
+        "horseName": "FAMILY FORTUNE",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": -30,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-07-01-ST-10",
+      "date": "2026-07-01",
+      "racecourse": "ST",
+      "raceNo": 10,
+      "stake": 50,
+      "knownReturn": 34,
+      "knownProfit": -16,
+      "cumulativeProfit": -134802,
+      "drawdown": 134953,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K554",
+        "horseNo": 2,
+        "horseName": "AMAZING PARTNERS",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 4,
+        "QUINELLA_PLACE": -20,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-07-01-ST-11",
+      "date": "2026-07-01",
+      "racecourse": "ST",
+      "raceNo": 11,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -134832,
+      "drawdown": 134983,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2025_L234",
+        "horseNo": 2,
+        "horseName": "TYCOON RESOURCES",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-07-04-ST-1",
+      "date": "2026-07-04",
+      "racecourse": "ST",
+      "raceNo": 1,
+      "stake": 30,
+      "knownReturn": 0,
+      "knownProfit": -30,
+      "cumulativeProfit": -134862,
+      "drawdown": 135013,
+      "hit": false,
+      "mainExposure": {
+        "horseId": "HK_2025_L317",
+        "horseNo": 8,
+        "horseName": "EVER WEALTH",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -20,
+        "QUINELLA_PLACE": 0,
+        "QUINELLA": 0
+      }
+    },
+    {
+      "raceId": "2026-07-04-ST-2",
+      "date": "2026-07-04",
+      "racecourse": "ST",
+      "raceNo": 2,
+      "stake": 100,
+      "knownReturn": 22,
+      "knownProfit": -78,
+      "cumulativeProfit": -134940,
+      "drawdown": 135091,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J255",
+        "horseNo": 10,
+        "horseName": "SUPREME WINNER",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -28,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-07-04-ST-3",
+      "date": "2026-07-04",
+      "racecourse": "ST",
+      "raceNo": 3,
+      "stake": 100,
+      "knownReturn": 129,
+      "knownProfit": 29,
+      "cumulativeProfit": -134911,
+      "drawdown": 135062,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J532",
+        "horseNo": 11,
+        "horseName": "MACANESE MASTER",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 31,
+        "QUINELLA_PLACE": 18,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-07-04-ST-4",
+      "date": "2026-07-04",
+      "racecourse": "ST",
+      "raceNo": 4,
+      "stake": 100,
+      "knownReturn": 62.2,
+      "knownProfit": -37.8,
+      "cumulativeProfit": -134948.8,
+      "drawdown": 135099.8,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K533",
+        "horseNo": 5,
+        "horseName": "TURQUOISE VELOCITY",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": 13,
+        "PLACE": -10.8,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-07-04-ST-5",
+      "date": "2026-07-04",
+      "racecourse": "ST",
+      "raceNo": 5,
+      "stake": 100,
+      "knownReturn": 26,
+      "knownProfit": -74,
+      "cumulativeProfit": -135022.8,
+      "drawdown": 135173.8,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K416",
+        "horseNo": 8,
+        "horseName": "DECISION LINK",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -24,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-07-04-ST-6",
+      "date": "2026-07-04",
+      "racecourse": "ST",
+      "raceNo": 6,
+      "stake": 100,
+      "knownReturn": 15,
+      "knownProfit": -85,
+      "cumulativeProfit": -135107.8,
+      "drawdown": 135258.8,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K297",
+        "horseNo": 1,
+        "horseName": "PEJIBAYE",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -35,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-07-04-ST-7",
+      "date": "2026-07-04",
+      "racecourse": "ST",
+      "raceNo": 7,
+      "stake": 100,
+      "knownReturn": 42.5,
+      "knownProfit": -57.5,
+      "cumulativeProfit": -135165.3,
+      "drawdown": 135316.3,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L297",
+        "horseNo": 7,
+        "horseName": "LEAN ERA",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -7.5,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-07-04-ST-8",
+      "date": "2026-07-04",
+      "racecourse": "ST",
+      "raceNo": 8,
+      "stake": 100,
+      "knownReturn": 60,
+      "knownProfit": -40,
+      "cumulativeProfit": -135205.3,
+      "drawdown": 135356.3,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2024_K184",
+        "horseNo": 2,
+        "horseName": "MR COOL",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": 10,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-07-04-ST-9",
+      "date": "2026-07-04",
+      "racecourse": "ST",
+      "raceNo": 9,
+      "stake": 100,
+      "knownReturn": 69,
+      "knownProfit": -31,
+      "cumulativeProfit": -135236.3,
+      "drawdown": 135387.3,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L083",
+        "horseNo": 5,
+        "horseName": "LEADING DRAGON",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": 6,
+        "PLACE": 3,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-07-04-ST-10",
+      "date": "2026-07-04",
+      "racecourse": "ST",
+      "raceNo": 10,
+      "stake": 100,
+      "knownReturn": 37.5,
+      "knownProfit": -62.5,
+      "cumulativeProfit": -135298.8,
+      "drawdown": 135449.8,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2023_J417",
+        "horseNo": 1,
+        "horseName": "PERFECT GENERAL",
+        "stakeInvolvingHorse": 60
+      },
+      "poolProfit": {
+        "WIN": -10,
+        "PLACE": -12.5,
+        "QUINELLA_PLACE": -30,
+        "QUINELLA": -10
+      }
+    },
+    {
+      "raceId": "2026-07-04-ST-11",
+      "date": "2026-07-04",
+      "racecourse": "ST",
+      "raceNo": 11,
+      "stake": 50,
+      "knownReturn": 183,
+      "knownProfit": 133,
+      "cumulativeProfit": -135165.8,
+      "drawdown": 135316.8,
+      "hit": true,
+      "mainExposure": {
+        "horseId": "HK_2025_L148",
+        "horseNo": 1,
+        "horseName": "CHILL EASY",
+        "stakeInvolvingHorse": 30
+      },
+      "poolProfit": {
+        "WIN": 0,
+        "PLACE": 17,
+        "QUINELLA_PLACE": 116,
+        "QUINELLA": 0
+      }
+    }
+  ],
+  "warning": "Paper-simulated strategy risk report. ROI and drawdown can change materially once live odds, withdrawals, and missing pool dividends are captured.",
+  "dataSource": {
+    "source": "sqlite",
+    "database": "hkjc.sqlite",
+    "settledRaces": 14221
+  },
+  "modelOptions": {
+    "minEdge": 0,
+    "minProbability": 0.15,
+    "bankroll": 1000,
+    "maxStakePct": 0.0125,
+    "finalEdgeBuffer": 0.08,
+    "allowProbabilityOnly": true
+  }
+}

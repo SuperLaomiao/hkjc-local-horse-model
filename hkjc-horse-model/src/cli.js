@@ -16,6 +16,7 @@ import {
   buildModelLeaderboard,
   predictionRowsFromLedger,
 } from './model-leaderboard.js';
+import { buildStrategyRiskReport } from './strategy-risk-report.js';
 import {
   fetchFixtureMeetings,
   fetchMeetingRaceCards,
@@ -96,6 +97,11 @@ async function main(argv) {
 
   if (command === 'train-model') {
     await trainModelCommand(args);
+    return;
+  }
+
+  if (command === 'strategy-risk-report') {
+    await strategyRiskReportCommand(args);
     return;
   }
 
@@ -310,6 +316,45 @@ async function trainModelCommand(args) {
   if (result.status !== 0) {
     throw new Error(`train-model failed with exit code ${result.status}`);
   }
+}
+
+async function strategyRiskReportCommand(args) {
+  const dbPath = path.resolve(args.db ?? sqliteDbPath);
+  const settledRaces = loadRacesFromDatabase({ dbPath, status: 'settled' });
+  const ledger = buildRollingPredictionLedger(settledRaces, {
+    minEdge: args.minEdge == null ? 0 : Number(args.minEdge),
+    minProbability: args.minProbability == null ? 0.15 : Number(args.minProbability),
+    bankroll: args.bankroll == null ? 1000 : Number(args.bankroll),
+    maxStakePct: args.maxStakePct == null ? 0.0125 : Number(args.maxStakePct),
+    finalEdgeBuffer: args.finalEdgeBuffer == null ? 0.08 : Number(args.finalEdgeBuffer),
+    allowProbabilityOnly: args.allowProbabilityOnly !== 'false',
+  });
+  const report = buildStrategyRiskReport(ledger.entries, {
+    maxTimelineRows: args.maxTimelineRows == null ? 200 : Number(args.maxTimelineRows),
+  });
+  const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'strategy-risk-report.json'));
+
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeJson(outputPath, {
+    ...report,
+    dataSource: {
+      source: 'sqlite',
+      database: publicDatabaseLabel(dbPath),
+      settledRaces: settledRaces.length,
+    },
+    modelOptions: {
+      minEdge: args.minEdge == null ? 0 : Number(args.minEdge),
+      minProbability: args.minProbability == null ? 0.15 : Number(args.minProbability),
+      bankroll: args.bankroll == null ? 1000 : Number(args.bankroll),
+      maxStakePct: args.maxStakePct == null ? 0.0125 : Number(args.maxStakePct),
+      finalEdgeBuffer: args.finalEdgeBuffer == null ? 0.08 : Number(args.finalEdgeBuffer),
+      allowProbabilityOnly: args.allowProbabilityOnly !== 'false',
+    },
+  });
+
+  console.log(`Strategy risk report from SQLite: ${report.summary.activeRaces}/${report.summary.races} active races`);
+  console.log(`Known strategy profit ${formatSigned(report.summary.knownProfit)}, ROI ${percent(report.summary.knownRoi)}, max drawdown ${money(report.summary.maxDrawdown)}`);
+  console.log(`Saved strategy risk report to ${outputPath}`);
 }
 
 function recordDashboardRecommendationRun({ dbPath, snapshot, args }) {
@@ -755,6 +800,7 @@ Commands:
   training-dataset --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/training-dataset.json
   model-leaderboard --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/model-leaderboard.json
   train-model --input hkjc-horse-model/data/processed/training-dataset.json --output hkjc-horse-model/data/processed/model-training-report.json
+  strategy-risk-report --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/strategy-risk-report.json
   market-snapshot --input hkjc-horse-model/data/market-snapshot.json --db hkjc-horse-model/data/hkjc.sqlite
   recommendation-audit --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/latest-recommendation-audit.json
   fetch-url  https://racing.hkjc.com/en-us/local/information/localresults?RaceNo=2&Racecourse=ST&racedate=2026%2F01%2F04
