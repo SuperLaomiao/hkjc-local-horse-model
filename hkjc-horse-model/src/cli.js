@@ -16,6 +16,7 @@ import {
   buildModelLeaderboard,
   predictionRowsFromLedger,
 } from './model-leaderboard.js';
+import { buildExternalModelComparison } from './external-model-comparison.js';
 import { buildStrategyRiskReport } from './strategy-risk-report.js';
 import { buildMarketSnapshotCoverageReport } from './market-snapshot-coverage.js';
 import { buildMarketWindowResearchReport } from './market-window-research.js';
@@ -42,6 +43,7 @@ import {
   getDatabaseStats,
   loadMarketSnapshotCoverageSummary,
   loadRacesFromDatabase,
+  loadLatestMarketSnapshots,
   loadMarketSnapshots,
   loadRunnerMarketFeatures,
   loadRecommendationRuns,
@@ -109,6 +111,11 @@ async function main(argv) {
 
   if (command === 'model-leaderboard') {
     await modelLeaderboardCommand(args);
+    return;
+  }
+
+  if (command === 'external-model-comparison') {
+    await externalModelComparisonCommand(args);
     return;
   }
 
@@ -331,6 +338,86 @@ async function modelLeaderboardCommand(args) {
 
   console.log(`Model leaderboard from SQLite: ${settledRaces.length} settled races`);
   console.log(`Saved model leaderboard to ${outputPath}`);
+}
+
+async function externalModelComparisonCommand(args) {
+  const dbPath = path.resolve(args.db ?? sqliteDbPath);
+  const settledRaces = loadRacesFromDatabase({ dbPath, status: 'settled' });
+  let upcomingRaces = loadRacesFromDatabase({ dbPath, status: 'upcoming' });
+  if (args.date) {
+    const date = normalizeRaceDate(args.date);
+    upcomingRaces = upcomingRaces.filter((race) => race.date === date);
+  }
+  if (args.venue ?? args.course ?? args.racecourse) {
+    const venue = String(args.venue ?? args.course ?? args.racecourse).toUpperCase();
+    upcomingRaces = upcomingRaces.filter((race) => String(race.racecourse).toUpperCase() === venue);
+  }
+  if (args.race ?? args.races ?? args.raceNo) {
+    const raceNos = new Set(parseRaceRange(args.race ?? args.races ?? args.raceNo));
+    upcomingRaces = upcomingRaces.filter((race) => raceNos.has(Number(race.raceNo)));
+  }
+
+  const trainingReportPath = path.resolve(
+    args.trainingReport
+    ?? args.modelReport
+    ?? path.join(processedDataDir, 'model-training-report.json'),
+  );
+  let trainingReport = null;
+  if (existsSync(trainingReportPath)) {
+    trainingReport = JSON.parse(await readFile(trainingReportPath, 'utf8'));
+  }
+  const marketOddsByRunner = loadLatestWinOddsByRunner({ dbPath, races: upcomingRaces });
+
+  const report = buildExternalModelComparison({
+    settledRaces,
+    upcomingRaces,
+    trainingReport,
+    marketOddsByRunner,
+    options: {
+      minEdge: args.minEdge == null ? 0 : Number(args.minEdge),
+      minProbability: args.minProbability == null ? 0.15 : Number(args.minProbability),
+      bankroll: args.bankroll == null ? 200 : Number(args.bankroll),
+      maxStakePct: args.maxStakePct == null ? 0.05 : Number(args.maxStakePct),
+      finalEdgeBuffer: args.finalEdgeBuffer == null ? 0.08 : Number(args.finalEdgeBuffer),
+    },
+  });
+  const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'external-model-comparison.json'));
+
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeJson(outputPath, {
+    ...report,
+    dataSource: {
+      source: 'sqlite',
+      database: publicDatabaseLabel(dbPath),
+      settledRaces: settledRaces.length,
+      upcomingRaces: upcomingRaces.length,
+      trainingReport: existsSync(trainingReportPath) ? publicInputLabel(trainingReportPath) : null,
+    },
+  });
+
+  console.log(`External model comparison: ${report.summary.upcomingRaces} upcoming races, ${report.summary.modelCount} model views`);
+  console.log(`Market-aware ready races: ${report.summary.marketAwareReadyRaces}/${report.summary.upcomingRaces}`);
+  console.log(`Saved external model comparison to ${outputPath}`);
+}
+
+function loadLatestWinOddsByRunner({ dbPath, races }) {
+  const byRunner = new Map();
+  for (const race of races) {
+    const latest = loadLatestMarketSnapshots({ dbPath, raceId: race.raceId });
+    for (const snapshot of latest.odds ?? []) {
+      if (snapshot.poolKey !== 'win') continue;
+      const horseNo = Number(snapshot.combination?.[0]);
+      const winOdds = Number(snapshot.oddsValue);
+      if (!Number.isInteger(horseNo) || !Number.isFinite(winOdds) || winOdds <= 1) continue;
+      byRunner.set(`${race.raceId}|${horseNo}`, {
+        winOdds,
+        capturedAt: snapshot.capturedAt,
+        minutesToPost: snapshot.minutesToPost,
+        source: snapshot.source,
+      });
+    }
+  }
+  return byRunner;
 }
 
 async function trainModelCommand(args) {
@@ -1035,6 +1122,7 @@ Commands:
   dashboard-db --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/dashboard.json --historyOutput hkjc-horse-model/data/processed/dashboard-history.json
   training-dataset --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/training-dataset.json
   model-leaderboard --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/model-leaderboard.json
+  external-model-comparison --date 2026-07-08 --venue HV --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/external-model-comparison-2026-07-08-HV.json
   train-model --input hkjc-horse-model/data/processed/training-dataset.json --output hkjc-horse-model/data/processed/model-training-report.json
   strategy-risk-report --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/strategy-risk-report.json
   market-snapshot --input hkjc-horse-model/data/market-snapshot.json --db hkjc-horse-model/data/hkjc.sqlite

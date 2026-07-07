@@ -113,6 +113,19 @@ Generate the current baseline model leaderboard:
 npm run hkjc:model-leaderboard -- --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/model-leaderboard.json
 ```
 
+Compare the current model with external GitHub-inspired model views for an
+upcoming meeting:
+
+```bash
+npm run hkjc:external-model-comparison -- --date 2026-07-08 --venue HV --db hkjc-horse-model/data/hkjc.sqlite --trainingReport hkjc-horse-model/data/processed/model-training-report.json --output hkjc-horse-model/data/processed/external-model-comparison-2026-07-08-HV.json
+```
+
+The comparison report includes the current local heuristic, a
+catowabisabi-inspired no-odds fundamental/Quinella proxy, a
+jerrydaphantom-inspired market-free calibrated proxy, and a market-aware proxy
+when live WIN odds have been imported. The external project views are research
+proxies unless they are separately validated on our own holdout history.
+
 Train the first offline Python baseline:
 
 ```bash
