@@ -8,6 +8,10 @@ import { backtestRaces, buildDashboardSnapshot, calibrateConfig } from './model.
 import { splitDashboardForPublishing } from './dashboard-publish.js';
 import { auditRecommendationRuns } from './recommendation-audit.js';
 import {
+  buildAsOfTrainingRows,
+  summarizeTrainingRows,
+} from './training-dataset.js';
+import {
   fetchFixtureMeetings,
   fetchMeetingRaceCards,
   fetchMeetingResults,
@@ -72,6 +76,11 @@ async function main(argv) {
 
   if (command === 'dashboard-db') {
     await dashboardDbCommand(args);
+    return;
+  }
+
+  if (command === 'training-dataset') {
+    await trainingDatasetCommand(args);
     return;
   }
 
@@ -204,6 +213,29 @@ async function dashboardDbCommand(args) {
   console.log(`Upcoming forecasts: ${snapshot.upcomingEntries.length}`);
   console.log(`Saved dashboard data to ${outputPath}`);
   console.log(`Saved dashboard history to ${historyOutputPath}`);
+}
+
+async function trainingDatasetCommand(args) {
+  const dbPath = path.resolve(args.db ?? sqliteDbPath);
+  const settledRaces = loadRacesFromDatabase({ dbPath, status: 'settled' });
+  const rows = buildAsOfTrainingRows(settledRaces);
+  const summary = summarizeTrainingRows(rows);
+  const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'training-dataset.json'));
+
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeJson(outputPath, {
+    generatedAt: summary.generatedAt,
+    dataSource: {
+      source: 'sqlite',
+      database: publicDatabaseLabel(dbPath),
+      settledRaces: settledRaces.length,
+    },
+    summary,
+    rows,
+  });
+
+  console.log(`Training dataset from SQLite: ${summary.rows} runner rows, ${summary.races} races`);
+  console.log(`Saved training dataset to ${outputPath}`);
 }
 
 function recordDashboardRecommendationRun({ dbPath, snapshot, args }) {
@@ -646,6 +678,7 @@ Commands:
   auto-run   --input hkjc-horse-model/data/raw --db hkjc-horse-model/data/hkjc.sqlite --output data/dashboard.json --auditOutput data/latest-recommendation-audit.json
   sync-db    --input hkjc-horse-model/data/raw --upcoming hkjc-horse-model/data/upcoming --db hkjc-horse-model/data/hkjc.sqlite
   dashboard-db --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/dashboard.json --historyOutput hkjc-horse-model/data/processed/dashboard-history.json
+  training-dataset --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/training-dataset.json
   market-snapshot --input hkjc-horse-model/data/market-snapshot.json --db hkjc-horse-model/data/hkjc.sqlite
   recommendation-audit --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/latest-recommendation-audit.json
   fetch-url  https://racing.hkjc.com/en-us/local/information/localresults?RaceNo=2&Racecourse=ST&racedate=2026%2F01%2F04

@@ -193,6 +193,41 @@ describe('local SQLite race store', () => {
     }
   });
 
+  it('exports an as-of training dataset from the local SQLite database', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-sqlite-'));
+    try {
+      const rawDir = path.join(tempDir, 'raw');
+      const dbPath = path.join(tempDir, 'hkjc.sqlite');
+      const outputPath = path.join(tempDir, 'training-dataset.json');
+      await mkdir(rawDir, { recursive: true });
+      await writeFile(path.join(rawDir, '2026-07-04-ST.json'), JSON.stringify([settledRace()], null, 2), 'utf8');
+      syncRaceFilesToDatabase({ dbPath, inputPath: rawDir, sourceKind: 'raw' });
+
+      const result = spawnSync(process.execPath, [
+        'hkjc-horse-model/src/cli.js',
+        'training-dataset',
+        '--db',
+        dbPath,
+        '--output',
+        outputPath,
+      ], {
+        cwd: path.resolve(import.meta.dirname, '..', '..'),
+        encoding: 'utf8',
+      });
+
+      assert.equal(result.status, 0, result.stderr || result.stdout);
+      assert.match(result.stdout, /Training dataset from SQLite/);
+      const payload = JSON.parse(await readFile(outputPath, 'utf8'));
+      assert.equal(payload.summary.rows, 3);
+      assert.equal(payload.summary.races, 1);
+      assert.equal(payload.rows[0].raceId, '2026-07-04-ST-1');
+      assert.equal(payload.rows[0].split, 'holdout');
+      assert.equal(payload.rows[0].features.horseRunsBefore, 0);
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
   it('records odds and pool snapshots for pre-race value calculations', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-sqlite-'));
     try {
