@@ -228,6 +228,39 @@ describe('local SQLite race store', () => {
     }
   });
 
+  it('exports a model leaderboard from settled SQLite races', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-sqlite-'));
+    try {
+      const rawDir = path.join(tempDir, 'raw');
+      const dbPath = path.join(tempDir, 'hkjc.sqlite');
+      const outputPath = path.join(tempDir, 'model-leaderboard.json');
+      await mkdir(rawDir, { recursive: true });
+      await writeFile(path.join(rawDir, '2026-07-04-ST.json'), JSON.stringify([settledRace()], null, 2), 'utf8');
+      syncRaceFilesToDatabase({ dbPath, inputPath: rawDir, sourceKind: 'raw' });
+
+      const result = spawnSync(process.execPath, [
+        'hkjc-horse-model/src/cli.js',
+        'model-leaderboard',
+        '--db',
+        dbPath,
+        '--output',
+        outputPath,
+      ], {
+        cwd: path.resolve(import.meta.dirname, '..', '..'),
+        encoding: 'utf8',
+      });
+
+      assert.equal(result.status, 0, result.stderr || result.stdout);
+      assert.match(result.stdout, /Model leaderboard from SQLite/);
+      const payload = JSON.parse(await readFile(outputPath, 'utf8'));
+      assert.equal(payload.models[0].modelId, 'heuristic-current');
+      assert.equal(payload.models[0].metrics.overall.rows, 3);
+      assert.equal(payload.dataSource.database, 'hkjc.sqlite');
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
   it('records odds and pool snapshots for pre-race value calculations', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-sqlite-'));
     try {

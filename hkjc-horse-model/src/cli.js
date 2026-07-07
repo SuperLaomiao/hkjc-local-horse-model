@@ -4,13 +4,17 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { backtestRaces, buildDashboardSnapshot, calibrateConfig } from './model.js';
+import { backtestRaces, buildDashboardSnapshot, buildRollingPredictionLedger, calibrateConfig } from './model.js';
 import { splitDashboardForPublishing } from './dashboard-publish.js';
 import { auditRecommendationRuns } from './recommendation-audit.js';
 import {
   buildAsOfTrainingRows,
   summarizeTrainingRows,
 } from './training-dataset.js';
+import {
+  buildModelLeaderboard,
+  predictionRowsFromLedger,
+} from './model-leaderboard.js';
 import {
   fetchFixtureMeetings,
   fetchMeetingRaceCards,
@@ -81,6 +85,11 @@ async function main(argv) {
 
   if (command === 'training-dataset') {
     await trainingDatasetCommand(args);
+    return;
+  }
+
+  if (command === 'model-leaderboard') {
+    await modelLeaderboardCommand(args);
     return;
   }
 
@@ -236,6 +245,37 @@ async function trainingDatasetCommand(args) {
 
   console.log(`Training dataset from SQLite: ${summary.rows} runner rows, ${summary.races} races`);
   console.log(`Saved training dataset to ${outputPath}`);
+}
+
+async function modelLeaderboardCommand(args) {
+  const dbPath = path.resolve(args.db ?? sqliteDbPath);
+  const settledRaces = loadRacesFromDatabase({ dbPath, status: 'settled' });
+  const ledger = buildRollingPredictionLedger(settledRaces, {
+    minEdge: args.minEdge == null ? 0 : Number(args.minEdge),
+    minProbability: args.minProbability == null ? 0.15 : Number(args.minProbability),
+  });
+  const predictionRows = predictionRowsFromLedger(ledger.entries);
+  const leaderboard = buildModelLeaderboard([
+    {
+      modelId: 'heuristic-current',
+      label: 'Current heuristic rolling model',
+      rows: predictionRows,
+    },
+  ]);
+  const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'model-leaderboard.json'));
+
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeJson(outputPath, {
+    ...leaderboard,
+    dataSource: {
+      source: 'sqlite',
+      database: publicDatabaseLabel(dbPath),
+      settledRaces: settledRaces.length,
+    },
+  });
+
+  console.log(`Model leaderboard from SQLite: ${settledRaces.length} settled races`);
+  console.log(`Saved model leaderboard to ${outputPath}`);
 }
 
 function recordDashboardRecommendationRun({ dbPath, snapshot, args }) {
@@ -679,6 +719,7 @@ Commands:
   sync-db    --input hkjc-horse-model/data/raw --upcoming hkjc-horse-model/data/upcoming --db hkjc-horse-model/data/hkjc.sqlite
   dashboard-db --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/dashboard.json --historyOutput hkjc-horse-model/data/processed/dashboard-history.json
   training-dataset --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/training-dataset.json
+  model-leaderboard --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/model-leaderboard.json
   market-snapshot --input hkjc-horse-model/data/market-snapshot.json --db hkjc-horse-model/data/hkjc.sqlite
   recommendation-audit --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/latest-recommendation-audit.json
   fetch-url  https://racing.hkjc.com/en-us/local/information/localresults?RaceNo=2&Racecourse=ST&racedate=2026%2F01%2F04

@@ -1,3 +1,5 @@
+import { splitForDate } from './training-dataset.js';
+
 const SPLITS = ['train', 'validation', 'holdout'];
 
 export function buildModelLeaderboard(models, options = {}) {
@@ -31,6 +33,28 @@ export function scoreProbabilityRows(rows) {
     ])),
     calibration: buildCalibration(items),
   };
+}
+
+export function predictionRowsFromLedger(ledger) {
+  return (ledger ?? []).flatMap((entry) => {
+    const split = splitForDate(entry.date);
+    const winnerHorseId = entry.settlement?.winnerHorseId == null
+      ? null
+      : String(entry.settlement.winnerHorseId);
+    return (entry.forecast?.predictions ?? []).map((runner) => {
+      const horseId = String(runner.horseId ?? runner.horseNo ?? runner.horseName);
+      return {
+        raceId: entry.raceId,
+        date: entry.date,
+        split,
+        horseId,
+        horseNo: runner.horseNo ?? null,
+        horseName: runner.horseName ?? null,
+        probability: Number(runner.probability),
+        targetWin: winnerHorseId === horseId ? 1 : 0,
+      };
+    });
+  });
 }
 
 function summarizeRows(rows) {
