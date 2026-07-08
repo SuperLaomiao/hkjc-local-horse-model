@@ -992,9 +992,13 @@ function renderResearchUpgradePanel(snapshot) {
   const nextItems = program.algorithmBorrowings.filter((item) => item.status === "next");
   const researchOnlyItems = program.algorithmBorrowings.filter((item) => item.status === "research-only");
   const followUpActions = Array.isArray(program.followUpActions) ? program.followUpActions : [];
+  const externalBenchmarks = Array.isArray(program.externalBenchmarkRegistry) ? program.externalBenchmarkRegistry : [];
   const followUpCount = summary.followUpCount ?? followUpActions.length;
   const automationReadyCount = summary.automationReadyCount
     ?? followUpActions.filter((item) => item.automationExecutable).length;
+  const externalBenchmarkCount = summary.externalBenchmarkCount ?? externalBenchmarks.length;
+  const reproductionReadyCount = summary.reproductionReadyCount
+    ?? externalBenchmarks.filter((item) => item.status === "reproduce-next").length;
 
   return `
     <section class="panel research-panel">
@@ -1008,6 +1012,7 @@ function renderResearchUpgradePanel(snapshot) {
       <div class="research-hero">
         <span>研究状态</span>
         <strong>${escapeHtml(summary.headline)}</strong>
+        <p>${escapeHtml(summary.tier1GapLabel ?? program.guardrail)}</p>
         <p>${escapeHtml(program.guardrail)}</p>
       </div>
       <div class="research-metrics">
@@ -1016,6 +1021,8 @@ function renderResearchUpgradePanel(snapshot) {
         ${renderResearchMetric("下一步", summary.nextCount)}
         ${renderResearchMetric("研究观察", summary.researchOnlyCount)}
         ${renderResearchMetric("巡检队列", `${automationReadyCount}/${followUpCount}`)}
+        ${renderResearchMetric("外部Benchmark", externalBenchmarkCount)}
+        ${renderResearchMetric("可复现", reproductionReadyCount)}
       </div>
       <div class="research-section">
         <strong>从开源项目学习什么</strong>
@@ -1039,6 +1046,14 @@ function renderResearchUpgradePanel(snapshot) {
           </div>
         </div>
       ` : ""}
+      ${externalBenchmarks.length ? `
+        <div class="research-section">
+          <strong>Tier1 外部 benchmark / leverage-first 路线</strong>
+          <div class="research-benchmark-list">
+            ${externalBenchmarks.map(renderExternalBenchmarkCard).join("")}
+          </div>
+        </div>
+      ` : ""}
       <div class="research-section">
         <strong>你在前端能感知到什么</strong>
         <div class="research-signal-list">
@@ -1047,6 +1062,37 @@ function renderResearchUpgradePanel(snapshot) {
       </div>
       <p class="fine-print">下一焦点：${escapeHtml(summary.nextFocus)}。这些不会自动变成真实下注，必须先进入回测和复盘。</p>
     </section>
+  `;
+}
+
+function renderExternalBenchmarkCard(benchmark) {
+  const requiredData = Array.isArray(benchmark.requiredLocalData)
+    ? benchmark.requiredLocalData.join(" / ")
+    : "";
+  const sourceLinks = [
+    benchmark.sourceUrl
+      ? `<a href="${escapeHtml(benchmark.sourceUrl)}" target="_blank" rel="noreferrer">${escapeHtml(benchmark.sourceName)}</a>`
+      : escapeHtml(benchmark.sourceName ?? benchmark.id),
+    benchmark.secondaryUrl
+      ? `<a href="${escapeHtml(benchmark.secondaryUrl)}" target="_blank" rel="noreferrer">secondary source</a>`
+      : "",
+  ].filter(Boolean).join(" · ");
+
+  return `
+    <article>
+      <div class="research-action-meta">
+        <span class="research-status ${researchPriorityClass(benchmark.priority)}">${escapeHtml(benchmark.priority ?? "P?")}</span>
+        <span class="research-status ${researchBenchmarkStatusClass(benchmark.status)}">${escapeHtml(benchmark.status)}</span>
+        <span>${escapeHtml(benchmark.localAdoption)}</span>
+      </div>
+      <strong>${sourceLinks}</strong>
+      <p><b>公开强项：</b>${escapeHtml(benchmark.publicMetric)}</p>
+      <p><b>我们的差距：</b>${escapeHtml(benchmark.ourGap)}</p>
+      <em><b>怎么 leverage：</b>${escapeHtml(benchmark.leveragePath)}</em>
+      ${requiredData ? `<small><b>需要数据：</b>${escapeHtml(requiredData)}</small>` : ""}
+      <small><b>Promotion gate：</b>${escapeHtml(benchmark.promotionGate)}</small>
+      <small><b>Access：</b>${escapeHtml(benchmark.accessPolicy)}</small>
+    </article>
   `;
 }
 
@@ -1117,6 +1163,12 @@ function researchPriorityClass(priority) {
   if (priority === "P0") return "is-p0";
   if (priority === "P1") return "is-p1";
   return "is-p2";
+}
+
+function researchBenchmarkStatusClass(status) {
+  if (status === "reproduce-next") return "is-p0";
+  if (status === "data-leverage" || status === "partially-leveraged") return "is-next";
+  return "is-research";
 }
 
 function formatPoolSelections(selections) {

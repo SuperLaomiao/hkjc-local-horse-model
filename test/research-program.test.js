@@ -25,6 +25,29 @@ describe('research upgrade program', () => {
     assert(program.frontendSignals.includes('研究升级页签'));
   });
 
+  it('tracks tier1 external benchmark candidates to leverage stronger projects', () => {
+    const program = buildResearchUpgradeProgram();
+
+    assert(program.externalBenchmarkRegistry.length >= 6);
+    assert(program.externalBenchmarkRegistry.some((item) => (
+      item.id === 'catowabisabi-lgb-no-odds-quinella'
+      && item.status === 'reproduce-next'
+      && /Quinella|连赢/i.test(item.publicMetric)
+      && item.promotionGate.includes('holdout')
+    )));
+    assert(program.externalBenchmarkRegistry.some((item) => (
+      item.id === 'jerrydaphantom-catboost-market-aware'
+      && /0\.234958|32\.7/.test(item.publicMetric)
+      && item.requiredLocalData.some((data) => /T-30|market/i.test(data))
+    )));
+    assert(program.externalBenchmarkRegistry.some((item) => (
+      item.id === 'tianxi-feature-backfill'
+      && item.status === 'data-leverage'
+      && item.accessPolicy.includes('local-only')
+    )));
+    assert(program.externalBenchmarkRegistry.every((item) => item.localAdoption !== 'cash-ready'));
+  });
+
   it('orders research follow-up actions for the daily automation queue', () => {
     const program = buildResearchUpgradeProgram();
 
@@ -44,6 +67,11 @@ describe('research upgrade program', () => {
     assert.equal(summary.researchOnlyCount > 0, true);
     assert.equal(summary.followUpCount > 0, true);
     assert.equal(summary.automationReadyCount > 0, true);
+    assert.equal(summary.externalBenchmarkCount >= 6, true);
+    assert.equal(summary.reproductionReadyCount >= 2, true);
+    assert.equal(summary.blockedBenchmarkCount >= 1, true);
+    assert.match(summary.tier1GapLabel, /落后|behind|tier1/i);
+    assert.match(summary.nextBenchmarkAction, /catowabisabi|LightGBM|连赢/i);
     assert.match(summary.headline, /研究驱动/);
     assert.match(summary.nextFocus, /市场赔率|校准|Kelly/);
     assert.match(summary.nextAction, /live snapshot|T-30|彩池/i);
@@ -56,5 +84,6 @@ describe('research upgrade program', () => {
     assert.equal(snapshot.research.summary.sourceCount >= 12, true);
     assert.equal(snapshot.research.summary.activeCount > 0, true);
     assert.equal(snapshot.research.summary.followUpCount > 0, true);
+    assert.equal(snapshot.research.summary.externalBenchmarkCount >= 6, true);
   });
 });

@@ -82,6 +82,17 @@ Goal: reproduce the strongest public GitHub ideas on our own SQLite history befo
     - Registry includes `catowabisabi-lgb-quinella`, `jerrydaphantom-catboost-calibration`, `neigh-speedpro-features`, `hkjc-pool-tracker-features`, `hkjc-edge-lab-clv`, and `current-baseline`.
     - Each entry records required data, leakage risks, metrics, and promotion gates.
 
+- [ ] Add Tier1 Acceleration Lab dashboard registry. Research Lab action: `tier1-external-benchmark-registry` / P0.
+  - Suggested files:
+    - Modify `research-program.js`
+    - Modify `test/research-program.test.js`
+    - Modify `app.js`
+    - Modify `styles.css`
+  - Acceptance:
+    - Dashboard shows catowabisabi, jerrydaphantom, anton, eprochasson, Bobosky/rkwyu, and Tianxi benchmark cards.
+    - Each card states public metric, our gap, leverage path, required local data, promotion gate, access policy, and local adoption status.
+    - Summary clearly says the current model is still behind tier1 and identifies the next benchmark to reproduce.
+
 - [ ] Export a leakage-safe Python training matrix for tree models.
   - Suggested files:
     - Modify `hkjc-horse-model/src/training-dataset.js`
@@ -100,6 +111,28 @@ Goal: reproduce the strongest public GitHub ideas on our own SQLite history befo
   - Acceptance:
     - If LightGBM is unavailable, the command exits with a clear installation note and does not break `npm test`.
     - If available, it writes model metrics including log loss, Brier score, top-pick win rate, and split metrics.
+
+- [ ] Reproduce catowabisabi LightGBM no-odds Quinella/QPL benchmark. Research Lab action: `catowabisabi-lgb-no-odds-quinella` / P0.
+  - Suggested files:
+    - Create `hkjc-horse-model/python/train_lgb_no_market.py`
+    - Create `hkjc-horse-model/src/quinella-benchmark.js`
+    - Create `hkjc-horse-model/test/quinella-benchmark.test.js`
+    - Modify `package.json` scripts
+  - Acceptance:
+    - Replays model top-2 QIN and QPL on validation and holdout using official dividends.
+    - Reports bets, wins, strike rate, ROI, max drawdown, profit concentration, and cold-quinella filter sensitivity.
+    - Does not promote the strategy unless validation and holdout both beat current baseline with acceptable drawdown.
+
+- [ ] Reproduce jerrydaphantom CatBoost/LightGBM market-aware calibration benchmark. Research Lab action: `jerrydaphantom-catboost-market-aware` / P0.
+  - Suggested files:
+    - Create `hkjc-horse-model/python/train_market_aware_tree.py`
+    - Create `hkjc-horse-model/python/calibrate_tree_model.py`
+    - Create `hkjc-horse-model/src/model-market-threshold-grid.js`
+    - Create `hkjc-horse-model/test/model-market-threshold-grid.test.js`
+  - Acceptance:
+    - Compares market-free and market-aware versions on log loss, Brier, top-pick win rate, winner-in-top3, and calibration buckets.
+    - Separates predictive quality from betting ROI.
+    - Evaluates EV threshold and probability-gap threshold grids with sample-count guardrails.
 
 - [ ] Add SpeedPRO-style feature importer and mapper. Research Lab action: `speedpro-feature-importer` / P1.
   - Suggested files:
@@ -122,6 +155,16 @@ Goal: reproduce the strongest public GitHub ideas on our own SQLite history befo
     - It evaluates model top-2 QIN and QPL using official dividends.
     - It reports bets, wins, hit rate, ROI, max drawdown, and profit concentration.
     - It separates validation and holdout results.
+
+- [ ] Add Tianxi local-only feature backfill audit. Research Lab action: `tianxi-feature-backfill` / P1.
+  - Suggested files:
+    - Create `hkjc-horse-model/src/external-feature-source-audit.js`
+    - Create `hkjc-horse-model/test/external-feature-source-audit.test.js`
+    - Create `docs/research/tianxi-local-only-import-plan.md`
+  - Acceptance:
+    - Audits available Tianxi-like fields without committing raw third-party rows.
+    - Classifies sectionals, trials, commentary, profiles, entries, and audits as pre-race, post-race, or unsafe.
+    - Defines derived feature candidates and leakage lags before any importer is implemented.
 
 - [ ] Research-only: design parimutuel stacker and copula-style exotic pricing notes. Research Lab action: `parimutuel-stacker-copula-study` / P2.
   - Suggested files:
@@ -183,12 +226,16 @@ This queue is mirrored in `research-program.js` and surfaced in the dashboard Re
 | P0 | `live-snapshot-planner` | Phase A | queued, executable | Capture T-30/T-10/T-3 live odds/pool windows. |
 | P0 | `pool-money-features` | Phase A/B | queued, executable | Turn pool money and crowding into leakage-safe features. |
 | P0 | `benchmark-registry-refresh` | Phase B | queued, executable | Compare our baseline against stronger public ideas. |
+| P0 | `tier1-external-benchmark-registry` | Phase B | queued, executable | Surface public benchmark metrics, our gap, and promotion gates. |
+| P0 | `catowabisabi-lgb-no-odds-quinella` | Phase B | queued, executable | Reproduce no-odds LightGBM QIN/QPL edge on our SQLite data. |
+| P0 | `jerrydaphantom-catboost-market-aware` | Phase B | queued, executable | Reproduce CatBoost/LightGBM market-aware calibration and EV grids. |
 | P1 | `speedpro-feature-importer` | Phase B | queued, executable | Add sectional/pace/fitness enrichment when available. |
 | P1 | `lightgbm-no-market-benchmark` | Phase B | queued, executable | Build a non-market tree-model benchmark before live odds are complete. |
+| P1 | `tianxi-feature-backfill` | Phase B | queued, executable | Audit and design local-only derived feature imports. |
 | P1 | `no-bet-clv-gate` | Phase C | queued, executable | Reject lines without live edge and track closing-line value. |
 | P1 | `bayesian-tripwire` | Phase C | queued, executable | Reduce stake or paper-mode when uncertainty is too high. |
 | P2 | `parimutuel-stacker-copula-study` | Phase B/C | research-only | Document exotic-pool modeling before any implementation. |
 
 ## Latest continuation note
 
-- 2026-07-08: Research Lab follow-up action queue added to `research-program.js` and mirrored here. Daily automation `hkjc-2` prompt was updated to continue from the first unchecked Phase/Research Lab action, currently `live-snapshot-planner`; post-race fetch automation `hkjc` should not execute these research actions.
+- 2026-07-08: Tier1 Acceleration Lab registry added to Research Lab planning. Current model is explicitly marked behind tier1 public benchmarks; next reproduction priorities are catowabisabi LightGBM no-odds Quinella/QPL and jerrydaphantom CatBoost market-aware calibration after Phase A live/pool snapshot plumbing.

@@ -259,6 +259,100 @@ const FOLLOW_UP_ACTIONS = [
   },
 ];
 
+const EXTERNAL_BENCHMARK_REGISTRY = [
+  {
+    id: 'catowabisabi-lgb-no-odds-quinella',
+    priority: 'P0',
+    status: 'reproduce-next',
+    sourceName: 'catowabisabi/horse-racing-model-training',
+    sourceUrl: 'https://github.com/catowabisabi/horse-racing-model-training',
+    benchmarkType: 'model-plus-pool-strategy',
+    publicMetric: 'LightGBM no-odds top-2 Quinella: 2017 +7.9% ROI, 2018 H1 OOS +2.6% ROI; top-1 pre-race hit about 27%.',
+    ourGap: '我们当前 WIN top-pick 约 20-23%，策略 ROI 仍为负；尚未在本地复现 no-odds 连赢 top2 edge。',
+    leveragePath: '复用它的实验设计：no-odds LightGBM、严格时间切分、top-2 连赢/QPL replay、cold-quinella filter，不复制结论。',
+    requiredLocalData: ['settled races', 'official QIN/QPL dividends', 'leakage-safe no-market training matrix', 'chronological validation/holdout split'],
+    promotionGate: '本地 validation 和 holdout 同时优于 current baseline；连赢/QPL ROI 为正；max drawdown 和 profit concentration 合格；不能只靠单场冷门。',
+    accessPolicy: 'MIT code; processed parquet and reports can be studied, raw-derived data only local research unless license terms remain safe.',
+    localAdoption: 'benchmark-only',
+  },
+  {
+    id: 'jerrydaphantom-catboost-market-aware',
+    priority: 'P0',
+    status: 'reproduce-next',
+    sourceName: 'jerrydaphantom/hkjc-ml-research',
+    sourceUrl: 'https://github.com/jerrydaphantom/hkjc-ml-research',
+    benchmarkType: 'calibrated-market-aware-model',
+    publicMetric: 'CatBoost market-aware + sigmoid race normalization: log loss 0.234958, Brier 0.065478, top-pick win rate 32.7%, winner-in-top3 62.1%.',
+    ourGap: '我们本地 logistic runner report holdout log loss 约 0.267、top-pick 约 21.1%；缺 CatBoost/LightGBM market-aware calibration 对照。',
+    leveragePath: '复现 CatBoost/LightGBM market-aware + calibration + model-vs-market threshold grid，并把预测质量和下注 ROI 分开评估。',
+    requiredLocalData: ['T-30/T-10/T-3 market odds', 'current/final odds labels separated', 'training dataset market feature flags', 'chronological test split'],
+    promotionGate: '预测指标显著优于 baseline，且 EV/probability-gap 过滤后在 holdout 有足够样本和正期望；top-pick-all 不能直接进现金模式。',
+    accessPolicy: 'MIT code; public repo lacks raw private scraper/data stack, so methodology only until local replay passes.',
+    localAdoption: 'benchmark-only',
+  },
+  {
+    id: 'anton-no-odds-feature-stack',
+    priority: 'P1',
+    status: 'reproduce-after-p0',
+    sourceName: 'anton-schwarberg/Hongkong-Horse-Racing-Prediction',
+    sourceUrl: 'https://github.com/anton-schwarberg/Hongkong-Horse-Racing-Prediction',
+    benchmarkType: 'fundamental-feature-stack',
+    publicMetric: 'No-odds LGBMClassifier reports ROC-AUC 0.726, Top-1 placed hit 52.9%, Top-3 placed hit 87.1% on held-out future season.',
+    ourGap: '我们已有历史滚动特征，但官方 rating、horse weight trend、race-aware percentile ranks、saved live inference artifacts 仍不足。',
+    leveragePath: '吸收 feature engineering/persistence 思路，尤其 official rating、target encoding、draw/weight/form normalization 和 live feature path。',
+    requiredLocalData: ['race card official rating', 'horse weight trend', 'draw and field-size normalized ranks', 'pre-race feature persistence artifacts'],
+    promotionGate: '先作为 PLACE/top3 质量 benchmark；只有本地 win/place calibration 均改善后再影响组合推荐。',
+    accessPolicy: 'Public repo; use methodology and feature definitions, do not assume its reported placed-hit metrics equal WIN edge.',
+    localAdoption: 'feature-backlog',
+  },
+  {
+    id: 'eprochasson-live-odds-archive',
+    priority: 'P1',
+    status: 'partially-leveraged',
+    sourceName: 'eprochasson/horserace_data',
+    sourceUrl: 'https://github.com/eprochasson/horserace_data',
+    benchmarkType: 'historical-live-odds-data',
+    publicMetric: '2016-2018 live odds archive used by stronger projects; our import matched about 259k rows and created about 6.37M WIN/PLACE snapshots.',
+    ourGap: '我们已有 odds snapshots for 1510 races, but no pool snapshots and little 2026 live market coverage.',
+    leveragePath: 'Keep imported odds as market-window backtest base, but do not extrapolate 2016-2018 directly to 2026 without current snapshots.',
+    requiredLocalData: ['odds_snapshots already imported', 'pool_snapshots missing', 'race id/date/course reconciliation'],
+    promotionGate: 'Use only for research and historical market-window replay; cash recommendations require current race-day T-window data.',
+    accessPolicy: 'External data archive; keep derived imports local/dashboard-safe, avoid republishing raw archives.',
+    localAdoption: 'partial-data',
+  },
+  {
+    id: 'bobosky-rkwyu-live-pool-capture',
+    priority: 'P0',
+    status: 'data-leverage',
+    sourceName: 'Bobosky2005/hkjc-api + rkwyu/sport-betting-data',
+    sourceUrl: 'https://github.com/Bobosky2005/hkjc-api',
+    secondaryUrl: 'https://github.com/rkwyu/sport-betting-data',
+    benchmarkType: 'live-odds-pool-capture',
+    publicMetric: 'Public API/scraper references cover HKJC odds and pool investment endpoints for WIN/PLA/QIN/QPL and exotic pools.',
+    ourGap: '当前 pool_snapshots = 0；没有 2026 T-30/T-10/T-3 pool money, crowding, takeout-derived features.',
+    leveragePath: 'Port endpoint coverage into our normalizer and schedule low-frequency T-window capture instead of inventing endpoint mapping ourselves.',
+    requiredLocalData: ['upcoming race schedule', 'live odds endpoint access', 'pool investment endpoint access', 'idempotent SQLite snapshot import'],
+    promotionGate: 'Capture must be reliable, idempotent, oddsType-safe, and visible in market coverage report before EV cash gating.',
+    accessPolicy: 'Use as implementation references; keep HKJC endpoint behavior fault-tolerant because upstream shape can change.',
+    localAdoption: 'data-priority',
+  },
+  {
+    id: 'tianxi-feature-backfill',
+    priority: 'P1',
+    status: 'data-leverage',
+    sourceName: 'sleepingarhat/tianxi-database',
+    sourceUrl: 'https://github.com/sleepingarhat/tianxi-database',
+    benchmarkType: 'local-only-feature-backfill',
+    publicMetric: 'Public description says 2016-2026 HKJC data platform with results, dividends, sectionals, commentary, profiles, trials, entries, and daily audits.',
+    ourGap: '我们缺 trials/sectionals/commentary/profile/official-context features that stronger no-odds models use to lift intrinsic signal.',
+    leveragePath: 'Build local-only importer for derived features and coverage audit; use it to enrich no-market models without publishing raw third-party rows.',
+    requiredLocalData: ['local raw cache outside git', 'schema coverage audit', 'result/dividend reconciliation', 'leakage-safe feature lags'],
+    promotionGate: 'Only derived pre-race features enter training; no raw data committed; feature lift must survive chronological holdout.',
+    accessPolicy: 'local-only research because no explicit license is confirmed for republishing raw data.',
+    localAdoption: 'feature-backlog',
+  },
+];
+
 const STATUS_LABELS = {
   active: '已进入系统',
   next: '下一步学习',
@@ -275,10 +369,12 @@ export function buildResearchUpgradeProgram() {
       label: STATUS_LABELS[item.status] ?? item.status,
     })),
     followUpActions: FOLLOW_UP_ACTIONS.map((item) => ({ ...item })),
+    externalBenchmarkRegistry: EXTERNAL_BENCHMARK_REGISTRY.map((item) => ({ ...item, requiredLocalData: [...item.requiredLocalData] })),
     frontendSignals: [
       '研究升级页签',
       '每项机制显示「已进入系统 / 下一步 / 研究观察」',
       'Research Lab 显示可由每日巡检续跑的 follow-up action 队列',
+      'Tier1 外部 benchmark 显示公开强项、我们差距、复现门槛和 adoption 状态',
       '前端解释期望 ROI、概率校准、风险上限，而不只给马号',
       '每日巡检后把模型变化和回测指标一起呈现',
     ],
@@ -290,8 +386,17 @@ export function summarizeResearchUpgradeProgram(program = buildResearchUpgradePr
   const countByStatus = (status) => program.algorithmBorrowings.filter((item) => item.status === status).length;
   const nextItems = program.algorithmBorrowings.filter((item) => item.status === 'next');
   const followUpActions = Array.isArray(program.followUpActions) ? program.followUpActions : [];
+  const externalBenchmarkRegistry = Array.isArray(program.externalBenchmarkRegistry) ? program.externalBenchmarkRegistry : [];
   const automationReadyActions = followUpActions.filter((item) => item.automationExecutable && item.status === 'queued');
   const firstAction = automationReadyActions[0] ?? followUpActions[0];
+  const reproductionReadyBenchmarks = externalBenchmarkRegistry.filter((item) => item.status === 'reproduce-next');
+  const blockedBenchmarkCount = externalBenchmarkRegistry.filter((item) => (
+    item.requiredLocalData.some((data) => /missing|缺|T-30|pool|market/i.test(data))
+    || /缺|missing|尚未|pool_snapshots = 0/i.test(item.ourGap)
+  )).length;
+  const nextBenchmark = reproductionReadyBenchmarks[0]
+    ?? externalBenchmarkRegistry.find((item) => item.status === 'data-leverage')
+    ?? externalBenchmarkRegistry[0];
 
   return {
     version: program.version,
@@ -302,7 +407,12 @@ export function summarizeResearchUpgradeProgram(program = buildResearchUpgradePr
     researchOnlyCount: countByStatus('research-only'),
     followUpCount: followUpActions.length,
     automationReadyCount: automationReadyActions.length,
+    externalBenchmarkCount: externalBenchmarkRegistry.length,
+    reproductionReadyCount: reproductionReadyBenchmarks.length,
+    blockedBenchmarkCount,
+    tier1GapLabel: '当前模型仍落后 tier1：优先复现外部强 benchmark 后再升级推荐。',
     nextFocus: nextItems.map((item) => item.concept).slice(0, 3).join(' / '),
     nextAction: firstAction ? `${firstAction.priority} ${firstAction.title}` : '暂无排队 action',
+    nextBenchmarkAction: nextBenchmark ? `${nextBenchmark.priority} ${nextBenchmark.sourceName}: ${nextBenchmark.leveragePath}` : '暂无外部 benchmark action',
   };
 }

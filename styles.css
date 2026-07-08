@@ -1860,7 +1860,9 @@ tbody tr:hover {
 .research-group em,
 .research-signal-list span,
 .research-action-list em,
-.research-action-list small {
+.research-action-list small,
+.research-benchmark-list em,
+.research-benchmark-list small {
   color: var(--muted);
   font-size: 0.72rem;
   font-weight: 750;
@@ -1874,7 +1876,8 @@ tbody tr:hover {
 .research-hero p,
 .research-source-list p,
 .research-group p,
-.research-action-list p {
+.research-action-list p,
+.research-benchmark-list p {
   margin: 0;
   color: var(--muted);
   font-size: 0.76rem;
@@ -1925,14 +1928,16 @@ tbody tr:hover {
 .research-roadmap,
 .research-group,
 .research-signal-list,
-.research-action-list {
+.research-action-list,
+.research-benchmark-list {
   display: grid;
   gap: 8px;
 }
 
 .research-source-list article,
 .research-group article,
-.research-action-list article {
+.research-action-list article,
+.research-benchmark-list article {
   display: grid;
   gap: 6px;
   padding: 10px;
@@ -1943,14 +1948,17 @@ tbody tr:hover {
 
 .research-source-list a,
 .research-group strong,
-.research-action-list strong {
+.research-action-list strong,
+.research-benchmark-list strong,
+.research-benchmark-list a {
   color: var(--ink);
   font-size: 0.82rem;
   font-weight: 900;
   text-decoration: none;
 }
 
-.research-source-list a:hover {
+.research-source-list a:hover,
+.research-benchmark-list a:hover {
   color: var(--violet);
   text-decoration: underline;
 }
@@ -1959,9 +1967,15 @@ tbody tr:hover {
 .research-source-list small,
 .research-group em,
 .research-action-list em,
-.research-action-list small {
+.research-action-list small,
+.research-benchmark-list em,
+.research-benchmark-list small {
   font-style: normal;
   line-height: 1.4;
+}
+
+.research-benchmark-list b {
+  color: var(--ink);
 }
 
 .research-action-meta {
