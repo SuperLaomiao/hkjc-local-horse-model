@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-07-08T00:12:17.058Z",
+  "generatedAt": "2026-07-08T04:13:51.494Z",
   "scope": "HKJC local races only",
   "summary": {
     "racesSettled": 14221,
-    "valueBets": 9589,
-    "valueWins": 972,
-    "valueWinRate": 0.10136614871206591,
-    "totalStake": 108850.25,
-    "totalReturn": 82279.11,
-    "profit": -26571.14,
-    "roi": -0.24410729419546562,
+    "valueBets": 9588,
+    "valueWins": 971,
+    "valueWinRate": 0.10127242386316229,
+    "totalStake": 46815.99,
+    "totalReturn": 34827.5,
+    "profit": -11988.49,
+    "roi": -0.25607682332468024,
     "topPickHits": 2917,
     "topPickWinRate": 0.20511918993038464,
     "marketFavouriteProfit": -2103.8,
@@ -55,7 +55,7 @@
       "edge": null,
       "confidence": "watch",
       "suggestedStake": 10,
-      "stakePct": 0.01,
+      "stakePct": 0.05,
       "message": "Probability-only paper pick; wait for market odds before treating it as a value recommendation."
     },
     "finalBetPlan": {
@@ -72,7 +72,7 @@
       "minimumOdds": 5.63,
       "targetEdge": 0.08,
       "plannedStake": 10,
-      "stakePct": 0.01,
+      "stakePct": 0.05,
       "entryWindow": "开跑前 10-5 分钟",
       "reviewWindow": "开跑前 15 分钟复核",
       "cutoffWindow": "T-5 仍无实时赔率就不下注",
@@ -560,7 +560,7 @@
     "raceClass": "5",
     "distance": 1000,
     "surface": "TURF",
-    "going": "YIELDING",
+    "going": "GOOD TO YIELDING",
     "trainingRacesBefore": 14221,
     "topPick": {
       "horseId": "HK_2022_H436",
@@ -569,27 +569,27 @@
       "jockey": "A Atzeni",
       "trainer": "J Size",
       "actualWeight": 135,
-      "draw": 10,
+      "draw": 9,
       "winOdds": null,
-      "probability": 0.20718745255064824,
-      "fairOdds": 4.826547108375416,
+      "probability": 0.21232087457418763,
+      "fairOdds": 4.709852490978635,
       "edge": null,
       "expectedReturn": null,
-      "score": -0.06209652379585373
+      "score": -0.05336925106858109
     },
     "recommendation": {
       "action": "probability",
       "horseId": "HK_2022_H436",
       "horseName": "COUNTRY DANCER",
       "horseNo": 1,
-      "modelProbability": 0.20718745255064824,
-      "fairOdds": 4.826547108375416,
+      "modelProbability": 0.21232087457418763,
+      "fairOdds": 4.709852490978635,
       "winOdds": null,
       "expectedReturn": null,
       "edge": null,
       "confidence": "watch",
       "suggestedStake": 10,
-      "stakePct": 0.01,
+      "stakePct": 0.05,
       "message": "Probability-only paper pick; wait for market odds before treating it as a value recommendation."
     },
     "finalBetPlan": {
@@ -600,13 +600,13 @@
       "horseId": "HK_2022_H436",
       "horseName": "COUNTRY DANCER",
       "horseNo": 1,
-      "modelProbability": 0.20718745255064824,
-      "fairOdds": 4.826547108375416,
+      "modelProbability": 0.21232087457418763,
+      "fairOdds": 4.709852490978635,
       "currentOdds": null,
-      "minimumOdds": 5.21,
+      "minimumOdds": 5.09,
       "targetEdge": 0.08,
       "plannedStake": 10,
-      "stakePct": 0.01,
+      "stakePct": 0.05,
       "entryWindow": "开跑前 10-5 分钟",
       "reviewWindow": "开跑前 15 分钟复核",
       "cutoffWindow": "T-5 仍无实时赔率就不下注",
@@ -628,13 +628,13 @@
         "jockey": "A Atzeni",
         "trainer": "J Size",
         "actualWeight": 135,
-        "draw": 10,
+        "draw": 9,
         "winOdds": null,
-        "probability": 0.20718745255064824,
-        "fairOdds": 4.826547108375416,
+        "probability": 0.21232087457418763,
+        "fairOdds": 4.709852490978635,
         "edge": null,
         "expectedReturn": null,
-        "score": -0.06209652379585373
+        "score": -0.05336925106858109
       },
       {
         "horseId": "HK_2023_J087",
@@ -643,13 +643,13 @@
         "jockey": "C Y Ho",
         "trainer": "W K Mo",
         "actualWeight": 129,
-        "draw": 7,
+        "draw": 6,
         "winOdds": null,
-        "probability": 0.20015983696801848,
-        "fairOdds": 4.996007266731437,
+        "probability": 0.2051191378458962,
+        "fairOdds": 4.875215499156833,
         "edge": null,
         "expectedReturn": null,
-        "score": -0.10178040082261795
+        "score": -0.0930531280953453
       },
       {
         "horseId": "HK_2023_J345",
@@ -658,13 +658,13 @@
         "jockey": "H Bowman",
         "trainer": "C S Shum",
         "actualWeight": 134,
-        "draw": 9,
+        "draw": 8,
         "winOdds": null,
-        "probability": 0.18066783717422455,
-        "fairOdds": 5.535019490135722,
+        "probability": 0.18514419055797338,
+        "fairOdds": 5.401195668015705,
         "edge": null,
         "expectedReturn": null,
-        "score": -0.2196048475532109
+        "score": -0.21087757482593827
       },
       {
         "horseId": "HK_2022_H208",
@@ -675,11 +675,11 @@
         "actualWeight": 134,
         "draw": 1,
         "winOdds": null,
-        "probability": 0.11766433971575173,
-        "fairOdds": 8.498751638905683,
+        "probability": 0.11932799332023902,
+        "fairOdds": 8.380263274153222,
         "edge": null,
         "expectedReturn": null,
-        "score": -0.7127526767388257
+        "score": -0.7160254040115531
       },
       {
         "horseId": "HK_2022_H320",
@@ -688,13 +688,13 @@
         "jockey": "J Moreira",
         "trainer": "C Fownes",
         "actualWeight": 131,
-        "draw": 11,
+        "draw": 10,
         "winOdds": null,
-        "probability": 0.06000763092426017,
-        "fairOdds": 16.66454723503699,
+        "probability": 0.06149442218683297,
+        "fairOdds": 16.26163746952187,
         "edge": null,
         "expectedReturn": null,
-        "score": -1.4871215712270094
+        "score": -1.4783942984997367
       },
       {
         "horseId": "HK_2023_J308",
@@ -703,13 +703,13 @@
         "jockey": "L Ferraris",
         "trainer": "K H Ting",
         "actualWeight": 132,
-        "draw": 8,
+        "draw": 7,
         "winOdds": null,
-        "probability": 0.05195893654831725,
-        "fairOdds": 19.245967420254797,
+        "probability": 0.053246307698998366,
+        "fairOdds": 18.78064495388121,
         "edge": null,
         "expectedReturn": null,
-        "score": -1.6527422842803612
+        "score": -1.6440150115530885
       },
       {
         "horseId": "HK_2023_J243",
@@ -718,13 +718,13 @@
         "jockey": "C L Chau",
         "trainer": "C W Chang",
         "actualWeight": 128,
-        "draw": 6,
+        "draw": 5,
         "winOdds": null,
-        "probability": 0.04546677037832897,
-        "fairOdds": 21.99408472779132,
+        "probability": 0.04659328705453679,
+        "fairOdds": 21.462319214128723,
         "edge": null,
         "expectedReturn": null,
-        "score": -1.8062350694090987
+        "score": -1.797507796681826
       },
       {
         "horseId": "HK_2023_J441",
@@ -735,11 +735,11 @@
         "actualWeight": 115,
         "draw": 3,
         "winOdds": null,
-        "probability": 0.043276239633569656,
-        "fairOdds": 23.107368118562075,
+        "probability": 0.04388812146819321,
+        "fairOdds": 22.78520853813997,
         "edge": null,
         "expectedReturn": null,
-        "score": -1.863019759801051
+        "score": -1.8662924870737785
       },
       {
         "horseId": "HK_2024_K399",
@@ -750,11 +750,11 @@
         "actualWeight": 131,
         "draw": 4,
         "winOdds": null,
-        "probability": 0.04111223740783769,
-        "fairOdds": 24.323657943494915,
+        "probability": 0.04169352246087343,
+        "fairOdds": 23.984541026449197,
         "edge": null,
         "expectedReturn": null,
-        "score": -1.9220123698803968
+        "score": -1.9252850971531241
       },
       {
         "horseId": "HK_2023_J482",
@@ -765,26 +765,11 @@
         "actualWeight": 130,
         "draw": 2,
         "winOdds": null,
-        "probability": 0.02411785504088861,
-        "fairOdds": 41.46305707139517,
+        "probability": 0.024458856881957917,
+        "fairOdds": 40.884985133448744,
         "edge": null,
         "expectedReturn": null,
-        "score": -2.5353687627247936
-      },
-      {
-        "horseId": "HK_2024_K090",
-        "horseNo": 4,
-        "horseName": "CONSPIRATOR",
-        "jockey": "L Hewitson",
-        "trainer": "B Crawford",
-        "actualWeight": 132,
-        "draw": 5,
-        "winOdds": null,
-        "probability": 0.02182988925642186,
-        "fairOdds": 45.8087527725695,
-        "edge": null,
-        "expectedReturn": null,
-        "score": -2.649991955682124
+        "score": -2.538641489997521
       },
       {
         "horseId": "HK_2024_K483",
@@ -793,13 +778,13 @@
         "jockey": "K C Leung",
         "trainer": "P C Ng",
         "actualWeight": 129,
-        "draw": 12,
+        "draw": 11,
         "winOdds": null,
-        "probability": 0.006550974401732913,
-        "fairOdds": 152.64904709984404,
+        "probability": 0.006713285950311262,
+        "fairOdds": 148.95835026268097,
         "edge": null,
         "expectedReturn": null,
-        "score": -4.034208195326841
+        "score": -4.025480922599568
       }
     ]
   },
@@ -818,7 +803,7 @@
         "raceClass": "5",
         "distance": 1000,
         "surface": "TURF",
-        "going": "YIELDING",
+        "going": "GOOD TO YIELDING",
         "trainingRacesBefore": 14221,
         "topPick": {
           "horseId": "HK_2022_H436",
@@ -827,27 +812,27 @@
           "jockey": "A Atzeni",
           "trainer": "J Size",
           "actualWeight": 135,
-          "draw": 10,
+          "draw": 9,
           "winOdds": null,
-          "probability": 0.20718745255064824,
-          "fairOdds": 4.826547108375416,
+          "probability": 0.21232087457418763,
+          "fairOdds": 4.709852490978635,
           "edge": null,
           "expectedReturn": null,
-          "score": -0.06209652379585373
+          "score": -0.05336925106858109
         },
         "recommendation": {
           "action": "probability",
           "horseId": "HK_2022_H436",
           "horseName": "COUNTRY DANCER",
           "horseNo": 1,
-          "modelProbability": 0.20718745255064824,
-          "fairOdds": 4.826547108375416,
+          "modelProbability": 0.21232087457418763,
+          "fairOdds": 4.709852490978635,
           "winOdds": null,
           "expectedReturn": null,
           "edge": null,
           "confidence": "watch",
           "suggestedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "message": "Probability-only paper pick; wait for market odds before treating it as a value recommendation."
         },
         "finalBetPlan": {
@@ -858,13 +843,13 @@
           "horseId": "HK_2022_H436",
           "horseName": "COUNTRY DANCER",
           "horseNo": 1,
-          "modelProbability": 0.20718745255064824,
-          "fairOdds": 4.826547108375416,
+          "modelProbability": 0.21232087457418763,
+          "fairOdds": 4.709852490978635,
           "currentOdds": null,
-          "minimumOdds": 5.21,
+          "minimumOdds": 5.09,
           "targetEdge": 0.08,
           "plannedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
           "cutoffWindow": "T-5 仍无实时赔率就不下注",
@@ -886,13 +871,13 @@
             "jockey": "A Atzeni",
             "trainer": "J Size",
             "actualWeight": 135,
-            "draw": 10,
+            "draw": 9,
             "winOdds": null,
-            "probability": 0.20718745255064824,
-            "fairOdds": 4.826547108375416,
+            "probability": 0.21232087457418763,
+            "fairOdds": 4.709852490978635,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.06209652379585373
+            "score": -0.05336925106858109
           },
           {
             "horseId": "HK_2023_J087",
@@ -901,13 +886,13 @@
             "jockey": "C Y Ho",
             "trainer": "W K Mo",
             "actualWeight": 129,
-            "draw": 7,
+            "draw": 6,
             "winOdds": null,
-            "probability": 0.20015983696801848,
-            "fairOdds": 4.996007266731437,
+            "probability": 0.2051191378458962,
+            "fairOdds": 4.875215499156833,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.10178040082261795
+            "score": -0.0930531280953453
           },
           {
             "horseId": "HK_2023_J345",
@@ -916,13 +901,13 @@
             "jockey": "H Bowman",
             "trainer": "C S Shum",
             "actualWeight": 134,
-            "draw": 9,
+            "draw": 8,
             "winOdds": null,
-            "probability": 0.18066783717422455,
-            "fairOdds": 5.535019490135722,
+            "probability": 0.18514419055797338,
+            "fairOdds": 5.401195668015705,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.2196048475532109
+            "score": -0.21087757482593827
           },
           {
             "horseId": "HK_2022_H208",
@@ -933,11 +918,11 @@
             "actualWeight": 134,
             "draw": 1,
             "winOdds": null,
-            "probability": 0.11766433971575173,
-            "fairOdds": 8.498751638905683,
+            "probability": 0.11932799332023902,
+            "fairOdds": 8.380263274153222,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.7127526767388257
+            "score": -0.7160254040115531
           },
           {
             "horseId": "HK_2022_H320",
@@ -946,13 +931,13 @@
             "jockey": "J Moreira",
             "trainer": "C Fownes",
             "actualWeight": 131,
-            "draw": 11,
+            "draw": 10,
             "winOdds": null,
-            "probability": 0.06000763092426017,
-            "fairOdds": 16.66454723503699,
+            "probability": 0.06149442218683297,
+            "fairOdds": 16.26163746952187,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.4871215712270094
+            "score": -1.4783942984997367
           },
           {
             "horseId": "HK_2023_J308",
@@ -961,13 +946,13 @@
             "jockey": "L Ferraris",
             "trainer": "K H Ting",
             "actualWeight": 132,
-            "draw": 8,
+            "draw": 7,
             "winOdds": null,
-            "probability": 0.05195893654831725,
-            "fairOdds": 19.245967420254797,
+            "probability": 0.053246307698998366,
+            "fairOdds": 18.78064495388121,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.6527422842803612
+            "score": -1.6440150115530885
           },
           {
             "horseId": "HK_2023_J243",
@@ -976,13 +961,13 @@
             "jockey": "C L Chau",
             "trainer": "C W Chang",
             "actualWeight": 128,
-            "draw": 6,
+            "draw": 5,
             "winOdds": null,
-            "probability": 0.04546677037832897,
-            "fairOdds": 21.99408472779132,
+            "probability": 0.04659328705453679,
+            "fairOdds": 21.462319214128723,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.8062350694090987
+            "score": -1.797507796681826
           },
           {
             "horseId": "HK_2023_J441",
@@ -993,11 +978,11 @@
             "actualWeight": 115,
             "draw": 3,
             "winOdds": null,
-            "probability": 0.043276239633569656,
-            "fairOdds": 23.107368118562075,
+            "probability": 0.04388812146819321,
+            "fairOdds": 22.78520853813997,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.863019759801051
+            "score": -1.8662924870737785
           },
           {
             "horseId": "HK_2024_K399",
@@ -1008,11 +993,11 @@
             "actualWeight": 131,
             "draw": 4,
             "winOdds": null,
-            "probability": 0.04111223740783769,
-            "fairOdds": 24.323657943494915,
+            "probability": 0.04169352246087343,
+            "fairOdds": 23.984541026449197,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.9220123698803968
+            "score": -1.9252850971531241
           },
           {
             "horseId": "HK_2023_J482",
@@ -1023,26 +1008,11 @@
             "actualWeight": 130,
             "draw": 2,
             "winOdds": null,
-            "probability": 0.02411785504088861,
-            "fairOdds": 41.46305707139517,
+            "probability": 0.024458856881957917,
+            "fairOdds": 40.884985133448744,
             "edge": null,
             "expectedReturn": null,
-            "score": -2.5353687627247936
-          },
-          {
-            "horseId": "HK_2024_K090",
-            "horseNo": 4,
-            "horseName": "CONSPIRATOR",
-            "jockey": "L Hewitson",
-            "trainer": "B Crawford",
-            "actualWeight": 132,
-            "draw": 5,
-            "winOdds": null,
-            "probability": 0.02182988925642186,
-            "fairOdds": 45.8087527725695,
-            "edge": null,
-            "expectedReturn": null,
-            "score": -2.649991955682124
+            "score": -2.538641489997521
           },
           {
             "horseId": "HK_2024_K483",
@@ -1051,19 +1021,19 @@
             "jockey": "K C Leung",
             "trainer": "P C Ng",
             "actualWeight": 129,
-            "draw": 12,
+            "draw": 11,
             "winOdds": null,
-            "probability": 0.006550974401732913,
-            "fairOdds": 152.64904709984404,
+            "probability": 0.006713285950311262,
+            "fairOdds": 148.95835026268097,
             "edge": null,
             "expectedReturn": null,
-            "score": -4.034208195326841
+            "score": -4.025480922599568
           }
         ]
       },
       "settlement": null,
-      "cumulativeProfit": -26571.14,
-      "cumulativeRoi": -0.24410729419546562
+      "cumulativeProfit": -11988.49,
+      "cumulativeRoi": -0.25607682332468024
     },
     {
       "raceId": "2026-07-08-HV-2",
@@ -1079,7 +1049,7 @@
         "raceClass": "4",
         "distance": 1650,
         "surface": "TURF",
-        "going": "YIELDING",
+        "going": "GOOD TO YIELDING",
         "trainingRacesBefore": 14221,
         "topPick": {
           "horseId": "HK_2025_L039",
@@ -1108,7 +1078,7 @@
           "edge": null,
           "confidence": "watch",
           "suggestedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "message": "Probability-only paper pick; wait for market odds before treating it as a value recommendation."
         },
         "finalBetPlan": {
@@ -1125,7 +1095,7 @@
           "minimumOdds": 4.56,
           "targetEdge": 0.08,
           "plannedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
           "cutoffWindow": "T-5 仍无实时赔率就不下注",
@@ -1323,8 +1293,8 @@
         ]
       },
       "settlement": null,
-      "cumulativeProfit": -26571.14,
-      "cumulativeRoi": -0.24410729419546562
+      "cumulativeProfit": -11988.49,
+      "cumulativeRoi": -0.25607682332468024
     },
     {
       "raceId": "2026-07-08-HV-3",
@@ -1340,7 +1310,7 @@
         "raceClass": "4",
         "distance": 1000,
         "surface": "TURF",
-        "going": "YIELDING",
+        "going": "GOOD TO YIELDING",
         "trainingRacesBefore": 14221,
         "topPick": {
           "horseId": "HK_2025_L260",
@@ -1369,7 +1339,7 @@
           "edge": null,
           "confidence": "watch",
           "suggestedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "message": "Probability-only paper pick; wait for market odds before treating it as a value recommendation."
         },
         "finalBetPlan": {
@@ -1386,7 +1356,7 @@
           "minimumOdds": 4.44,
           "targetEdge": 0.08,
           "plannedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
           "cutoffWindow": "T-5 仍无实时赔率就不下注",
@@ -1584,8 +1554,8 @@
         ]
       },
       "settlement": null,
-      "cumulativeProfit": -26571.14,
-      "cumulativeRoi": -0.24410729419546562
+      "cumulativeProfit": -11988.49,
+      "cumulativeRoi": -0.25607682332468024
     },
     {
       "raceId": "2026-07-08-HV-4",
@@ -1601,7 +1571,7 @@
         "raceClass": "4",
         "distance": 1650,
         "surface": "TURF",
-        "going": "YIELDING",
+        "going": "GOOD TO YIELDING",
         "trainingRacesBefore": 14221,
         "topPick": {
           "horseId": "HK_2024_K443",
@@ -1630,7 +1600,7 @@
           "edge": null,
           "confidence": "watch",
           "suggestedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "message": "Probability-only paper pick; wait for market odds before treating it as a value recommendation."
         },
         "finalBetPlan": {
@@ -1647,7 +1617,7 @@
           "minimumOdds": 4.85,
           "targetEdge": 0.08,
           "plannedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
           "cutoffWindow": "T-5 仍无实时赔率就不下注",
@@ -1785,8 +1755,8 @@
         ]
       },
       "settlement": null,
-      "cumulativeProfit": -26571.14,
-      "cumulativeRoi": -0.24410729419546562
+      "cumulativeProfit": -11988.49,
+      "cumulativeRoi": -0.25607682332468024
     },
     {
       "raceId": "2026-07-08-HV-5",
@@ -1802,7 +1772,7 @@
         "raceClass": "4",
         "distance": 1200,
         "surface": "TURF",
-        "going": "YIELDING",
+        "going": "GOOD TO YIELDING",
         "trainingRacesBefore": 14221,
         "topPick": {
           "horseId": "HK_2024_K479",
@@ -1831,7 +1801,7 @@
           "edge": null,
           "confidence": "watch",
           "suggestedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "message": "Probability-only paper pick; wait for market odds before treating it as a value recommendation."
         },
         "finalBetPlan": {
@@ -1848,7 +1818,7 @@
           "minimumOdds": 5.57,
           "targetEdge": 0.08,
           "plannedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
           "cutoffWindow": "T-5 仍无实时赔率就不下注",
@@ -2046,8 +2016,8 @@
         ]
       },
       "settlement": null,
-      "cumulativeProfit": -26571.14,
-      "cumulativeRoi": -0.24410729419546562
+      "cumulativeProfit": -11988.49,
+      "cumulativeRoi": -0.25607682332468024
     },
     {
       "raceId": "2026-07-08-HV-6",
@@ -2063,7 +2033,7 @@
         "raceClass": "4",
         "distance": 1200,
         "surface": "TURF",
-        "going": "YIELDING",
+        "going": "GOOD TO YIELDING",
         "trainingRacesBefore": 14221,
         "topPick": {
           "horseId": "HK_2024_K553",
@@ -2092,7 +2062,7 @@
           "edge": null,
           "confidence": "watch",
           "suggestedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "message": "Probability-only paper pick; wait for market odds before treating it as a value recommendation."
         },
         "finalBetPlan": {
@@ -2109,7 +2079,7 @@
           "minimumOdds": 5.56,
           "targetEdge": 0.08,
           "plannedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
           "cutoffWindow": "T-5 仍无实时赔率就不下注",
@@ -2307,8 +2277,8 @@
         ]
       },
       "settlement": null,
-      "cumulativeProfit": -26571.14,
-      "cumulativeRoi": -0.24410729419546562
+      "cumulativeProfit": -11988.49,
+      "cumulativeRoi": -0.25607682332468024
     },
     {
       "raceId": "2026-07-08-HV-7",
@@ -2324,7 +2294,7 @@
         "raceClass": "3",
         "distance": 1000,
         "surface": "TURF",
-        "going": "YIELDING",
+        "going": "GOOD TO YIELDING",
         "trainingRacesBefore": 14221,
         "topPick": {
           "horseId": "HK_2023_J465",
@@ -2353,7 +2323,7 @@
           "edge": null,
           "confidence": "watch",
           "suggestedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "message": "Probability-only paper pick; wait for market odds before treating it as a value recommendation."
         },
         "finalBetPlan": {
@@ -2370,7 +2340,7 @@
           "minimumOdds": 4.44,
           "targetEdge": 0.08,
           "plannedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
           "cutoffWindow": "T-5 仍无实时赔率就不下注",
@@ -2568,8 +2538,8 @@
         ]
       },
       "settlement": null,
-      "cumulativeProfit": -26571.14,
-      "cumulativeRoi": -0.24410729419546562
+      "cumulativeProfit": -11988.49,
+      "cumulativeRoi": -0.25607682332468024
     },
     {
       "raceId": "2026-07-08-HV-8",
@@ -2585,7 +2555,7 @@
         "raceClass": "2",
         "distance": 1800,
         "surface": "TURF",
-        "going": "YIELDING",
+        "going": "GOOD TO YIELDING",
         "trainingRacesBefore": 14221,
         "topPick": {
           "horseId": "HK_2024_K156",
@@ -2614,7 +2584,7 @@
           "edge": null,
           "confidence": "watch",
           "suggestedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "message": "Probability-only paper pick; wait for market odds before treating it as a value recommendation."
         },
         "finalBetPlan": {
@@ -2631,7 +2601,7 @@
           "minimumOdds": 3.78,
           "targetEdge": 0.08,
           "plannedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
           "cutoffWindow": "T-5 仍无实时赔率就不下注",
@@ -2829,8 +2799,8 @@
         ]
       },
       "settlement": null,
-      "cumulativeProfit": -26571.14,
-      "cumulativeRoi": -0.24410729419546562
+      "cumulativeProfit": -11988.49,
+      "cumulativeRoi": -0.25607682332468024
     },
     {
       "raceId": "2026-07-08-HV-9",
@@ -2846,7 +2816,7 @@
         "raceClass": "3",
         "distance": 1200,
         "surface": "TURF",
-        "going": "YIELDING",
+        "going": "GOOD TO YIELDING",
         "trainingRacesBefore": 14221,
         "topPick": {
           "horseId": "HK_2023_J539",
@@ -2875,7 +2845,7 @@
           "edge": null,
           "confidence": "watch",
           "suggestedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "message": "Probability-only paper pick; wait for market odds before treating it as a value recommendation."
         },
         "finalBetPlan": {
@@ -2892,7 +2862,7 @@
           "minimumOdds": 4.64,
           "targetEdge": 0.08,
           "plannedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
           "cutoffWindow": "T-5 仍无实时赔率就不下注",
@@ -3090,8 +3060,8 @@
         ]
       },
       "settlement": null,
-      "cumulativeProfit": -26571.14,
-      "cumulativeRoi": -0.24410729419546562
+      "cumulativeProfit": -11988.49,
+      "cumulativeRoi": -0.25607682332468024
     }
   ],
   "nextLocalMeetings": [],
@@ -3103,13 +3073,13 @@
       "topPickWinRate": 0.20511918993038464,
       "topPickReturn": 11424.3,
       "topPickRoi": -0.19665986920750841,
-      "valueBets": 9589,
-      "valueWins": 972,
-      "valueWinRate": 0.10136614871206591,
-      "valueStake": 108850.25,
-      "valueReturn": 82279.11,
-      "valueProfit": -26571.14,
-      "valueRoi": -0.24410729419546695,
+      "valueBets": 9588,
+      "valueWins": 971,
+      "valueWinRate": 0.10127242386316229,
+      "valueStake": 46815.99,
+      "valueReturn": 34827.5,
+      "valueProfit": -11988.49,
+      "valueRoi": -0.2560768233246808,
       "marketFavouriteBets": 14221,
       "marketFavouriteWins": 4371,
       "marketFavouriteWinRate": 0.3073623514520779,
@@ -3125,10 +3095,10 @@
       "valueBets": 21,
       "valueWins": 2,
       "valueWinRate": 0.09523809523809523,
-      "valueStake": 253.45,
-      "valueReturn": 233.13,
-      "valueProfit": -20.32,
-      "valueRoi": -0.08017360426119559,
+      "valueStake": 109.3,
+      "valueReturn": 63.87,
+      "valueProfit": -45.43,
+      "valueRoi": -0.41564501372369617,
       "marketFavouriteBets": 30,
       "marketFavouriteWins": 9,
       "marketFavouriteWinRate": 0.3,
@@ -3148,9 +3118,9 @@
         "valueBets": 6,
         "valueWins": 0,
         "valueWinRate": 0,
-        "valueStake": 75,
+        "valueStake": 34.32,
         "valueReturn": 0,
-        "valueProfit": -75,
+        "valueProfit": -34.32,
         "valueRoi": -1,
         "marketFavouriteBets": 11,
         "marketFavouriteWins": 3,
@@ -3170,10 +3140,10 @@
         "valueBets": 8,
         "valueWins": 1,
         "valueWinRate": 0.125,
-        "valueStake": 91.03,
-        "valueReturn": 137.5,
-        "valueProfit": 46.47,
-        "valueRoi": 0.5104910469076128,
+        "valueStake": 40.66,
+        "valueReturn": 44.77,
+        "valueProfit": 4.11,
+        "valueRoi": 0.10108214461387091,
         "marketFavouriteBets": 11,
         "marketFavouriteWins": 3,
         "marketFavouriteWinRate": 0.2727272727272727,
@@ -3192,10 +3162,10 @@
         "valueBets": 8,
         "valueWins": 1,
         "valueWinRate": 0.125,
-        "valueStake": 99.92,
-        "valueReturn": 95.63,
-        "valueProfit": -4.29,
-        "valueRoi": -0.04293434747798245,
+        "valueStake": 39.7,
+        "valueReturn": 19.1,
+        "valueProfit": -20.6,
+        "valueRoi": -0.5188916876574308,
         "marketFavouriteBets": 11,
         "marketFavouriteWins": 4,
         "marketFavouriteWinRate": 0.36363636363636365,
@@ -3214,9 +3184,9 @@
         "valueBets": 8,
         "valueWins": 0,
         "valueWinRate": 0,
-        "valueStake": 91.64,
+        "valueStake": 45.58,
         "valueReturn": 0,
-        "valueProfit": -91.64,
+        "valueProfit": -45.58,
         "valueRoi": -1,
         "marketFavouriteBets": 9,
         "marketFavouriteWins": 4,
@@ -3236,10 +3206,10 @@
         "valueBets": 6,
         "valueWins": 2,
         "valueWinRate": 0.3333333333333333,
-        "valueStake": 66.64,
-        "valueReturn": 128.86,
-        "valueProfit": 62.22,
-        "valueRoi": 0.9336734693877553,
+        "valueStake": 33.65,
+        "valueReturn": 25.8,
+        "valueProfit": -7.85,
+        "valueRoi": -0.23328380386329872,
         "marketFavouriteBets": 11,
         "marketFavouriteWins": 3,
         "marketFavouriteWinRate": 0.2727272727272727,
@@ -3258,9 +3228,9 @@
         "valueBets": 7,
         "valueWins": 0,
         "valueWinRate": 0,
-        "valueStake": 83.7,
+        "valueStake": 28.58,
         "valueReturn": 0,
-        "valueProfit": -83.7,
+        "valueProfit": -28.58,
         "valueRoi": -1,
         "marketFavouriteBets": 11,
         "marketFavouriteWins": 2,
@@ -3280,10 +3250,10 @@
         "valueBets": 4,
         "valueWins": 1,
         "valueWinRate": 0.25,
-        "valueStake": 39.23,
-        "valueReturn": 10.9,
-        "valueProfit": -28.33,
-        "valueRoi": -0.7221514147336223,
+        "valueStake": 17.99,
+        "valueReturn": 2.2,
+        "valueProfit": -15.79,
+        "valueRoi": -0.877709838799333,
         "marketFavouriteBets": 9,
         "marketFavouriteWins": 3,
         "marketFavouriteWinRate": 0.3333333333333333,
@@ -3302,9 +3272,9 @@
         "valueBets": 7,
         "valueWins": 0,
         "valueWinRate": 0,
-        "valueStake": 70.95,
+        "valueStake": 28.17,
         "valueReturn": 0,
-        "valueProfit": -70.95,
+        "valueProfit": -28.17,
         "valueRoi": -1,
         "marketFavouriteBets": 11,
         "marketFavouriteWins": 3,
@@ -3324,10 +3294,10 @@
         "valueBets": 6,
         "valueWins": 3,
         "valueWinRate": 0.5,
-        "valueStake": 73.29,
-        "valueReturn": 330.93,
-        "valueProfit": 257.64,
-        "valueRoi": 3.5153499795333607,
+        "valueStake": 26.64,
+        "valueReturn": 130.5,
+        "valueProfit": 103.86,
+        "valueRoi": 3.898648648648649,
         "marketFavouriteBets": 9,
         "marketFavouriteWins": 4,
         "marketFavouriteWinRate": 0.4444444444444444,
@@ -3346,10 +3316,10 @@
         "valueBets": 7,
         "valueWins": 1,
         "valueWinRate": 0.14285714285714285,
-        "valueStake": 81.86,
-        "valueReturn": 82.81,
-        "valueProfit": 0.95,
-        "valueRoi": 0.011605179574883983,
+        "valueStake": 37.47,
+        "valueReturn": 16.55,
+        "valueProfit": -20.92,
+        "valueRoi": -0.5583133173205231,
         "marketFavouriteBets": 11,
         "marketFavouriteWins": 3,
         "marketFavouriteWinRate": 0.2727272727272727,
@@ -3368,9 +3338,9 @@
         "valueBets": 8,
         "valueWins": 0,
         "valueWinRate": 0,
-        "valueStake": 96.91,
+        "valueStake": 38.36,
         "valueReturn": 0,
-        "valueProfit": -96.91,
+        "valueProfit": -38.36,
         "valueRoi": -1,
         "marketFavouriteBets": 9,
         "marketFavouriteWins": 5,
@@ -3390,10 +3360,10 @@
         "valueBets": 7,
         "valueWins": 1,
         "valueWinRate": 0.14285714285714285,
-        "valueStake": 70.39,
-        "valueReturn": 62.5,
-        "valueProfit": -7.89,
-        "valueRoi": -0.11208978548089218,
+        "valueStake": 23.12,
+        "valueReturn": 23.7,
+        "valueProfit": 0.58,
+        "valueRoi": 0.025086505190311345,
         "marketFavouriteBets": 11,
         "marketFavouriteWins": 2,
         "marketFavouriteWinRate": 0.18181818181818182,
@@ -3412,10 +3382,10 @@
         "valueBets": 8,
         "valueWins": 1,
         "valueWinRate": 0.125,
-        "valueStake": 96.74,
-        "valueReturn": 86.25,
-        "valueProfit": -10.49,
-        "valueRoi": -0.10843498035972719,
+        "valueStake": 29.66,
+        "valueReturn": 26.29,
+        "valueProfit": -3.37,
+        "valueRoi": -0.11362103843560353,
         "marketFavouriteBets": 9,
         "marketFavouriteWins": 5,
         "marketFavouriteWinRate": 0.5555555555555556,
@@ -3434,10 +3404,10 @@
         "valueBets": 11,
         "valueWins": 2,
         "valueWinRate": 0.18181818181818182,
-        "valueStake": 117.67,
-        "valueReturn": 146.75,
-        "valueProfit": 29.08,
-        "valueRoi": 0.24713180929718703,
+        "valueStake": 43.79,
+        "valueReturn": 47.28,
+        "valueProfit": 3.49,
+        "valueRoi": 0.07969856131536886,
         "marketFavouriteBets": 11,
         "marketFavouriteWins": 2,
         "marketFavouriteWinRate": 0.18181818181818182,
@@ -3456,9 +3426,9 @@
         "valueBets": 8,
         "valueWins": 0,
         "valueWinRate": 0,
-        "valueStake": 100,
+        "valueStake": 37.14,
         "valueReturn": 0,
-        "valueProfit": -100,
+        "valueProfit": -37.14,
         "valueRoi": -1,
         "marketFavouriteBets": 9,
         "marketFavouriteWins": 3,
@@ -3478,9 +3448,9 @@
         "valueBets": 8,
         "valueWins": 0,
         "valueWinRate": 0,
-        "valueStake": 93.53,
+        "valueStake": 34.04,
         "valueReturn": 0,
-        "valueProfit": -93.53,
+        "valueProfit": -34.04,
         "valueRoi": -1,
         "marketFavouriteBets": 11,
         "marketFavouriteWins": 3,
@@ -3500,9 +3470,9 @@
         "valueBets": 7,
         "valueWins": 0,
         "valueWinRate": 0,
-        "valueStake": 60.42,
+        "valueStake": 24.65,
         "valueReturn": 0,
-        "valueProfit": -60.42,
+        "valueProfit": -24.65,
         "valueRoi": -1,
         "marketFavouriteBets": 9,
         "marketFavouriteWins": 3,
@@ -3522,9 +3492,9 @@
         "valueBets": 9,
         "valueWins": 0,
         "valueWinRate": 0,
-        "valueStake": 85.97,
+        "valueStake": 37.96,
         "valueReturn": 0,
-        "valueProfit": -85.97,
+        "valueProfit": -37.96,
         "valueRoi": -1,
         "marketFavouriteBets": 11,
         "marketFavouriteWins": 3,
@@ -3544,10 +3514,10 @@
         "valueBets": 6,
         "valueWins": 1,
         "valueWinRate": 0.16666666666666666,
-        "valueStake": 59.32,
-        "valueReturn": 12.44,
-        "valueProfit": -46.88,
-        "valueRoi": -0.7902899527983817,
+        "valueStake": 29.41,
+        "valueReturn": 2.48,
+        "valueProfit": -26.93,
+        "valueRoi": -0.9156749404964297,
         "marketFavouriteBets": 9,
         "marketFavouriteWins": 3,
         "marketFavouriteWinRate": 0.3333333333333333,
@@ -3566,9 +3536,9 @@
         "valueBets": 8,
         "valueWins": 0,
         "valueWinRate": 0,
-        "valueStake": 88.65,
+        "valueStake": 42.29,
         "valueReturn": 0,
-        "valueProfit": -88.65,
+        "valueProfit": -42.29,
         "valueRoi": -1,
         "marketFavouriteBets": 11,
         "marketFavouriteWins": 3,
@@ -3588,9 +3558,9 @@
         "valueBets": 7,
         "valueWins": 0,
         "valueWinRate": 0,
-        "valueStake": 87.5,
+        "valueStake": 40.26,
         "valueReturn": 0,
-        "valueProfit": -87.5,
+        "valueProfit": -40.26,
         "valueRoi": -1,
         "marketFavouriteBets": 9,
         "marketFavouriteWins": 2,
@@ -3610,9 +3580,9 @@
         "valueBets": 6,
         "valueWins": 0,
         "valueWinRate": 0,
-        "valueStake": 58.13,
+        "valueStake": 25.09,
         "valueReturn": 0,
-        "valueProfit": -58.13,
+        "valueProfit": -25.09,
         "valueRoi": -1,
         "marketFavouriteBets": 11,
         "marketFavouriteWins": 1,
@@ -3632,10 +3602,10 @@
         "valueBets": 7,
         "valueWins": 1,
         "valueWinRate": 0.14285714285714285,
-        "valueStake": 65.86,
-        "valueReturn": 34,
-        "valueProfit": -31.86,
-        "valueRoi": -0.483753416337686,
+        "valueStake": 24.56,
+        "valueReturn": 6.8,
+        "valueProfit": -17.76,
+        "valueRoi": -0.7231270358306189,
         "marketFavouriteBets": 9,
         "marketFavouriteWins": 1,
         "marketFavouriteWinRate": 0.1111111111111111,
@@ -3654,10 +3624,10 @@
         "valueBets": 7,
         "valueWins": 1,
         "valueWinRate": 0.14285714285714285,
-        "valueStake": 82.52,
-        "valueReturn": 42.5,
-        "valueProfit": -40.02,
-        "valueRoi": -0.48497333979641305,
+        "valueStake": 38.28,
+        "valueReturn": 8.48,
+        "valueProfit": -29.8,
+        "valueRoi": -0.7784743991640544,
         "marketFavouriteBets": 11,
         "marketFavouriteWins": 1,
         "marketFavouriteWinRate": 0.09090909090909091,
@@ -3676,9 +3646,9 @@
         "valueBets": 7,
         "valueWins": 0,
         "valueWinRate": 0,
-        "valueStake": 70.3,
+        "valueStake": 31.82,
         "valueReturn": 0,
-        "valueProfit": -70.3,
+        "valueProfit": -31.82,
         "valueRoi": -1,
         "marketFavouriteBets": 9,
         "marketFavouriteWins": 2,
@@ -3698,10 +3668,10 @@
         "valueBets": 6,
         "valueWins": 1,
         "valueWinRate": 0.16666666666666666,
-        "valueStake": 62.84,
-        "valueReturn": 62.5,
-        "valueProfit": -0.34,
-        "valueRoi": -0.0054105665181412525,
+        "valueStake": 24.11,
+        "valueReturn": 22.2,
+        "valueProfit": -1.91,
+        "valueRoi": -0.07922024056408143,
         "marketFavouriteBets": 11,
         "marketFavouriteWins": 1,
         "marketFavouriteWinRate": 0.09090909090909091,
@@ -3720,10 +3690,10 @@
         "valueBets": 4,
         "valueWins": 1,
         "valueWinRate": 0.25,
-        "valueStake": 44.73,
-        "valueReturn": 50.61,
-        "valueProfit": 5.88,
-        "valueRoi": 0.13145539906103276,
+        "valueStake": 14.6,
+        "valueReturn": 10.15,
+        "valueProfit": -4.45,
+        "valueRoi": -0.3047945205479451,
         "marketFavouriteBets": 9,
         "marketFavouriteWins": 2,
         "marketFavouriteWinRate": 0.2222222222222222,
@@ -3742,10 +3712,10 @@
         "valueBets": 8,
         "valueWins": 2,
         "valueWinRate": 0.25,
-        "valueStake": 94.56,
-        "valueReturn": 82.95,
-        "valueProfit": -11.61,
-        "valueRoi": -0.12277918781725887,
+        "valueStake": 43.82,
+        "valueReturn": 24.48,
+        "valueProfit": -19.34,
+        "valueRoi": -0.4413509812870835,
         "marketFavouriteBets": 11,
         "marketFavouriteWins": 8,
         "marketFavouriteWinRate": 0.7272727272727273,
@@ -3764,10 +3734,10 @@
         "valueBets": 8,
         "valueWins": 1,
         "valueWinRate": 0.125,
-        "valueStake": 94.84,
-        "valueReturn": 51.58,
-        "valueProfit": -43.26,
-        "valueRoi": -0.4561366512020245,
+        "valueStake": 44.8,
+        "valueReturn": 10.33,
+        "valueProfit": -34.47,
+        "valueRoi": -0.7694196428571429,
         "marketFavouriteBets": 9,
         "marketFavouriteWins": 4,
         "marketFavouriteWinRate": 0.4444444444444444,
@@ -3786,9 +3756,9 @@
         "valueBets": 5,
         "valueWins": 0,
         "valueWinRate": 0,
-        "valueStake": 62.5,
+        "valueStake": 22.01,
         "valueReturn": 0,
-        "valueProfit": -62.5,
+        "valueProfit": -22.01,
         "valueRoi": -1,
         "marketFavouriteBets": 10,
         "marketFavouriteWins": 4,
@@ -3808,9 +3778,9 @@
         "valueBets": 7,
         "valueWins": 0,
         "valueWinRate": 0,
-        "valueStake": 87.5,
+        "valueStake": 41.79,
         "valueReturn": 0,
-        "valueProfit": -87.5,
+        "valueProfit": -41.79,
         "valueRoi": -1,
         "marketFavouriteBets": 9,
         "marketFavouriteWins": 3,
@@ -3830,9 +3800,9 @@
         "valueBets": 7,
         "valueWins": 0,
         "valueWinRate": 0,
-        "valueStake": 75.22,
+        "valueStake": 25.78,
         "valueReturn": 0,
-        "valueProfit": -75.22,
+        "valueProfit": -25.78,
         "valueRoi": -1,
         "marketFavouriteBets": 11,
         "marketFavouriteWins": 4,
@@ -3852,10 +3822,10 @@
         "valueBets": 9,
         "valueWins": 1,
         "valueWinRate": 0.1111111111111111,
-        "valueStake": 100.68,
-        "valueReturn": 123.75,
-        "valueProfit": 23.07,
-        "valueRoi": 0.22914183551847447,
+        "valueStake": 33.06,
+        "valueReturn": 60.59,
+        "valueProfit": 27.53,
+        "valueRoi": 0.8327283726557774,
         "marketFavouriteBets": 9,
         "marketFavouriteWins": 0,
         "marketFavouriteWinRate": 0,
@@ -3874,9 +3844,9 @@
         "valueBets": 4,
         "valueWins": 0,
         "valueWinRate": 0,
-        "valueStake": 43,
+        "valueStake": 18.81,
         "valueReturn": 0,
-        "valueProfit": -43,
+        "valueProfit": -18.81,
         "valueRoi": -1,
         "marketFavouriteBets": 11,
         "marketFavouriteWins": 5,
@@ -3896,9 +3866,9 @@
         "valueBets": 6,
         "valueWins": 0,
         "valueWinRate": 0,
-        "valueStake": 71.69,
+        "valueStake": 30.25,
         "valueReturn": 0,
-        "valueProfit": -71.69,
+        "valueProfit": -30.25,
         "valueRoi": -1,
         "marketFavouriteBets": 9,
         "marketFavouriteWins": 4,
@@ -3918,10 +3888,10 @@
         "valueBets": 8,
         "valueWins": 2,
         "valueWinRate": 0.25,
-        "valueStake": 87.97,
-        "valueReturn": 262.5,
-        "valueProfit": 174.53,
-        "valueRoi": 1.9839718085711038,
+        "valueStake": 39.93,
+        "valueReturn": 136.99,
+        "valueProfit": 97.06,
+        "valueRoi": 2.4307538191835714,
         "marketFavouriteBets": 11,
         "marketFavouriteWins": 5,
         "marketFavouriteWinRate": 0.45454545454545453,
@@ -3940,9 +3910,9 @@
         "valueBets": 7,
         "valueWins": 0,
         "valueWinRate": 0,
-        "valueStake": 76.15,
+        "valueStake": 25.78,
         "valueReturn": 0,
-        "valueProfit": -76.15,
+        "valueProfit": -25.78,
         "valueRoi": -1,
         "marketFavouriteBets": 9,
         "marketFavouriteWins": 1,
@@ -3962,9 +3932,9 @@
         "valueBets": 3,
         "valueWins": 0,
         "valueWinRate": 0,
-        "valueStake": 37.5,
+        "valueStake": 14.3,
         "valueReturn": 0,
-        "valueProfit": -37.5,
+        "valueProfit": -14.3,
         "valueRoi": -1,
         "marketFavouriteBets": 11,
         "marketFavouriteWins": 7,
@@ -3984,9 +3954,9 @@
         "valueBets": 5,
         "valueWins": 0,
         "valueWinRate": 0,
-        "valueStake": 62.5,
+        "valueStake": 25.49,
         "valueReturn": 0,
-        "valueProfit": -62.5,
+        "valueProfit": -25.49,
         "valueRoi": -1,
         "marketFavouriteBets": 11,
         "marketFavouriteWins": 3,
@@ -4006,9 +3976,9 @@
         "valueBets": 6,
         "valueWins": 0,
         "valueWinRate": 0,
-        "valueStake": 66.26,
+        "valueStake": 20.05,
         "valueReturn": 0,
-        "valueProfit": -66.26,
+        "valueProfit": -20.05,
         "valueRoi": -1,
         "marketFavouriteBets": 10,
         "marketFavouriteWins": 2,
@@ -4582,9 +4552,9 @@
       "topPick": "VICTOR THE RAPID",
       "recommendation": "VICTOR THE RAPID",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -25855.34,
-      "cumulativeRoi": -0.24172141905014752
+      "profit": -7.23,
+      "cumulativeProfit": -11569.11,
+      "cumulativeRoi": -0.25126936627901236
     },
     {
       "raceId": "2026-04-12-ST-6",
@@ -4594,9 +4564,9 @@
       "topPick": "ISLAND BUDDY",
       "recommendation": "ISLAND BUDDY",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -25867.84,
-      "cumulativeRoi": -0.2418100229696654
+      "profit": -6.24,
+      "cumulativeProfit": -11575.35,
+      "cumulativeRoi": -0.2513708253617357
     },
     {
       "raceId": "2026-04-12-ST-7",
@@ -4607,8 +4577,8 @@
       "recommendation": "SHOTGUN",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -25867.84,
-      "cumulativeRoi": -0.2418100229696654
+      "cumulativeProfit": -11575.35,
+      "cumulativeRoi": -0.2513708253617357
     },
     {
       "raceId": "2026-04-12-ST-8",
@@ -4618,9 +4588,9 @@
       "topPick": "ENDUED",
       "recommendation": "AMAZING PARTNERS",
       "result": "WIN",
-      "profit": 34.63,
-      "cumulativeProfit": -25833.21,
-      "cumulativeRoi": -0.24146854078306437
+      "profit": 6.91,
+      "cumulativeProfit": -11568.44,
+      "cumulativeRoi": -0.2512122026116135
     },
     {
       "raceId": "2026-04-12-ST-9",
@@ -4630,9 +4600,9 @@
       "topPick": "ENDEARED",
       "recommendation": "ENDEARED",
       "result": "MISS",
-      "profit": -12.15,
-      "cumulativeProfit": -25845.36,
-      "cumulativeRoi": -0.24155467639414369
+      "profit": -2.43,
+      "cumulativeProfit": -11570.87,
+      "cumulativeRoi": -0.2512517127043037
     },
     {
       "raceId": "2026-04-12-ST-10",
@@ -4643,8 +4613,8 @@
       "recommendation": "CROSSBORDERPEGASUS",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -25845.36,
-      "cumulativeRoi": -0.24155467639414369
+      "cumulativeProfit": -11570.87,
+      "cumulativeRoi": -0.2512517127043037
     },
     {
       "raceId": "2026-04-12-ST-11",
@@ -4655,8 +4625,8 @@
       "recommendation": "RISING FORCE",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -25845.36,
-      "cumulativeRoi": -0.24155467639414369
+      "cumulativeProfit": -11570.87,
+      "cumulativeRoi": -0.2512517127043037
     },
     {
       "raceId": "2026-04-15-HV-1",
@@ -4667,8 +4637,8 @@
       "recommendation": "MACANESE MASTER",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -25845.36,
-      "cumulativeRoi": -0.24155467639414369
+      "cumulativeProfit": -11570.87,
+      "cumulativeRoi": -0.2512517127043037
     },
     {
       "raceId": "2026-04-15-HV-2",
@@ -4678,9 +4648,9 @@
       "topPick": "DRAGON SUNRISE",
       "recommendation": "COURIER MAGIC",
       "result": "MISS",
-      "profit": -1.18,
-      "cumulativeProfit": -25846.54,
-      "cumulativeRoi": -0.24156304078578736
+      "profit": -0.24,
+      "cumulativeProfit": -11571.11,
+      "cumulativeRoi": -0.25125561470944274
     },
     {
       "raceId": "2026-04-15-HV-3",
@@ -4690,9 +4660,9 @@
       "topPick": "RUN RUN TIMING",
       "recommendation": "TAKE ACTION",
       "result": "MISS",
-      "profit": -7.88,
-      "cumulativeProfit": -25854.42,
-      "cumulativeRoi": -0.2416188931802802
+      "profit": -1.58,
+      "cumulativeProfit": -11572.69,
+      "cumulativeRoi": -0.2512813018947901
     },
     {
       "raceId": "2026-04-15-HV-4",
@@ -4702,9 +4672,9 @@
       "topPick": "ROMANTIC FANTASY",
       "recommendation": "ROMANTIC FANTASY",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -25866.92,
-      "cumulativeRoi": -0.2417074746494652
+      "profit": -4.14,
+      "cumulativeProfit": -11576.83,
+      "cumulativeRoi": -0.2513486004647103
     },
     {
       "raceId": "2026-04-15-HV-5",
@@ -4714,9 +4684,9 @@
       "topPick": "DO YOUR PART",
       "recommendation": "BEAUTY ALLIANCE",
       "result": "WIN",
-      "profit": 27.2,
-      "cumulativeProfit": -25839.72,
-      "cumulativeRoi": -0.2414379692978037
+      "profit": 5.44,
+      "cumulativeProfit": -11571.39,
+      "cumulativeRoi": -0.25122307275128136
     },
     {
       "raceId": "2026-04-15-HV-6",
@@ -4726,9 +4696,9 @@
       "topPick": "PRESTIGE HALL",
       "recommendation": "PRESTIGE HALL",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -25852.22,
-      "cumulativeRoi": -0.24152655592340574
+      "profit": -9.28,
+      "cumulativeProfit": -11580.67,
+      "cumulativeRoi": -0.2513739024734374
     },
     {
       "raceId": "2026-04-15-HV-7",
@@ -4739,8 +4709,8 @@
       "recommendation": "THE HEIR",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -25852.22,
-      "cumulativeRoi": -0.24152655592340574
+      "cumulativeProfit": -11580.67,
+      "cumulativeRoi": -0.2513739024734374
     },
     {
       "raceId": "2026-04-15-HV-8",
@@ -4750,9 +4720,9 @@
       "topPick": "ALL ROUND WINNER",
       "recommendation": "KEEFY",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -25864.72,
-      "cumulativeRoi": -0.24161512186072243
+      "profit": -3.94,
+      "cumulativeProfit": -11584.61,
+      "cumulativeRoi": -0.2514379217180229
     },
     {
       "raceId": "2026-04-15-HV-9",
@@ -4762,9 +4732,9 @@
       "topPick": "AMAZING KID",
       "recommendation": "AMAZING KID",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -25877.22,
-      "cumulativeRoi": -0.24170366711700014
+      "profit": -4.02,
+      "cumulativeProfit": -11588.63,
+      "cumulativeRoi": -0.2515032295616994
     },
     {
       "raceId": "2026-04-19-ST-1",
@@ -4774,9 +4744,9 @@
       "topPick": "MEEPMEEP",
       "recommendation": "MEEPMEEP",
       "result": "MISS",
-      "profit": -2.66,
-      "cumulativeProfit": -25879.88,
-      "cumulativeRoi": -0.24172250687950453
+      "profit": -0.53,
+      "cumulativeProfit": -11589.16,
+      "cumulativeRoi": -0.25151183894957274
     },
     {
       "raceId": "2026-04-19-ST-2",
@@ -4787,8 +4757,8 @@
       "recommendation": "MODEST GENTLEMAN",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -25879.88,
-      "cumulativeRoi": -0.24172250687950453
+      "cumulativeProfit": -11589.16,
+      "cumulativeRoi": -0.25151183894957274
     },
     {
       "raceId": "2026-04-19-ST-3",
@@ -4799,8 +4769,8 @@
       "recommendation": "RUN RUN SUNRISE",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -25879.88,
-      "cumulativeRoi": -0.24172250687950453
+      "cumulativeProfit": -11589.16,
+      "cumulativeRoi": -0.25151183894957274
     },
     {
       "raceId": "2026-04-19-ST-4",
@@ -4811,8 +4781,8 @@
       "recommendation": "PASS",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -25879.88,
-      "cumulativeRoi": -0.24172250687950453
+      "cumulativeProfit": -11589.16,
+      "cumulativeRoi": -0.25151183894957274
     },
     {
       "raceId": "2026-04-19-ST-5",
@@ -4822,9 +4792,9 @@
       "topPick": "FLYING BOOM",
       "recommendation": "FLYING BOOM",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -25892.38,
-      "cumulativeRoi": -0.24181102706353677
+      "profit": -6.35,
+      "cumulativeProfit": -11595.51,
+      "cumulativeRoi": -0.2516149737633222
     },
     {
       "raceId": "2026-04-19-ST-6",
@@ -4834,9 +4804,9 @@
       "topPick": "SHOTGUN",
       "recommendation": "CALIFORNIA STAR",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -25904.88,
-      "cumulativeRoi": -0.24189952658255282
+      "profit": -5.38,
+      "cumulativeProfit": -11600.89,
+      "cumulativeRoi": -0.2517023318865903
     },
     {
       "raceId": "2026-04-19-ST-7",
@@ -4846,9 +4816,9 @@
       "topPick": "JUICY DRAGON",
       "recommendation": "FLOWING RICHES",
       "result": "MISS",
-      "profit": -5.47,
-      "cumulativeProfit": -25910.35,
-      "cumulativeRoi": -0.24193824747380724
+      "profit": -1.09,
+      "cumulativeProfit": -11601.98,
+      "cumulativeRoi": -0.25172002835272406
     },
     {
       "raceId": "2026-04-19-ST-8",
@@ -4858,9 +4828,9 @@
       "topPick": "AURORA PATCH",
       "recommendation": "IGOR STRAVINSKY",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -25922.85,
-      "cumulativeRoi": -0.24202671729747277
+      "profit": -6.62,
+      "cumulativeProfit": -11608.6,
+      "cumulativeRoi": -0.25182748799661975
     },
     {
       "raceId": "2026-04-19-ST-9",
@@ -4871,8 +4841,8 @@
       "recommendation": "AEROVOLANIC",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -25922.85,
-      "cumulativeRoi": -0.24202671729747277
+      "cumulativeProfit": -11608.6,
+      "cumulativeRoi": -0.25182748799661975
     },
     {
       "raceId": "2026-04-19-ST-10",
@@ -4883,8 +4853,8 @@
       "recommendation": "SUPER EXPRESS",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -25922.85,
-      "cumulativeRoi": -0.24202671729747277
+      "cumulativeProfit": -11608.6,
+      "cumulativeRoi": -0.25182748799661975
     },
     {
       "raceId": "2026-04-19-ST-11",
@@ -4894,9 +4864,9 @@
       "topPick": "GENTLEMEN LEGACY",
       "recommendation": "GENTLEMEN LEGACY",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -25935.35,
-      "cumulativeRoi": -0.2421151664737535
+      "profit": -5.12,
+      "cumulativeProfit": -11613.72,
+      "cumulativeRoi": -0.2519105776144708
     },
     {
       "raceId": "2026-04-22-HV-1",
@@ -4906,9 +4876,9 @@
       "topPick": "NEBRASKAN",
       "recommendation": "HAPPY BOYS",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -25947.85,
-      "cumulativeRoi": -0.24220359500987668
+      "profit": -2.94,
+      "cumulativeProfit": -11616.66,
+      "cumulativeRoi": -0.25195828089019384
     },
     {
       "raceId": "2026-04-22-HV-2",
@@ -4918,9 +4888,9 @@
       "topPick": "TELECOM POWER",
       "recommendation": "TELECOM POWER",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -25960.35,
-      "cumulativeRoi": -0.24229200291306627
+      "profit": -6.28,
+      "cumulativeProfit": -11622.94,
+      "cumulativeRoi": -0.25206015730907794
     },
     {
       "raceId": "2026-04-22-HV-3",
@@ -4930,9 +4900,9 @@
       "topPick": "FORTUNE STAR",
       "recommendation": "OUR LUCKY GLORY",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -25972.85,
-      "cumulativeRoi": -0.24238039019054275
+      "profit": -3.52,
+      "cumulativeProfit": -11626.46,
+      "cumulativeRoi": -0.2521172478802588
     },
     {
       "raceId": "2026-04-22-HV-4",
@@ -4943,8 +4913,8 @@
       "recommendation": "VIGOR EYE",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -25972.85,
-      "cumulativeRoi": -0.24238039019054275
+      "cumulativeProfit": -11626.46,
+      "cumulativeRoi": -0.2521172478802588
     },
     {
       "raceId": "2026-04-22-HV-5",
@@ -4954,9 +4924,9 @@
       "topPick": "SPEEDY SMARTIE",
       "recommendation": "SPEEDY SMARTIE",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -25985.35,
-      "cumulativeRoi": -0.24246875684952335
+      "profit": -10,
+      "cumulativeProfit": -11636.46,
+      "cumulativeRoi": -0.2522793894629176
     },
     {
       "raceId": "2026-04-22-HV-6",
@@ -4967,8 +4937,8 @@
       "recommendation": "BEAUTY SHOW",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -25985.35,
-      "cumulativeRoi": -0.24246875684952335
+      "cumulativeProfit": -11636.46,
+      "cumulativeRoi": -0.2522793894629176
     },
     {
       "raceId": "2026-04-22-HV-7",
@@ -4978,9 +4948,9 @@
       "topPick": "BUNTA BABY",
       "recommendation": "BUNTA BABY",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -25997.85,
-      "cumulativeRoi": -0.24255710289722185
+      "profit": -8.14,
+      "cumulativeProfit": -11644.6,
+      "cumulativeRoi": -0.25241132081442935
     },
     {
       "raceId": "2026-04-22-HV-8",
@@ -4990,9 +4960,9 @@
       "topPick": "ACE WAR",
       "recommendation": "CHINA WIN",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26010.35,
-      "cumulativeRoi": -0.24264542834084873
+      "profit": -4.18,
+      "cumulativeProfit": -11648.78,
+      "cumulativeRoi": -0.2524790512555813
     },
     {
       "raceId": "2026-04-22-HV-9",
@@ -5002,9 +4972,9 @@
       "topPick": "AURIO",
       "recommendation": "MY DAY MY WAY",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26022.85,
-      "cumulativeRoi": -0.24273373318761107
+      "profit": -5.2,
+      "cumulativeProfit": -11653.98,
+      "cumulativeRoi": -0.25256329209252787
     },
     {
       "raceId": "2026-04-26-ST-1",
@@ -5014,9 +4984,9 @@
       "topPick": "THE HEIR",
       "recommendation": "THE HEIR",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26035.35,
-      "cumulativeRoi": -0.24282201744471257
+      "profit": -8.26,
+      "cumulativeProfit": -11662.24,
+      "cumulativeRoi": -0.2526970663952107
     },
     {
       "raceId": "2026-04-26-ST-2",
@@ -5026,9 +4996,9 @@
       "topPick": "AMAZING AWARD",
       "recommendation": "AMAZING AWARD",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26047.85,
-      "cumulativeRoi": -0.24291028111935362
+      "profit": -6.03,
+      "cumulativeProfit": -11668.27,
+      "cumulativeRoi": -0.2527946946406949
     },
     {
       "raceId": "2026-04-26-ST-3",
@@ -5038,9 +5008,9 @@
       "topPick": "BETTER AND BETTER",
       "recommendation": "BETTER AND BETTER",
       "result": "MISS",
-      "profit": -5.61,
-      "cumulativeProfit": -26053.46,
-      "cumulativeRoi": -0.24294988716686403
+      "profit": -1.12,
+      "cumulativeProfit": -11669.39,
+      "cumulativeRoi": -0.252812825104608
     },
     {
       "raceId": "2026-04-26-ST-4",
@@ -5050,9 +5020,9 @@
       "topPick": "ROBOT STAR",
       "recommendation": "ROBOT STAR",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26065.96,
-      "cumulativeRoi": -0.2430381210344023
+      "profit": -3.56,
+      "cumulativeProfit": -11672.95,
+      "cumulativeRoi": -0.25287044823661514
     },
     {
       "raceId": "2026-04-26-ST-5",
@@ -5063,8 +5033,8 @@
       "recommendation": "KA YING RISING",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26065.96,
-      "cumulativeRoi": -0.2430381210344023
+      "cumulativeProfit": -11672.95,
+      "cumulativeRoi": -0.25287044823661514
     },
     {
       "raceId": "2026-04-26-ST-6",
@@ -5075,8 +5045,8 @@
       "recommendation": "GENEVA",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26065.96,
-      "cumulativeRoi": -0.2430381210344023
+      "cumulativeProfit": -11672.95,
+      "cumulativeRoi": -0.25287044823661514
     },
     {
       "raceId": "2026-04-26-ST-7",
@@ -5086,9 +5056,9 @@
       "topPick": "INVINCIBLE IBIS",
       "recommendation": "INVINCIBLE IBIS",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26078.46,
-      "cumulativeRoi": -0.24312633433709818
+      "profit": -9.46,
+      "cumulativeProfit": -11682.41,
+      "cumulativeRoi": -0.25302352720004956
     },
     {
       "raceId": "2026-04-26-ST-8",
@@ -5098,9 +5068,9 @@
       "topPick": "THE RED HARE",
       "recommendation": "AEROINVINCIBLE",
       "result": "MISS",
-      "profit": -8.04,
-      "cumulativeProfit": -26086.5,
-      "cumulativeRoi": -0.2431830622691843
+      "profit": -1.61,
+      "cumulativeProfit": -11684.02,
+      "cumulativeRoi": -0.25304957350477647
     },
     {
       "raceId": "2026-04-26-ST-9",
@@ -5110,9 +5080,9 @@
       "topPick": "ROMANTIC WARRIOR",
       "recommendation": "NUMBERS",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26099,
-      "cumulativeRoi": -0.24327124179534118
+      "profit": -6.27,
+      "cumulativeProfit": -11690.29,
+      "cumulativeRoi": -0.25315099118389467
     },
     {
       "raceId": "2026-04-26-ST-10",
@@ -5122,9 +5092,9 @@
       "topPick": "THE GOLDEN KNIGHT",
       "recommendation": "THE GOLDEN KNIGHT",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26111.5,
-      "cumulativeRoi": -0.24335940077564985
+      "profit": -5.98,
+      "cumulativeProfit": -11696.27,
+      "cumulativeRoi": -0.2532476924376047
     },
     {
       "raceId": "2026-04-26-ST-11",
@@ -5135,8 +5105,8 @@
       "recommendation": "WINNING OVATION",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26111.5,
-      "cumulativeRoi": -0.24335940077564985
+      "cumulativeProfit": -11696.27,
+      "cumulativeRoi": -0.2532476924376047
     },
     {
       "raceId": "2026-04-29-HV-1",
@@ -5146,9 +5116,9 @@
       "topPick": "FAMILY FORTUNE",
       "recommendation": "FAMILY FORTUNE",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26124,
-      "cumulativeRoi": -0.24344753921729023
+      "profit": -9.65,
+      "cumulativeProfit": -11705.92,
+      "cumulativeRoi": -0.2534036876484886
     },
     {
       "raceId": "2026-04-29-HV-2",
@@ -5159,8 +5129,8 @@
       "recommendation": "HONEST WITNESS",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26124,
-      "cumulativeRoi": -0.24344753921729023
+      "cumulativeProfit": -11705.92,
+      "cumulativeRoi": -0.2534036876484886
     },
     {
       "raceId": "2026-04-29-HV-3",
@@ -5171,8 +5141,8 @@
       "recommendation": "STAR BROSE",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26124,
-      "cumulativeRoi": -0.24344753921729023
+      "cumulativeProfit": -11705.92,
+      "cumulativeRoi": -0.2534036876484886
     },
     {
       "raceId": "2026-04-29-HV-4",
@@ -5182,9 +5152,9 @@
       "topPick": "CROSSBORDERDUDE",
       "recommendation": "CROSSBORDERDUDE",
       "result": "MISS",
-      "profit": -6.21,
-      "cumulativeProfit": -26130.21,
-      "cumulativeRoi": -0.24349131876093608
+      "profit": -1.24,
+      "cumulativeProfit": -11707.16,
+      "cumulativeRoi": -0.2534237279036561
     },
     {
       "raceId": "2026-04-29-HV-5",
@@ -5194,9 +5164,9 @@
       "topPick": "THUNDER PRINCE",
       "recommendation": "GAMEPLAYER ELITE",
       "result": "WIN",
-      "profit": 9.33,
-      "cumulativeProfit": -26120.88,
-      "cumulativeRoi": -0.2433973245459811
+      "profit": 1.86,
+      "cumulativeProfit": -11705.3,
+      "cumulativeRoi": -0.253380064035002
     },
     {
       "raceId": "2026-04-29-HV-6",
@@ -5206,9 +5176,9 @@
       "topPick": "VIVACIOUS WIN",
       "recommendation": "MIGHTY STEED",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26133.38,
-      "cumulativeRoi": -0.24348544065258107
+      "profit": -5.45,
+      "cumulativeProfit": -11710.75,
+      "cumulativeRoi": -0.2534681354034866
     },
     {
       "raceId": "2026-04-29-HV-7",
@@ -5218,9 +5188,9 @@
       "topPick": "GLOWING PRAISES",
       "recommendation": "GLOWING PRAISES",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26145.88,
-      "cumulativeRoi": -0.24357353623706468
+      "profit": -7.97,
+      "cumulativeProfit": -11718.72,
+      "cumulativeRoi": -0.25359689227641735
     },
     {
       "raceId": "2026-04-29-HV-8",
@@ -5231,8 +5201,8 @@
       "recommendation": "GIANT BALLON",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26145.88,
-      "cumulativeRoi": -0.24357353623706468
+      "cumulativeProfit": -11718.72,
+      "cumulativeRoi": -0.25359689227641735
     },
     {
       "raceId": "2026-04-29-HV-9",
@@ -5242,9 +5212,9 @@
       "topPick": "FANTASTIC FUN",
       "recommendation": "FANTASTIC FUN",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26158.38,
-      "cumulativeRoi": -0.24366161130660044
+      "profit": -4.48,
+      "cumulativeProfit": -11723.2,
+      "cumulativeRoi": -0.2536692480348708
     },
     {
       "raceId": "2026-05-03-ST-1",
@@ -5254,9 +5224,9 @@
       "topPick": "MAJESTIC DELIGHT",
       "recommendation": "ALWAYS FLUKE",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26170.88,
-      "cumulativeRoi": -0.24374966586835353
+      "profit": -3.27,
+      "cumulativeProfit": -11726.47,
+      "cumulativeRoi": -0.25372205242224993
     },
     {
       "raceId": "2026-05-03-ST-2",
@@ -5266,9 +5236,9 @@
       "topPick": "LEADING DRAGON",
       "recommendation": "LEADING DRAGON",
       "result": "MISS",
-      "profit": -4.01,
-      "cumulativeProfit": -26174.89,
-      "cumulativeRoi": -0.2437779094282344
+      "profit": -0.8,
+      "cumulativeProfit": -11727.27,
+      "cumulativeRoi": -0.25373496978920634
     },
     {
       "raceId": "2026-05-03-ST-3",
@@ -5278,9 +5248,9 @@
       "topPick": "WINNING MACHINE",
       "recommendation": "HE WAS ME",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26187.39,
-      "cumulativeRoi": -0.24386593691428424
+      "profit": -6.09,
+      "cumulativeProfit": -11733.36,
+      "cumulativeRoi": -0.25383328858810705
     },
     {
       "raceId": "2026-05-03-ST-4",
@@ -5291,8 +5261,8 @@
       "recommendation": "RIDING HIGH",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26187.39,
-      "cumulativeRoi": -0.24386593691428424
+      "cumulativeProfit": -11733.36,
+      "cumulativeRoi": -0.25383328858810705
     },
     {
       "raceId": "2026-05-03-ST-5",
@@ -5302,9 +5272,9 @@
       "topPick": "CIRCUIT FIERY",
       "recommendation": "CIRCUIT FIERY",
       "result": "MISS",
-      "profit": -6.12,
-      "cumulativeProfit": -26193.51,
-      "cumulativeRoi": -0.2439090276988228
+      "profit": -1.22,
+      "cumulativeProfit": -11734.58,
+      "cumulativeRoi": -0.25385298152182717
     },
     {
       "raceId": "2026-05-03-ST-6",
@@ -5314,9 +5284,9 @@
       "topPick": "GENTLEMEN LEGACY",
       "recommendation": "JOY OF SPRING",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26206.01,
-      "cumulativeRoi": -0.24399702466383993
+      "profit": -6.08,
+      "cumulativeProfit": -11740.66,
+      "cumulativeRoi": -0.2539511078589127
     },
     {
       "raceId": "2026-05-03-ST-7",
@@ -5326,9 +5296,9 @@
       "topPick": "MR COOL",
       "recommendation": "CHARITY TOGETHER",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26218.51,
-      "cumulativeRoi": -0.24408500114834605
+      "profit": -4.17,
+      "cumulativeProfit": -11744.83,
+      "cumulativeRoi": -0.25401839340394794
     },
     {
       "raceId": "2026-05-03-ST-8",
@@ -5338,9 +5308,9 @@
       "topPick": "MAX QUE",
       "recommendation": "MAX QUE",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26231.01,
-      "cumulativeRoi": -0.2441729571594903
+      "profit": -10,
+      "cumulativeProfit": -11754.83,
+      "cumulativeRoi": -0.25417970018687
     },
     {
       "raceId": "2026-05-03-ST-9",
@@ -5350,9 +5320,9 @@
       "topPick": "SHAMUS STORM",
       "recommendation": "AERODYNAMICS",
       "result": "MISS",
-      "profit": -0.84,
-      "cumulativeProfit": -26231.85,
-      "cumulativeRoi": -0.2441788670694836
+      "profit": -0.17,
+      "cumulativeProfit": -11755,
+      "cumulativeRoi": -0.25418244179914057
     },
     {
       "raceId": "2026-05-03-ST-10",
@@ -5362,9 +5332,9 @@
       "topPick": "KA YING ATTACK",
       "recommendation": "KA YING ATTACK",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26244.35,
-      "cumulativeRoi": -0.24426680123933828
+      "profit": -6.16,
+      "cumulativeProfit": -11761.16,
+      "cumulativeRoi": -0.2542817713302666
     },
     {
       "raceId": "2026-05-03-ST-11",
@@ -5375,8 +5345,8 @@
       "recommendation": "SMART GOLF",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26244.35,
-      "cumulativeRoi": -0.24426680123933828
+      "cumulativeProfit": -11761.16,
+      "cumulativeRoi": -0.2542817713302666
     },
     {
       "raceId": "2026-05-06-ST-1",
@@ -5386,9 +5356,9 @@
       "topPick": "MEEPMEEP",
       "recommendation": "HAILTOTHEVICTORS",
       "result": "MISS",
-      "profit": -3.5,
-      "cumulativeProfit": -26247.85,
-      "cumulativeRoi": -0.2442914191404105
+      "profit": -0.7,
+      "cumulativeProfit": -11761.86,
+      "cumulativeRoi": -0.25429305710289724
     },
     {
       "raceId": "2026-05-06-ST-2",
@@ -5398,9 +5368,9 @@
       "topPick": "VIVA CHALEUR",
       "recommendation": "MACANESE MASTER",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26260.35,
-      "cumulativeRoi": -0.24437932712454472
+      "profit": -4.59,
+      "cumulativeProfit": -11766.45,
+      "cumulativeRoi": -0.2543670510634326
     },
     {
       "raceId": "2026-05-06-ST-3",
@@ -5410,9 +5380,9 @@
       "topPick": "JUICY DRAGON",
       "recommendation": "CLOUD NINE",
       "result": "MISS",
-      "profit": -3.11,
-      "cumulativeProfit": -26263.46,
-      "cumulativeRoi": -0.24440119545388192
+      "profit": -0.62,
+      "cumulativeProfit": -11767.07,
+      "cumulativeRoi": -0.2543770447646462
     },
     {
       "raceId": "2026-05-06-ST-4",
@@ -5422,9 +5392,9 @@
       "topPick": "FIREFOOT",
       "recommendation": "HAPPY UNIVERSE",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26275.96,
-      "cumulativeRoi": -0.2444890779018435
+      "profit": -6.84,
+      "cumulativeProfit": -11773.91,
+      "cumulativeRoi": -0.2544872800777779
     },
     {
       "raceId": "2026-05-06-ST-5",
@@ -5435,8 +5405,8 @@
       "recommendation": "LIGHT YEARS GLORY",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26275.96,
-      "cumulativeRoi": -0.2444890779018435
+      "cumulativeProfit": -11773.91,
+      "cumulativeRoi": -0.2544872800777779
     },
     {
       "raceId": "2026-05-06-ST-6",
@@ -5446,9 +5416,9 @@
       "topPick": "SHOTGUN",
       "recommendation": "SHOTGUN",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26288.46,
-      "cumulativeRoi": -0.24457693990925797
+      "profit": -4.76,
+      "cumulativeProfit": -11778.67,
+      "cumulativeRoi": -0.2545639743090447
     },
     {
       "raceId": "2026-05-06-ST-7",
@@ -5459,8 +5429,8 @@
       "recommendation": "PASS",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26288.46,
-      "cumulativeRoi": -0.24457693990925797
+      "cumulativeProfit": -11778.67,
+      "cumulativeRoi": -0.2545639743090447
     },
     {
       "raceId": "2026-05-06-ST-8",
@@ -5470,9 +5440,9 @@
       "topPick": "SKY VINO",
       "recommendation": "SUPREME AGILITY",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26300.96,
-      "cumulativeRoi": -0.24466478148325588
+      "profit": -6.38,
+      "cumulativeProfit": -11785.05,
+      "cumulativeRoi": -0.25466674561266295
     },
     {
       "raceId": "2026-05-06-ST-9",
@@ -5482,9 +5452,9 @@
       "topPick": "VICTORY SKY",
       "recommendation": "VICTORY SKY",
       "result": "MISS",
-      "profit": -3.81,
-      "cumulativeProfit": -26304.77,
-      "cumulativeRoi": -0.2446915515328834
+      "profit": -0.76,
+      "cumulativeProfit": -11785.81,
+      "cumulativeRoi": -0.2546789860734638
     },
     {
       "raceId": "2026-05-09-ST-1",
@@ -5495,8 +5465,8 @@
       "recommendation": "PASS",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26304.77,
-      "cumulativeRoi": -0.2446915515328834
+      "cumulativeProfit": -11785.81,
+      "cumulativeRoi": -0.2546789860734638
     },
     {
       "raceId": "2026-05-09-ST-2",
@@ -5506,9 +5476,9 @@
       "topPick": "SPIRITED STEED",
       "recommendation": "SPIRITED STEED",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26317.27,
-      "cumulativeRoi": -0.24477936645607581
+      "profit": -2.72,
+      "cumulativeProfit": -11788.53,
+      "cumulativeRoi": -0.2547227907443071
     },
     {
       "raceId": "2026-05-09-ST-3",
@@ -5518,9 +5488,9 @@
       "topPick": "TEAM HAPPY",
       "recommendation": "TEAM HAPPY",
       "result": "MISS",
-      "profit": -6.03,
-      "cumulativeProfit": -26323.3,
-      "cumulativeRoi": -0.24482172107438846
+      "profit": -1.21,
+      "cumulativeProfit": -11789.74,
+      "cumulativeRoi": -0.2547422757262424
     },
     {
       "raceId": "2026-05-09-ST-4",
@@ -5530,9 +5500,9 @@
       "topPick": "BEAUTY THUNDER",
       "recommendation": "BEAUTY THUNDER",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26335.8,
-      "cumulativeRoi": -0.24490950573397385
+      "profit": -7.27,
+      "cumulativeProfit": -11797.01,
+      "cumulativeRoi": -0.25485932520342086
     },
     {
       "raceId": "2026-05-09-ST-5",
@@ -5542,9 +5512,9 @@
       "topPick": "FLASHING FIGHTER",
       "recommendation": "CONRAD PATCH",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26348.3,
-      "cumulativeRoi": -0.24499726998711752
+      "profit": -3.07,
+      "cumulativeProfit": -11800.08,
+      "cumulativeRoi": -0.2549087422088645
     },
     {
       "raceId": "2026-05-09-ST-6",
@@ -5554,9 +5524,9 @@
       "topPick": "THE CONCENTRATION",
       "recommendation": "THE CONCENTRATION",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26360.8,
-      "cumulativeRoi": -0.24508501384093415
+      "profit": -6.37,
+      "cumulativeProfit": -11806.45,
+      "cumulativeRoi": -0.2550112575640811
     },
     {
       "raceId": "2026-05-09-ST-7",
@@ -5567,8 +5537,8 @@
       "recommendation": "PASS",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26360.8,
-      "cumulativeRoi": -0.24508501384093415
+      "cumulativeProfit": -11806.45,
+      "cumulativeRoi": -0.2550112575640811
     },
     {
       "raceId": "2026-05-09-ST-8",
@@ -5579,8 +5549,8 @@
       "recommendation": "GOLD PATCH",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26360.8,
-      "cumulativeRoi": -0.24508501384093415
+      "cumulativeProfit": -11806.45,
+      "cumulativeRoi": -0.2550112575640811
     },
     {
       "raceId": "2026-05-09-ST-9",
@@ -5590,9 +5560,9 @@
       "topPick": "FAST RESPONDER",
       "recommendation": "FAST RESPONDER",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26373.3,
-      "cumulativeRoi": -0.24517273730253514
+      "profit": -6.53,
+      "cumulativeProfit": -11812.98,
+      "cumulativeRoi": -0.2551163185959662
     },
     {
       "raceId": "2026-05-09-ST-10",
@@ -5602,9 +5572,9 @@
       "topPick": "MISTER DAPPER",
       "recommendation": "MISTER DAPPER",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26385.8,
-      "cumulativeRoi": -0.24526044037902858
+      "profit": -4.03,
+      "cumulativeProfit": -11817.01,
+      "cumulativeRoi": -0.2551811423951465
     },
     {
       "raceId": "2026-05-09-ST-11",
@@ -5614,9 +5584,9 @@
       "topPick": "PATCH OF STARS",
       "recommendation": "YOUNG CHAMPION",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26398.3,
-      "cumulativeRoi": -0.2453481230775193
+      "profit": -2.84,
+      "cumulativeProfit": -11819.85,
+      "cumulativeRoi": -0.25522681789875284
     },
     {
       "raceId": "2026-05-13-HV-1",
@@ -5626,9 +5596,9 @@
       "topPick": "DOUBLE BINGO",
       "recommendation": "WINDICATOR FAMILY",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26410.8,
-      "cumulativeRoi": -0.24543578540510871
+      "profit": -2.85,
+      "cumulativeProfit": -11822.7,
+      "cumulativeRoi": -0.25527264860028326
     },
     {
       "raceId": "2026-05-13-HV-2",
@@ -5638,9 +5608,9 @@
       "topPick": "NEBRASKAN",
       "recommendation": "WORLD HERO",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26423.3,
-      "cumulativeRoi": -0.24552342736889507
+      "profit": -6.45,
+      "cumulativeProfit": -11829.15,
+      "cumulativeRoi": -0.2553763498894442
     },
     {
       "raceId": "2026-05-13-HV-3",
@@ -5650,9 +5620,9 @@
       "topPick": "ALL ROUND WINNER",
       "recommendation": "ALL ROUND WINNER",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26435.8,
-      "cumulativeRoi": -0.24561104897597322
+      "profit": -3.86,
+      "cumulativeProfit": -11833.01,
+      "cumulativeRoi": -0.255438396073596
     },
     {
       "raceId": "2026-05-13-HV-4",
@@ -5662,9 +5632,9 @@
       "topPick": "MIGHTY STEED",
       "recommendation": "MIGHTY STEED",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26448.3,
-      "cumulativeRoi": -0.24569865023343476
+      "profit": -3.94,
+      "cumulativeProfit": -11836.95,
+      "cumulativeRoi": -0.25550171752619255
     },
     {
       "raceId": "2026-05-13-HV-5",
@@ -5675,8 +5645,8 @@
       "recommendation": "ACE WAR",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26448.3,
-      "cumulativeRoi": -0.24569865023343476
+      "cumulativeProfit": -11836.95,
+      "cumulativeRoi": -0.25550171752619255
     },
     {
       "raceId": "2026-05-13-HV-6",
@@ -5686,9 +5656,9 @@
       "topPick": "RUN RUN TIMING",
       "recommendation": "RUN RUN TIMING",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26460.8,
-      "cumulativeRoi": -0.245786231148368
+      "profit": -2.96,
+      "cumulativeProfit": -11839.91,
+      "cumulativeRoi": -0.25554928188810927
     },
     {
       "raceId": "2026-05-13-HV-7",
@@ -5698,9 +5668,9 @@
       "topPick": "VIGOR EYE",
       "recommendation": "VIGOR EYE",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26473.3,
-      "cumulativeRoi": -0.24587379172785795
+      "profit": -7.51,
+      "cumulativeProfit": -11847.42,
+      "cumulativeRoi": -0.25566993312073955
     },
     {
       "raceId": "2026-05-13-HV-8",
@@ -5710,9 +5680,9 @@
       "topPick": "AURIO",
       "recommendation": "SOMELOVEFROMABOVE",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26485.8,
-      "cumulativeRoi": -0.24596133197898631
+      "profit": -2.79,
+      "cumulativeProfit": -11850.21,
+      "cumulativeRoi": -0.2557147456535739
     },
     {
       "raceId": "2026-05-13-HV-9",
@@ -5722,9 +5692,9 @@
       "topPick": "BEAUTY ALLIANCE",
       "recommendation": "SILVERY BREEZE",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26498.3,
-      "cumulativeRoi": -0.24604885190883155
+      "profit": -6.78,
+      "cumulativeProfit": -11856.99,
+      "cumulativeRoi": -0.2558236224413842
     },
     {
       "raceId": "2026-05-17-ST-1",
@@ -5734,9 +5704,9 @@
       "topPick": "FAMILY FORTUNE",
       "recommendation": "FAMILY FORTUNE",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26510.8,
-      "cumulativeRoi": -0.2461363515244688
+      "profit": -6.07,
+      "cumulativeProfit": -11863.06,
+      "cumulativeRoi": -0.2559210706563374
     },
     {
       "raceId": "2026-05-17-ST-2",
@@ -5746,9 +5716,9 @@
       "topPick": "RUN RUN SUNRISE",
       "recommendation": "RUN RUN SUNRISE",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26523.3,
-      "cumulativeRoi": -0.2462238308329699
+      "profit": -4.3,
+      "cumulativeProfit": -11867.36,
+      "cumulativeRoi": -0.25599008772253407
     },
     {
       "raceId": "2026-05-17-ST-3",
@@ -5758,9 +5728,9 @@
       "topPick": "TRIUMPHANT WARRIOR",
       "recommendation": "MAJESTIC DELIGHT",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26535.8,
-      "cumulativeRoi": -0.2463112898414034
+      "profit": -6.14,
+      "cumulativeProfit": -11873.5,
+      "cumulativeRoi": -0.2560886154823024
     },
     {
       "raceId": "2026-05-17-ST-4",
@@ -5770,9 +5740,9 @@
       "topPick": "BETTER AND BETTER",
       "recommendation": "BETTER AND BETTER",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26548.3,
-      "cumulativeRoi": -0.24639872855683467
+      "profit": -3.89,
+      "cumulativeProfit": -11877.39,
+      "cumulativeRoi": -0.2561510242900924
     },
     {
       "raceId": "2026-05-17-ST-5",
@@ -5782,9 +5752,9 @@
       "topPick": "LUCRATIVE EIGHT",
       "recommendation": "INCREDIBLE MOMENT",
       "result": "MISS",
-      "profit": -11.79,
-      "cumulativeProfit": -26560.09,
-      "cumulativeRoi": -0.24648118216280512
+      "profit": -2.36,
+      "cumulativeProfit": -11879.75,
+      "cumulativeRoi": -0.2561888815998601
     },
     {
       "raceId": "2026-05-17-ST-6",
@@ -5794,9 +5764,9 @@
       "topPick": "THUNDER KIT",
       "recommendation": "THUNDER KIT",
       "result": "WIN",
-      "profit": 18.66,
-      "cumulativeProfit": -26541.43,
-      "cumulativeRoi": -0.24629809502307126
+      "profit": 3.74,
+      "cumulativeProfit": -11876.01,
+      "cumulativeRoi": -0.25610342291123117
     },
     {
       "raceId": "2026-05-17-ST-7",
@@ -5806,9 +5776,9 @@
       "topPick": "FORZA TORO",
       "recommendation": "MASTER LUCKY",
       "result": "MISS",
-      "profit": -8.23,
-      "cumulativeProfit": -26549.66,
-      "cumulativeRoi": -0.24635565266804396
+      "profit": -1.65,
+      "cumulativeProfit": -11877.66,
+      "cumulativeRoi": -0.25612989120098145
     },
     {
       "raceId": "2026-05-17-ST-8",
@@ -5818,9 +5788,9 @@
       "topPick": "ROMANTIC FANTASY",
       "recommendation": "ROMANTIC FANTASY",
       "result": "WIN",
-      "profit": 111.25,
-      "cumulativeProfit": -26438.41,
-      "cumulativeRoi": -0.2452949069298507
+      "profit": 38.36,
+      "cumulativeProfit": -11839.3,
+      "cumulativeRoi": -0.2552789702161959
     },
     {
       "raceId": "2026-05-17-ST-9",
@@ -5830,9 +5800,9 @@
       "topPick": "ACE",
       "recommendation": "VOYAGE BOSS",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26450.91,
-      "cumulativeRoi": -0.245382423467439
+      "profit": -3.04,
+      "cumulativeProfit": -11842.34,
+      "cumulativeRoi": -0.2553277823450287
     },
     {
       "raceId": "2026-05-17-ST-10",
@@ -5842,9 +5812,9 @@
       "topPick": "ENDEARED",
       "recommendation": "ENDEARED",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26463.41,
-      "cumulativeRoi": -0.24546991971032844
+      "profit": -10,
+      "cumulativeProfit": -11852.34,
+      "cumulativeRoi": -0.2554883034248292
     },
     {
       "raceId": "2026-05-17-ST-11",
@@ -5854,9 +5824,9 @@
       "topPick": "EVERYONE'S STAR",
       "recommendation": "HAPPY BOSS",
       "result": "MISS",
-      "profit": -5.81,
-      "cumulativeProfit": -26469.22,
-      "cumulativeRoi": -0.24551058105728613
+      "profit": -1.16,
+      "cumulativeProfit": -11853.5,
+      "cumulativeRoi": -0.25550691939078435
     },
     {
       "raceId": "2026-05-20-HV-1",
@@ -5866,9 +5836,9 @@
       "topPick": "KING ALLOY",
       "recommendation": "MAJESTIC DELIGHT",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26481.72,
-      "cumulativeRoi": -0.24559804758524204
+      "profit": -5.88,
+      "cumulativeProfit": -11859.38,
+      "cumulativeRoi": -0.25560126876240513
     },
     {
       "raceId": "2026-05-20-HV-2",
@@ -5878,9 +5848,9 @@
       "topPick": "VIVACIOUS WIN",
       "recommendation": "GLORIOUS JOURNEY",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26494.22,
-      "cumulativeRoi": -0.24568549383589114
+      "profit": -2.7,
+      "cumulativeProfit": -11862.08,
+      "cumulativeRoi": -0.2556445844424231
     },
     {
       "raceId": "2026-05-20-HV-3",
@@ -5890,9 +5860,9 @@
       "topPick": "LIVE WIRE",
       "recommendation": "LIVE WIRE",
       "result": "MISS",
-      "profit": -9.24,
-      "cumulativeProfit": -26503.46,
-      "cumulativeRoi": -0.2457501210740877
+      "profit": -1.85,
+      "cumulativeProfit": -11863.93,
+      "cumulativeRoi": -0.25567426079445704
     },
     {
       "raceId": "2026-05-20-HV-4",
@@ -5902,9 +5872,9 @@
       "topPick": "DECISION LINK",
       "recommendation": "OUR LUCKY GLORY",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26515.96,
-      "cumulativeRoi": -0.2458375320752372
+      "profit": -5.38,
+      "cumulativeProfit": -11869.31,
+      "cumulativeRoi": -0.2557605493892205
     },
     {
       "raceId": "2026-05-20-HV-5",
@@ -5915,8 +5885,8 @@
       "recommendation": "BEAUTY SHOW",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26515.96,
-      "cumulativeRoi": -0.2458375320752372
+      "cumulativeProfit": -11869.31,
+      "cumulativeRoi": -0.2557605493892205
     },
     {
       "raceId": "2026-05-20-HV-6",
@@ -5926,9 +5896,9 @@
       "topPick": "THE HEIR",
       "recommendation": "THE HEIR",
       "result": "WIN",
-      "profit": 73.75,
-      "cumulativeProfit": -26442.21,
-      "cumulativeRoi": -0.24512536549040248
+      "profit": 22.48,
+      "cumulativeProfit": -11846.83,
+      "cumulativeRoi": -0.25525519313983486
     },
     {
       "raceId": "2026-05-20-HV-7",
@@ -5938,9 +5908,9 @@
       "topPick": "DO YOUR PART",
       "recommendation": "DO YOUR PART",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26454.71,
-      "cumulativeRoi": -0.24521282862285781
+      "profit": -3.37,
+      "cumulativeProfit": -11850.2,
+      "cumulativeRoi": -0.2553092658679034
     },
     {
       "raceId": "2026-05-20-HV-8",
@@ -5950,9 +5920,9 @@
       "topPick": "GIANT BALLON",
       "recommendation": "SKY CAP",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26467.21,
-      "cumulativeRoi": -0.2453002714899261
+      "profit": -3.12,
+      "cumulativeProfit": -11853.32,
+      "cumulativeRoi": -0.2553593202666197
     },
     {
       "raceId": "2026-05-20-HV-9",
@@ -5962,9 +5932,9 @@
       "topPick": "SIGHT HERMOSO",
       "recommendation": "GENEVA",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26479.71,
-      "cumulativeRoi": -0.2453876940986499
+      "profit": -3.55,
+      "cumulativeProfit": -11856.87,
+      "cumulativeRoi": -0.2554162650050894
     },
     {
       "raceId": "2026-05-24-ST-1",
@@ -5974,9 +5944,9 @@
       "topPick": "HARRY'S HERO",
       "recommendation": "HARRY'S HERO",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26492.21,
-      "cumulativeRoi": -0.2454750964560684
+      "profit": -3.46,
+      "cumulativeProfit": -11860.33,
+      "cumulativeRoi": -0.25547175769371877
     },
     {
       "raceId": "2026-05-24-ST-2",
@@ -5987,8 +5957,8 @@
       "recommendation": "NYX GLUCK",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26492.21,
-      "cumulativeRoi": -0.2454750964560684
+      "cumulativeProfit": -11860.33,
+      "cumulativeRoi": -0.25547175769371877
     },
     {
       "raceId": "2026-05-24-ST-3",
@@ -5998,9 +5968,9 @@
       "topPick": "RIDING HIGH",
       "recommendation": "RIDING HIGH",
       "result": "MISS",
-      "profit": -11.46,
-      "cumulativeProfit": -26503.67,
-      "cumulativeRoi": -0.24555520914932596
+      "profit": -2.29,
+      "cumulativeProfit": -11862.62,
+      "cumulativeRoi": -0.25550848096494555
     },
     {
       "raceId": "2026-05-24-ST-4",
@@ -6010,9 +5980,9 @@
       "topPick": "LEADING DRAGON",
       "recommendation": "LEADING DRAGON",
       "result": "MISS",
-      "profit": -7.42,
-      "cumulativeProfit": -26511.09,
-      "cumulativeRoi": -0.2456070705988012
+      "profit": -1.48,
+      "cumulativeProfit": -11864.1,
+      "cumulativeRoi": -0.25553221285498867
     },
     {
       "raceId": "2026-05-24-ST-5",
@@ -6023,8 +5993,8 @@
       "recommendation": "BIG RETURN",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26511.09,
-      "cumulativeRoi": -0.2456070705988012
+      "cumulativeProfit": -11864.1,
+      "cumulativeRoi": -0.25553221285498867
     },
     {
       "raceId": "2026-05-24-ST-6",
@@ -6035,8 +6005,8 @@
       "recommendation": "PASS",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26511.09,
-      "cumulativeRoi": -0.2456070705988012
+      "cumulativeProfit": -11864.1,
+      "cumulativeRoi": -0.25553221285498867
     },
     {
       "raceId": "2026-05-24-ST-7",
@@ -6046,9 +6016,9 @@
       "topPick": "AERODYNAMICS",
       "recommendation": "THE GOLDEN KNIGHT",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26523.59,
-      "cumulativeRoi": -0.2456944221483379
+      "profit": -3.13,
+      "cumulativeProfit": -11867.23,
+      "cumulativeRoi": -0.2555823976123422
     },
     {
       "raceId": "2026-05-24-ST-8",
@@ -6058,9 +6028,9 @@
       "topPick": "ROMANTIC WARRIOR",
       "recommendation": "GENTLEMEN LEGACY",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26536.09,
-      "cumulativeRoi": -0.24578175347125392
+      "profit": -7.72,
+      "cumulativeProfit": -11874.95,
+      "cumulativeRoi": -0.25570614707245937
     },
     {
       "raceId": "2026-05-24-ST-9",
@@ -6070,9 +6040,9 @@
       "topPick": "SIX PACK",
       "recommendation": "SIX PACK",
       "result": "WIN",
-      "profit": 50,
-      "cumulativeProfit": -26486.09,
-      "cumulativeRoi": -0.2452902460182622
+      "profit": 18.96,
+      "cumulativeProfit": -11855.99,
+      "cumulativeRoi": -0.2552718218728263
     },
     {
       "raceId": "2026-05-24-ST-10",
@@ -6082,9 +6052,9 @@
       "topPick": "ELITE GOLF",
       "recommendation": "ELITE GOLF",
       "result": "MISS",
-      "profit": -1.51,
-      "cumulativeProfit": -26487.6,
-      "cumulativeRoi": -0.24530079992532086
+      "profit": -0.3,
+      "cumulativeProfit": -11856.29,
+      "cumulativeRoi": -0.2552766322739199
     },
     {
       "raceId": "2026-05-24-ST-11",
@@ -6095,8 +6065,8 @@
       "recommendation": "FIT FOR BEAUTY",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26487.6,
-      "cumulativeRoi": -0.24530079992532086
+      "cumulativeProfit": -11856.29,
+      "cumulativeRoi": -0.2552766322739199
     },
     {
       "raceId": "2026-05-27-HV-1",
@@ -6106,9 +6076,9 @@
       "topPick": "HAPPY ACTION",
       "recommendation": "HAPPY ACTION",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26500.1,
-      "cumulativeRoi": -0.24538815537141664
+      "profit": -7.66,
+      "cumulativeProfit": -11863.95,
+      "cumulativeRoi": -0.25539943680139743
     },
     {
       "raceId": "2026-05-27-HV-2",
@@ -6119,8 +6089,8 @@
       "recommendation": "PASS",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26500.1,
-      "cumulativeRoi": -0.24538815537141664
+      "cumulativeProfit": -11863.95,
+      "cumulativeRoi": -0.25539943680139743
     },
     {
       "raceId": "2026-05-27-HV-3",
@@ -6130,9 +6100,9 @@
       "topPick": "MR COOL",
       "recommendation": "MR COOL",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26512.6,
-      "cumulativeRoi": -0.24547549059729543
+      "profit": -6.99,
+      "cumulativeProfit": -11870.94,
+      "cumulativeRoi": -0.2555114646040255
     },
     {
       "raceId": "2026-05-27-HV-4",
@@ -6142,9 +6112,9 @@
       "topPick": "FIND MY LOVE",
       "recommendation": "FIND MY LOVE",
       "result": "MISS",
-      "profit": -11.12,
-      "cumulativeProfit": -26523.72,
-      "cumulativeRoi": -0.24555316702494753
+      "profit": -2.22,
+      "cumulativeProfit": -11873.16,
+      "cumulativeRoi": -0.2555470371966271
     },
     {
       "raceId": "2026-05-27-HV-5",
@@ -6154,9 +6124,9 @@
       "topPick": "ARMOR GOLDEN EAGLE",
       "recommendation": "FANTASTIC FUN",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26536.22,
-      "cumulativeRoi": -0.24564046406186632
+      "profit": -5.9,
+      "cumulativeProfit": -11879.06,
+      "cumulativeRoi": -0.2556415604493798
     },
     {
       "raceId": "2026-05-27-HV-6",
@@ -6166,9 +6136,9 @@
       "topPick": "CROSSBORDERDUDE",
       "recommendation": "CROSSBORDERDUDE",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26548.72,
-      "cumulativeRoi": -0.24572774089884356
+      "profit": -6.85,
+      "cumulativeProfit": -11885.91,
+      "cumulativeRoi": -0.25575127344054804
     },
     {
       "raceId": "2026-05-27-HV-7",
@@ -6178,9 +6148,9 @@
       "topPick": "SPIRIT OF PEACE",
       "recommendation": "SPIRIT OF PEACE",
       "result": "MISS",
-      "profit": -10.79,
-      "cumulativeProfit": -26559.51,
-      "cumulativeRoi": -0.24580306202597593
+      "profit": -2.16,
+      "cumulativeProfit": -11888.07,
+      "cumulativeRoi": -0.25578586236314405
     },
     {
       "raceId": "2026-05-27-HV-8",
@@ -6190,9 +6160,9 @@
       "topPick": "HORSEPOWER",
       "recommendation": "HORSEPOWER",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26572.01,
-      "cumulativeRoi": -0.24589030124511885
+      "profit": -3.57,
+      "cumulativeProfit": -11891.64,
+      "cumulativeRoi": -0.25584302311822144
     },
     {
       "raceId": "2026-05-27-HV-9",
@@ -6202,9 +6172,9 @@
       "topPick": "HONEST WITNESS",
       "recommendation": "SKY CAP",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26584.51,
-      "cumulativeRoi": -0.2459775202843837
+      "profit": -3.01,
+      "cumulativeProfit": -11894.65,
+      "cumulativeRoi": -0.2558912106581238
     },
     {
       "raceId": "2026-05-31-ST-1",
@@ -6215,8 +6185,8 @@
       "recommendation": "PASS",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26584.51,
-      "cumulativeRoi": -0.2459775202843837
+      "cumulativeProfit": -11894.65,
+      "cumulativeRoi": -0.2558912106581238
     },
     {
       "raceId": "2026-05-31-ST-2",
@@ -6226,9 +6196,9 @@
       "topPick": "GRAND NOVA",
       "recommendation": "GRAND NOVA",
       "result": "MISS",
-      "profit": -11.85,
-      "cumulativeProfit": -26596.36,
-      "cumulativeRoi": -0.2460601853068285
+      "profit": -2.37,
+      "cumulativeProfit": -11897.02,
+      "cumulativeRoi": -0.255929147951194
     },
     {
       "raceId": "2026-05-31-ST-3",
@@ -6239,8 +6209,8 @@
       "recommendation": "PAPAYA BROSE",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26596.36,
-      "cumulativeRoi": -0.2460601853068285
+      "cumulativeProfit": -11897.02,
+      "cumulativeRoi": -0.255929147951194
     },
     {
       "raceId": "2026-05-31-ST-4",
@@ -6250,9 +6220,9 @@
       "topPick": "SPEEDY SMARTIE",
       "recommendation": "SPEEDY SMARTIE",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26608.86,
-      "cumulativeRoi": -0.24614736505579057
+      "profit": -10,
+      "cumulativeProfit": -11907.02,
+      "cumulativeRoi": -0.2560891783308533
     },
     {
       "raceId": "2026-05-31-ST-5",
@@ -6262,9 +6232,9 @@
       "topPick": "AEROINVINCIBLE",
       "recommendation": "AEROINVINCIBLE",
       "result": "WIN",
-      "profit": 70.45,
-      "cumulativeProfit": -26538.41,
-      "cumulativeRoi": -0.2454675956886143
+      "profit": 14.08,
+      "cumulativeProfit": -11892.94,
+      "cumulativeRoi": -0.25577276648256625
     },
     {
       "raceId": "2026-05-31-ST-6",
@@ -6274,9 +6244,9 @@
       "topPick": "ROMANTIC FANTASY",
       "recommendation": "VOLCANIC SPARK",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26550.91,
-      "cumulativeRoi": -0.2455548239002216
+      "profit": -6.82,
+      "cumulativeProfit": -11899.76,
+      "cumulativeRoi": -0.25588190833265106
     },
     {
       "raceId": "2026-05-31-ST-7",
@@ -6287,8 +6257,8 @@
       "recommendation": "SKY JEWELLERY",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26550.91,
-      "cumulativeRoi": -0.2455548239002216
+      "cumulativeProfit": -11899.76,
+      "cumulativeRoi": -0.25588190833265106
     },
     {
       "raceId": "2026-05-31-ST-8",
@@ -6298,9 +6268,9 @@
       "topPick": "CIRCUIT FIERY",
       "recommendation": "CIRCUIT FIERY",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26563.41,
-      "cumulativeRoi": -0.24564203194601136
+      "profit": -10,
+      "cumulativeProfit": -11909.76,
+      "cumulativeRoi": -0.2560418825025711
     },
     {
       "raceId": "2026-05-31-ST-9",
@@ -6310,9 +6280,9 @@
       "topPick": "PATCH OF STARS",
       "recommendation": "CRIMSON FLASH",
       "result": "MISS",
-      "profit": -7.65,
-      "cumulativeProfit": -26571.06,
-      "cumulativeRoi": -0.24569539332580467
+      "profit": -1.53,
+      "cumulativeProfit": -11911.29,
+      "cumulativeRoi": -0.256066352483704
     },
     {
       "raceId": "2026-05-31-ST-10",
@@ -6322,9 +6292,9 @@
       "topPick": "AMAZING PARTNERS",
       "recommendation": "AMAZING PARTNERS",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26583.56,
-      "cumulativeRoi": -0.24578256887901578
+      "profit": -4.28,
+      "cumulativeProfit": -11915.57,
+      "cumulativeRoi": -0.25613479590805854
     },
     {
       "raceId": "2026-05-31-ST-11",
@@ -6335,8 +6305,8 @@
       "recommendation": "SMART GOLF",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26583.56,
-      "cumulativeRoi": -0.24578256887901578
+      "cumulativeProfit": -11915.57,
+      "cumulativeRoi": -0.25613479590805854
     },
     {
       "raceId": "2026-06-03-HV-1",
@@ -6347,8 +6317,8 @@
       "recommendation": "FAMILY FORTUNE",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26583.56,
-      "cumulativeRoi": -0.24578256887901578
+      "cumulativeProfit": -11915.57,
+      "cumulativeRoi": -0.25613479590805854
     },
     {
       "raceId": "2026-06-03-HV-2",
@@ -6358,9 +6328,9 @@
       "topPick": "MAJESTIC DELIGHT",
       "recommendation": "MAJESTIC DELIGHT",
       "result": "WIN",
-      "profit": 112.5,
-      "cumulativeProfit": -26471.06,
-      "cumulativeRoi": -0.24471415028101373
+      "profit": 67.95,
+      "cumulativeProfit": -11847.62,
+      "cumulativeRoi": -0.25463283059216757
     },
     {
       "raceId": "2026-06-03-HV-3",
@@ -6370,9 +6340,9 @@
       "topPick": "LEADING AGILITY",
       "recommendation": "LEADING AGILITY",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26483.56,
-      "cumulativeRoi": -0.244801419065786
+      "profit": -2.66,
+      "cumulativeProfit": -11850.28,
+      "cumulativeRoi": -0.2546754404760196
     },
     {
       "raceId": "2026-06-03-HV-4",
@@ -6382,9 +6352,9 @@
       "topPick": "RUN RUN TIMING",
       "recommendation": "TAKE ACTION",
       "result": "WIN",
-      "profit": 112.5,
-      "cumulativeProfit": -26371.06,
-      "cumulativeRoi": -0.24373336069100424
+      "profit": 34.92,
+      "cumulativeProfit": -11815.36,
+      "cumulativeRoi": -0.2539037997162987
     },
     {
       "raceId": "2026-06-03-HV-5",
@@ -6394,9 +6364,9 @@
       "topPick": "BROWNNEEDSFURTHER",
       "recommendation": "PODIUM",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26383.56,
-      "cumulativeRoi": -0.24382072261187634
+      "profit": -4.67,
+      "cumulativeProfit": -11820.03,
+      "cumulativeRoi": -0.2539786667056304
     },
     {
       "raceId": "2026-06-03-HV-6",
@@ -6407,8 +6377,8 @@
       "recommendation": "THE HEIR",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26383.56,
-      "cumulativeRoi": -0.24382072261187634
+      "cumulativeProfit": -11820.03,
+      "cumulativeRoi": -0.2539786667056304
     },
     {
       "raceId": "2026-06-03-HV-7",
@@ -6418,9 +6388,9 @@
       "topPick": "KING PROFIT",
       "recommendation": "KING PROFIT",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26396.06,
-      "cumulativeRoi": -0.2439080643514439
+      "profit": -5.72,
+      "cumulativeProfit": -11825.75,
+      "cumulativeRoi": -0.25407034627430847
     },
     {
       "raceId": "2026-06-03-HV-8",
@@ -6430,9 +6400,9 @@
       "topPick": "ARMOR GOLDEN EAGLE",
       "recommendation": "SILVERY BREEZE",
       "result": "WIN",
-      "profit": 70.13,
-      "cumulativeProfit": -26325.92,
-      "cumulativeRoi": -0.2432356969011251
+      "profit": 14.04,
+      "cumulativeProfit": -11811.71,
+      "cumulativeRoi": -0.2537569278931948
     },
     {
       "raceId": "2026-06-03-HV-9",
@@ -6443,8 +6413,8 @@
       "recommendation": "WITHOUT COMPARE",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26325.92,
-      "cumulativeRoi": -0.2432356969011251
+      "cumulativeProfit": -11811.71,
+      "cumulativeRoi": -0.2537569278931948
     },
     {
       "raceId": "2026-06-07-ST-1",
@@ -6454,9 +6424,9 @@
       "topPick": "FIREFOOT",
       "recommendation": "MEEPMEEP",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26338.42,
-      "cumulativeRoi": -0.24332308740645392
+      "profit": -7.14,
+      "cumulativeProfit": -11818.85,
+      "cumulativeRoi": -0.25387137822181716
     },
     {
       "raceId": "2026-06-07-ST-2",
@@ -6467,8 +6437,8 @@
       "recommendation": "WINNING MACHINE",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26338.42,
-      "cumulativeRoi": -0.24332308740645392
+      "cumulativeProfit": -11818.85,
+      "cumulativeRoi": -0.25387137822181716
     },
     {
       "raceId": "2026-06-07-ST-3",
@@ -6478,9 +6448,9 @@
       "topPick": "BETTER AND BETTER",
       "recommendation": "SKY DEEP",
       "result": "MISS",
-      "profit": -8.25,
-      "cumulativeProfit": -26346.67,
-      "cumulativeRoi": -0.24338075408425713
+      "profit": -1.65,
+      "cumulativeProfit": -11820.5,
+      "cumulativeRoi": -0.2538978218335593
     },
     {
       "raceId": "2026-06-07-ST-4",
@@ -6491,8 +6461,8 @@
       "recommendation": "MASTER LUCKY",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26346.67,
-      "cumulativeRoi": -0.24338075408425713
+      "cumulativeProfit": -11820.5,
+      "cumulativeRoi": -0.2538978218335593
     },
     {
       "raceId": "2026-06-07-ST-5",
@@ -6502,9 +6472,9 @@
       "topPick": "YODA'S CHOICE",
       "recommendation": "YODA'S CHOICE",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26359.17,
-      "cumulativeRoi": -0.2434681110925674
+      "profit": -6.45,
+      "cumulativeProfit": -11826.95,
+      "cumulativeRoi": -0.2540011743335533
     },
     {
       "raceId": "2026-06-07-ST-6",
@@ -6514,9 +6484,9 @@
       "topPick": "BLING BLING GENIUS",
       "recommendation": "BLING BLING GENIUS",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26371.67,
-      "cumulativeRoi": -0.2435554479312456
+      "profit": -3.59,
+      "cumulativeProfit": -11830.54,
+      "cumulativeRoi": -0.2540586868106185
     },
     {
       "raceId": "2026-06-07-ST-7",
@@ -6526,9 +6496,9 @@
       "topPick": "LITTLE MONSTER",
       "recommendation": "ENJOY GOLF",
       "result": "MISS",
-      "profit": -0.2,
-      "cumulativeProfit": -26371.87,
-      "cumulativeRoi": -0.2435568451567638
+      "profit": -0.04,
+      "cumulativeProfit": -11830.58,
+      "cumulativeRoi": -0.2540593275682092
     },
     {
       "raceId": "2026-06-07-ST-8",
@@ -6539,8 +6509,8 @@
       "recommendation": "PASS",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26371.87,
-      "cumulativeRoi": -0.2435568451567638
+      "cumulativeProfit": -11830.58,
+      "cumulativeRoi": -0.2540593275682092
     },
     {
       "raceId": "2026-06-07-ST-9",
@@ -6550,9 +6520,9 @@
       "topPick": "THRIVING BROTHERS",
       "recommendation": "THRIVING BROTHERS",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26384.37,
-      "cumulativeRoi": -0.2436441615102488
+      "profit": -5.98,
+      "cumulativeProfit": -11836.56,
+      "cumulativeRoi": -0.25415510844562006
     },
     {
       "raceId": "2026-06-07-ST-10",
@@ -6563,8 +6533,8 @@
       "recommendation": "RISING FORCE",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26384.37,
-      "cumulativeRoi": -0.2436441615102488
+      "cumulativeProfit": -11836.56,
+      "cumulativeRoi": -0.25415510844562006
     },
     {
       "raceId": "2026-06-07-ST-11",
@@ -6574,9 +6544,9 @@
       "topPick": "FIT FOR BEAUTY",
       "recommendation": "THUNDER KIT",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26396.87,
-      "cumulativeRoi": -0.24373145770817928
+      "profit": -3.32,
+      "cumulativeProfit": -11839.88,
+      "cumulativeRoi": -0.2542082738331802
     },
     {
       "raceId": "2026-06-10-HV-1",
@@ -6586,9 +6556,9 @@
       "topPick": "KINGLY DEMEANOR",
       "recommendation": "PERFECT PAIRING",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26409.37,
-      "cumulativeRoi": -0.2438187337575333
+      "profit": -3.82,
+      "cumulativeProfit": -11843.7,
+      "cumulativeRoi": -0.25426943667931723
     },
     {
       "raceId": "2026-06-10-HV-2",
@@ -6598,9 +6568,9 @@
       "topPick": "OUR LUCKY GLORY",
       "recommendation": "OUR LUCKY GLORY",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26421.87,
-      "cumulativeRoi": -0.24390598966528565
+      "profit": -4.56,
+      "cumulativeProfit": -11848.26,
+      "cumulativeRoi": -0.25434243469147855
     },
     {
       "raceId": "2026-06-10-HV-3",
@@ -6611,8 +6581,8 @@
       "recommendation": "PASS",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26421.87,
-      "cumulativeRoi": -0.24390598966528565
+      "cumulativeProfit": -11848.26,
+      "cumulativeRoi": -0.25434243469147855
     },
     {
       "raceId": "2026-06-10-HV-4",
@@ -6623,8 +6593,8 @@
       "recommendation": "PASS",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26421.87,
-      "cumulativeRoi": -0.24390598966528565
+      "cumulativeProfit": -11848.26,
+      "cumulativeRoi": -0.25434243469147855
     },
     {
       "raceId": "2026-06-10-HV-5",
@@ -6635,8 +6605,8 @@
       "recommendation": "DECISION LINK",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26421.87,
-      "cumulativeRoi": -0.24390598966528565
+      "cumulativeProfit": -11848.26,
+      "cumulativeRoi": -0.25434243469147855
     },
     {
       "raceId": "2026-06-10-HV-6",
@@ -6646,9 +6616,9 @@
       "topPick": "SUPERB KING",
       "recommendation": "LIVE WIRE",
       "result": "WIN",
-      "profit": 9.17,
-      "cumulativeProfit": -26412.7,
-      "cumulativeRoi": -0.24381744564885402
+      "profit": 1.85,
+      "cumulativeProfit": -11846.41,
+      "cumulativeRoi": -0.2543008107462958
     },
     {
       "raceId": "2026-06-10-HV-7",
@@ -6659,8 +6629,8 @@
       "recommendation": "THE AUSPICIOUS",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26412.7,
-      "cumulativeRoi": -0.24381744564885402
+      "cumulativeProfit": -11846.41,
+      "cumulativeRoi": -0.2543008107462958
     },
     {
       "raceId": "2026-06-10-HV-8",
@@ -6670,9 +6640,9 @@
       "topPick": "AURIO",
       "recommendation": "AURIO",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26425.2,
-      "cumulativeRoi": -0.24390469024477357
+      "profit": -9.26,
+      "cumulativeProfit": -11855.67,
+      "cumulativeRoi": -0.25444901112816215
     },
     {
       "raceId": "2026-06-10-HV-9",
@@ -6683,8 +6653,8 @@
       "recommendation": "FLYING WROTE",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26425.2,
-      "cumulativeRoi": -0.24390469024477357
+      "cumulativeProfit": -11855.67,
+      "cumulativeRoi": -0.25444901112816215
     },
     {
       "raceId": "2026-06-13-ST-1",
@@ -6694,9 +6664,9 @@
       "topPick": "QUANTUM WUKONG",
       "recommendation": "DRAGON GENERATION",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26437.7,
-      "cumulativeRoi": -0.2439919147113173
+      "profit": -6.21,
+      "cumulativeProfit": -11861.88,
+      "cumulativeRoi": -0.25454836521514884
     },
     {
       "raceId": "2026-06-13-ST-2",
@@ -6706,9 +6676,9 @@
       "topPick": "ROBOT KNIGHT",
       "recommendation": "CRAZY TREASURE",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26450.2,
-      "cumulativeRoi": -0.24407911905545082
+      "profit": -4.67,
+      "cumulativeProfit": -11866.55,
+      "cumulativeRoi": -0.25462306332580803
     },
     {
       "raceId": "2026-06-13-ST-3",
@@ -6718,9 +6688,9 @@
       "topPick": "SKY DEEP",
       "recommendation": "SKY DEEP",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26462.7,
-      "cumulativeRoi": -0.24416630328413663
+      "profit": -6.17,
+      "cumulativeProfit": -11872.72,
+      "cumulativeRoi": -0.25472173145350185
     },
     {
       "raceId": "2026-06-13-ST-4",
@@ -6731,8 +6701,8 @@
       "recommendation": "ABSOLUTE HONOUR",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26462.7,
-      "cumulativeRoi": -0.24416630328413663
+      "cumulativeProfit": -11872.72,
+      "cumulativeRoi": -0.25472173145350185
     },
     {
       "raceId": "2026-06-13-ST-5",
@@ -6742,9 +6712,9 @@
       "topPick": "JUICY DRAGON",
       "recommendation": "JUICY DRAGON",
       "result": "MISS",
-      "profit": -11.94,
-      "cumulativeProfit": -26474.64,
-      "cumulativeRoi": -0.244249562881903
+      "profit": -2.39,
+      "cumulativeProfit": -11875.11,
+      "cumulativeRoi": -0.254759944341636
     },
     {
       "raceId": "2026-06-13-ST-6",
@@ -6755,8 +6725,8 @@
       "recommendation": "GORGEOUS VICTORY",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26474.64,
-      "cumulativeRoi": -0.244249562881903
+      "cumulativeProfit": -11875.11,
+      "cumulativeRoi": -0.254759944341636
     },
     {
       "raceId": "2026-06-13-ST-7",
@@ -6766,9 +6736,9 @@
       "topPick": "LUCRATIVE EIGHT",
       "recommendation": "LUCRATIVE EIGHT",
       "result": "MISS",
-      "profit": -9.26,
-      "cumulativeProfit": -26483.9,
-      "cumulativeRoi": -0.24431412176749015
+      "profit": -1.85,
+      "cumulativeProfit": -11876.96,
+      "cumulativeRoi": -0.2547895206650082
     },
     {
       "raceId": "2026-06-13-ST-8",
@@ -6778,9 +6748,9 @@
       "topPick": "MAX QUE",
       "recommendation": "MAX QUE",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26496.4,
-      "cumulativeRoi": -0.2444012517995923
+      "profit": -3.52,
+      "cumulativeProfit": -11880.48,
+      "cumulativeRoi": -0.25484578913306843
     },
     {
       "raceId": "2026-06-13-ST-9",
@@ -6791,8 +6761,8 @@
       "recommendation": "VICTORY SKY",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26496.4,
-      "cumulativeRoi": -0.2444012517995923
+      "cumulativeProfit": -11880.48,
+      "cumulativeRoi": -0.25484578913306843
     },
     {
       "raceId": "2026-06-13-ST-10",
@@ -6802,9 +6772,9 @@
       "topPick": "BIG RETURN",
       "recommendation": "BIG RETURN",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26508.9,
-      "cumulativeRoi": -0.24448836174195213
+      "profit": -3.77,
+      "cumulativeProfit": -11884.25,
+      "cumulativeRoi": -0.2549060445179626
     },
     {
       "raceId": "2026-06-13-ST-11",
@@ -6815,8 +6785,8 @@
       "recommendation": "SUPER EXPRESS",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26508.9,
-      "cumulativeRoi": -0.24448836174195213
+      "cumulativeProfit": -11884.25,
+      "cumulativeRoi": -0.2549060445179626
     },
     {
       "raceId": "2026-06-21-ST-1",
@@ -6826,9 +6796,9 @@
       "topPick": "RAPID PHANTOM",
       "recommendation": "RAPID PHANTOM",
       "result": "WIN",
-      "profit": 98.24,
-      "cumulativeProfit": -26410.66,
-      "cumulativeRoi": -0.24355539570999218
+      "profit": 19.68,
+      "cumulativeProfit": -11864.57,
+      "cumulativeRoi": -0.25447082734220333
     },
     {
       "raceId": "2026-06-21-ST-2",
@@ -6838,9 +6808,9 @@
       "topPick": "WINNING MACHINE",
       "recommendation": "WINNING MACHINE",
       "result": "WIN",
-      "profit": 13.98,
-      "cumulativeProfit": -26396.68,
-      "cumulativeRoi": -0.243416013587274
+      "profit": 2.79,
+      "cumulativeProfit": -11861.78,
+      "cumulativeRoi": -0.2544059129989423
     },
     {
       "raceId": "2026-06-21-ST-3",
@@ -6850,9 +6820,9 @@
       "topPick": "PACKING GLORY",
       "recommendation": "FORERUNNER",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26409.18,
-      "cumulativeRoi": -0.2435032136783546
+      "profit": -6.32,
+      "cumulativeProfit": -11868.1,
+      "cumulativeRoi": -0.2545069633916651
     },
     {
       "raceId": "2026-06-21-ST-4",
@@ -6863,8 +6833,8 @@
       "recommendation": "OLDTOWN",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26409.18,
-      "cumulativeRoi": -0.2435032136783546
+      "cumulativeProfit": -11868.1,
+      "cumulativeRoi": -0.2545069633916651
     },
     {
       "raceId": "2026-06-21-ST-5",
@@ -6874,9 +6844,9 @@
       "topPick": "SKY DEEP",
       "recommendation": "SKY DEEP",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26421.68,
-      "cumulativeRoi": -0.24359039367125773
+      "profit": -4,
+      "cumulativeProfit": -11872.1,
+      "cumulativeRoi": -0.2545709051836438
     },
     {
       "raceId": "2026-06-21-ST-6",
@@ -6887,8 +6857,8 @@
       "recommendation": "COME FAST FAY FAY",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26421.68,
-      "cumulativeRoi": -0.24359039367125773
+      "cumulativeProfit": -11872.1,
+      "cumulativeRoi": -0.2545709051836438
     },
     {
       "raceId": "2026-06-21-ST-7",
@@ -6898,9 +6868,9 @@
       "topPick": "SIX PACK",
       "recommendation": "SIX PACK",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26434.18,
-      "cumulativeRoi": -0.24367755357293108
+      "profit": -10,
+      "cumulativeProfit": -11882.1,
+      "cumulativeRoi": -0.25473071168572153
     },
     {
       "raceId": "2026-06-21-ST-8",
@@ -6911,8 +6881,8 @@
       "recommendation": "SHAMUS STORM",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26434.18,
-      "cumulativeRoi": -0.24367755357293108
+      "cumulativeProfit": -11882.1,
+      "cumulativeRoi": -0.25473071168572153
     },
     {
       "raceId": "2026-06-21-ST-9",
@@ -6922,9 +6892,9 @@
       "topPick": "SILVERY BREEZE",
       "recommendation": "SILVERY BREEZE",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26446.68,
-      "cumulativeRoi": -0.24376469339031906
+      "profit": -10,
+      "cumulativeProfit": -11892.1,
+      "cumulativeRoi": -0.25489044968324387
     },
     {
       "raceId": "2026-06-21-ST-10",
@@ -6935,8 +6905,8 @@
       "recommendation": "CROSSBORDERPEGASUS",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26446.68,
-      "cumulativeRoi": -0.24376469339031906
+      "cumulativeProfit": -11892.1,
+      "cumulativeRoi": -0.25489044968324387
     },
     {
       "raceId": "2026-06-21-ST-11",
@@ -6947,8 +6917,8 @@
       "recommendation": "PASS",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26446.68,
-      "cumulativeRoi": -0.24376469339031906
+      "cumulativeProfit": -11892.1,
+      "cumulativeRoi": -0.25489044968324387
     },
     {
       "raceId": "2026-06-24-HV-1",
@@ -6958,9 +6928,9 @@
       "topPick": "HAILTOTHEVICTORS",
       "recommendation": "HAILTOTHEVICTORS",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26459.18,
-      "cumulativeRoi": -0.24385181313036297
+      "profit": -4.24,
+      "cumulativeProfit": -11896.34,
+      "cumulativeRoi": -0.25495815792423376
     },
     {
       "raceId": "2026-06-24-HV-2",
@@ -6971,8 +6941,8 @@
       "recommendation": "PASS",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26459.18,
-      "cumulativeRoi": -0.24385181313036297
+      "cumulativeProfit": -11896.34,
+      "cumulativeRoi": -0.25495815792423376
     },
     {
       "raceId": "2026-06-24-HV-3",
@@ -6982,9 +6952,9 @@
       "topPick": "TAKE ACTION",
       "recommendation": "TAKE ACTION",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26471.68,
-      "cumulativeRoi": -0.2439389128000008
+      "profit": -10,
+      "cumulativeProfit": -11906.34,
+      "cumulativeRoi": -0.2551177984472673
     },
     {
       "raceId": "2026-06-24-HV-4",
@@ -6994,9 +6964,9 @@
       "topPick": "VIVACIOUS WIN",
       "recommendation": "GLORIOUS JOURNEY",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26484.18,
-      "cumulativeRoi": -0.2440259924061674
+      "profit": -5.21,
+      "cumulativeProfit": -11911.55,
+      "cumulativeRoi": -0.2552009440563488
     },
     {
       "raceId": "2026-06-24-HV-5",
@@ -7006,9 +6976,9 @@
       "topPick": "GAMEPLAYER ELITE",
       "recommendation": "GAMEPLAYER ELITE",
       "result": "MISS",
-      "profit": -4.14,
-      "cumulativeProfit": -26488.32,
-      "cumulativeRoi": -0.24405482874999088
+      "profit": -0.83,
+      "cumulativeProfit": -11912.38,
+      "cumulativeRoi": -0.25521418818789376
     },
     {
       "raceId": "2026-06-24-HV-6",
@@ -7018,9 +6988,9 @@
       "topPick": "SPIRIT OF PEACE",
       "recommendation": "KING ALLOY",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26500.82,
-      "cumulativeRoi": -0.24414188165841955
+      "profit": -5.33,
+      "cumulativeProfit": -11917.71,
+      "cumulativeRoi": -0.25529922662888455
     },
     {
       "raceId": "2026-06-24-HV-7",
@@ -7030,9 +7000,9 @@
       "topPick": "HORSEPOWER",
       "recommendation": "HORSEPOWER",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26513.32,
-      "cumulativeRoi": -0.2442289145195311
+      "profit": -6.96,
+      "cumulativeProfit": -11924.67,
+      "cumulativeRoi": -0.255410241966403
     },
     {
       "raceId": "2026-06-24-HV-8",
@@ -7042,9 +7012,9 @@
       "topPick": "THE HEIR",
       "recommendation": "THE HEIR",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26525.82,
-      "cumulativeRoi": -0.24431592734024982
+      "profit": -10,
+      "cumulativeProfit": -11934.67,
+      "cumulativeRoi": -0.25556968883235603
     },
     {
       "raceId": "2026-06-24-HV-9",
@@ -7054,9 +7024,9 @@
       "topPick": "ROMANTIC GLADIATOR",
       "recommendation": "FIVEFORTWO",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26538.32,
-      "cumulativeRoi": -0.24440292012749665
+      "profit": -3.01,
+      "cumulativeProfit": -11937.68,
+      "cumulativeRoi": -0.2556176689690292
     },
     {
       "raceId": "2026-06-27-ST-1",
@@ -7067,8 +7037,8 @@
       "recommendation": "ALWAYS FLUKE",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26538.32,
-      "cumulativeRoi": -0.24440292012749665
+      "cumulativeProfit": -11937.68,
+      "cumulativeRoi": -0.2556176689690292
     },
     {
       "raceId": "2026-06-27-ST-2",
@@ -7079,8 +7049,8 @@
       "recommendation": "VERBIER",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26538.32,
-      "cumulativeRoi": -0.24440292012749665
+      "cumulativeProfit": -11937.68,
+      "cumulativeRoi": -0.2556176689690292
     },
     {
       "raceId": "2026-06-27-ST-3",
@@ -7090,9 +7060,9 @@
       "topPick": "LITTLE MONSTER",
       "recommendation": "GENIUS BABY",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26550.82,
-      "cumulativeRoi": -0.24448989288818948
+      "profit": -5.38,
+      "cumulativeProfit": -11943.06,
+      "cumulativeRoi": -0.2557034120807964
     },
     {
       "raceId": "2026-06-27-ST-4",
@@ -7102,9 +7072,9 @@
       "topPick": "DOUBLE WIN",
       "recommendation": "DOUBLE WIN",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26563.32,
-      "cumulativeRoi": -0.24457684562924292
+      "profit": -5.72,
+      "cumulativeProfit": -11948.78,
+      "cumulativeRoi": -0.2557945522399725
     },
     {
       "raceId": "2026-06-27-ST-5",
@@ -7114,9 +7084,9 @@
       "topPick": "HAPPY UNIVERSE",
       "recommendation": "HAPPY UNIVERSE",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26575.82,
-      "cumulativeRoi": -0.2446637783575685
+      "profit": -3.31,
+      "cumulativeProfit": -11952.09,
+      "cumulativeRoi": -0.25584728224246595
     },
     {
       "raceId": "2026-06-27-ST-6",
@@ -7126,9 +7096,9 @@
       "topPick": "ENJOY GOLF",
       "recommendation": "ELEGANT LIFE",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26588.32,
-      "cumulativeRoi": -0.24475069108007447
+      "profit": -3.82,
+      "cumulativeProfit": -11955.91,
+      "cumulativeRoi": -0.2559081275200914
     },
     {
       "raceId": "2026-06-27-ST-7",
@@ -7138,9 +7108,9 @@
       "topPick": "GALLANT DESIGN",
       "recommendation": "MASTER LUCKY",
       "result": "WIN",
-      "profit": 83.21,
-      "cumulativeProfit": -26505.11,
-      "cumulativeRoi": -0.2439568355123848
+      "profit": 16.62,
+      "cumulativeProfit": -11939.29,
+      "cumulativeRoi": -0.2555388230217789
     },
     {
       "raceId": "2026-06-27-ST-8",
@@ -7150,9 +7120,9 @@
       "topPick": "BOTTOMUPTOGETHER",
       "recommendation": "BOTTOMUPTOGETHER",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26517.61,
-      "cumulativeRoi": -0.24404380962793704
+      "profit": -3.51,
+      "cumulativeProfit": -11942.8,
+      "cumulativeRoi": -0.25559474659784526
     },
     {
       "raceId": "2026-06-27-ST-9",
@@ -7162,9 +7132,9 @@
       "topPick": "VICTORY SKY",
       "recommendation": "VICTORY SKY",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26530.11,
-      "cumulativeRoi": -0.2441307637350373
+      "profit": -10,
+      "cumulativeProfit": -11952.8,
+      "cumulativeRoi": -0.25575402696834754
     },
     {
       "raceId": "2026-06-27-ST-10",
@@ -7175,8 +7145,8 @@
       "recommendation": "MR INCREDIBLE",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26530.11,
-      "cumulativeRoi": -0.2441307637350373
+      "cumulativeProfit": -11952.8,
+      "cumulativeRoi": -0.25575402696834754
     },
     {
       "raceId": "2026-06-27-ST-11",
@@ -7186,9 +7156,9 @@
       "topPick": "DO YOUR PART",
       "recommendation": "AEROINVINCIBLE",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26542.61,
-      "cumulativeRoi": -0.24421769784058925
+      "profit": -5.48,
+      "cumulativeProfit": -11958.28,
+      "cumulativeRoi": -0.25584128370354037
     },
     {
       "raceId": "2026-07-01-ST-1",
@@ -7198,9 +7168,9 @@
       "topPick": "HARRY'S HERO",
       "recommendation": "HARRY'S HERO",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26555.11,
-      "cumulativeRoi": -0.24430461195149336
+      "profit": -5.88,
+      "cumulativeProfit": -11964.16,
+      "cumulativeRoi": -0.25593488679139975
     },
     {
       "raceId": "2026-07-01-ST-2",
@@ -7210,9 +7180,9 @@
       "topPick": "HE WAS ME",
       "recommendation": "HE WAS ME",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26567.61,
-      "cumulativeRoi": -0.2443915060746469
+      "profit": -2.58,
+      "cumulativeProfit": -11966.74,
+      "cumulativeRoi": -0.25597595010168067
     },
     {
       "raceId": "2026-07-01-ST-3",
@@ -7222,9 +7192,9 @@
       "topPick": "WINNING MACHINE",
       "recommendation": "WINNING MACHINE",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26580.11,
-      "cumulativeRoi": -0.24447838021694404
+      "profit": -10,
+      "cumulativeProfit": -11976.74,
+      "cumulativeRoi": -0.25613506739918174
     },
     {
       "raceId": "2026-07-01-ST-4",
@@ -7235,8 +7205,8 @@
       "recommendation": "BETTER AND BETTER",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26580.11,
-      "cumulativeRoi": -0.24447838021694404
+      "cumulativeProfit": -11976.74,
+      "cumulativeRoi": -0.25613506739918174
     },
     {
       "raceId": "2026-07-01-ST-5",
@@ -7247,8 +7217,8 @@
       "recommendation": "KA YING ATTACK",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26580.11,
-      "cumulativeRoi": -0.24447838021694404
+      "cumulativeProfit": -11976.74,
+      "cumulativeRoi": -0.25613506739918174
     },
     {
       "raceId": "2026-07-01-ST-6",
@@ -7259,8 +7229,8 @@
       "recommendation": "STORM MIRROR",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26580.11,
-      "cumulativeRoi": -0.24447838021694404
+      "cumulativeProfit": -11976.74,
+      "cumulativeRoi": -0.25613506739918174
     },
     {
       "raceId": "2026-07-01-ST-7",
@@ -7270,9 +7240,9 @@
       "topPick": "LUCKY CANDY",
       "recommendation": "FAST RESPONDER",
       "result": "MISS",
-      "profit": -10.94,
-      "cumulativeProfit": -26591.05,
-      "cumulativeRoi": -0.2445543960756605
+      "profit": -2.19,
+      "cumulativeProfit": -11978.93,
+      "cumulativeRoi": -0.25616990500337283
     },
     {
       "raceId": "2026-07-01-ST-8",
@@ -7282,9 +7252,9 @@
       "topPick": "CIRCUIT FIERY",
       "recommendation": "CIRCUIT FIERY",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26603.55,
-      "cumulativeRoi": -0.2446412327684297
+      "profit": -6.9,
+      "cumulativeProfit": -11985.83,
+      "cumulativeRoi": -0.2562796459843968
     },
     {
       "raceId": "2026-07-01-ST-9",
@@ -7294,9 +7264,9 @@
       "topPick": "FAMILY FORTUNE",
       "recommendation": "FAMILY FORTUNE",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26616.05,
-      "cumulativeRoi": -0.24472804950014673
+      "profit": -8.02,
+      "cumulativeProfit": -11993.85,
+      "cumulativeRoi": -0.25640715930921026
     },
     {
       "raceId": "2026-07-01-ST-10",
@@ -7306,9 +7276,9 @@
       "topPick": "AMAZING PARTNERS",
       "recommendation": "AMAZING PARTNERS",
       "result": "MISS",
-      "profit": -5.09,
-      "cumulativeProfit": -26621.14,
-      "cumulativeRoi": -0.2447633955559245
+      "profit": -1.02,
+      "cumulativeProfit": -11994.87,
+      "cumulativeRoi": -0.25642337358051753
     },
     {
       "raceId": "2026-07-01-ST-11",
@@ -7318,9 +7288,9 @@
       "topPick": "TYCOON RESOURCES",
       "recommendation": "MOTOR",
       "result": "WIN",
-      "profit": 125,
-      "cumulativeProfit": -26496.14,
-      "cumulativeRoi": -0.24358610989172746
+      "profit": 40.7,
+      "cumulativeProfit": -11954.17,
+      "cumulativeRoi": -0.2555310659067968
     },
     {
       "raceId": "2026-07-04-ST-1",
@@ -7330,9 +7300,9 @@
       "topPick": "EVER WEALTH",
       "recommendation": "EVER WEALTH",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26508.64,
-      "cumulativeRoi": -0.2436730238468957
+      "profit": -5.97,
+      "cumulativeProfit": -11960.14,
+      "cumulativeRoi": -0.2556260585060503
     },
     {
       "raceId": "2026-07-04-ST-2",
@@ -7343,8 +7313,8 @@
       "recommendation": "VERBIER",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26508.64,
-      "cumulativeRoi": -0.2436730238468957
+      "cumulativeProfit": -11960.14,
+      "cumulativeRoi": -0.2556260585060503
     },
     {
       "raceId": "2026-07-04-ST-3",
@@ -7354,9 +7324,9 @@
       "topPick": "VIVA CHALEUR",
       "recommendation": "MACANESE MASTER",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26521.14,
-      "cumulativeRoi": -0.24375991783107234
+      "profit": -6.02,
+      "cumulativeProfit": -11966.16,
+      "cumulativeRoi": -0.2557218221442823
     },
     {
       "raceId": "2026-07-04-ST-4",
@@ -7367,8 +7337,8 @@
       "recommendation": "RISING FORCE",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26521.14,
-      "cumulativeRoi": -0.24375991783107234
+      "cumulativeProfit": -11966.16,
+      "cumulativeRoi": -0.2557218221442823
     },
     {
       "raceId": "2026-07-04-ST-5",
@@ -7378,9 +7348,9 @@
       "topPick": "QUICK CONTRIBUTION",
       "recommendation": "DECISION LINK",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26533.64,
-      "cumulativeRoi": -0.24384679185113994
+      "profit": -3.98,
+      "cumulativeProfit": -11970.14,
+      "cumulativeRoi": -0.25578512078814275
     },
     {
       "raceId": "2026-07-04-ST-6",
@@ -7390,9 +7360,9 @@
       "topPick": "SPEEDY SMARTIE",
       "recommendation": "SPEEDY SMARTIE",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26546.14,
-      "cumulativeRoi": -0.24393364591397793
+      "profit": -6.98,
+      "cumulativeProfit": -11977.12,
+      "cumulativeRoi": -0.25589610598270046
     },
     {
       "raceId": "2026-07-04-ST-7",
@@ -7403,8 +7373,8 @@
       "recommendation": "GROUPER",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26546.14,
-      "cumulativeRoi": -0.24393364591397793
+      "cumulativeProfit": -11977.12,
+      "cumulativeRoi": -0.25589610598270046
     },
     {
       "raceId": "2026-07-04-ST-8",
@@ -7414,9 +7384,9 @@
       "topPick": "FIREFOOT",
       "recommendation": "FIREFOOT",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26558.64,
-      "cumulativeRoi": -0.24402048002646257
+      "profit": -7.73,
+      "cumulativeProfit": -11984.85,
+      "cumulativeRoi": -0.25601897789792705
     },
     {
       "raceId": "2026-07-04-ST-9",
@@ -7427,8 +7397,8 @@
       "recommendation": "LUCRATIVE EIGHT",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26558.64,
-      "cumulativeRoi": -0.24402048002646257
+      "cumulativeProfit": -11984.85,
+      "cumulativeRoi": -0.25601897789792705
     },
     {
       "raceId": "2026-07-04-ST-10",
@@ -7438,9 +7408,9 @@
       "topPick": "SUPERB SPIRIT",
       "recommendation": "PERFECT GENERAL",
       "result": "MISS",
-      "profit": -12.5,
-      "cumulativeProfit": -26571.14,
-      "cumulativeRoi": -0.24410729419546695
+      "profit": -3.64,
+      "cumulativeProfit": -11988.49,
+      "cumulativeRoi": -0.2560768233246808
     },
     {
       "raceId": "2026-07-04-ST-11",
@@ -7451,8 +7421,8 @@
       "recommendation": "CHILL EASY",
       "result": "PASS",
       "profit": 0,
-      "cumulativeProfit": -26571.14,
-      "cumulativeRoi": -0.24410729419546695
+      "cumulativeProfit": -11988.49,
+      "cumulativeRoi": -0.2560768233246808
     }
   ],
   "recentEntries": [
@@ -7498,8 +7468,8 @@
           "expectedReturn": 1.8134735005413953,
           "edge": 0.8134735005413953,
           "confidence": "medium",
-          "suggestedStake": 12.5,
-          "stakePct": 0.0125,
+          "suggestedStake": 4.07,
+          "stakePct": 0.020336837513534878,
           "message": "Positive-edge candidate; use stake cap and review final odds before placing any bet."
         },
         "finalBetPlan": {
@@ -7515,8 +7485,8 @@
           "currentOdds": 11,
           "minimumOdds": 6.55,
           "targetEdge": 0.08,
-          "plannedStake": 12.5,
-          "stakePct": 0.0125,
+          "plannedStake": 4.07,
+          "stakePct": 0.02035,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
           "cutoffWindow": "开跑前 3 分钟后不新增下注",
@@ -7726,9 +7696,9 @@
         "topPickHit": false,
         "winnerHorseId": "HK_2024_K165",
         "winnerHorseName": "MOTOR",
-        "stake": 12.5,
-        "returned": 137.5,
-        "profit": 125,
+        "stake": 4.07,
+        "returned": 44.77,
+        "profit": 40.7,
         "roi": 10,
         "resultLabel": "WIN",
         "runnerResults": [
@@ -7951,8 +7921,8 @@
           "profit": -1
         }
       },
-      "cumulativeProfit": -26496.14,
-      "cumulativeRoi": -0.24358610989172746
+      "cumulativeProfit": -11954.17,
+      "cumulativeRoi": -0.2555310659067968
     },
     {
       "raceId": "2026-07-04-ST-1",
@@ -7996,8 +7966,8 @@
           "expectedReturn": 3.1502561633045874,
           "edge": 2.1502561633045874,
           "confidence": "medium",
-          "suggestedStake": 12.5,
-          "stakePct": 0.0125,
+          "suggestedStake": 5.97,
+          "stakePct": 0.029864668934785937,
           "message": "Positive-edge candidate; use stake cap and review final odds before placing any bet."
         },
         "finalBetPlan": {
@@ -8013,8 +7983,8 @@
           "currentOdds": 19,
           "minimumOdds": 6.51,
           "targetEdge": 0.08,
-          "plannedStake": 12.5,
-          "stakePct": 0.0125,
+          "plannedStake": 5.97,
+          "stakePct": 0.029849999999999998,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
           "cutoffWindow": "开跑前 3 分钟后不新增下注",
@@ -8194,9 +8164,9 @@
         "topPickHit": false,
         "winnerHorseId": "HK_2025_L245",
         "winnerHorseName": "ALMIGHTY WARRIOR",
-        "stake": 12.5,
+        "stake": 5.97,
         "returned": 0,
-        "profit": -12.5,
+        "profit": -5.97,
         "roi": -1,
         "resultLabel": "MISS",
         "runnerResults": [
@@ -8405,8 +8375,8 @@
           "profit": -1
         }
       },
-      "cumulativeProfit": -26508.64,
-      "cumulativeRoi": -0.2436730238468957
+      "cumulativeProfit": -11960.14,
+      "cumulativeRoi": -0.2556260585060503
     },
     {
       "raceId": "2026-07-04-ST-2",
@@ -8451,7 +8421,7 @@
           "edge": null,
           "confidence": "watch",
           "suggestedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "message": "Probability-only paper pick; wait for market odds before treating it as a value recommendation."
         },
         "finalBetPlan": {
@@ -8468,7 +8438,7 @@
           "minimumOdds": 2.69,
           "targetEdge": 0.08,
           "plannedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
           "cutoffWindow": "T-5 仍无实时赔率就不下注",
@@ -8903,8 +8873,8 @@
           "profit": -1
         }
       },
-      "cumulativeProfit": -26508.64,
-      "cumulativeRoi": -0.2436730238468957
+      "cumulativeProfit": -11960.14,
+      "cumulativeRoi": -0.2556260585060503
     },
     {
       "raceId": "2026-07-04-ST-3",
@@ -8948,8 +8918,8 @@
           "expectedReturn": 1.9152683767046872,
           "edge": 0.9152683767046872,
           "confidence": "high",
-          "suggestedStake": 12.5,
-          "stakePct": 0.0125,
+          "suggestedStake": 6.02,
+          "stakePct": 0.030107512391601556,
           "message": "Positive-edge candidate; use stake cap and review final odds before placing any bet."
         },
         "finalBetPlan": {
@@ -8965,8 +8935,8 @@
           "currentOdds": 8.6,
           "minimumOdds": 4.85,
           "targetEdge": 0.08,
-          "plannedStake": 12.5,
-          "stakePct": 0.0125,
+          "plannedStake": 6.02,
+          "stakePct": 0.0301,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
           "cutoffWindow": "开跑前 3 分钟后不新增下注",
@@ -9176,9 +9146,9 @@
         "topPickHit": false,
         "winnerHorseId": "HK_2024_K052",
         "winnerHorseName": "NOBLE DELUXE",
-        "stake": 12.5,
+        "stake": 6.02,
         "returned": 0,
-        "profit": -12.5,
+        "profit": -6.02,
         "roi": -1,
         "resultLabel": "MISS",
         "runnerResults": [
@@ -9401,8 +9371,8 @@
           "profit": -1
         }
       },
-      "cumulativeProfit": -26521.14,
-      "cumulativeRoi": -0.24375991783107234
+      "cumulativeProfit": -11966.16,
+      "cumulativeRoi": -0.2557218221442823
     },
     {
       "raceId": "2026-07-04-ST-4",
@@ -9447,7 +9417,7 @@
           "edge": null,
           "confidence": "watch",
           "suggestedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "message": "Probability-only paper pick; wait for market odds before treating it as a value recommendation."
         },
         "finalBetPlan": {
@@ -9464,7 +9434,7 @@
           "minimumOdds": 2.55,
           "targetEdge": 0.08,
           "plannedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
           "cutoffWindow": "T-5 仍无实时赔率就不下注",
@@ -9789,8 +9759,8 @@
           "profit": 1.2999999999999998
         }
       },
-      "cumulativeProfit": -26521.14,
-      "cumulativeRoi": -0.24375991783107234
+      "cumulativeProfit": -11966.16,
+      "cumulativeRoi": -0.2557218221442823
     },
     {
       "raceId": "2026-07-04-ST-5",
@@ -9834,8 +9804,8 @@
           "expectedReturn": 1.5415152474262903,
           "edge": 0.5415152474262903,
           "confidence": "medium",
-          "suggestedStake": 12.5,
-          "stakePct": 0.0125,
+          "suggestedStake": 3.98,
+          "stakePct": 0.019908648802437142,
           "message": "Positive-edge candidate; use stake cap and review final odds before placing any bet."
         },
         "finalBetPlan": {
@@ -9851,8 +9821,8 @@
           "currentOdds": 7.8,
           "minimumOdds": 5.46,
           "targetEdge": 0.08,
-          "plannedStake": 12.5,
-          "stakePct": 0.0125,
+          "plannedStake": 3.98,
+          "stakePct": 0.0199,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
           "cutoffWindow": "开跑前 3 分钟后不新增下注",
@@ -10092,9 +10062,9 @@
         "topPickHit": false,
         "winnerHorseId": "HK_2025_L207",
         "winnerHorseName": "GRACEFUL HEART",
-        "stake": 12.5,
+        "stake": 3.98,
         "returned": 0,
-        "profit": -12.5,
+        "profit": -3.98,
         "roi": -1,
         "resultLabel": "MISS",
         "runnerResults": [
@@ -10331,8 +10301,8 @@
           "profit": -1
         }
       },
-      "cumulativeProfit": -26533.64,
-      "cumulativeRoi": -0.24384679185113994
+      "cumulativeProfit": -11970.14,
+      "cumulativeRoi": -0.25578512078814275
     },
     {
       "raceId": "2026-07-04-ST-6",
@@ -10376,8 +10346,8 @@
           "expectedReturn": 2.0047125288651135,
           "edge": 1.0047125288651135,
           "confidence": "high",
-          "suggestedStake": 12.5,
-          "stakePct": 0.0125,
+          "suggestedStake": 6.98,
+          "stakePct": 0.034885851696705335,
           "message": "Positive-edge candidate; use stake cap and review final odds before placing any bet."
         },
         "finalBetPlan": {
@@ -10393,8 +10363,8 @@
           "currentOdds": 8.2,
           "minimumOdds": 4.42,
           "targetEdge": 0.08,
-          "plannedStake": 12.5,
-          "stakePct": 0.0125,
+          "plannedStake": 6.98,
+          "stakePct": 0.0349,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
           "cutoffWindow": "开跑前 3 分钟后不新增下注",
@@ -10604,9 +10574,9 @@
         "topPickHit": false,
         "winnerHorseId": "HK_2025_L210",
         "winnerHorseName": "BUSTLING CITY",
-        "stake": 12.5,
+        "stake": 6.98,
         "returned": 0,
-        "profit": -12.5,
+        "profit": -6.98,
         "roi": -1,
         "resultLabel": "MISS",
         "runnerResults": [
@@ -10829,8 +10799,8 @@
           "profit": -1
         }
       },
-      "cumulativeProfit": -26546.14,
-      "cumulativeRoi": -0.24393364591397793
+      "cumulativeProfit": -11977.12,
+      "cumulativeRoi": -0.25589610598270046
     },
     {
       "raceId": "2026-07-04-ST-7",
@@ -10875,7 +10845,7 @@
           "edge": null,
           "confidence": "watch",
           "suggestedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "message": "Probability-only paper pick; wait for market odds before treating it as a value recommendation."
         },
         "finalBetPlan": {
@@ -10892,7 +10862,7 @@
           "minimumOdds": 4.13,
           "targetEdge": 0.08,
           "plannedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
           "cutoffWindow": "T-5 仍无实时赔率就不下注",
@@ -11305,8 +11275,8 @@
           "profit": -1
         }
       },
-      "cumulativeProfit": -26546.14,
-      "cumulativeRoi": -0.24393364591397793
+      "cumulativeProfit": -11977.12,
+      "cumulativeRoi": -0.25589610598270046
     },
     {
       "raceId": "2026-07-04-ST-8",
@@ -11350,8 +11320,8 @@
           "expectedReturn": 2.546862341067692,
           "edge": 1.5468623410676918,
           "confidence": "high",
-          "suggestedStake": 12.5,
-          "stakePct": 0.0125,
+          "suggestedStake": 7.73,
+          "stakePct": 0.038671558526692296,
           "message": "Positive-edge candidate; use stake cap and review final odds before placing any bet."
         },
         "finalBetPlan": {
@@ -11367,8 +11337,8 @@
           "currentOdds": 11,
           "minimumOdds": 4.66,
           "targetEdge": 0.08,
-          "plannedStake": 12.5,
-          "stakePct": 0.0125,
+          "plannedStake": 7.73,
+          "stakePct": 0.038650000000000004,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
           "cutoffWindow": "开跑前 3 分钟后不新增下注",
@@ -11608,9 +11578,9 @@
         "topPickHit": false,
         "winnerHorseId": "HK_2024_K547",
         "winnerHorseName": "VICTOR SUPREME",
-        "stake": 12.5,
+        "stake": 7.73,
         "returned": 0,
-        "profit": -12.5,
+        "profit": -7.73,
         "roi": -1,
         "resultLabel": "MISS",
         "runnerResults": [
@@ -11847,8 +11817,8 @@
           "profit": -1
         }
       },
-      "cumulativeProfit": -26558.64,
-      "cumulativeRoi": -0.24402048002646257
+      "cumulativeProfit": -11984.85,
+      "cumulativeRoi": -0.25601897789792705
     },
     {
       "raceId": "2026-07-04-ST-9",
@@ -11893,7 +11863,7 @@
           "edge": null,
           "confidence": "watch",
           "suggestedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "message": "Probability-only paper pick; wait for market odds before treating it as a value recommendation."
         },
         "finalBetPlan": {
@@ -11910,7 +11880,7 @@
           "minimumOdds": 3.56,
           "targetEdge": 0.08,
           "plannedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
           "cutoffWindow": "T-5 仍无实时赔率就不下注",
@@ -11968,7 +11938,7 @@
             "fairOdds": 7.2923442054070495,
             "edge": 1.0569517260139696,
             "expectedReturn": 2.0569517260139696,
-            "score": 0.30884340020416046
+            "score": 0.30884340020416057
           },
           {
             "horseId": "HK_2025_L415",
@@ -12345,8 +12315,8 @@
           "profit": 0.6000000000000001
         }
       },
-      "cumulativeProfit": -26558.64,
-      "cumulativeRoi": -0.24402048002646257
+      "cumulativeProfit": -11984.85,
+      "cumulativeRoi": -0.25601897789792705
     },
     {
       "raceId": "2026-07-04-ST-10",
@@ -12390,8 +12360,8 @@
           "expectedReturn": 1.6188500912586208,
           "edge": 0.6188500912586208,
           "confidence": "medium",
-          "suggestedStake": 12.5,
-          "stakePct": 0.0125,
+          "suggestedStake": 3.64,
+          "stakePct": 0.018201473272312373,
           "message": "Positive-edge candidate; use stake cap and review final odds before placing any bet."
         },
         "finalBetPlan": {
@@ -12407,8 +12377,8 @@
           "currentOdds": 9.5,
           "minimumOdds": 6.34,
           "targetEdge": 0.08,
-          "plannedStake": 12.5,
-          "stakePct": 0.0125,
+          "plannedStake": 3.64,
+          "stakePct": 0.0182,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
           "cutoffWindow": "开跑前 3 分钟后不新增下注",
@@ -12618,9 +12588,9 @@
         "topPickHit": false,
         "winnerHorseId": "HK_2025_L411",
         "winnerHorseName": "SOLID STATE",
-        "stake": 12.5,
+        "stake": 3.64,
         "returned": 0,
-        "profit": -12.5,
+        "profit": -3.64,
         "roi": -1,
         "resultLabel": "MISS",
         "runnerResults": [
@@ -12843,8 +12813,8 @@
           "profit": -1
         }
       },
-      "cumulativeProfit": -26571.14,
-      "cumulativeRoi": -0.24410729419546695
+      "cumulativeProfit": -11988.49,
+      "cumulativeRoi": -0.2560768233246808
     },
     {
       "raceId": "2026-07-04-ST-11",
@@ -12889,7 +12859,7 @@
           "edge": null,
           "confidence": "watch",
           "suggestedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "message": "Probability-only paper pick; wait for market odds before treating it as a value recommendation."
         },
         "finalBetPlan": {
@@ -12906,7 +12876,7 @@
           "minimumOdds": 5.63,
           "targetEdge": 0.08,
           "plannedStake": 10,
-          "stakePct": 0.01,
+          "stakePct": 0.05,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
           "cutoffWindow": "T-5 仍无实时赔率就不下注",
@@ -13385,8 +13355,8 @@
           "profit": 1.7000000000000002
         }
       },
-      "cumulativeProfit": -26571.14,
-      "cumulativeRoi": -0.24410729419546695
+      "cumulativeProfit": -11988.49,
+      "cumulativeRoi": -0.2560768233246808
     }
   ],
   "assumptions": {
@@ -13401,7 +13371,7 @@
   },
   "dataSource": {
     "source": "sqlite",
-    "database": "hkjc.sqlite",
+    "database": "hkjc-horse-model/data/hkjc.sqlite",
     "settledRaces": 14221,
     "upcomingRaces": 9
   },
