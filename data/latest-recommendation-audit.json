@@ -1,149 +1,154 @@
 {
   "summary": {
     "runs": 1,
-    "settledRuns": 0,
-    "openRuns": 1,
-    "totalStake": 0,
+    "settledRuns": 1,
+    "openRuns": 0,
+    "totalStake": 0.56,
     "totalReturn": 0,
-    "profit": 0,
-    "roi": null,
+    "profit": -0.56,
+    "roi": -1,
     "hitLines": 0,
-    "missLines": 0,
+    "missLines": 1,
     "passLines": 0
   },
   "runs": [
     {
-      "runId": "rec_1a5971fff1b8a61b",
-      "raceId": "2026-07-08-HV-1",
+      "runId": "rec_29b90c2e2b5c8fec",
+      "raceId": "2026-07-08-HV-9",
       "date": "2026-07-08",
       "racecourse": "HV",
-      "raceNo": 1,
-      "generatedAt": "2026-07-08T04:13:51.494Z",
+      "raceNo": 9,
+      "generatedAt": "2026-07-08T17:09:32.108Z",
       "modelVersion": "hkjc-local-horse-model",
       "strategyVersion": "ev-portfolio-v1",
       "bankroll": 200,
       "finalEdgeBuffer": 0.08,
       "recommendations": [
         {
-          "mode": "prepare",
-          "label": "PREP / 预备",
-          "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+          "mode": "conditional",
+          "label": "WAIT / 等赔率",
+          "headline": "只列入候选，等临场赔率重新站上最低入场线。",
           "betType": "WIN",
-          "horseId": "HK_2022_H436",
-          "horseName": "COUNTRY DANCER",
-          "horseNo": 1,
-          "modelProbability": 0.21232087457418763,
-          "fairOdds": 4.709852490978635,
-          "currentOdds": null,
-          "minimumOdds": 5.09,
+          "horseId": "HK_2023_J539",
+          "horseName": "KING PROFIT",
+          "horseNo": 7,
+          "modelProbability": 0.23086541709561567,
+          "fairOdds": 4.331527920380721,
+          "currentOdds": 4.5,
+          "minimumOdds": 4.68,
           "targetEdge": 0.08,
-          "plannedStake": 10,
-          "stakePct": 0.05,
+          "plannedStake": 0.56,
+          "stakePct": 0.0028000000000000004,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
-          "cutoffWindow": "T-5 仍无实时赔率就不下注",
+          "cutoffWindow": "开跑前 3 分钟后不新增下注",
           "checklist": [
             "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
-            "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
-            "赔率缺失或跳动太乱时，只保留纸上模拟。"
+            "只有实时独赢赔率仍高于最低赔率线，才执行下注。",
+            "严格使用计划注码上限；赔率跌穿就不追。"
           ],
           "stopRules": [
-            "最终赔率低于最低线，直接 PASS。",
-            "任何临场官方变化削弱模型条件，直接 PASS。"
+            "马匹退出、骑师/场地出现重大变化，或赔率跌穿最低线，直接 PASS。",
+            "最终 15 分钟内页面没有刷新成功，直接 PASS。"
           ]
         }
       ],
       "summary": {
-        "status": "upcoming",
-        "mode": "prepare",
-        "topPickHorseNo": 1,
-        "topPickHorseName": "COUNTRY DANCER",
-        "upcomingEntries": 9
+        "status": "settled",
+        "mode": "conditional",
+        "topPickHorseNo": 7,
+        "topPickHorseName": "KING PROFIT",
+        "upcomingEntries": 0
       },
       "raw": {
-        "raceId": "2026-07-08-HV-1",
-        "raceNo": 1,
+        "raceId": "2026-07-08-HV-9",
+        "raceNo": 9,
         "date": "2026-07-08",
         "racecourse": "HV",
-        "generatedAt": "2026-07-08T04:13:51.494Z",
+        "generatedAt": "2026-07-08T17:09:32.108Z",
         "modelVersion": "hkjc-local-horse-model",
         "strategyVersion": "ev-portfolio-v1",
         "bankroll": 200,
         "finalEdgeBuffer": 0.08,
         "recommendations": [
           {
-            "mode": "prepare",
-            "label": "PREP / 预备",
-            "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+            "mode": "conditional",
+            "label": "WAIT / 等赔率",
+            "headline": "只列入候选，等临场赔率重新站上最低入场线。",
             "betType": "WIN",
-            "horseId": "HK_2022_H436",
-            "horseName": "COUNTRY DANCER",
-            "horseNo": 1,
-            "modelProbability": 0.21232087457418763,
-            "fairOdds": 4.709852490978635,
-            "currentOdds": null,
-            "minimumOdds": 5.09,
+            "horseId": "HK_2023_J539",
+            "horseName": "KING PROFIT",
+            "horseNo": 7,
+            "modelProbability": 0.23086541709561567,
+            "fairOdds": 4.331527920380721,
+            "currentOdds": 4.5,
+            "minimumOdds": 4.68,
             "targetEdge": 0.08,
-            "plannedStake": 10,
-            "stakePct": 0.05,
+            "plannedStake": 0.56,
+            "stakePct": 0.0028000000000000004,
             "entryWindow": "开跑前 10-5 分钟",
             "reviewWindow": "开跑前 15 分钟复核",
-            "cutoffWindow": "T-5 仍无实时赔率就不下注",
+            "cutoffWindow": "开跑前 3 分钟后不新增下注",
             "checklist": [
               "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
-              "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
-              "赔率缺失或跳动太乱时，只保留纸上模拟。"
+              "只有实时独赢赔率仍高于最低赔率线，才执行下注。",
+              "严格使用计划注码上限；赔率跌穿就不追。"
             ],
             "stopRules": [
-              "最终赔率低于最低线，直接 PASS。",
-              "任何临场官方变化削弱模型条件，直接 PASS。"
+              "马匹退出、骑师/场地出现重大变化，或赔率跌穿最低线，直接 PASS。",
+              "最终 15 分钟内页面没有刷新成功，直接 PASS。"
             ]
           }
         ],
         "summary": {
-          "status": "upcoming",
-          "mode": "prepare",
-          "topPickHorseNo": 1,
-          "topPickHorseName": "COUNTRY DANCER",
-          "upcomingEntries": 9
+          "status": "settled",
+          "mode": "conditional",
+          "topPickHorseNo": 7,
+          "topPickHorseName": "KING PROFIT",
+          "upcomingEntries": 0
         }
       },
-      "status": "OPEN",
-      "stake": 0,
+      "status": "SETTLED",
+      "stake": 0.56,
       "returned": 0,
-      "profit": 0,
+      "profit": -0.56,
       "lines": [
         {
-          "mode": "prepare",
-          "label": "PREP / 预备",
-          "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+          "mode": "conditional",
+          "label": "WAIT / 等赔率",
+          "headline": "只列入候选，等临场赔率重新站上最低入场线。",
           "betType": "WIN",
-          "horseId": "HK_2022_H436",
-          "horseName": "COUNTRY DANCER",
-          "horseNo": 1,
-          "modelProbability": 0.21232087457418763,
-          "fairOdds": 4.709852490978635,
-          "currentOdds": null,
-          "minimumOdds": 5.09,
+          "horseId": "HK_2023_J539",
+          "horseName": "KING PROFIT",
+          "horseNo": 7,
+          "modelProbability": 0.23086541709561567,
+          "fairOdds": 4.331527920380721,
+          "currentOdds": 4.5,
+          "minimumOdds": 4.68,
           "targetEdge": 0.08,
-          "plannedStake": 10,
-          "stakePct": 0.05,
+          "plannedStake": 0.56,
+          "stakePct": 0.0028000000000000004,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
-          "cutoffWindow": "T-5 仍无实时赔率就不下注",
+          "cutoffWindow": "开跑前 3 分钟后不新增下注",
           "checklist": [
             "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
-            "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
-            "赔率缺失或跳动太乱时，只保留纸上模拟。"
+            "只有实时独赢赔率仍高于最低赔率线，才执行下注。",
+            "严格使用计划注码上限；赔率跌穿就不追。"
           ],
           "stopRules": [
-            "最终赔率低于最低线，直接 PASS。",
-            "任何临场官方变化削弱模型条件，直接 PASS。"
+            "马匹退出、骑师/场地出现重大变化，或赔率跌穿最低线，直接 PASS。",
+            "最终 15 分钟内页面没有刷新成功，直接 PASS。"
           ],
-          "status": "OPEN",
-          "stake": 10,
+          "status": "MISS",
+          "poolKey": "win",
+          "combination": [
+            7
+          ],
+          "stake": 0.56,
+          "dividendPer10": null,
           "returned": 0,
-          "profit": 0
+          "profit": -0.56
         }
       ]
     }
