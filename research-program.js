@@ -78,6 +78,13 @@ const RESEARCH_SOURCES = [
     borrow: '2016-2026 覆盖率对账、每日数据健康检查、Elo-style 特征候选。',
   },
   {
+    name: 'HK-Horse-Racing-Data-Scraper',
+    url: 'https://github.com/j-csc/HK-Horse-Racing-Data-Scraper',
+    type: 'HKJC scraper and data-schema reference',
+    lesson: '老牌 HKJC 爬虫项目覆盖马匹、排位表、场地、兽医记录等页面，适合作为我们数据层补字段和爬虫容错的参考。',
+    borrow: '兽医记录、racecard/排位表字段、HTML 解析边界、数据源覆盖审计。',
+  },
+  {
     name: 'hk-racing-quant',
     url: 'https://github.com/kokacheuk-del/hk-racing-quant',
     type: '+EV dashboard prototype',
@@ -351,6 +358,21 @@ const EXTERNAL_BENCHMARK_REGISTRY = [
     accessPolicy: 'local-only research because no explicit license is confirmed for republishing raw data.',
     localAdoption: 'feature-backlog',
   },
+  {
+    id: 'j-csc-scraper-schema-audit',
+    priority: 'P1',
+    status: 'data-leverage',
+    sourceName: 'j-csc/HK-Horse-Racing-Data-Scraper',
+    sourceUrl: 'https://github.com/j-csc/HK-Horse-Racing-Data-Scraper',
+    benchmarkType: 'scraper-schema-audit',
+    publicMetric: 'Long-running HKJC scraper reference with horse, racecard, venue, veterinary and related website-page coverage ideas.',
+    ourGap: '我们的官方解析链路主要围绕赛果、赛卡、派彩和 odds；兽医记录、排位表细节、页面异常容错和数据源审计仍不完整。',
+    leveragePath: '审计它的 HKJC 页面覆盖范围，提炼兽医记录、racecard/排位表、场地和马匹字段，转成我们自己的 parser tests 与 source coverage checklist。',
+    requiredLocalData: ['HKJC HTML fixture pages', 'veterinary/racecard field map', 'parser failure fixtures', 'source coverage report'],
+    promotionGate: '只把字段覆盖和 parser 测试思路纳入本地；任何原始 scraped data 不进入公开 repo；新增字段必须证明是赛前可得。',
+    accessPolicy: 'Research/reference only; GitHub license metadata not machine-readable, so avoid copying code/data into public artifacts.',
+    localAdoption: 'schema-audit',
+  },
 ];
 
 const STATUS_LABELS = {
@@ -390,6 +412,9 @@ export function summarizeResearchUpgradeProgram(program = buildResearchUpgradePr
   const automationReadyActions = followUpActions.filter((item) => item.automationExecutable && item.status === 'queued');
   const firstAction = automationReadyActions[0] ?? followUpActions[0];
   const reproductionReadyBenchmarks = externalBenchmarkRegistry.filter((item) => item.status === 'reproduce-next');
+  const dataLeverageBenchmarks = externalBenchmarkRegistry
+    .filter((item) => item.status === 'data-leverage')
+    .sort((a, b) => dataLeverageRank(a.id) - dataLeverageRank(b.id));
   const blockedBenchmarkCount = externalBenchmarkRegistry.filter((item) => (
     item.requiredLocalData.some((data) => /missing|缺|T-30|pool|market/i.test(data))
     || /缺|missing|尚未|pool_snapshots = 0/i.test(item.ourGap)
@@ -409,10 +434,23 @@ export function summarizeResearchUpgradeProgram(program = buildResearchUpgradePr
     automationReadyCount: automationReadyActions.length,
     externalBenchmarkCount: externalBenchmarkRegistry.length,
     reproductionReadyCount: reproductionReadyBenchmarks.length,
+    dataLeverageCount: dataLeverageBenchmarks.length,
     blockedBenchmarkCount,
     tier1GapLabel: '当前模型仍落后 tier1：优先复现外部强 benchmark 后再升级推荐。',
     nextFocus: nextItems.map((item) => item.concept).slice(0, 3).join(' / '),
     nextAction: firstAction ? `${firstAction.priority} ${firstAction.title}` : '暂无排队 action',
     nextBenchmarkAction: nextBenchmark ? `${nextBenchmark.priority} ${nextBenchmark.sourceName}: ${nextBenchmark.leveragePath}` : '暂无外部 benchmark action',
+    nextDataLeverageAction: dataLeverageBenchmarks[0]
+      ? `${dataLeverageBenchmarks[0].priority} ${dataLeverageBenchmarks[0].sourceName}: ${dataLeverageBenchmarks[0].leveragePath}`
+      : '暂无数据 leverage action',
   };
+}
+
+function dataLeverageRank(id) {
+  const ranks = {
+    'tianxi-feature-backfill': 1,
+    'bobosky-rkwyu-live-pool-capture': 2,
+    'j-csc-scraper-schema-audit': 3,
+  };
+  return ranks[id] ?? 99;
 }

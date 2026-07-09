@@ -89,9 +89,9 @@ Goal: reproduce the strongest public GitHub ideas on our own SQLite history befo
     - Modify `app.js`
     - Modify `styles.css`
   - Acceptance:
-    - Dashboard shows catowabisabi, jerrydaphantom, anton, eprochasson, Bobosky/rkwyu, and Tianxi benchmark cards.
+    - Dashboard shows Tianxi, eprochasson, Bobosky/rkwyu, j-csc, catowabisabi, jerrydaphantom, and anton benchmark/data-leverage cards.
     - Each card states public metric, our gap, leverage path, required local data, promotion gate, access policy, and local adoption status.
-    - Summary clearly says the current model is still behind tier1 and identifies the next benchmark to reproduce.
+    - Summary clearly says the current model is still behind tier1, identifies the next benchmark to reproduce, and separately identifies the next data-leverage action.
 
 - [ ] Export a leakage-safe Python training matrix for tree models.
   - Suggested files:
@@ -166,6 +166,18 @@ Goal: reproduce the strongest public GitHub ideas on our own SQLite history befo
     - Classifies sectionals, trials, commentary, profiles, entries, and audits as pre-race, post-race, or unsafe.
     - Defines derived feature candidates and leakage lags before any importer is implemented.
 
+- [ ] Add j-csc HKJC scraper schema and source-coverage audit. Research Lab action: `j-csc-scraper-schema-audit` / P1.
+  - Suggested files:
+    - Create `docs/research/j-csc-scraper-schema-audit.md`
+    - Create `hkjc-horse-model/src/source-coverage-audit.js`
+    - Create `hkjc-horse-model/test/source-coverage-audit.test.js`
+  - Reference projects:
+    - `j-csc/HK-Horse-Racing-Data-Scraper`
+  - Acceptance:
+    - Lists which HKJC pages/fields it covers, especially horse, racecard, draw/order, venue, and veterinary/incident records.
+    - Marks each candidate field as pre-race usable, post-race only, unsafe, or unavailable.
+    - Produces parser fixture/test ideas without copying third-party code or committing raw scraped data.
+
 - [ ] Research-only: design parimutuel stacker and copula-style exotic pricing notes. Research Lab action: `parimutuel-stacker-copula-study` / P2.
   - Suggested files:
     - Create `docs/research/parimutuel-stacker-copula-notes.md`
@@ -232,10 +244,11 @@ This queue is mirrored in `research-program.js` and surfaced in the dashboard Re
 | P1 | `speedpro-feature-importer` | Phase B | queued, executable | Add sectional/pace/fitness enrichment when available. |
 | P1 | `lightgbm-no-market-benchmark` | Phase B | queued, executable | Build a non-market tree-model benchmark before live odds are complete. |
 | P1 | `tianxi-feature-backfill` | Phase B | queued, executable | Audit and design local-only derived feature imports. |
+| P1 | `j-csc-scraper-schema-audit` | Phase B | queued, executable | Audit HKJC scraper field coverage, veterinary/racecard pages, and parser fixtures. |
 | P1 | `no-bet-clv-gate` | Phase C | queued, executable | Reject lines without live edge and track closing-line value. |
 | P1 | `bayesian-tripwire` | Phase C | queued, executable | Reduce stake or paper-mode when uncertainty is too high. |
 | P2 | `parimutuel-stacker-copula-study` | Phase B/C | research-only | Document exotic-pool modeling before any implementation. |
 
 ## Latest continuation note
 
-- 2026-07-08: Tier1 Acceleration Lab registry added to Research Lab planning. Current model is explicitly marked behind tier1 public benchmarks; next reproduction priorities are catowabisabi LightGBM no-odds Quinella/QPL and jerrydaphantom CatBoost market-aware calibration after Phase A live/pool snapshot plumbing.
+- 2026-07-10: ChatGPT-suggested reference list reconciled with Research Lab. Added `j-csc/HK-Horse-Racing-Data-Scraper`; kept `neigh` as schema/SDK reference because GitHub API currently cannot resolve it; data-leverage priority is now explicit: Tianxi local-only feature audit, Bobosky/rkwyu live pool capture, j-csc scraper schema audit, then model reproduction.

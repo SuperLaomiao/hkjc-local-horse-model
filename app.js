@@ -999,6 +999,8 @@ function renderResearchUpgradePanel(snapshot) {
   const externalBenchmarkCount = summary.externalBenchmarkCount ?? externalBenchmarks.length;
   const reproductionReadyCount = summary.reproductionReadyCount
     ?? externalBenchmarks.filter((item) => item.status === "reproduce-next").length;
+  const dataLeverageCount = summary.dataLeverageCount
+    ?? externalBenchmarks.filter((item) => item.status === "data-leverage").length;
 
   return `
     <section class="panel research-panel">
@@ -1023,6 +1025,7 @@ function renderResearchUpgradePanel(snapshot) {
         ${renderResearchMetric("巡检队列", `${automationReadyCount}/${followUpCount}`)}
         ${renderResearchMetric("外部Benchmark", externalBenchmarkCount)}
         ${renderResearchMetric("可复现", reproductionReadyCount)}
+        ${renderResearchMetric("数据Leverage", dataLeverageCount)}
       </div>
       <div class="research-section">
         <strong>从开源项目学习什么</strong>
@@ -1060,7 +1063,7 @@ function renderResearchUpgradePanel(snapshot) {
           ${program.frontendSignals.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
         </div>
       </div>
-      <p class="fine-print">下一焦点：${escapeHtml(summary.nextFocus)}。这些不会自动变成真实下注，必须先进入回测和复盘。</p>
+      <p class="fine-print">下一焦点：${escapeHtml(summary.nextFocus)}。数据优先：${escapeHtml(summary.nextDataLeverageAction ?? "暂无")}。这些不会自动变成真实下注，必须先进入回测和复盘。</p>
     </section>
   `;
 }
