@@ -436,6 +436,7 @@ export function loadRacesFromDatabase({ dbPath, status = null } = {}) {
       : db.prepare('SELECT * FROM races ORDER BY date, racecourse, race_no').all();
 
     return raceRows.map((raceRow) => {
+      const rawRace = JSON.parse(raceRow.raw_json);
       const runners = db.prepare(`
         SELECT * FROM runners
         WHERE race_id = ?
@@ -456,6 +457,7 @@ export function loadRacesFromDatabase({ dbPath, status = null } = {}) {
         racecourse: raceRow.racecourse,
         raceNo: raceRow.race_no,
         raceIndex: raceRow.race_index,
+        startTime: rawRace.startTime ?? null,
         status: raceRow.status,
         raceClass: raceRow.race_class,
         distance: raceRow.distance,

@@ -65,6 +65,7 @@ describe('local SQLite race store', () => {
       assert.equal(stats.settledRaces, 0);
       assert.equal(stats.dividends, 0);
       assert.equal(races[0].status, 'upcoming');
+      assert.equal(races[0].startTime, '16:00');
       assert.equal(races[0].runners[0].placing, null);
     } finally {
       await rm(tempDir, { recursive: true, force: true });
@@ -788,6 +789,7 @@ function upcomingRace() {
     racecourse: 'ST',
     raceNo: 1,
     raceIndex: 900,
+    startTime: '16:00',
     raceClass: 'Class 4',
     distance: 1400,
     surface: 'TURF',

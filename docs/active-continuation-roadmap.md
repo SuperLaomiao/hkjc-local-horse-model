@@ -27,7 +27,7 @@ Reach a tested, leakage-safe recommendation system that combines:
 
 Goal: automatically accumulate the missing 2026 live market data that our ROI model needs.
 
-- [ ] Add a race-day snapshot planner that reads upcoming races from SQLite and returns due snapshot windows for T-30, T-10, and T-3. Research Lab action: `live-snapshot-planner` / P0.
+- [x] Add a race-day snapshot planner that reads upcoming races from SQLite and returns due snapshot windows for T-30, T-10, and T-3. Research Lab action: `live-snapshot-planner` / P0.
   - Suggested files:
     - Create `hkjc-horse-model/src/live-snapshot-planner.js`
     - Create `hkjc-horse-model/test/live-snapshot-planner.test.js`
@@ -251,4 +251,5 @@ This queue is mirrored in `research-program.js` and surfaced in the dashboard Re
 
 ## Latest continuation note
 
+- 2026-07-10: Completed `live-snapshot-planner` with SQLite-backed upcoming-race loading, HK-time T-30/T-10/T-3 planning, and settled/scratched/out-of-window guards. Next command: `node --test hkjc-horse-model/test/live-snapshot-planner.test.js`; next task: add the `live-market-due-snapshots` CLI command with dry-run and idempotent capture behavior.
 - 2026-07-10: ChatGPT-suggested reference list reconciled with Research Lab. Added `j-csc/HK-Horse-Racing-Data-Scraper`; kept `neigh` as schema/SDK reference because GitHub API currently cannot resolve it; data-leverage priority is now explicit: Tianxi local-only feature audit, Bobosky/rkwyu live pool capture, j-csc scraper schema audit, then model reproduction.
