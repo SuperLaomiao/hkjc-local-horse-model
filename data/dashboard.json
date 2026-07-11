@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-10T04:48:11.322Z",
+  "generatedAt": "2026-07-11T04:11:47.318Z",
   "scope": "HKJC local races only",
   "summary": {
     "racesSettled": 14230,
@@ -514,9 +514,9 @@
     "raceNo": 1,
     "status": "upcoming",
     "raceClass": "5",
-    "distance": null,
-    "surface": null,
-    "going": null,
+    "distance": 1800,
+    "surface": "TURF",
+    "going": "GOOD TO FIRM",
     "trainingRacesBefore": 14230,
     "topPick": {
       "horseId": "HK_2023_J269",
@@ -527,19 +527,19 @@
       "actualWeight": 118,
       "draw": 5,
       "winOdds": null,
-      "probability": 0.17325202767074493,
-      "fairOdds": 5.771938218815193,
+      "probability": 0.1855897025907526,
+      "fairOdds": 5.38822998280847,
       "edge": null,
       "expectedReturn": null,
-      "score": -0.2594615838054619
+      "score": -0.16797893764372723
     },
     "recommendation": {
       "action": "probability",
       "horseId": "HK_2023_J269",
       "horseName": "DRAGON SUNRISE",
       "horseNo": 11,
-      "modelProbability": 0.17325202767074493,
-      "fairOdds": 5.771938218815193,
+      "modelProbability": 0.1855897025907526,
+      "fairOdds": 5.38822998280847,
       "winOdds": null,
       "expectedReturn": null,
       "edge": null,
@@ -556,10 +556,10 @@
       "horseId": "HK_2023_J269",
       "horseName": "DRAGON SUNRISE",
       "horseNo": 11,
-      "modelProbability": 0.17325202767074493,
-      "fairOdds": 5.771938218815193,
+      "modelProbability": 0.1855897025907526,
+      "fairOdds": 5.38822998280847,
       "currentOdds": null,
-      "minimumOdds": 6.23,
+      "minimumOdds": 5.82,
       "targetEdge": 0.08,
       "plannedStake": 10,
       "stakePct": 0.05,
@@ -586,26 +586,11 @@
         "actualWeight": 118,
         "draw": 5,
         "winOdds": null,
-        "probability": 0.17325202767074493,
-        "fairOdds": 5.771938218815193,
+        "probability": 0.1855897025907526,
+        "fairOdds": 5.38822998280847,
         "edge": null,
         "expectedReturn": null,
-        "score": -0.2594615838054619
-      },
-      {
-        "horseId": "HK_2022_H332",
-        "horseNo": 14,
-        "horseName": "HARRY'S HERO",
-        "jockey": "H T Mo",
-        "trainer": "P F Yiu",
-        "actualWeight": 115,
-        "draw": 10,
-        "winOdds": null,
-        "probability": 0.13389053152835398,
-        "fairOdds": 7.468788035905512,
-        "edge": null,
-        "expectedReturn": null,
-        "score": -0.555845109025299
+        "score": -0.16797893764372723
       },
       {
         "horseId": "HK_2022_H123",
@@ -616,11 +601,26 @@
         "actualWeight": 135,
         "draw": 14,
         "winOdds": null,
-        "probability": 0.11349861041573389,
-        "fairOdds": 8.810680556679078,
+        "probability": 0.11457441538682746,
+        "fairOdds": 8.727952018116685,
         "edge": null,
         "expectedReturn": null,
-        "score": -0.7458618439082163
+        "score": -0.7226398181657523
+      },
+      {
+        "horseId": "HK_2022_H332",
+        "horseNo": 14,
+        "horseName": "HARRY'S HERO",
+        "jockey": "H T Mo",
+        "trainer": "P F Yiu",
+        "actualWeight": 115,
+        "draw": 10,
+        "winOdds": null,
+        "probability": 0.11389194993213234,
+        "fairOdds": 8.780251814073736,
+        "edge": null,
+        "expectedReturn": null,
+        "score": -0.7295103052609504
       },
       {
         "horseId": "HK_2024_K500",
@@ -631,8 +631,8 @@
         "actualWeight": 130,
         "draw": 8,
         "winOdds": null,
-        "probability": 0.10403558693899985,
-        "fairOdds": 9.612095528295901,
+        "probability": 0.1029222543389603,
+        "fairOdds": 9.71607167393203,
         "edge": null,
         "expectedReturn": null,
         "score": -0.8459780506699202
@@ -646,11 +646,11 @@
         "actualWeight": 135,
         "draw": 4,
         "winOdds": null,
-        "probability": 0.1006740943432516,
-        "fairOdds": 9.933041926262256,
+        "probability": 0.08501817536444171,
+        "fairOdds": 11.762190798771757,
         "edge": null,
         "expectedReturn": null,
-        "score": -0.8837492393142874
+        "score": -1.0657532046213376
       },
       {
         "horseId": "HK_2022_H106",
@@ -661,56 +661,11 @@
         "actualWeight": 115,
         "draw": 2,
         "winOdds": null,
-        "probability": 0.0773831498837033,
-        "fairOdds": 12.922709937536382,
+        "probability": 0.07106359006875959,
+        "fairOdds": 14.07190375595184,
         "edge": null,
         "expectedReturn": null,
-        "score": -1.18633661338913
-      },
-      {
-        "horseId": "HK_2023_J371",
-        "horseNo": 10,
-        "horseName": "SMILING EMPEROR",
-        "jockey": "M L Yeung",
-        "trainer": "K H Ting",
-        "actualWeight": 119,
-        "draw": 1,
-        "winOdds": null,
-        "probability": 0.06667910235133827,
-        "fairOdds": 14.997202492782653,
-        "edge": null,
-        "expectedReturn": null,
-        "score": -1.357545691675915
-      },
-      {
-        "horseId": "HK_2021_G477",
-        "horseNo": 12,
-        "horseName": "SMART BEAUTY",
-        "jockey": "Y L Chung",
-        "trainer": "A S Cruz",
-        "actualWeight": 117,
-        "draw": 3,
-        "winOdds": null,
-        "probability": 0.05198717222276031,
-        "fairOdds": 19.23551440180456,
-        "edge": null,
-        "expectedReturn": null,
-        "score": -1.6437744766496896
-      },
-      {
-        "horseId": "HK_2023_J546",
-        "horseNo": 9,
-        "horseName": "ZETTA FORCE",
-        "jockey": "C L Chau",
-        "trainer": "C H Yip",
-        "actualWeight": 124,
-        "draw": 12,
-        "winOdds": null,
-        "probability": 0.04330994316789474,
-        "fairOdds": 23.089386105251016,
-        "edge": null,
-        "expectedReturn": null,
-        "score": -1.853781447333224
+        "score": -1.271936647671374
       },
       {
         "horseId": "HK_2023_J392",
@@ -721,11 +676,56 @@
         "actualWeight": 126,
         "draw": 6,
         "winOdds": null,
-        "probability": 0.042607612289068286,
-        "fairOdds": 23.469984499848803,
+        "probability": 0.06019087065160286,
+        "fairOdds": 16.613815171211023,
         "edge": null,
         "expectedReturn": null,
-        "score": -1.8725831578186125
+        "score": -1.462899231202641
+      },
+      {
+        "horseId": "HK_2023_J371",
+        "horseNo": 10,
+        "horseName": "SMILING EMPEROR",
+        "jockey": "M L Yeung",
+        "trainer": "K H Ting",
+        "actualWeight": 119,
+        "draw": 1,
+        "winOdds": null,
+        "probability": 0.058756454616787836,
+        "fairOdds": 17.019406744706494,
+        "edge": null,
+        "expectedReturn": null,
+        "score": -1.4906368605599158
+      },
+      {
+        "horseId": "HK_2021_G477",
+        "horseNo": 12,
+        "horseName": "SMART BEAUTY",
+        "jockey": "Y L Chung",
+        "trainer": "A S Cruz",
+        "actualWeight": 117,
+        "draw": 3,
+        "winOdds": null,
+        "probability": 0.054010460576494106,
+        "fairOdds": 18.514931909971715,
+        "edge": null,
+        "expectedReturn": null,
+        "score": -1.5874936217769862
+      },
+      {
+        "horseId": "HK_2023_J546",
+        "horseNo": 9,
+        "horseName": "ZETTA FORCE",
+        "jockey": "C L Chau",
+        "trainer": "C H Yip",
+        "actualWeight": 124,
+        "draw": 12,
+        "winOdds": null,
+        "probability": 0.042846463573523355,
+        "fairOdds": 23.33914905915228,
+        "edge": null,
+        "expectedReturn": null,
+        "score": -1.853781447333224
       },
       {
         "horseId": "HK_2024_K200",
@@ -736,11 +736,11 @@
         "actualWeight": 124,
         "draw": 9,
         "winOdds": null,
-        "probability": 0.03814868773115195,
-        "fairOdds": 26.213221462488395,
+        "probability": 0.042649261436670034,
+        "fairOdds": 23.44706488024187,
         "edge": null,
         "expectedReturn": null,
-        "score": -1.9997059633361625
+        "score": -1.8590865748010024
       },
       {
         "horseId": "HK_2024_K344",
@@ -751,11 +751,11 @@
         "actualWeight": 127,
         "draw": 13,
         "winOdds": null,
-        "probability": 0.02223980288365914,
-        "fairOdds": 44.96442730320948,
+        "probability": 0.03092934274221361,
+        "fairOdds": 32.331757203335584,
         "edge": null,
         "expectedReturn": null,
-        "score": -2.620254879665522
+        "score": -2.2285868881709794
       },
       {
         "horseId": "HK_2023_J395",
@@ -766,11 +766,11 @@
         "actualWeight": 131,
         "draw": 7,
         "winOdds": null,
-        "probability": 0.019312289628465824,
-        "fairOdds": 51.78049932132467,
+        "probability": 0.021376946031405174,
+        "fairOdds": 46.77936682493775,
         "edge": null,
         "expectedReturn": null,
-        "score": -2.7825681159832016
+        "score": -2.65338801424193
       },
       {
         "horseId": "HK_2022_H354",
@@ -781,11 +781,11 @@
         "actualWeight": 130,
         "draw": 11,
         "winOdds": null,
-        "probability": 0.012981388944873907,
-        "fairOdds": 77.0333593921689,
+        "probability": 0.016180112689428965,
+        "fairOdds": 61.80426670658079,
         "edge": null,
         "expectedReturn": null,
-        "score": -3.239376807890074
+        "score": -2.9736977174946713
       }
     ]
   },
@@ -802,9 +802,9 @@
         "raceNo": 1,
         "status": "upcoming",
         "raceClass": "5",
-        "distance": null,
-        "surface": null,
-        "going": null,
+        "distance": 1800,
+        "surface": "TURF",
+        "going": "GOOD TO FIRM",
         "trainingRacesBefore": 14230,
         "topPick": {
           "horseId": "HK_2023_J269",
@@ -815,19 +815,19 @@
           "actualWeight": 118,
           "draw": 5,
           "winOdds": null,
-          "probability": 0.17325202767074493,
-          "fairOdds": 5.771938218815193,
+          "probability": 0.1855897025907526,
+          "fairOdds": 5.38822998280847,
           "edge": null,
           "expectedReturn": null,
-          "score": -0.2594615838054619
+          "score": -0.16797893764372723
         },
         "recommendation": {
           "action": "probability",
           "horseId": "HK_2023_J269",
           "horseName": "DRAGON SUNRISE",
           "horseNo": 11,
-          "modelProbability": 0.17325202767074493,
-          "fairOdds": 5.771938218815193,
+          "modelProbability": 0.1855897025907526,
+          "fairOdds": 5.38822998280847,
           "winOdds": null,
           "expectedReturn": null,
           "edge": null,
@@ -844,10 +844,10 @@
           "horseId": "HK_2023_J269",
           "horseName": "DRAGON SUNRISE",
           "horseNo": 11,
-          "modelProbability": 0.17325202767074493,
-          "fairOdds": 5.771938218815193,
+          "modelProbability": 0.1855897025907526,
+          "fairOdds": 5.38822998280847,
           "currentOdds": null,
-          "minimumOdds": 6.23,
+          "minimumOdds": 5.82,
           "targetEdge": 0.08,
           "plannedStake": 10,
           "stakePct": 0.05,
@@ -874,26 +874,11 @@
             "actualWeight": 118,
             "draw": 5,
             "winOdds": null,
-            "probability": 0.17325202767074493,
-            "fairOdds": 5.771938218815193,
+            "probability": 0.1855897025907526,
+            "fairOdds": 5.38822998280847,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.2594615838054619
-          },
-          {
-            "horseId": "HK_2022_H332",
-            "horseNo": 14,
-            "horseName": "HARRY'S HERO",
-            "jockey": "H T Mo",
-            "trainer": "P F Yiu",
-            "actualWeight": 115,
-            "draw": 10,
-            "winOdds": null,
-            "probability": 0.13389053152835398,
-            "fairOdds": 7.468788035905512,
-            "edge": null,
-            "expectedReturn": null,
-            "score": -0.555845109025299
+            "score": -0.16797893764372723
           },
           {
             "horseId": "HK_2022_H123",
@@ -904,11 +889,26 @@
             "actualWeight": 135,
             "draw": 14,
             "winOdds": null,
-            "probability": 0.11349861041573389,
-            "fairOdds": 8.810680556679078,
+            "probability": 0.11457441538682746,
+            "fairOdds": 8.727952018116685,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.7458618439082163
+            "score": -0.7226398181657523
+          },
+          {
+            "horseId": "HK_2022_H332",
+            "horseNo": 14,
+            "horseName": "HARRY'S HERO",
+            "jockey": "H T Mo",
+            "trainer": "P F Yiu",
+            "actualWeight": 115,
+            "draw": 10,
+            "winOdds": null,
+            "probability": 0.11389194993213234,
+            "fairOdds": 8.780251814073736,
+            "edge": null,
+            "expectedReturn": null,
+            "score": -0.7295103052609504
           },
           {
             "horseId": "HK_2024_K500",
@@ -919,8 +919,8 @@
             "actualWeight": 130,
             "draw": 8,
             "winOdds": null,
-            "probability": 0.10403558693899985,
-            "fairOdds": 9.612095528295901,
+            "probability": 0.1029222543389603,
+            "fairOdds": 9.71607167393203,
             "edge": null,
             "expectedReturn": null,
             "score": -0.8459780506699202
@@ -934,11 +934,11 @@
             "actualWeight": 135,
             "draw": 4,
             "winOdds": null,
-            "probability": 0.1006740943432516,
-            "fairOdds": 9.933041926262256,
+            "probability": 0.08501817536444171,
+            "fairOdds": 11.762190798771757,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.8837492393142874
+            "score": -1.0657532046213376
           },
           {
             "horseId": "HK_2022_H106",
@@ -949,56 +949,11 @@
             "actualWeight": 115,
             "draw": 2,
             "winOdds": null,
-            "probability": 0.0773831498837033,
-            "fairOdds": 12.922709937536382,
+            "probability": 0.07106359006875959,
+            "fairOdds": 14.07190375595184,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.18633661338913
-          },
-          {
-            "horseId": "HK_2023_J371",
-            "horseNo": 10,
-            "horseName": "SMILING EMPEROR",
-            "jockey": "M L Yeung",
-            "trainer": "K H Ting",
-            "actualWeight": 119,
-            "draw": 1,
-            "winOdds": null,
-            "probability": 0.06667910235133827,
-            "fairOdds": 14.997202492782653,
-            "edge": null,
-            "expectedReturn": null,
-            "score": -1.357545691675915
-          },
-          {
-            "horseId": "HK_2021_G477",
-            "horseNo": 12,
-            "horseName": "SMART BEAUTY",
-            "jockey": "Y L Chung",
-            "trainer": "A S Cruz",
-            "actualWeight": 117,
-            "draw": 3,
-            "winOdds": null,
-            "probability": 0.05198717222276031,
-            "fairOdds": 19.23551440180456,
-            "edge": null,
-            "expectedReturn": null,
-            "score": -1.6437744766496896
-          },
-          {
-            "horseId": "HK_2023_J546",
-            "horseNo": 9,
-            "horseName": "ZETTA FORCE",
-            "jockey": "C L Chau",
-            "trainer": "C H Yip",
-            "actualWeight": 124,
-            "draw": 12,
-            "winOdds": null,
-            "probability": 0.04330994316789474,
-            "fairOdds": 23.089386105251016,
-            "edge": null,
-            "expectedReturn": null,
-            "score": -1.853781447333224
+            "score": -1.271936647671374
           },
           {
             "horseId": "HK_2023_J392",
@@ -1009,11 +964,56 @@
             "actualWeight": 126,
             "draw": 6,
             "winOdds": null,
-            "probability": 0.042607612289068286,
-            "fairOdds": 23.469984499848803,
+            "probability": 0.06019087065160286,
+            "fairOdds": 16.613815171211023,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.8725831578186125
+            "score": -1.462899231202641
+          },
+          {
+            "horseId": "HK_2023_J371",
+            "horseNo": 10,
+            "horseName": "SMILING EMPEROR",
+            "jockey": "M L Yeung",
+            "trainer": "K H Ting",
+            "actualWeight": 119,
+            "draw": 1,
+            "winOdds": null,
+            "probability": 0.058756454616787836,
+            "fairOdds": 17.019406744706494,
+            "edge": null,
+            "expectedReturn": null,
+            "score": -1.4906368605599158
+          },
+          {
+            "horseId": "HK_2021_G477",
+            "horseNo": 12,
+            "horseName": "SMART BEAUTY",
+            "jockey": "Y L Chung",
+            "trainer": "A S Cruz",
+            "actualWeight": 117,
+            "draw": 3,
+            "winOdds": null,
+            "probability": 0.054010460576494106,
+            "fairOdds": 18.514931909971715,
+            "edge": null,
+            "expectedReturn": null,
+            "score": -1.5874936217769862
+          },
+          {
+            "horseId": "HK_2023_J546",
+            "horseNo": 9,
+            "horseName": "ZETTA FORCE",
+            "jockey": "C L Chau",
+            "trainer": "C H Yip",
+            "actualWeight": 124,
+            "draw": 12,
+            "winOdds": null,
+            "probability": 0.042846463573523355,
+            "fairOdds": 23.33914905915228,
+            "edge": null,
+            "expectedReturn": null,
+            "score": -1.853781447333224
           },
           {
             "horseId": "HK_2024_K200",
@@ -1024,11 +1024,11 @@
             "actualWeight": 124,
             "draw": 9,
             "winOdds": null,
-            "probability": 0.03814868773115195,
-            "fairOdds": 26.213221462488395,
+            "probability": 0.042649261436670034,
+            "fairOdds": 23.44706488024187,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.9997059633361625
+            "score": -1.8590865748010024
           },
           {
             "horseId": "HK_2024_K344",
@@ -1039,11 +1039,11 @@
             "actualWeight": 127,
             "draw": 13,
             "winOdds": null,
-            "probability": 0.02223980288365914,
-            "fairOdds": 44.96442730320948,
+            "probability": 0.03092934274221361,
+            "fairOdds": 32.331757203335584,
             "edge": null,
             "expectedReturn": null,
-            "score": -2.620254879665522
+            "score": -2.2285868881709794
           },
           {
             "horseId": "HK_2023_J395",
@@ -1054,11 +1054,11 @@
             "actualWeight": 131,
             "draw": 7,
             "winOdds": null,
-            "probability": 0.019312289628465824,
-            "fairOdds": 51.78049932132467,
+            "probability": 0.021376946031405174,
+            "fairOdds": 46.77936682493775,
             "edge": null,
             "expectedReturn": null,
-            "score": -2.7825681159832016
+            "score": -2.65338801424193
           },
           {
             "horseId": "HK_2022_H354",
@@ -1069,11 +1069,11 @@
             "actualWeight": 130,
             "draw": 11,
             "winOdds": null,
-            "probability": 0.012981388944873907,
-            "fairOdds": 77.0333593921689,
+            "probability": 0.016180112689428965,
+            "fairOdds": 61.80426670658079,
             "edge": null,
             "expectedReturn": null,
-            "score": -3.239376807890074
+            "score": -2.9736977174946713
           }
         ]
       },
@@ -1093,9 +1093,9 @@
         "raceNo": 2,
         "status": "upcoming",
         "raceClass": "5",
-        "distance": null,
-        "surface": null,
-        "going": null,
+        "distance": 1400,
+        "surface": "TURF",
+        "going": "GOOD TO FIRM",
         "trainingRacesBefore": 14230,
         "topPick": {
           "horseId": "HK_2023_J309",
@@ -1106,19 +1106,19 @@
           "actualWeight": 128,
           "draw": 6,
           "winOdds": null,
-          "probability": 0.31876797746604907,
-          "fairOdds": 3.1370779710973533,
+          "probability": 0.2926347185436049,
+          "fairOdds": 3.417229524155016,
           "edge": null,
           "expectedReturn": null,
-          "score": 0.8132928058111638
+          "score": 0.7402778789789335
         },
         "recommendation": {
           "action": "probability",
           "horseId": "HK_2023_J309",
           "horseName": "DOUBLE BINGO",
           "horseNo": 7,
-          "modelProbability": 0.31876797746604907,
-          "fairOdds": 3.1370779710973533,
+          "modelProbability": 0.2926347185436049,
+          "fairOdds": 3.417229524155016,
           "winOdds": null,
           "expectedReturn": null,
           "edge": null,
@@ -1135,10 +1135,10 @@
           "horseId": "HK_2023_J309",
           "horseName": "DOUBLE BINGO",
           "horseNo": 7,
-          "modelProbability": 0.31876797746604907,
-          "fairOdds": 3.1370779710973533,
+          "modelProbability": 0.2926347185436049,
+          "fairOdds": 3.417229524155016,
           "currentOdds": null,
-          "minimumOdds": 3.39,
+          "minimumOdds": 3.69,
           "targetEdge": 0.08,
           "plannedStake": 10,
           "stakePct": 0.05,
@@ -1165,11 +1165,11 @@
             "actualWeight": 128,
             "draw": 6,
             "winOdds": null,
-            "probability": 0.31876797746604907,
-            "fairOdds": 3.1370779710973533,
+            "probability": 0.2926347185436049,
+            "fairOdds": 3.417229524155016,
             "edge": null,
             "expectedReturn": null,
-            "score": 0.8132928058111638
+            "score": 0.7402778789789335
           },
           {
             "horseId": "HK_2023_J115",
@@ -1180,11 +1180,11 @@
             "actualWeight": 125,
             "draw": 9,
             "winOdds": null,
-            "probability": 0.18336159943278174,
-            "fairOdds": 5.453704609326276,
+            "probability": 0.18851470447537655,
+            "fairOdds": 5.3046259854526,
             "edge": null,
             "expectedReturn": null,
-            "score": 0.17733896667720433
+            "score": 0.2345663850171617
           },
           {
             "horseId": "HK_2023_J480",
@@ -1195,11 +1195,11 @@
             "actualWeight": 122,
             "draw": 1,
             "winOdds": null,
-            "probability": 0.06230981085426201,
-            "fairOdds": 16.048837033688407,
+            "probability": 0.06516013296007975,
+            "fairOdds": 15.346807235839258,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.0639034885405458
+            "score": -0.9871110305203281
           },
           {
             "horseId": "HK_2024_K230",
@@ -1210,11 +1210,11 @@
             "actualWeight": 122,
             "draw": 3,
             "winOdds": null,
-            "probability": 0.05545820078101589,
-            "fairOdds": 18.031598319401553,
+            "probability": 0.06488656958467581,
+            "fairOdds": 15.411509753108737,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.1978661755730418
+            "score": -0.9919492669322597
           },
           {
             "horseId": "HK_2023_J459",
@@ -1225,26 +1225,11 @@
             "actualWeight": 131,
             "draw": 4,
             "winOdds": null,
-            "probability": 0.054288937968866975,
-            "fairOdds": 18.419958787432332,
+            "probability": 0.061651881374353214,
+            "fairOdds": 16.220105172913563,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.222371654811048
-          },
-          {
-            "horseId": "HK_2023_J193",
-            "horseNo": 14,
-            "horseName": "WAH MAY WAI WAI",
-            "jockey": "A Badel",
-            "trainer": "A S Cruz",
-            "actualWeight": 115,
-            "draw": 5,
-            "winOdds": null,
-            "probability": 0.05198136145895785,
-            "fairOdds": 19.23766465388859,
-            "edge": null,
-            "expectedReturn": null,
-            "score": -1.272322209206606
+            "score": -1.0507567203155284
           },
           {
             "horseId": "HK_2021_G307",
@@ -1255,11 +1240,11 @@
             "actualWeight": 127,
             "draw": 7,
             "winOdds": null,
-            "probability": 0.04747055638834268,
-            "fairOdds": 21.0656894732662,
+            "probability": 0.057142350718891156,
+            "fairOdds": 17.50015509371409,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.376714111844538
+            "score": -1.138108662473173
           },
           {
             "horseId": "HK_2024_K143",
@@ -1270,11 +1255,26 @@
             "actualWeight": 129,
             "draw": 14,
             "winOdds": null,
-            "probability": 0.04699129246765306,
-            "fairOdds": 21.2805383186334,
+            "probability": 0.052663780756432146,
+            "fairOdds": 18.988382255063676,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.3883835475954482
+            "score": -1.2319688892486615
+          },
+          {
+            "horseId": "HK_2023_J193",
+            "horseNo": 14,
+            "horseName": "WAH MAY WAI WAI",
+            "jockey": "A Badel",
+            "trainer": "A S Cruz",
+            "actualWeight": 115,
+            "draw": 5,
+            "winOdds": null,
+            "probability": 0.0456652828911554,
+            "fairOdds": 21.89847377894342,
+            "edge": null,
+            "expectedReturn": null,
+            "score": -1.3959469431017781
           },
           {
             "horseId": "HK_2023_J205",
@@ -1285,11 +1285,11 @@
             "actualWeight": 132,
             "draw": 11,
             "winOdds": null,
-            "probability": 0.045810283395530275,
-            "fairOdds": 21.829159871505407,
+            "probability": 0.044842206831749075,
+            "fairOdds": 22.30041897251101,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.4176553298461594
+            "score": -1.4168637438155494
           },
           {
             "horseId": "HK_2021_H002",
@@ -1300,26 +1300,11 @@
             "actualWeight": 121,
             "draw": 2,
             "winOdds": null,
-            "probability": 0.03456684817601229,
-            "fairOdds": 28.9294527203655,
+            "probability": 0.03441178559997962,
+            "fairOdds": 29.059811415324877,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.7415108740016316
-          },
-          {
-            "horseId": "HK_2022_H283",
-            "horseNo": 2,
-            "horseName": "DAILY TROPHY",
-            "jockey": "J Moreira",
-            "trainer": "C Fownes",
-            "actualWeight": 134,
-            "draw": 10,
-            "winOdds": null,
-            "probability": 0.03326391548007041,
-            "fairOdds": 30.06260644809344,
-            "edge": null,
-            "expectedReturn": null,
-            "score": -1.7856960444169705
+            "score": -1.7213270514987609
           },
           {
             "horseId": "HK_2024_K523",
@@ -1330,11 +1315,11 @@
             "actualWeight": 131,
             "draw": 8,
             "winOdds": null,
-            "probability": 0.027473537469165612,
-            "fairOdds": 36.39866184405013,
+            "probability": 0.027561942744510053,
+            "fairOdds": 36.281912681905766,
             "edge": null,
             "expectedReturn": null,
-            "score": -2.0056334555084114
+            "score": -1.9765847030223764
           },
           {
             "horseId": "HK_2024_K539",
@@ -1345,11 +1330,26 @@
             "actualWeight": 135,
             "draw": 12,
             "winOdds": null,
-            "probability": 0.021647452900792445,
-            "fairOdds": 46.19481121325794,
+            "probability": 0.024451479239373707,
+            "fairOdds": 40.89732118904777,
             "edge": null,
             "expectedReturn": null,
-            "score": -2.279719244787239
+            "score": -2.114291706525787
+          },
+          {
+            "horseId": "HK_2022_H283",
+            "horseNo": 2,
+            "horseName": "DAILY TROPHY",
+            "jockey": "J Moreira",
+            "trainer": "C Fownes",
+            "actualWeight": 134,
+            "draw": 10,
+            "winOdds": null,
+            "probability": 0.023080723417522958,
+            "fairOdds": 43.32619831321218,
+            "edge": null,
+            "expectedReturn": null,
+            "score": -2.180638575584778
           },
           {
             "horseId": "HK_2023_J271",
@@ -1360,11 +1360,11 @@
             "actualWeight": 115,
             "draw": 13,
             "winOdds": null,
-            "probability": 0.0166082257604997,
-            "fairOdds": 60.21112757139644,
+            "probability": 0.017332440862295698,
+            "fairOdds": 57.69527834797695,
             "edge": null,
             "expectedReturn": null,
-            "score": -2.5844573977552683
+            "score": -2.510019097551143
           }
         ]
       },
@@ -1384,9 +1384,9 @@
         "raceNo": 3,
         "status": "upcoming",
         "raceClass": "4",
-        "distance": null,
-        "surface": null,
-        "going": null,
+        "distance": 1400,
+        "surface": "TURF",
+        "going": "GOOD TO FIRM",
         "trainingRacesBefore": 14230,
         "topPick": {
           "horseId": "HK_2024_K321",
@@ -1397,19 +1397,19 @@
           "actualWeight": 124,
           "draw": 1,
           "winOdds": null,
-          "probability": 0.20648269410595396,
-          "fairOdds": 4.843020885260548,
+          "probability": 0.18693935604295353,
+          "fairOdds": 5.349328365987457,
           "edge": null,
           "expectedReturn": null,
-          "score": 0.38230071541789085
+          "score": 0.30561913936735297
         },
         "recommendation": {
           "action": "probability",
           "horseId": "HK_2024_K321",
           "horseName": "VOYAGE BOSS",
           "horseNo": 10,
-          "modelProbability": 0.20648269410595396,
-          "fairOdds": 4.843020885260548,
+          "modelProbability": 0.18693935604295353,
+          "fairOdds": 5.349328365987457,
           "winOdds": null,
           "expectedReturn": null,
           "edge": null,
@@ -1426,10 +1426,10 @@
           "horseId": "HK_2024_K321",
           "horseName": "VOYAGE BOSS",
           "horseNo": 10,
-          "modelProbability": 0.20648269410595396,
-          "fairOdds": 4.843020885260548,
+          "modelProbability": 0.18693935604295353,
+          "fairOdds": 5.349328365987457,
           "currentOdds": null,
-          "minimumOdds": 5.23,
+          "minimumOdds": 5.78,
           "targetEdge": 0.08,
           "plannedStake": 10,
           "stakePct": 0.05,
@@ -1456,11 +1456,11 @@
             "actualWeight": 124,
             "draw": 1,
             "winOdds": null,
-            "probability": 0.20648269410595396,
-            "fairOdds": 4.843020885260548,
+            "probability": 0.18693935604295353,
+            "fairOdds": 5.349328365987457,
             "edge": null,
             "expectedReturn": null,
-            "score": 0.38230071541789085
+            "score": 0.30561913936735297
           },
           {
             "horseId": "HK_2025_L270",
@@ -1471,11 +1471,11 @@
             "actualWeight": 120,
             "draw": 4,
             "winOdds": null,
-            "probability": 0.15290716114427666,
-            "fairOdds": 6.539916067478637,
+            "probability": 0.15498454440734363,
+            "fairOdds": 6.45225628028892,
             "edge": null,
             "expectedReturn": null,
-            "score": 0.03685721125635945
+            "score": 0.09004144280477007
           },
           {
             "horseId": "HK_2023_J078",
@@ -1486,26 +1486,11 @@
             "actualWeight": 117,
             "draw": 12,
             "winOdds": null,
-            "probability": 0.12334621269928372,
-            "fairOdds": 8.10726148874944,
+            "probability": 0.14194568193151813,
+            "fairOdds": 7.04494836611128,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.21020396852409762
-          },
-          {
-            "horseId": "HK_2025_L352",
-            "horseNo": 5,
-            "horseName": "GREEN AUTUMN",
-            "jockey": "L Hewitson",
-            "trainer": "P C Ng",
-            "actualWeight": 129,
-            "draw": 6,
-            "winOdds": null,
-            "probability": 0.10884787696558651,
-            "fairOdds": 9.187133712457813,
-            "edge": null,
-            "expectedReturn": null,
-            "score": -0.3540044023948265
+            "score": -0.01102163317471637
           },
           {
             "horseId": "HK_2025_L293",
@@ -1516,11 +1501,26 @@
             "actualWeight": 127,
             "draw": 2,
             "winOdds": null,
-            "probability": 0.10713906311078367,
-            "fairOdds": 9.333663847386667,
+            "probability": 0.11451200849973306,
+            "fairOdds": 8.732708587521902,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.37220158539067577
+            "score": -0.25800111590349656
+          },
+          {
+            "horseId": "HK_2025_L352",
+            "horseNo": 5,
+            "horseName": "GREEN AUTUMN",
+            "jockey": "L Hewitson",
+            "trainer": "P C Ng",
+            "actualWeight": 129,
+            "draw": 6,
+            "winOdds": null,
+            "probability": 0.10534056488500824,
+            "fairOdds": 9.493019152608674,
+            "edge": null,
+            "expectedReturn": null,
+            "score": -0.3540044023948265
           },
           {
             "horseId": "HK_2024_K144",
@@ -1531,8 +1531,8 @@
             "actualWeight": 127,
             "draw": 14,
             "winOdds": null,
-            "probability": 0.07514650830127,
-            "fairOdds": 13.3073381931586,
+            "probability": 0.07272512661036529,
+            "fairOdds": 13.750405762201494,
             "edge": null,
             "expectedReturn": null,
             "score": -0.7800927782830447
@@ -1546,11 +1546,11 @@
             "actualWeight": 124,
             "draw": 7,
             "winOdds": null,
-            "probability": 0.05439595949473956,
-            "fairOdds": 18.383718373360182,
+            "probability": 0.04962114811541652,
+            "fairOdds": 20.152697750443938,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.1517150194788799
+            "score": -1.219703081831272
           },
           {
             "horseId": "HK_2025_L162",
@@ -1561,26 +1561,11 @@
             "actualWeight": 129,
             "draw": 11,
             "winOdds": null,
-            "probability": 0.04728693621170824,
-            "fairOdds": 21.14748977440412,
+            "probability": 0.045763249693860086,
+            "fairOdds": 21.851595039461696,
             "edge": null,
             "expectedReturn": null,
             "score": -1.3127792007334718
-          },
-          {
-            "horseId": "HK_2023_J500",
-            "horseNo": 2,
-            "horseName": "FLASH CURRENT",
-            "jockey": "E Brown",
-            "trainer": "K H Ting",
-            "actualWeight": 134,
-            "draw": 3,
-            "winOdds": null,
-            "probability": 0.02890978811451344,
-            "fairOdds": 34.5903607469878,
-            "edge": null,
-            "expectedReturn": null,
-            "score": -1.8786411172663724
           },
           {
             "horseId": "HK_2024_K526",
@@ -1591,11 +1576,26 @@
             "actualWeight": 122,
             "draw": 13,
             "winOdds": null,
-            "probability": 0.027464865399271194,
-            "fairOdds": 36.41015477274234,
+            "probability": 0.031469469718224695,
+            "fairOdds": 31.776830336002675,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.9376046772858144
+            "score": -1.7434122257827989
+          },
+          {
+            "horseId": "HK_2023_J500",
+            "horseNo": 2,
+            "horseName": "FLASH CURRENT",
+            "jockey": "E Brown",
+            "trainer": "K H Ting",
+            "actualWeight": 134,
+            "draw": 3,
+            "winOdds": null,
+            "probability": 0.028030563178829355,
+            "fairOdds": 35.6753445737141,
+            "edge": null,
+            "expectedReturn": null,
+            "score": -1.8764929898847944
           },
           {
             "horseId": "HK_2025_L220",
@@ -1606,11 +1606,11 @@
             "actualWeight": 133,
             "draw": 10,
             "winOdds": null,
-            "probability": 0.024722515474548585,
-            "fairOdds": 40.44895840107708,
+            "probability": 0.025100641808911837,
+            "fairOdds": 39.83961874811328,
             "edge": null,
             "expectedReturn": null,
-            "score": -2.0585768341497093
+            "score": -2.0034553371386754
           },
           {
             "horseId": "HK_2024_K247",
@@ -1621,11 +1621,11 @@
             "actualWeight": 124,
             "draw": 9,
             "winOdds": null,
-            "probability": 0.018110940273505585,
-            "fairOdds": 55.215244758048016,
+            "probability": 0.01914143654722238,
+            "fairOdds": 52.24268291112719,
             "edge": null,
             "expectedReturn": null,
-            "score": -2.4164547588789693
+            "score": -2.315149011798243
           },
           {
             "horseId": "HK_2025_L129",
@@ -1636,8 +1636,8 @@
             "actualWeight": 123,
             "draw": 8,
             "winOdds": null,
-            "probability": 0.014124929772995046,
-            "fairOdds": 70.79681216623567,
+            "probability": 0.013669794236949565,
+            "fairOdds": 73.15399066483326,
             "edge": null,
             "expectedReturn": null,
             "score": -2.702315877178719
@@ -1651,8 +1651,8 @@
             "actualWeight": 135,
             "draw": 5,
             "winOdds": null,
-            "probability": 0.011114548931563916,
-            "fairOdds": 89.97216226743365,
+            "probability": 0.010756414323663597,
+            "fairOdds": 92.96778367862308,
             "edge": null,
             "expectedReturn": null,
             "score": -2.9779551688223265
@@ -1675,9 +1675,9 @@
         "raceNo": 4,
         "status": "upcoming",
         "raceClass": "4",
-        "distance": null,
-        "surface": null,
-        "going": null,
+        "distance": 1400,
+        "surface": "TURF",
+        "going": "GOOD TO FIRM",
         "trainingRacesBefore": 14230,
         "topPick": {
           "horseId": "HK_2023_J280",
@@ -1688,19 +1688,19 @@
           "actualWeight": 135,
           "draw": 14,
           "winOdds": null,
-          "probability": 0.21116740795573605,
-          "fairOdds": 4.735579271824066,
+          "probability": 0.21920548864713926,
+          "fairOdds": 4.56192956741939,
           "edge": null,
           "expectedReturn": null,
-          "score": 0.3485212919527918
+          "score": 0.3984840515878374
         },
         "recommendation": {
           "action": "probability",
           "horseId": "HK_2023_J280",
           "horseName": "HAROLD WIN",
           "horseNo": 1,
-          "modelProbability": 0.21116740795573605,
-          "fairOdds": 4.735579271824066,
+          "modelProbability": 0.21920548864713926,
+          "fairOdds": 4.56192956741939,
           "winOdds": null,
           "expectedReturn": null,
           "edge": null,
@@ -1717,10 +1717,10 @@
           "horseId": "HK_2023_J280",
           "horseName": "HAROLD WIN",
           "horseNo": 1,
-          "modelProbability": 0.21116740795573605,
-          "fairOdds": 4.735579271824066,
+          "modelProbability": 0.21920548864713926,
+          "fairOdds": 4.56192956741939,
           "currentOdds": null,
-          "minimumOdds": 5.11,
+          "minimumOdds": 4.93,
           "targetEdge": 0.08,
           "plannedStake": 10,
           "stakePct": 0.05,
@@ -1747,11 +1747,11 @@
             "actualWeight": 135,
             "draw": 14,
             "winOdds": null,
-            "probability": 0.21116740795573605,
-            "fairOdds": 4.735579271824066,
+            "probability": 0.21920548864713926,
+            "fairOdds": 4.56192956741939,
             "edge": null,
             "expectedReturn": null,
-            "score": 0.3485212919527918
+            "score": 0.3984840515878374
           },
           {
             "horseId": "HK_2024_K445",
@@ -1762,8 +1762,8 @@
             "actualWeight": 129,
             "draw": 8,
             "winOdds": null,
-            "probability": 0.1250679252791836,
-            "fairOdds": 7.995655143137173,
+            "probability": 0.12430888629624826,
+            "fairOdds": 8.044477187389788,
             "edge": null,
             "expectedReturn": null,
             "score": -0.25384207207128784
@@ -1777,11 +1777,11 @@
             "actualWeight": 135,
             "draw": 3,
             "winOdds": null,
-            "probability": 0.1132158089194871,
-            "fairOdds": 8.832688734407625,
+            "probability": 0.1137392606342754,
+            "fairOdds": 8.792038865238142,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.3683374304078064
+            "score": -0.3560320441797852
           },
           {
             "horseId": "HK_2025_L266",
@@ -1792,11 +1792,11 @@
             "actualWeight": 125,
             "draw": 9,
             "winOdds": null,
-            "probability": 0.09071229604114252,
-            "fairOdds": 11.023863838111323,
+            "probability": 0.08538544840594416,
+            "fairOdds": 11.711597452129611,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.6231807591885388
+            "score": -0.6857749349141797
           },
           {
             "horseId": "HK_2024_K003",
@@ -1807,41 +1807,11 @@
             "actualWeight": 124,
             "draw": 12,
             "winOdds": null,
-            "probability": 0.08521760116437382,
-            "fairOdds": 11.734664979258548,
+            "probability": 0.07306298342499912,
+            "fairOdds": 13.68682133034608,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.6950384140335902
-          },
-          {
-            "horseId": "HK_2023_J315",
-            "horseNo": 5,
-            "horseName": "LUCKY MAN",
-            "jockey": "L Ferraris",
-            "trainer": "K H Ting",
-            "actualWeight": 128,
-            "draw": 1,
-            "winOdds": null,
-            "probability": 0.06235346132176795,
-            "fairOdds": 16.03760206413584,
-            "edge": null,
-            "expectedReturn": null,
-            "score": -1.0542855500962818
-          },
-          {
-            "horseId": "HK_2024_K104",
-            "horseNo": 13,
-            "horseName": "GOR GOR",
-            "jockey": "L Hewitson",
-            "trainer": "B Crawford",
-            "actualWeight": 120,
-            "draw": 4,
-            "winOdds": null,
-            "probability": 0.05649504779111271,
-            "fairOdds": 17.700666502618855,
-            "edge": null,
-            "expectedReturn": null,
-            "score": -1.1677516805239323
+            "score": -0.8650068475758892
           },
           {
             "horseId": "HK_2025_L331",
@@ -1852,11 +1822,26 @@
             "actualWeight": 126,
             "draw": 2,
             "winOdds": null,
-            "probability": 0.05439235662626687,
-            "fairOdds": 18.384936083410757,
+            "probability": 0.06729735054654003,
+            "fairOdds": 14.859425993426619,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.2113704258931737
+            "score": -0.9595379834742931
+          },
+          {
+            "horseId": "HK_2023_J315",
+            "horseNo": 5,
+            "horseName": "LUCKY MAN",
+            "jockey": "L Ferraris",
+            "trainer": "K H Ting",
+            "actualWeight": 128,
+            "draw": 1,
+            "winOdds": null,
+            "probability": 0.061220621817535965,
+            "fairOdds": 16.334365289206538,
+            "edge": null,
+            "expectedReturn": null,
+            "score": -1.0683702776043518
           },
           {
             "horseId": "HK_2025_L273",
@@ -1867,11 +1852,26 @@
             "actualWeight": 124,
             "draw": 6,
             "winOdds": null,
-            "probability": 0.05068608550225217,
-            "fairOdds": 19.72928053312711,
+            "probability": 0.0510590246845725,
+            "fairOdds": 19.585176296995552,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.2925284737809979
+            "score": -1.2770973249406625
+          },
+          {
+            "horseId": "HK_2024_K104",
+            "horseNo": 13,
+            "horseName": "GOR GOR",
+            "jockey": "L Hewitson",
+            "trainer": "B Crawford",
+            "actualWeight": 120,
+            "draw": 4,
+            "winOdds": null,
+            "probability": 0.04931426520723201,
+            "fairOdds": 20.278108084906606,
+            "edge": null,
+            "expectedReturn": null,
+            "score": -1.3170815782962566
           },
           {
             "horseId": "HK_2024_K480",
@@ -1882,11 +1882,11 @@
             "actualWeight": 123,
             "draw": 7,
             "winOdds": null,
-            "probability": 0.04697315633150953,
-            "fairOdds": 21.288754644090233,
+            "probability": 0.04353921343171539,
+            "fairOdds": 22.967801234359627,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.3800148716462923
+            "score": -1.4603156929931183
           },
           {
             "horseId": "HK_2024_K118",
@@ -1897,11 +1897,11 @@
             "actualWeight": 127,
             "draw": 5,
             "winOdds": null,
-            "probability": 0.03830014455365099,
-            "fairOdds": 26.10956203048258,
+            "probability": 0.04062567663185776,
+            "fairOdds": 24.614974639359534,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.6147558918192886
+            "score": -1.539966641278206
           },
           {
             "horseId": "HK_2025_L026",
@@ -1912,11 +1912,11 @@
             "actualWeight": 121,
             "draw": 10,
             "winOdds": null,
-            "probability": 0.03381941640476379,
-            "fairOdds": 29.568813016511438,
+            "probability": 0.03723779151166098,
+            "fairOdds": 26.85443898268916,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.757837262298425
+            "score": -1.6401042133325419
           },
           {
             "horseId": "HK_2023_J015",
@@ -1927,11 +1927,11 @@
             "actualWeight": 117,
             "draw": 11,
             "winOdds": null,
-            "probability": 0.023273115353315246,
-            "fairOdds": 42.968033493528424,
+            "probability": 0.025773967673175385,
+            "fairOdds": 38.798838140887554,
             "edge": null,
             "expectedReturn": null,
-            "score": -2.187633938897551
+            "score": -2.0632572574852075
           },
           {
             "horseId": "HK_2024_K096",
@@ -1942,11 +1942,11 @@
             "actualWeight": 131,
             "draw": 13,
             "winOdds": null,
-            "probability": 0.008326176755437993,
-            "fairOdds": 120.10314330006025,
+            "probability": 0.008230021087103967,
+            "fairOdds": 121.5063715410098,
             "edge": null,
             "expectedReturn": null,
-            "score": -3.369712578245374
+            "score": -3.3760701183063073
           }
         ]
       },
@@ -1966,9 +1966,9 @@
         "raceNo": 5,
         "status": "upcoming",
         "raceClass": "4",
-        "distance": null,
-        "surface": null,
-        "going": null,
+        "distance": 1200,
+        "surface": "TURF",
+        "going": "GOOD TO FIRM",
         "trainingRacesBefore": 14230,
         "topPick": {
           "horseId": "HK_2023_J439",
@@ -1979,19 +1979,19 @@
           "actualWeight": 129,
           "draw": 7,
           "winOdds": null,
-          "probability": 0.20201637952857068,
-          "fairOdds": 4.950093662373414,
+          "probability": 0.21323103576072688,
+          "fairOdds": 4.689748827755688,
           "edge": null,
           "expectedReturn": null,
-          "score": 0.6337592764710327
+          "score": 0.7454528972892971
         },
         "recommendation": {
           "action": "probability",
           "horseId": "HK_2023_J439",
           "horseName": "KA YING RESILIENCE",
           "horseNo": 3,
-          "modelProbability": 0.20201637952857068,
-          "fairOdds": 4.950093662373414,
+          "modelProbability": 0.21323103576072688,
+          "fairOdds": 4.689748827755688,
           "winOdds": null,
           "expectedReturn": null,
           "edge": null,
@@ -2008,10 +2008,10 @@
           "horseId": "HK_2023_J439",
           "horseName": "KA YING RESILIENCE",
           "horseNo": 3,
-          "modelProbability": 0.20201637952857068,
-          "fairOdds": 4.950093662373414,
+          "modelProbability": 0.21323103576072688,
+          "fairOdds": 4.689748827755688,
           "currentOdds": null,
-          "minimumOdds": 5.35,
+          "minimumOdds": 5.06,
           "targetEdge": 0.08,
           "plannedStake": 10,
           "stakePct": 0.05,
@@ -2038,11 +2038,11 @@
             "actualWeight": 129,
             "draw": 7,
             "winOdds": null,
-            "probability": 0.20201637952857068,
-            "fairOdds": 4.950093662373414,
+            "probability": 0.21323103576072688,
+            "fairOdds": 4.689748827755688,
             "edge": null,
             "expectedReturn": null,
-            "score": 0.6337592764710327
+            "score": 0.7454528972892971
           },
           {
             "horseId": "HK_2023_J222",
@@ -2053,11 +2053,11 @@
             "actualWeight": 120,
             "draw": 8,
             "winOdds": null,
-            "probability": 0.16669814372692598,
-            "fairOdds": 5.998867039804202,
+            "probability": 0.16655502315258264,
+            "fairOdds": 6.004021860594925,
             "edge": null,
             "expectedReturn": null,
-            "score": 0.41277053087463295
+            "score": 0.4613447894048223
           },
           {
             "horseId": "HK_2022_H321",
@@ -2068,11 +2068,11 @@
             "actualWeight": 130,
             "draw": 5,
             "winOdds": null,
-            "probability": 0.09946001720472199,
-            "fairOdds": 10.054291443984626,
+            "probability": 0.09931842627442113,
+            "fairOdds": 10.068625103230659,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.1811227363431813
+            "score": -0.13319901059991054
           },
           {
             "horseId": "HK_2025_L347",
@@ -2083,8 +2083,8 @@
             "actualWeight": 127,
             "draw": 6,
             "winOdds": null,
-            "probability": 0.0921249129768518,
-            "fairOdds": 10.854827078656452,
+            "probability": 0.08823890717149115,
+            "fairOdds": 11.332869275641789,
             "edge": null,
             "expectedReturn": null,
             "score": -0.26922460477923293
@@ -2098,11 +2098,11 @@
             "actualWeight": 120,
             "draw": 14,
             "winOdds": null,
-            "probability": 0.0920730729281882,
-            "fairOdds": 10.860938689207686,
+            "probability": 0.08536578104831563,
+            "fairOdds": 11.714295678194715,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.2698719088987022
+            "score": -0.3072926637140812
           },
           {
             "horseId": "HK_2024_K456",
@@ -2113,56 +2113,11 @@
             "actualWeight": 117,
             "draw": 2,
             "winOdds": null,
-            "probability": 0.06595784404966419,
-            "fairOdds": 15.161199011402363,
+            "probability": 0.06502042366594474,
+            "fairOdds": 15.379782899257892,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.6534736384027379
-          },
-          {
-            "horseId": "HK_2024_K413",
-            "horseNo": 4,
-            "horseName": "HERE COMES PLUTUS",
-            "jockey": "E Brown",
-            "trainer": "K W Lui",
-            "actualWeight": 127,
-            "draw": 4,
-            "winOdds": null,
-            "probability": 0.052888513911386964,
-            "fairOdds": 18.907697079094877,
-            "edge": null,
-            "expectedReturn": null,
-            "score": -0.9074277065480485
-          },
-          {
-            "horseId": "HK_2025_L104",
-            "horseNo": 7,
-            "horseName": "SPEEDY PATCH",
-            "jockey": "C Y Ho",
-            "trainer": "K L Man",
-            "actualWeight": 125,
-            "draw": 3,
-            "winOdds": null,
-            "probability": 0.04780458605204957,
-            "fairOdds": 20.91849511909174,
-            "edge": null,
-            "expectedReturn": null,
-            "score": -1.0236520075335351
-          },
-          {
-            "horseId": "HK_2025_L136",
-            "horseNo": 13,
-            "horseName": "LIGHTNING ACE",
-            "jockey": "L Hewitson",
-            "trainer": "W K Mo",
-            "actualWeight": 117,
-            "draw": 12,
-            "winOdds": null,
-            "probability": 0.04666964865064459,
-            "fairOdds": 21.427202237705046,
-            "edge": null,
-            "expectedReturn": null,
-            "score": -1.051283685261439
+            "score": -0.6203731480341114
           },
           {
             "horseId": "HK_2024_K334",
@@ -2173,11 +2128,56 @@
             "actualWeight": 132,
             "draw": 1,
             "winOdds": null,
-            "probability": 0.04325040084181393,
-            "fairOdds": 23.121172995770547,
+            "probability": 0.05247371209262264,
+            "fairOdds": 19.05716138844676,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.1387843449944386
+            "score": -0.8669206229679158
+          },
+          {
+            "horseId": "HK_2024_K413",
+            "horseNo": 4,
+            "horseName": "HERE COMES PLUTUS",
+            "jockey": "E Brown",
+            "trainer": "K W Lui",
+            "actualWeight": 127,
+            "draw": 4,
+            "winOdds": null,
+            "probability": 0.0501856009797653,
+            "fairOdds": 19.92603417070162,
+            "edge": null,
+            "expectedReturn": null,
+            "score": -0.9181924180865104
+          },
+          {
+            "horseId": "HK_2025_L136",
+            "horseNo": 13,
+            "horseName": "LIGHTNING ACE",
+            "jockey": "L Hewitson",
+            "trainer": "W K Mo",
+            "actualWeight": 117,
+            "draw": 12,
+            "winOdds": null,
+            "probability": 0.04474062572737683,
+            "fairOdds": 22.351050834501383,
+            "edge": null,
+            "expectedReturn": null,
+            "score": -1.050265560341616
+          },
+          {
+            "horseId": "HK_2025_L104",
+            "horseNo": 7,
+            "horseName": "SPEEDY PATCH",
+            "jockey": "C Y Ho",
+            "trainer": "K L Man",
+            "actualWeight": 125,
+            "draw": 3,
+            "winOdds": null,
+            "probability": 0.043696952039654534,
+            "fairOdds": 22.88489135563758,
+            "edge": null,
+            "expectedReturn": null,
+            "score": -1.0774096883027664
           },
           {
             "horseId": "HK_2025_L181",
@@ -2188,11 +2188,11 @@
             "actualWeight": 123,
             "draw": 10,
             "winOdds": null,
-            "probability": 0.03216299889964883,
-            "fairOdds": 31.091628088539913,
+            "probability": 0.031451930428098004,
+            "fairOdds": 31.79455080781422,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.479402628821183
+            "score": -1.4555503769964417
           },
           {
             "horseId": "HK_2025_L386",
@@ -2203,11 +2203,11 @@
             "actualWeight": 127,
             "draw": 13,
             "winOdds": null,
-            "probability": 0.03200348527281818,
-            "fairOdds": 31.24659678392401,
+            "probability": 0.02845705601042959,
+            "fairOdds": 35.14066949277878,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.485120288160074
+            "score": -1.5706242275540134
           },
           {
             "horseId": "HK_2025_L255",
@@ -2218,11 +2218,11 @@
             "actualWeight": 123,
             "draw": 9,
             "winOdds": null,
-            "probability": 0.023821917995795684,
-            "fairOdds": 41.97814803058635,
+            "probability": 0.02732358640779398,
+            "fairOdds": 36.59841666007478,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.8246448283092551
+            "score": -1.6173669482505142
           },
           {
             "horseId": "HK_2024_K521",
@@ -2233,11 +2233,11 @@
             "actualWeight": 124,
             "draw": 11,
             "winOdds": null,
-            "probability": 0.0030680779609193955,
-            "fairOdds": 325.93695881845684,
+            "probability": 0.00394093924077692,
+            "fairOdds": 253.74661696201616,
             "edge": null,
             "expectedReturn": null,
-            "score": -4.181632833252506
+            "score": -3.8441478504223667
           }
         ]
       },
@@ -2257,9 +2257,9 @@
         "raceNo": 6,
         "status": "upcoming",
         "raceClass": "4",
-        "distance": null,
-        "surface": null,
-        "going": null,
+        "distance": 1200,
+        "surface": "TURF",
+        "going": "GOOD TO FIRM",
         "trainingRacesBefore": 14230,
         "topPick": {
           "horseId": "HK_2024_K105",
@@ -2270,19 +2270,19 @@
           "actualWeight": 133,
           "draw": 11,
           "winOdds": null,
-          "probability": 0.1907738141748881,
-          "fairOdds": 5.241809544591219,
+          "probability": 0.21947054448074677,
+          "fairOdds": 4.556420098951938,
           "edge": null,
           "expectedReturn": null,
-          "score": 0.4020474193281057
+          "score": 0.634867908057907
         },
         "recommendation": {
           "action": "probability",
           "horseId": "HK_2024_K105",
           "horseName": "OLDTOWN",
           "horseNo": 1,
-          "modelProbability": 0.1907738141748881,
-          "fairOdds": 5.241809544591219,
+          "modelProbability": 0.21947054448074677,
+          "fairOdds": 4.556420098951938,
           "winOdds": null,
           "expectedReturn": null,
           "edge": null,
@@ -2299,10 +2299,10 @@
           "horseId": "HK_2024_K105",
           "horseName": "OLDTOWN",
           "horseNo": 1,
-          "modelProbability": 0.1907738141748881,
-          "fairOdds": 5.241809544591219,
+          "modelProbability": 0.21947054448074677,
+          "fairOdds": 4.556420098951938,
           "currentOdds": null,
-          "minimumOdds": 5.66,
+          "minimumOdds": 4.92,
           "targetEdge": 0.08,
           "plannedStake": 10,
           "stakePct": 0.05,
@@ -2329,11 +2329,11 @@
             "actualWeight": 133,
             "draw": 11,
             "winOdds": null,
-            "probability": 0.1907738141748881,
-            "fairOdds": 5.241809544591219,
+            "probability": 0.21947054448074677,
+            "fairOdds": 4.556420098951938,
             "edge": null,
             "expectedReturn": null,
-            "score": 0.4020474193281057
+            "score": 0.634867908057907
           },
           {
             "horseId": "HK_2024_K058",
@@ -2344,11 +2344,11 @@
             "actualWeight": 127,
             "draw": 9,
             "winOdds": null,
-            "probability": 0.17762640178839428,
-            "fairOdds": 5.629793712712238,
+            "probability": 0.17180552623219877,
+            "fairOdds": 5.820534542343411,
             "edge": null,
             "expectedReturn": null,
-            "score": 0.3199304858657141
+            "score": 0.35328482583372905
           },
           {
             "horseId": "HK_2023_J043",
@@ -2359,11 +2359,11 @@
             "actualWeight": 128,
             "draw": 10,
             "winOdds": null,
-            "probability": 0.1063384241656459,
-            "fairOdds": 9.403938490213811,
+            "probability": 0.10649882690277751,
+            "fairOdds": 9.38977478984719,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.27008367158920815
+            "score": -0.19667876060795192
           },
           {
             "horseId": "HK_2025_L218",
@@ -2374,8 +2374,8 @@
             "actualWeight": 128,
             "draw": 5,
             "winOdds": null,
-            "probability": 0.0936236472623746,
-            "fairOdds": 10.681062202133191,
+            "probability": 0.08796683925793156,
+            "fairOdds": 11.367920098480004,
             "edge": null,
             "expectedReturn": null,
             "score": -0.4165289218392622
@@ -2389,11 +2389,11 @@
             "actualWeight": 122,
             "draw": 13,
             "winOdds": null,
-            "probability": 0.08670586304358184,
-            "fairOdds": 11.53324544497481,
+            "probability": 0.08055426438202966,
+            "fairOdds": 12.413992079394914,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.5048046322038269
+            "score": -0.5177621198297478
           },
           {
             "horseId": "HK_2025_L392",
@@ -2404,8 +2404,8 @@
             "actualWeight": 128,
             "draw": 1,
             "winOdds": null,
-            "probability": 0.06160900221499331,
-            "fairOdds": 16.231394180193973,
+            "probability": 0.05788654205598194,
+            "fairOdds": 17.275172509577484,
             "edge": null,
             "expectedReturn": null,
             "score": -0.8977751644231089
@@ -2419,11 +2419,11 @@
             "actualWeight": 132,
             "draw": 7,
             "winOdds": null,
-            "probability": 0.05698325168444562,
-            "fairOdds": 17.54901607822714,
+            "probability": 0.05641609302140571,
+            "fairOdds": 17.72543872580071,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.987533360351692
+            "score": -0.9273652028917319
           },
           {
             "horseId": "HK_2025_L254",
@@ -2434,11 +2434,11 @@
             "actualWeight": 126,
             "draw": 4,
             "winOdds": null,
-            "probability": 0.05650634973403273,
-            "fairOdds": 17.697126158508848,
+            "probability": 0.05238847612049949,
+            "fairOdds": 19.08816736146105,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.9971983951088783
+            "score": -1.0125431835704166
           },
           {
             "horseId": "HK_2024_K544",
@@ -2449,11 +2449,11 @@
             "actualWeight": 116,
             "draw": 2,
             "winOdds": null,
-            "probability": 0.044228057580352094,
-            "fairOdds": 22.61008180572327,
+            "probability": 0.051771045728370706,
+            "fairOdds": 19.315816127159987,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.2789410833322683
+            "score": -1.0261771414661318
           },
           {
             "horseId": "HK_2025_L278",
@@ -2464,11 +2464,11 @@
             "actualWeight": 126,
             "draw": 8,
             "winOdds": null,
-            "probability": 0.03544070239638435,
-            "fairOdds": 28.2161450643828,
+            "probability": 0.030476280440068827,
+            "fairOdds": 32.8124031397626,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.5336642775170797
+            "score": -1.6355418320625348
           },
           {
             "horseId": "HK_2025_L085",
@@ -2479,11 +2479,11 @@
             "actualWeight": 119,
             "draw": 6,
             "winOdds": null,
-            "probability": 0.03175345850719669,
-            "fairOdds": 31.492632519804328,
+            "probability": 0.029152725442082507,
+            "fairOdds": 34.302110174456665,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.660002468014481
+            "score": -1.6866021597944707
           },
           {
             "horseId": "HK_2025_L174",
@@ -2494,11 +2494,11 @@
             "actualWeight": 130,
             "draw": 14,
             "winOdds": null,
-            "probability": 0.024876880173470763,
-            "fairOdds": 40.19796666731632,
+            "probability": 0.023219070047186794,
+            "fairOdds": 43.06804699618706,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.9406746692872405
+            "score": -1.948312811519726
           },
           {
             "horseId": "HK_2025_L120",
@@ -2509,11 +2509,11 @@
             "actualWeight": 127,
             "draw": 12,
             "winOdds": null,
-            "probability": 0.019452620079553926,
-            "fairOdds": 51.40695679607039,
+            "probability": 0.018089773017818916,
+            "fairOdds": 55.27985337433327,
             "edge": null,
             "expectedReturn": null,
-            "score": -2.2235253292260557
+            "score": -2.235384061477215
           },
           {
             "horseId": "HK_2022_H455",
@@ -2524,11 +2524,11 @@
             "actualWeight": 124,
             "draw": 3,
             "winOdds": null,
-            "probability": 0.014081527194685787,
-            "fairOdds": 71.01502459032916,
+            "probability": 0.014303992870900978,
+            "fairOdds": 69.91054938473359,
             "edge": null,
             "expectedReturn": null,
-            "score": -2.595110982159827
+            "score": -2.5054132981762236
           }
         ]
       },
@@ -2548,9 +2548,9 @@
         "raceNo": 7,
         "status": "upcoming",
         "raceClass": "4",
-        "distance": null,
-        "surface": null,
-        "going": null,
+        "distance": 1600,
+        "surface": "TURF",
+        "going": "GOOD TO FIRM",
         "trainingRacesBefore": 14230,
         "topPick": {
           "horseId": "HK_2024_K223",
@@ -2561,19 +2561,19 @@
           "actualWeight": 132,
           "draw": 12,
           "winOdds": null,
-          "probability": 0.16439285570297435,
-          "fairOdds": 6.082989408048267,
+          "probability": 0.17770961329479582,
+          "fairOdds": 5.627157594120344,
           "edge": null,
           "expectedReturn": null,
-          "score": 0.670651710524776
+          "score": 0.77443430974352
         },
         "recommendation": {
           "action": "probability",
           "horseId": "HK_2024_K223",
           "horseName": "VIVACIOUS WIN",
           "horseNo": 4,
-          "modelProbability": 0.16439285570297435,
-          "fairOdds": 6.082989408048267,
+          "modelProbability": 0.17770961329479582,
+          "fairOdds": 5.627157594120344,
           "winOdds": null,
           "expectedReturn": null,
           "edge": null,
@@ -2590,10 +2590,10 @@
           "horseId": "HK_2024_K223",
           "horseName": "VIVACIOUS WIN",
           "horseNo": 4,
-          "modelProbability": 0.16439285570297435,
-          "fairOdds": 6.082989408048267,
+          "modelProbability": 0.17770961329479582,
+          "fairOdds": 5.627157594120344,
           "currentOdds": null,
-          "minimumOdds": 6.57,
+          "minimumOdds": 6.08,
           "targetEdge": 0.08,
           "plannedStake": 10,
           "stakePct": 0.05,
@@ -2620,11 +2620,11 @@
             "actualWeight": 132,
             "draw": 12,
             "winOdds": null,
-            "probability": 0.16439285570297435,
-            "fairOdds": 6.082989408048267,
+            "probability": 0.17770961329479582,
+            "fairOdds": 5.627157594120344,
             "edge": null,
             "expectedReturn": null,
-            "score": 0.670651710524776
+            "score": 0.77443430974352
           },
           {
             "horseId": "HK_2024_K280",
@@ -2635,11 +2635,11 @@
             "actualWeight": 121,
             "draw": 4,
             "winOdds": null,
-            "probability": 0.16260904375745794,
-            "fairOdds": 6.149719455281747,
+            "probability": 0.15925724444045186,
+            "fairOdds": 6.2791492061380705,
             "edge": null,
             "expectedReturn": null,
-            "score": 0.6581049694253337
+            "score": 0.6483597548434414
           },
           {
             "horseId": "HK_2024_K260",
@@ -2650,11 +2650,11 @@
             "actualWeight": 127,
             "draw": 9,
             "winOdds": null,
-            "probability": 0.1392869714407387,
-            "fairOdds": 7.179422379970849,
+            "probability": 0.12296968935099675,
+            "fairOdds": 8.132085274653857,
             "edge": null,
             "expectedReturn": null,
-            "score": 0.4800706316837533
+            "score": 0.3509894342804547
           },
           {
             "horseId": "HK_2025_L112",
@@ -2665,11 +2665,11 @@
             "actualWeight": 134,
             "draw": 13,
             "winOdds": null,
-            "probability": 0.11452384944715041,
-            "fairOdds": 8.731805687875278,
+            "probability": 0.10861687285262772,
+            "fairOdds": 9.20667271793774,
             "edge": null,
             "expectedReturn": null,
-            "score": 0.254954389341301
+            "score": 0.20826162953114402
           },
           {
             "horseId": "HK_2025_L211",
@@ -2680,8 +2680,8 @@
             "actualWeight": 122,
             "draw": 5,
             "winOdds": null,
-            "probability": 0.08724164912784102,
-            "fairOdds": 11.462415142274915,
+            "probability": 0.08617050186094097,
+            "fairOdds": 11.60489933798652,
             "edge": null,
             "expectedReturn": null,
             "score": -0.057962046915924034
@@ -2695,11 +2695,11 @@
             "actualWeight": 135,
             "draw": 3,
             "winOdds": null,
-            "probability": 0.08215395084948485,
-            "fairOdds": 12.172269132036156,
+            "probability": 0.08109902631478526,
+            "fairOdds": 12.330604267904617,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.12706199118161415
+            "score": -0.1277175489010794
           },
           {
             "horseId": "HK_2025_L165",
@@ -2710,11 +2710,11 @@
             "actualWeight": 123,
             "draw": 6,
             "winOdds": null,
-            "probability": 0.057868891941418706,
-            "fairOdds": 17.28044146779777,
+            "probability": 0.05917955456847977,
+            "fairOdds": 16.897727725254292,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.5300392048592095
+            "score": -0.49007660897459465
           },
           {
             "horseId": "HK_2024_K490",
@@ -2725,11 +2725,11 @@
             "actualWeight": 123,
             "draw": 8,
             "winOdds": null,
-            "probability": 0.04184709752656011,
-            "fairOdds": 23.89651992865947,
+            "probability": 0.04458430131502774,
+            "fairOdds": 22.429419560354006,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.9028203617156991
+            "score": -0.8157500673244742
           },
           {
             "horseId": "HK_2024_K152",
@@ -2740,11 +2740,11 @@
             "actualWeight": 120,
             "draw": 14,
             "winOdds": null,
-            "probability": 0.04016274452556146,
-            "fairOdds": 24.898696834912588,
+            "probability": 0.040961298426250244,
+            "fairOdds": 24.413288602178323,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.9500653833383722
+            "score": -0.9132173151256968
           },
           {
             "horseId": "HK_2025_L172",
@@ -2755,26 +2755,11 @@
             "actualWeight": 135,
             "draw": 10,
             "winOdds": null,
-            "probability": 0.031356213376155566,
-            "fairOdds": 31.891605915669565,
+            "probability": 0.03786623365776973,
+            "fairOdds": 26.40875269079768,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.234721860644378
-          },
-          {
-            "horseId": "HK_2024_K394",
-            "horseNo": 13,
-            "horseName": "AMO ERGO SUM",
-            "jockey": "K Teetan",
-            "trainer": "B Crawford",
-            "actualWeight": 119,
-            "draw": 7,
-            "winOdds": null,
-            "probability": 0.023606203905437367,
-            "fairOdds": 42.361745412597394,
-            "edge": null,
-            "expectedReturn": null,
-            "score": -1.561210180031386
+            "score": -1.0035703973990429
           },
           {
             "horseId": "HK_2024_K177",
@@ -2785,11 +2770,11 @@
             "actualWeight": 123,
             "draw": 11,
             "winOdds": null,
-            "probability": 0.021891360252248197,
-            "fairOdds": 45.68012167710328,
+            "probability": 0.023720732338098967,
+            "fairOdds": 42.15721444627802,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.6479403106443944
+            "score": -1.5414372820959499
           },
           {
             "horseId": "HK_2021_G223",
@@ -2800,11 +2785,26 @@
             "actualWeight": 119,
             "draw": 1,
             "winOdds": null,
-            "probability": 0.020783135077060123,
-            "fairOdds": 48.115936132454515,
+            "probability": 0.023643183269095012,
+            "fairOdds": 42.295489089539885,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.707683047241114
+            "score": -1.545203081772887
+          },
+          {
+            "horseId": "HK_2024_K394",
+            "horseNo": 13,
+            "horseName": "AMO ERGO SUM",
+            "jockey": "K Teetan",
+            "trainer": "B Crawford",
+            "actualWeight": 119,
+            "draw": 7,
+            "winOdds": null,
+            "probability": 0.023316368476511196,
+            "fairOdds": 42.88832547004031,
+            "edge": null,
+            "expectedReturn": null,
+            "score": -1.561210180031386
           },
           {
             "horseId": "HK_2023_J447",
@@ -2815,11 +2815,11 @@
             "actualWeight": 120,
             "draw": 2,
             "winOdds": null,
-            "probability": 0.012276033069911312,
-            "fairOdds": 81.45953943794846,
+            "probability": 0.010905379834168784,
+            "fairOdds": 91.69786061616998,
             "edge": null,
             "expectedReturn": null,
-            "score": -2.313150012876964
+            "score": -2.435094482450449
           }
         ]
       },
@@ -2839,32 +2839,32 @@
         "raceNo": 8,
         "status": "upcoming",
         "raceClass": "1",
-        "distance": null,
-        "surface": null,
-        "going": null,
+        "distance": 1600,
+        "surface": "TURF",
+        "going": "GOOD TO FIRM",
         "trainingRacesBefore": 14230,
         "topPick": {
-          "horseId": "HK_2024_K057",
-          "horseNo": 9,
-          "horseName": "SILVERY BREEZE",
-          "jockey": "M F Poon",
-          "trainer": "D Eustace",
-          "actualWeight": 115,
-          "draw": 1,
+          "horseId": "HK_2023_J127",
+          "horseNo": 4,
+          "horseName": "SOLEIL FIGHTER",
+          "jockey": "H Y Yuen",
+          "trainer": "D A Hayes",
+          "actualWeight": 125,
+          "draw": 8,
           "winOdds": null,
-          "probability": 0.18345674692610126,
-          "fairOdds": 5.450876115244826,
+          "probability": 0.1804551844323575,
+          "fairOdds": 5.541542090606123,
           "edge": null,
           "expectedReturn": null,
-          "score": 1.1998328020040891
+          "score": 1.285744828307908
         },
         "recommendation": {
           "action": "probability",
-          "horseId": "HK_2024_K057",
-          "horseName": "SILVERY BREEZE",
-          "horseNo": 9,
-          "modelProbability": 0.18345674692610126,
-          "fairOdds": 5.450876115244826,
+          "horseId": "HK_2023_J127",
+          "horseName": "SOLEIL FIGHTER",
+          "horseNo": 4,
+          "modelProbability": 0.1804551844323575,
+          "fairOdds": 5.541542090606123,
           "winOdds": null,
           "expectedReturn": null,
           "edge": null,
@@ -2878,13 +2878,13 @@
           "label": "PREP / 预备",
           "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
           "betType": "WIN",
-          "horseId": "HK_2024_K057",
-          "horseName": "SILVERY BREEZE",
-          "horseNo": 9,
-          "modelProbability": 0.18345674692610126,
-          "fairOdds": 5.450876115244826,
+          "horseId": "HK_2023_J127",
+          "horseName": "SOLEIL FIGHTER",
+          "horseNo": 4,
+          "modelProbability": 0.1804551844323575,
+          "fairOdds": 5.541542090606123,
           "currentOdds": null,
-          "minimumOdds": 5.89,
+          "minimumOdds": 5.98,
           "targetEdge": 0.08,
           "plannedStake": 10,
           "stakePct": 0.05,
@@ -2903,6 +2903,21 @@
         },
         "predictions": [
           {
+            "horseId": "HK_2023_J127",
+            "horseNo": 4,
+            "horseName": "SOLEIL FIGHTER",
+            "jockey": "H Y Yuen",
+            "trainer": "D A Hayes",
+            "actualWeight": 125,
+            "draw": 8,
+            "winOdds": null,
+            "probability": 0.1804551844323575,
+            "fairOdds": 5.541542090606123,
+            "edge": null,
+            "expectedReturn": null,
+            "score": 1.285744828307908
+          },
+          {
             "horseId": "HK_2024_K057",
             "horseNo": 9,
             "horseName": "SILVERY BREEZE",
@@ -2911,11 +2926,11 @@
             "actualWeight": 115,
             "draw": 1,
             "winOdds": null,
-            "probability": 0.18345674692610126,
-            "fairOdds": 5.450876115244826,
+            "probability": 0.16921979335812087,
+            "fairOdds": 5.90947418239481,
             "edge": null,
             "expectedReturn": null,
-            "score": 1.1998328020040891
+            "score": 1.2118181835736221
           },
           {
             "horseId": "HK_2023_J514",
@@ -2926,26 +2941,11 @@
             "actualWeight": 115,
             "draw": 7,
             "winOdds": null,
-            "probability": 0.1785395712708754,
-            "fairOdds": 5.6009992232076495,
+            "probability": 0.15389603147778205,
+            "fairOdds": 6.497893353048353,
             "edge": null,
             "expectedReturn": null,
-            "score": 1.168588838756794
-          },
-          {
-            "horseId": "HK_2023_J127",
-            "horseNo": 4,
-            "horseName": "SOLEIL FIGHTER",
-            "jockey": "H Y Yuen",
-            "trainer": "D A Hayes",
-            "actualWeight": 125,
-            "draw": 8,
-            "winOdds": null,
-            "probability": 0.1692860500779334,
-            "fairOdds": 5.907161278437502,
-            "edge": null,
-            "expectedReturn": null,
-            "score": 1.1073854059566797
+            "score": 1.1026588401331816
           },
           {
             "horseId": "HK_2023_J197",
@@ -2956,11 +2956,11 @@
             "actualWeight": 118,
             "draw": 9,
             "winOdds": null,
-            "probability": 0.12498530556094224,
-            "fairOdds": 8.000940554667082,
+            "probability": 0.12028699253469345,
+            "fairOdds": 8.313450847244166,
             "edge": null,
             "expectedReturn": null,
-            "score": 0.7584826357593932
+            "score": 0.8193025635575997
           },
           {
             "horseId": "HK_2023_J454",
@@ -2971,11 +2971,11 @@
             "actualWeight": 116,
             "draw": 10,
             "winOdds": null,
-            "probability": 0.08751757990417534,
-            "fairOdds": 11.426275739056301,
+            "probability": 0.0797228365930153,
+            "fairOdds": 12.543457342153983,
             "edge": null,
             "expectedReturn": null,
-            "score": 0.34867267397765855
+            "score": 0.34627948602878245
           },
           {
             "horseId": "HK_2020_E058",
@@ -2986,11 +2986,11 @@
             "actualWeight": 130,
             "draw": 6,
             "winOdds": null,
-            "probability": 0.04388132753233003,
-            "fairOdds": 22.788736262895405,
+            "probability": 0.06033278650137748,
+            "fairOdds": 16.574735860694393,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.4452307434060779
+            "score": 0.025797028768629743
           },
           {
             "horseId": "HK_2024_K507",
@@ -3001,11 +3001,11 @@
             "actualWeight": 120,
             "draw": 2,
             "winOdds": null,
-            "probability": 0.04245749223285298,
-            "fairOdds": 23.552969038199926,
+            "probability": 0.056037100630309526,
+            "fairOdds": 17.84532013169712,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.48316406379615645
+            "score": -0.05914392211044317
           },
           {
             "horseId": "HK_2022_H215",
@@ -3016,26 +3016,11 @@
             "actualWeight": 119,
             "draw": 13,
             "winOdds": null,
-            "probability": 0.039094042008783074,
-            "fairOdds": 25.579345307280704,
+            "probability": 0.04134895213927531,
+            "fairOdds": 24.18440971930096,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.5780773767003401
-          },
-          {
-            "horseId": "HK_2025_L187",
-            "horseNo": 13,
-            "horseName": "NAUTICAL FORCE",
-            "jockey": "M L Yeung",
-            "trainer": "J Size",
-            "actualWeight": 115,
-            "draw": 11,
-            "winOdds": null,
-            "probability": 0.036676645376780614,
-            "fairOdds": 27.265307111022853,
-            "edge": null,
-            "expectedReturn": null,
-            "score": -0.6514817506028135
+            "score": -0.40870586024910427
           },
           {
             "horseId": "HK_2023_J301",
@@ -3046,11 +3031,26 @@
             "actualWeight": 115,
             "draw": 4,
             "winOdds": null,
-            "probability": 0.030874604230715638,
-            "fairOdds": 32.38907914502589,
+            "probability": 0.03793299811413325,
+            "fairOdds": 26.362271629339403,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.8495188924604336
+            "score": -0.507865396819372
+          },
+          {
+            "horseId": "HK_2025_L187",
+            "horseNo": 13,
+            "horseName": "NAUTICAL FORCE",
+            "jockey": "M L Yeung",
+            "trainer": "J Size",
+            "actualWeight": 115,
+            "draw": 11,
+            "winOdds": null,
+            "probability": 0.03347964392212745,
+            "fairOdds": 29.868895927506493,
+            "edge": null,
+            "expectedReturn": null,
+            "score": -0.6514817506028135
           },
           {
             "horseId": "HK_2023_J208",
@@ -3061,11 +3061,11 @@
             "actualWeight": 127,
             "draw": 12,
             "winOdds": null,
-            "probability": 0.03023077409233249,
-            "fairOdds": 33.07887508754308,
+            "probability": 0.030238327577310053,
+            "fairOdds": 33.07061203842406,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.873753487846004
+            "score": -0.7685832206128209
           },
           {
             "horseId": "HK_2024_K021",
@@ -3076,11 +3076,11 @@
             "actualWeight": 135,
             "draw": 5,
             "winOdds": null,
-            "probability": 0.02065192927418523,
-            "fairOdds": 48.42162621823391,
+            "probability": 0.02459713649499223,
+            "fairOdds": 40.65513886966443,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.3119629116332572
+            "score": -1.006035463582993
           },
           {
             "horseId": "HK_2022_H418",
@@ -3091,11 +3091,11 @@
             "actualWeight": 115,
             "draw": 3,
             "winOdds": null,
-            "probability": 0.012347931511992372,
-            "fairOdds": 80.98522404572742,
+            "probability": 0.012452216224505652,
+            "fairOdds": 80.30698969329049,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.903431121192752
+            "score": -1.788876592501805
           }
         ]
       },
@@ -3115,9 +3115,9 @@
         "raceNo": 9,
         "status": "upcoming",
         "raceClass": "3",
-        "distance": null,
-        "surface": null,
-        "going": null,
+        "distance": 1200,
+        "surface": "TURF",
+        "going": "GOOD TO FIRM",
         "trainingRacesBefore": 14230,
         "topPick": {
           "horseId": "HK_2024_K008",
@@ -3128,19 +3128,19 @@
           "actualWeight": 135,
           "draw": 12,
           "winOdds": null,
-          "probability": 0.21974404890699176,
-          "fairOdds": 4.550748950763428,
+          "probability": 0.2308102795786878,
+          "fairOdds": 4.3325626649963835,
           "edge": null,
           "expectedReturn": null,
-          "score": 1.433093765511922
+          "score": 1.4835337100728958
         },
         "recommendation": {
           "action": "probability",
           "horseId": "HK_2024_K008",
           "horseName": "CROSSBORDERPEGASUS",
           "horseNo": 1,
-          "modelProbability": 0.21974404890699176,
-          "fairOdds": 4.550748950763428,
+          "modelProbability": 0.2308102795786878,
+          "fairOdds": 4.3325626649963835,
           "winOdds": null,
           "expectedReturn": null,
           "edge": null,
@@ -3157,10 +3157,10 @@
           "horseId": "HK_2024_K008",
           "horseName": "CROSSBORDERPEGASUS",
           "horseNo": 1,
-          "modelProbability": 0.21974404890699176,
-          "fairOdds": 4.550748950763428,
+          "modelProbability": 0.2308102795786878,
+          "fairOdds": 4.3325626649963835,
           "currentOdds": null,
-          "minimumOdds": 4.91,
+          "minimumOdds": 4.68,
           "targetEdge": 0.08,
           "plannedStake": 10,
           "stakePct": 0.05,
@@ -3187,11 +3187,11 @@
             "actualWeight": 135,
             "draw": 12,
             "winOdds": null,
-            "probability": 0.21974404890699176,
-            "fairOdds": 4.550748950763428,
+            "probability": 0.2308102795786878,
+            "fairOdds": 4.3325626649963835,
             "edge": null,
             "expectedReturn": null,
-            "score": 1.433093765511922
+            "score": 1.4835337100728958
           },
           {
             "horseId": "HK_2025_L099",
@@ -3202,26 +3202,26 @@
             "actualWeight": 129,
             "draw": 9,
             "winOdds": null,
-            "probability": 0.20862635046323744,
-            "fairOdds": 4.79325836731354,
+            "probability": 0.2177543577934882,
+            "fairOdds": 4.592330597343868,
             "edge": null,
             "expectedReturn": null,
-            "score": 1.373387375650417
+            "score": 1.4165709992620537
           },
           {
-            "horseId": "HK_2025_L264",
+            "horseId": "HK_2024_K570",
             "horseNo": 8,
-            "horseName": "PAPAYA BROSE",
-            "jockey": "J Moreira",
-            "trainer": "C Fownes",
-            "actualWeight": 121,
+            "horseName": "PACKING KING",
+            "jockey": "A Atzeni",
+            "trainer": "C S Shum",
+            "actualWeight": 117,
             "draw": 8,
             "winOdds": null,
-            "probability": 0.19222003292838102,
-            "fairOdds": 5.202371390564627,
+            "probability": 0.15931588915262804,
+            "fairOdds": 6.276837830293114,
             "edge": null,
             "expectedReturn": null,
-            "score": 1.2791976210658735
+            "score": 1.0572205254992773
           },
           {
             "horseId": "HK_2024_K097",
@@ -3232,11 +3232,11 @@
             "actualWeight": 134,
             "draw": 11,
             "winOdds": null,
-            "probability": 0.088627723165854,
-            "fairOdds": 11.283151188806286,
+            "probability": 0.09457372640484549,
+            "fairOdds": 10.573761212699397,
             "edge": null,
             "expectedReturn": null,
-            "score": 0.3888722101587726
+            "score": 0.45748488615316296
           },
           {
             "horseId": "HK_2023_J445",
@@ -3247,11 +3247,11 @@
             "actualWeight": 126,
             "draw": 13,
             "winOdds": null,
-            "probability": 0.053449425386707244,
-            "fairOdds": 18.70927503457685,
+            "probability": 0.05500076972638176,
+            "fairOdds": 18.181563730377,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.19269293776975469
+            "score": -0.165852516169754
           },
           {
             "horseId": "HK_2025_L409",
@@ -3262,11 +3262,11 @@
             "actualWeight": 119,
             "draw": 3,
             "winOdds": null,
-            "probability": 0.05303483429652375,
-            "fairOdds": 18.855531713531658,
+            "probability": 0.05307726568433551,
+            "fairOdds": 18.84045809645251,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.20164791692463208
+            "score": -0.20679077406748933
           },
           {
             "horseId": "HK_2025_L117",
@@ -3277,11 +3277,11 @@
             "actualWeight": 129,
             "draw": 6,
             "winOdds": null,
-            "probability": 0.04474521389254586,
-            "fairOdds": 22.348758962276204,
+            "probability": 0.04575793238314268,
+            "fairOdds": 21.854134308926994,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.39710704782899164
+            "score": -0.3774318369200844
           },
           {
             "horseId": "HK_2025_L196",
@@ -3292,11 +3292,11 @@
             "actualWeight": 118,
             "draw": 2,
             "winOdds": null,
-            "probability": 0.03667536689079398,
-            "fairOdds": 27.266257566765166,
+            "probability": 0.03871478688094242,
+            "fairOdds": 25.82992392739364,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.6258180807494033
+            "score": -0.5696469137978553
           },
           {
             "horseId": "HK_2022_H155",
@@ -3307,11 +3307,11 @@
             "actualWeight": 133,
             "draw": 1,
             "winOdds": null,
-            "probability": 0.028708328352005135,
-            "fairOdds": 34.83309748093204,
+            "probability": 0.030143797289518343,
+            "fairOdds": 33.17432075313623,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.9074738505168365
+            "score": -0.8574257236742387
           },
           {
             "horseId": "HK_2025_L371",
@@ -3322,11 +3322,11 @@
             "actualWeight": 118,
             "draw": 10,
             "winOdds": null,
-            "probability": 0.019210925400276455,
-            "fairOdds": 52.053713143126856,
+            "probability": 0.020324313231722027,
+            "fairOdds": 49.20215451310837,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.369438187009649
+            "score": -1.3107112279986606
           },
           {
             "horseId": "HK_2023_J219",
@@ -3337,11 +3337,11 @@
             "actualWeight": 126,
             "draw": 14,
             "winOdds": null,
-            "probability": 0.01714408447960297,
-            "fairOdds": 58.32915727811197,
+            "probability": 0.017296124963350094,
+            "fairOdds": 57.81641853993113,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.500338044061485
+            "score": -1.4962469146186188
           },
           {
             "horseId": "HK_2025_L394",
@@ -3352,11 +3352,11 @@
             "actualWeight": 120,
             "draw": 4,
             "winOdds": null,
-            "probability": 0.016813839379884166,
-            "fairOdds": 59.47481579944112,
+            "probability": 0.0154270539567531,
+            "fairOdds": 64.82119028061453,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.5227065398470998
+            "score": -1.6277606469899573
           },
           {
             "horseId": "HK_2025_L313",
@@ -3367,11 +3367,11 @@
             "actualWeight": 117,
             "draw": 7,
             "winOdds": null,
-            "probability": 0.01273684262960313,
-            "fairOdds": 78.51239346208042,
+            "probability": 0.012747032949159753,
+            "fairOdds": 78.4496285518676,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.8420656013590215
+            "score": -1.8472084585018786
           },
           {
             "horseId": "HK_2024_K476",
@@ -3382,11 +3382,11 @@
             "actualWeight": 115,
             "draw": 5,
             "winOdds": null,
-            "probability": 0.008262983827593114,
-            "fairOdds": 121.02165765599536,
+            "probability": 0.009056670005044771,
+            "fairOdds": 110.41585918919175,
             "edge": null,
             "expectedReturn": null,
-            "score": -2.339685583154176
+            "score": -2.2402750444662507
           }
         ]
       },
@@ -3406,9 +3406,9 @@
         "raceNo": 10,
         "status": "upcoming",
         "raceClass": "3",
-        "distance": null,
-        "surface": null,
-        "going": null,
+        "distance": 1600,
+        "surface": "TURF",
+        "going": "GOOD TO FIRM",
         "trainingRacesBefore": 14230,
         "topPick": {
           "horseId": "HK_2024_K033",
@@ -3419,19 +3419,19 @@
           "actualWeight": 135,
           "draw": 8,
           "winOdds": null,
-          "probability": 0.16534382195803415,
-          "fairOdds": 6.048003415899081,
+          "probability": 0.17177265105229383,
+          "fairOdds": 5.8216485213095055,
           "edge": null,
           "expectedReturn": null,
-          "score": 1.590177442341588
+          "score": 1.6535690671062535
         },
         "recommendation": {
           "action": "probability",
           "horseId": "HK_2024_K033",
           "horseName": "ENDUED",
           "horseNo": 1,
-          "modelProbability": 0.16534382195803415,
-          "fairOdds": 6.048003415899081,
+          "modelProbability": 0.17177265105229383,
+          "fairOdds": 5.8216485213095055,
           "winOdds": null,
           "expectedReturn": null,
           "edge": null,
@@ -3448,10 +3448,10 @@
           "horseId": "HK_2024_K033",
           "horseName": "ENDUED",
           "horseNo": 1,
-          "modelProbability": 0.16534382195803415,
-          "fairOdds": 6.048003415899081,
+          "modelProbability": 0.17177265105229383,
+          "fairOdds": 5.8216485213095055,
           "currentOdds": null,
-          "minimumOdds": 6.53,
+          "minimumOdds": 6.29,
           "targetEdge": 0.08,
           "plannedStake": 10,
           "stakePct": 0.05,
@@ -3478,11 +3478,11 @@
             "actualWeight": 135,
             "draw": 8,
             "winOdds": null,
-            "probability": 0.16534382195803415,
-            "fairOdds": 6.048003415899081,
+            "probability": 0.17177265105229383,
+            "fairOdds": 5.8216485213095055,
             "edge": null,
             "expectedReturn": null,
-            "score": 1.590177442341588
+            "score": 1.6535690671062535
           },
           {
             "horseId": "HK_2024_K192",
@@ -3493,11 +3493,11 @@
             "actualWeight": 117,
             "draw": 5,
             "winOdds": null,
-            "probability": 0.13120108110352188,
-            "fairOdds": 7.621888414249939,
+            "probability": 0.14550253681588368,
+            "fairOdds": 6.8727324064829345,
             "edge": null,
             "expectedReturn": null,
-            "score": 1.3241870898221095
+            "score": 1.4626940397674604
           },
           {
             "horseId": "HK_2024_K054",
@@ -3508,41 +3508,11 @@
             "actualWeight": 132,
             "draw": 13,
             "winOdds": null,
-            "probability": 0.10988363338173723,
-            "fairOdds": 9.10053635126886,
+            "probability": 0.10682759647488207,
+            "fairOdds": 9.360877086054499,
             "edge": null,
             "expectedReturn": null,
-            "score": 1.1202815223593954
-          },
-          {
-            "horseId": "HK_2024_K400",
-            "horseNo": 8,
-            "horseName": "AEROVOLANIC",
-            "jockey": "A Atzeni",
-            "trainer": "P C Ng",
-            "actualWeight": 125,
-            "draw": 3,
-            "winOdds": null,
-            "probability": 0.09221124597853848,
-            "fairOdds": 10.844664220595641,
-            "edge": null,
-            "expectedReturn": null,
-            "score": 0.9186407171290106
-          },
-          {
-            "horseId": "HK_2024_K312",
-            "horseNo": 7,
-            "horseName": "THE RED HARE",
-            "jockey": "M F Poon",
-            "trainer": "F C Lor",
-            "actualWeight": 129,
-            "draw": 1,
-            "winOdds": null,
-            "probability": 0.08855656818692259,
-            "fairOdds": 11.29221717229635,
-            "edge": null,
-            "expectedReturn": null,
-            "score": 0.8721340725672004
+            "score": 1.107370220078
           },
           {
             "horseId": "HK_2024_K114",
@@ -3553,11 +3523,26 @@
             "actualWeight": 131,
             "draw": 4,
             "winOdds": null,
-            "probability": 0.08415958919977366,
-            "fairOdds": 11.882187276678026,
+            "probability": 0.0890712756164073,
+            "fairOdds": 11.226963946340922,
             "edge": null,
             "expectedReturn": null,
-            "score": 0.813568403704115
+            "score": 0.8983239235767554
+          },
+          {
+            "horseId": "HK_2024_K312",
+            "horseNo": 7,
+            "horseName": "THE RED HARE",
+            "jockey": "M F Poon",
+            "trainer": "F C Lor",
+            "actualWeight": 129,
+            "draw": 1,
+            "winOdds": null,
+            "probability": 0.08449414397203754,
+            "fairOdds": 11.83513972673585,
+            "edge": null,
+            "expectedReturn": null,
+            "score": 0.8376560542380467
           },
           {
             "horseId": "HK_2025_L219",
@@ -3568,11 +3553,11 @@
             "actualWeight": 116,
             "draw": 7,
             "winOdds": null,
-            "probability": 0.0760057068314861,
-            "fairOdds": 13.156906786185434,
+            "probability": 0.07942133783430952,
+            "fairOdds": 12.591074732161038,
             "edge": null,
             "expectedReturn": null,
-            "score": 0.6963759971970931
+            "score": 0.766453621113414
           },
           {
             "horseId": "HK_2024_K474",
@@ -3583,11 +3568,26 @@
             "actualWeight": 131,
             "draw": 9,
             "winOdds": null,
-            "probability": 0.070174207892799,
-            "fairOdds": 14.250249914151379,
+            "probability": 0.07761467863950121,
+            "fairOdds": 12.884160799592102,
             "edge": null,
             "expectedReturn": null,
-            "score": 0.6045742655126025
+            "score": 0.7399915419847838
+          },
+          {
+            "horseId": "HK_2024_K400",
+            "horseNo": 8,
+            "horseName": "AEROVOLANIC",
+            "jockey": "A Atzeni",
+            "trainer": "P C Ng",
+            "actualWeight": 125,
+            "draw": 3,
+            "winOdds": null,
+            "probability": 0.06812370429524577,
+            "fairOdds": 14.679178273483702,
+            "edge": null,
+            "expectedReturn": null,
+            "score": 0.5899955081798385
           },
           {
             "horseId": "HK_2024_K514",
@@ -3598,8 +3598,8 @@
             "actualWeight": 132,
             "draw": 10,
             "winOdds": null,
-            "probability": 0.05680119443711561,
-            "fairOdds": 17.60526358485465,
+            "probability": 0.05584494065478748,
+            "fairOdds": 17.906725090489857,
             "edge": null,
             "expectedReturn": null,
             "score": 0.36143726321634156
@@ -3613,41 +3613,11 @@
             "actualWeight": 115,
             "draw": 12,
             "winOdds": null,
-            "probability": 0.04506270066082528,
-            "fairOdds": 22.191302015534504,
+            "probability": 0.04667590338036729,
+            "fairOdds": 21.424330919765715,
             "edge": null,
             "expectedReturn": null,
-            "score": 0.09520940391567893
-          },
-          {
-            "horseId": "HK_2022_H461",
-            "horseNo": 10,
-            "horseName": "WINNING GOLD",
-            "jockey": "C Y Ho",
-            "trainer": "W Y So",
-            "actualWeight": 120,
-            "draw": 6,
-            "winOdds": null,
-            "probability": 0.031608451436220736,
-            "fairOdds": 31.637108259409402,
-            "edge": null,
-            "expectedReturn": null,
-            "score": -0.31261547861157046
-          },
-          {
-            "horseId": "HK_2022_H376",
-            "horseNo": 6,
-            "horseName": "MISTER DAPPER",
-            "jockey": "B Avdulla",
-            "trainer": "D Eustace",
-            "actualWeight": 129,
-            "draw": 11,
-            "winOdds": null,
-            "probability": 0.024686471389999614,
-            "fairOdds": 40.50801688916528,
-            "edge": null,
-            "expectedReturn": null,
-            "score": -0.5968600111965551
+            "score": 0.1551837404294225
           },
           {
             "horseId": "HK_2024_K098",
@@ -3658,11 +3628,41 @@
             "actualWeight": 122,
             "draw": 2,
             "winOdds": null,
-            "probability": 0.01945522982172264,
-            "fairOdds": 51.4000610202741,
+            "probability": 0.024621018344923192,
+            "fairOdds": 40.6157042731012,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.8707203870010032
+            "score": -0.5803879553267215
+          },
+          {
+            "horseId": "HK_2022_H376",
+            "horseNo": 6,
+            "horseName": "MISTER DAPPER",
+            "jockey": "B Avdulla",
+            "trainer": "D Eustace",
+            "actualWeight": 129,
+            "draw": 11,
+            "winOdds": null,
+            "probability": 0.024578564272749723,
+            "fairOdds": 40.6858589827682,
+            "edge": null,
+            "expectedReturn": null,
+            "score": -0.5823726142412634
+          },
+          {
+            "horseId": "HK_2022_H461",
+            "horseNo": 10,
+            "horseName": "WINNING GOLD",
+            "jockey": "C Y Ho",
+            "trainer": "W Y So",
+            "actualWeight": 120,
+            "draw": 6,
+            "winOdds": null,
+            "probability": 0.02026471711679121,
+            "fairOdds": 49.3468521784302,
+            "edge": null,
+            "expectedReturn": null,
+            "score": -0.8043150141967617
           },
           {
             "horseId": "HK_2025_L123",
@@ -3673,11 +3673,11 @@
             "actualWeight": 118,
             "draw": 14,
             "winOdds": null,
-            "probability": 0.004850097721302976,
-            "fairOdds": 206.1814127182886,
+            "probability": 0.00518693152982016,
+            "fairOdds": 192.79221139722117,
             "edge": null,
             "expectedReturn": null,
-            "score": -2.468205012772415
+            "score": -2.371464870915996
           }
         ]
       },
@@ -3697,9 +3697,9 @@
         "raceNo": 11,
         "status": "upcoming",
         "raceClass": "3",
-        "distance": null,
-        "surface": null,
-        "going": null,
+        "distance": 1400,
+        "surface": "TURF",
+        "going": "GOOD TO FIRM",
         "trainingRacesBefore": 14230,
         "topPick": {
           "horseId": "HK_2024_K245",
@@ -3710,19 +3710,19 @@
           "actualWeight": 135,
           "draw": 5,
           "winOdds": null,
-          "probability": 0.21426636270604743,
-          "fairOdds": 4.667088139130371,
+          "probability": 0.23404160454736195,
+          "fairOdds": 4.272744591432821,
           "edge": null,
           "expectedReturn": null,
-          "score": 1.4803147709472517
+          "score": 1.60457255274496
         },
         "recommendation": {
           "action": "probability",
           "horseId": "HK_2024_K245",
           "horseName": "SUPER EXPRESS",
           "horseNo": 1,
-          "modelProbability": 0.21426636270604743,
-          "fairOdds": 4.667088139130371,
+          "modelProbability": 0.23404160454736195,
+          "fairOdds": 4.272744591432821,
           "winOdds": null,
           "expectedReturn": null,
           "edge": null,
@@ -3739,10 +3739,10 @@
           "horseId": "HK_2024_K245",
           "horseName": "SUPER EXPRESS",
           "horseNo": 1,
-          "modelProbability": 0.21426636270604743,
-          "fairOdds": 4.667088139130371,
+          "modelProbability": 0.23404160454736195,
+          "fairOdds": 4.272744591432821,
           "currentOdds": null,
-          "minimumOdds": 5.04,
+          "minimumOdds": 4.61,
           "targetEdge": 0.08,
           "plannedStake": 10,
           "stakePct": 0.05,
@@ -3769,11 +3769,11 @@
             "actualWeight": 135,
             "draw": 5,
             "winOdds": null,
-            "probability": 0.21426636270604743,
-            "fairOdds": 4.667088139130371,
+            "probability": 0.23404160454736195,
+            "fairOdds": 4.272744591432821,
             "edge": null,
             "expectedReturn": null,
-            "score": 1.4803147709472517
+            "score": 1.60457255274496
           },
           {
             "horseId": "HK_2024_K121",
@@ -3784,11 +3784,11 @@
             "actualWeight": 118,
             "draw": 14,
             "winOdds": null,
-            "probability": 0.1588208124806749,
-            "fairOdds": 6.296404006380956,
+            "probability": 0.15041591052316014,
+            "fairOdds": 6.648232866602406,
             "edge": null,
             "expectedReturn": null,
-            "score": 1.1359549467389463
+            "score": 1.0961636445352012
           },
           {
             "horseId": "HK_2023_J421",
@@ -3799,11 +3799,11 @@
             "actualWeight": 123,
             "draw": 8,
             "winOdds": null,
-            "probability": 0.11381609266763525,
-            "fairOdds": 8.786103762322883,
+            "probability": 0.11969903712952851,
+            "fairOdds": 8.354286082668166,
             "edge": null,
             "expectedReturn": null,
-            "score": 0.7527833674413649
+            "score": 0.8334764752417079
           },
           {
             "horseId": "HK_2025_L126",
@@ -3814,26 +3814,11 @@
             "actualWeight": 127,
             "draw": 1,
             "winOdds": null,
-            "probability": 0.10062372518887043,
-            "fairOdds": 9.938014102767543,
+            "probability": 0.09822709293871237,
+            "fairOdds": 10.180490637383905,
             "edge": null,
             "expectedReturn": null,
-            "score": 0.6111081321114056
-          },
-          {
-            "horseId": "HK_2024_K238",
-            "horseNo": 3,
-            "horseName": "PERFECTDAY",
-            "jockey": "J Orman",
-            "trainer": "W Y So",
-            "actualWeight": 130,
-            "draw": 6,
-            "winOdds": null,
-            "probability": 0.06713704768291034,
-            "fairOdds": 14.894905786191561,
-            "edge": null,
-            "expectedReturn": null,
-            "score": 0.14575827611312275
+            "score": 0.6061232052023342
           },
           {
             "horseId": "HK_2022_H453",
@@ -3844,11 +3829,26 @@
             "actualWeight": 123,
             "draw": 4,
             "winOdds": null,
-            "probability": 0.06621283656148838,
-            "fairOdds": 15.102811659055757,
+            "probability": 0.06990268477458068,
+            "fairOdds": 14.305602184304638,
             "edge": null,
             "expectedReturn": null,
-            "score": 0.129817357768795
+            "score": 0.21491848735428892
+          },
+          {
+            "horseId": "HK_2024_K238",
+            "horseNo": 3,
+            "horseName": "PERFECTDAY",
+            "jockey": "J Orman",
+            "trainer": "W Y So",
+            "actualWeight": 130,
+            "draw": 6,
+            "winOdds": null,
+            "probability": 0.06430320455379461,
+            "fairOdds": 15.551324493687131,
+            "edge": null,
+            "expectedReturn": null,
+            "score": 0.11889970913816482
           },
           {
             "horseId": "HK_2025_L016",
@@ -3859,26 +3859,11 @@
             "actualWeight": 124,
             "draw": 9,
             "winOdds": null,
-            "probability": 0.06372131814807835,
-            "fairOdds": 15.693335120220784,
+            "probability": 0.062473839213550104,
+            "fairOdds": 16.006699965753146,
             "edge": null,
             "expectedReturn": null,
             "score": 0.08570890247885211
-          },
-          {
-            "horseId": "HK_2022_H451",
-            "horseNo": 2,
-            "horseName": "LOVERO",
-            "jockey": "L Hewitson",
-            "trainer": "B Crawford",
-            "actualWeight": 130,
-            "draw": 10,
-            "winOdds": null,
-            "probability": 0.05847653649383499,
-            "fairOdds": 17.100876008712095,
-            "edge": null,
-            "expectedReturn": null,
-            "score": -0.01306871818888121
           },
           {
             "horseId": "HK_2025_L398",
@@ -3889,11 +3874,26 @@
             "actualWeight": 121,
             "draw": 7,
             "winOdds": null,
-            "probability": 0.05166975291204487,
-            "fairOdds": 19.353682641027056,
+            "probability": 0.050658208735255124,
+            "fairOdds": 19.740137382790223,
             "edge": null,
             "expectedReturn": null,
             "score": -0.15538470033983126
+          },
+          {
+            "horseId": "HK_2022_H451",
+            "horseNo": 2,
+            "horseName": "LOVERO",
+            "jockey": "L Hewitson",
+            "trainer": "B Crawford",
+            "actualWeight": 130,
+            "draw": 10,
+            "winOdds": null,
+            "probability": 0.04916757409534488,
+            "fairOdds": 20.338607677914265,
+            "edge": null,
+            "expectedReturn": null,
+            "score": -0.18973168394867734
           },
           {
             "horseId": "HK_2023_J265",
@@ -3904,26 +3904,11 @@
             "actualWeight": 118,
             "draw": 13,
             "winOdds": null,
-            "probability": 0.030568382401679358,
-            "fairOdds": 32.71353998584702,
+            "probability": 0.02591712577892473,
+            "fairOdds": 38.58452548056773,
             "edge": null,
             "expectedReturn": null,
-            "score": -0.759026991699994
-          },
-          {
-            "horseId": "HK_2025_L213",
-            "horseNo": 4,
-            "horseName": "TITAN PEGASUS",
-            "jockey": "E Brown",
-            "trainer": "D Eustace",
-            "actualWeight": 130,
-            "draw": 12,
-            "winOdds": null,
-            "probability": 0.022524138578334133,
-            "fairOdds": 44.396814400791136,
-            "edge": null,
-            "expectedReturn": null,
-            "score": -1.1102124508007285
+            "score": -0.9261116047810559
           },
           {
             "horseId": "HK_2023_J418",
@@ -3934,11 +3919,26 @@
             "actualWeight": 119,
             "draw": 3,
             "winOdds": null,
-            "probability": 0.02100831642330508,
-            "fairOdds": 47.60019698154744,
+            "probability": 0.022309913461727275,
+            "fairOdds": 44.82312321450745,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.190332008217439
+            "score": -1.09846537956758
+          },
+          {
+            "horseId": "HK_2025_L213",
+            "horseNo": 4,
+            "horseName": "TITAN PEGASUS",
+            "jockey": "E Brown",
+            "trainer": "D Eustace",
+            "actualWeight": 130,
+            "draw": 12,
+            "winOdds": null,
+            "probability": 0.022083181152915375,
+            "fairOdds": 45.2833309239046,
+            "edge": null,
+            "expectedReturn": null,
+            "score": -1.1102124508007285
           },
           {
             "horseId": "HK_2025_L311",
@@ -3949,11 +3949,11 @@
             "actualWeight": 128,
             "draw": 11,
             "winOdds": null,
-            "probability": 0.020093631412276106,
-            "fairOdds": 49.76701221806302,
+            "probability": 0.018211880410400158,
+            "fairOdds": 54.90921186968346,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.241524786972395
+            "score": -1.3318659049723953
           },
           {
             "horseId": "HK_2025_L027",
@@ -3964,11 +3964,11 @@
             "actualWeight": 117,
             "draw": 2,
             "winOdds": null,
-            "probability": 0.011061046342820385,
-            "fairOdds": 90.40736011824868,
+            "probability": 0.012588742684744202,
+            "fairOdds": 79.43605052884752,
             "edge": null,
             "expectedReturn": null,
-            "score": -1.9280441073157017
+            "score": -1.7565277551161682
           }
         ]
       },
