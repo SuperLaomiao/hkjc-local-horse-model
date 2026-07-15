@@ -1,149 +1,154 @@
 {
   "summary": {
     "runs": 1,
-    "settledRuns": 0,
-    "openRuns": 1,
-    "totalStake": 0,
+    "settledRuns": 1,
+    "openRuns": 0,
+    "totalStake": 10,
     "totalReturn": 0,
-    "profit": 0,
-    "roi": null,
+    "profit": -10,
+    "roi": -1,
     "hitLines": 0,
-    "missLines": 0,
+    "missLines": 1,
     "passLines": 0
   },
   "runs": [
     {
-      "runId": "rec_bb009d376e47a767",
-      "raceId": "2026-07-15-HV-1",
+      "runId": "rec_42e056a0bd9a2b4b",
+      "raceId": "2026-07-15-HV-9",
       "date": "2026-07-15",
       "racecourse": "HV",
-      "raceNo": 1,
-      "generatedAt": "2026-07-15T03:56:59.323Z",
+      "raceNo": 9,
+      "generatedAt": "2026-07-15T16:56:09.305Z",
       "modelVersion": "hkjc-local-horse-model",
       "strategyVersion": "ev-portfolio-v1",
       "bankroll": 200,
       "finalEdgeBuffer": 0.08,
       "recommendations": [
         {
-          "mode": "prepare",
-          "label": "PREP / 预备",
-          "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+          "mode": "execute",
+          "label": "FINAL BUY / 可买",
+          "headline": "只在最终入场窗口执行，不提前追价。",
           "betType": "WIN",
-          "horseId": "HK_2023_J003",
-          "horseName": "PERFECTO MOMENTS",
-          "horseNo": 12,
-          "modelProbability": 0.2543202320726884,
-          "fairOdds": 3.9320505169804405,
-          "currentOdds": null,
-          "minimumOdds": 4.25,
+          "horseId": "HK_2023_J290",
+          "horseName": "FLYING WROTE",
+          "horseNo": 1,
+          "modelProbability": 0.2733832544440791,
+          "fairOdds": 3.6578685188069966,
+          "currentOdds": 14,
+          "minimumOdds": 3.95,
           "targetEdge": 0.08,
           "plannedStake": 10,
           "stakePct": 0.05,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
-          "cutoffWindow": "T-5 仍无实时赔率就不下注",
+          "cutoffWindow": "开跑前 3 分钟后不新增下注",
           "checklist": [
             "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
-            "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
-            "赔率缺失或跳动太乱时，只保留纸上模拟。"
+            "只有实时独赢赔率仍高于最低赔率线，才执行下注。",
+            "严格使用计划注码上限；赔率跌穿就不追。"
           ],
           "stopRules": [
-            "最终赔率低于最低线，直接 PASS。",
-            "任何临场官方变化削弱模型条件，直接 PASS。"
+            "马匹退出、骑师/场地出现重大变化，或赔率跌穿最低线，直接 PASS。",
+            "最终 15 分钟内页面没有刷新成功，直接 PASS。"
           ]
         }
       ],
       "summary": {
-        "status": "upcoming",
-        "mode": "prepare",
-        "topPickHorseNo": 12,
-        "topPickHorseName": "PERFECTO MOMENTS",
-        "upcomingEntries": 9
+        "status": "settled",
+        "mode": "execute",
+        "topPickHorseNo": 1,
+        "topPickHorseName": "FLYING WROTE",
+        "upcomingEntries": 0
       },
       "raw": {
-        "raceId": "2026-07-15-HV-1",
-        "raceNo": 1,
+        "raceId": "2026-07-15-HV-9",
+        "raceNo": 9,
         "date": "2026-07-15",
         "racecourse": "HV",
-        "generatedAt": "2026-07-15T03:56:59.323Z",
+        "generatedAt": "2026-07-15T16:56:09.305Z",
         "modelVersion": "hkjc-local-horse-model",
         "strategyVersion": "ev-portfolio-v1",
         "bankroll": 200,
         "finalEdgeBuffer": 0.08,
         "recommendations": [
           {
-            "mode": "prepare",
-            "label": "PREP / 预备",
-            "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+            "mode": "execute",
+            "label": "FINAL BUY / 可买",
+            "headline": "只在最终入场窗口执行，不提前追价。",
             "betType": "WIN",
-            "horseId": "HK_2023_J003",
-            "horseName": "PERFECTO MOMENTS",
-            "horseNo": 12,
-            "modelProbability": 0.2543202320726884,
-            "fairOdds": 3.9320505169804405,
-            "currentOdds": null,
-            "minimumOdds": 4.25,
+            "horseId": "HK_2023_J290",
+            "horseName": "FLYING WROTE",
+            "horseNo": 1,
+            "modelProbability": 0.2733832544440791,
+            "fairOdds": 3.6578685188069966,
+            "currentOdds": 14,
+            "minimumOdds": 3.95,
             "targetEdge": 0.08,
             "plannedStake": 10,
             "stakePct": 0.05,
             "entryWindow": "开跑前 10-5 分钟",
             "reviewWindow": "开跑前 15 分钟复核",
-            "cutoffWindow": "T-5 仍无实时赔率就不下注",
+            "cutoffWindow": "开跑前 3 分钟后不新增下注",
             "checklist": [
               "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
-              "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
-              "赔率缺失或跳动太乱时，只保留纸上模拟。"
+              "只有实时独赢赔率仍高于最低赔率线，才执行下注。",
+              "严格使用计划注码上限；赔率跌穿就不追。"
             ],
             "stopRules": [
-              "最终赔率低于最低线，直接 PASS。",
-              "任何临场官方变化削弱模型条件，直接 PASS。"
+              "马匹退出、骑师/场地出现重大变化，或赔率跌穿最低线，直接 PASS。",
+              "最终 15 分钟内页面没有刷新成功，直接 PASS。"
             ]
           }
         ],
         "summary": {
-          "status": "upcoming",
-          "mode": "prepare",
-          "topPickHorseNo": 12,
-          "topPickHorseName": "PERFECTO MOMENTS",
-          "upcomingEntries": 9
+          "status": "settled",
+          "mode": "execute",
+          "topPickHorseNo": 1,
+          "topPickHorseName": "FLYING WROTE",
+          "upcomingEntries": 0
         }
       },
-      "status": "OPEN",
-      "stake": 0,
+      "status": "SETTLED",
+      "stake": 10,
       "returned": 0,
-      "profit": 0,
+      "profit": -10,
       "lines": [
         {
-          "mode": "prepare",
-          "label": "PREP / 预备",
-          "headline": "暂时没有实时赔率，只做候选准备，最终窗口再决定。",
+          "mode": "execute",
+          "label": "FINAL BUY / 可买",
+          "headline": "只在最终入场窗口执行，不提前追价。",
           "betType": "WIN",
-          "horseId": "HK_2023_J003",
-          "horseName": "PERFECTO MOMENTS",
-          "horseNo": 12,
-          "modelProbability": 0.2543202320726884,
-          "fairOdds": 3.9320505169804405,
-          "currentOdds": null,
-          "minimumOdds": 4.25,
+          "horseId": "HK_2023_J290",
+          "horseName": "FLYING WROTE",
+          "horseNo": 1,
+          "modelProbability": 0.2733832544440791,
+          "fairOdds": 3.6578685188069966,
+          "currentOdds": 14,
+          "minimumOdds": 3.95,
           "targetEdge": 0.08,
           "plannedStake": 10,
           "stakePct": 0.05,
           "entryWindow": "开跑前 10-5 分钟",
           "reviewWindow": "开跑前 15 分钟复核",
-          "cutoffWindow": "T-5 仍无实时赔率就不下注",
+          "cutoffWindow": "开跑前 3 分钟后不新增下注",
           "checklist": [
             "T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。",
-            "只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。",
-            "赔率缺失或跳动太乱时，只保留纸上模拟。"
+            "只有实时独赢赔率仍高于最低赔率线，才执行下注。",
+            "严格使用计划注码上限；赔率跌穿就不追。"
           ],
           "stopRules": [
-            "最终赔率低于最低线，直接 PASS。",
-            "任何临场官方变化削弱模型条件，直接 PASS。"
+            "马匹退出、骑师/场地出现重大变化，或赔率跌穿最低线，直接 PASS。",
+            "最终 15 分钟内页面没有刷新成功，直接 PASS。"
           ],
-          "status": "OPEN",
+          "status": "MISS",
+          "poolKey": "win",
+          "combination": [
+            1
+          ],
           "stake": 10,
+          "dividendPer10": null,
           "returned": 0,
-          "profit": 0
+          "profit": -10
         }
       ]
     }
