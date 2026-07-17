@@ -489,7 +489,8 @@ async function trainModelCommand(args) {
   const inputPath = path.resolve(args.input ?? path.join(processedDataDir, 'training-dataset.json'));
   const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'model-training-report.json'));
   const scriptPath = path.join(projectRoot, 'python', 'train_logit_model.py');
-  const result = spawnSync('python3', [
+  const python = process.env.PYTHON ?? 'python3';
+  const result = spawnSync(python, [
     scriptPath,
     '--input',
     inputPath,

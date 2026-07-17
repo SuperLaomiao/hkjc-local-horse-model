@@ -6,7 +6,17 @@ import { spawnSync } from 'node:child_process';
 import { describe, it } from 'node:test';
 
 describe('train-model CLI', () => {
-  it('trains a compact logistic baseline report from a training dataset', async () => {
+  it('trains a compact logistic baseline report from a training dataset', async (context) => {
+    const python = process.env.PYTHON ?? 'python3';
+    const pythonProbe = spawnSync(
+      python,
+      ['-c', 'import sys; raise SystemExit(0 if sys.version_info.major >= 3 else 1)'],
+      { encoding: 'utf8' },
+    );
+    if (pythonProbe.error?.code === 'ENOENT' || pythonProbe.status !== 0) {
+      context.skip(`${python} is not a working Python executable; the optional CLI smoke test is skipped`);
+      return;
+    }
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-train-'));
     try {
       const inputPath = path.join(tempDir, 'training-dataset.json');

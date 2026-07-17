@@ -112,7 +112,7 @@ Goal: reproduce the strongest public GitHub ideas on our own SQLite history befo
   - Acceptance:
     - If LightGBM is unavailable, the command exits with a clear installation note and does not break `npm test`.
     - If available, it writes a LightGBM model artifact, feature manifest, and JSON report with log loss, Brier score, race-normalized top-pick win rate, winner-in-top3, and split metrics.
-  - Delivered by `hkjc:train-tree-model`: accepts the existing JSONL/CSV matrix, uses only chronological matrix splits, learns category mappings on train, and excludes market/odds/pool/money/investment/dividend/payout features.
+  - Delivered by `hkjc:train-tree-model`: accepts the existing JSONL/CSV matrix, uses only chronological matrix splits, treats categories explicitly in LightGBM, excludes market/odds/pool/money/investment/dividend/payout features, supports validation-only early stopping, and records selection-report lineage for the final train+validation refit.
 
 - [ ] Reproduce catowabisabi LightGBM no-odds Quinella/QPL benchmark. Research Lab action: `catowabisabi-lgb-no-odds-quinella` / P0.
   - Suggested files:
@@ -124,6 +124,7 @@ Goal: reproduce the strongest public GitHub ideas on our own SQLite history befo
     - Replays model top-2 QIN and QPL on validation and holdout using official dividends.
     - Reports bets, wins, strike rate, ROI, max drawdown, profit concentration, and cold-quinella filter sensitivity.
     - Does not promote the strategy unless validation and holdout both beat current baseline with acceptable drawdown.
+  - Partial delivery: `hkjc:benchmark-exotics` now replays fixed top-2 and top-3-box QIN/QPL lines against official SQLite dividends, skips missing pools, and reports ROI, strike rate, drawdown, and losing runs. The current holdout strategies are negative ROI and remain `NO-BET`; profit-concentration and pre-race cold-odds sensitivity stay queued because validation/holdout currently have no verified T-30 odds coverage.
 
 - [ ] Reproduce jerrydaphantom CatBoost/LightGBM market-aware calibration benchmark. Research Lab action: `jerrydaphantom-catboost-market-aware` / P0.
   - Suggested files:
@@ -250,7 +251,7 @@ This queue is mirrored in `research-program.js` and surfaced in the dashboard Re
 | P0 | `catowabisabi-lgb-no-odds-quinella` | Phase B | queued, executable | Reproduce no-odds LightGBM QIN/QPL edge on our SQLite data. |
 | P0 | `jerrydaphantom-catboost-market-aware` | Phase B | queued, executable | Reproduce CatBoost/LightGBM market-aware calibration and EV grids. |
 | P1 | `speedpro-feature-importer` | Phase B | queued, executable | Add sectional/pace/fitness enrichment when available. |
-| P1 | `lightgbm-no-market-benchmark` | Phase B | queued, executable | Build a non-market tree-model benchmark before live odds are complete. |
+| P1 | `lightgbm-no-market-benchmark` | Phase B | implemented, local benchmark trained | Build a non-market tree-model benchmark before live odds are complete. |
 | P1 | `tianxi-feature-backfill` | Phase B | queued, executable | Audit and design local-only derived feature imports. |
 | P1 | `j-csc-scraper-schema-audit` | Phase B | queued, executable | Audit HKJC scraper field coverage, veterinary/racecard pages, and parser fixtures. |
 | P1 | `no-bet-clv-gate` | Phase C | queued, executable | Reject lines without live edge and track closing-line value. |

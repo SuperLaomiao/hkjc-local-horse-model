@@ -245,13 +245,13 @@ const FOLLOW_UP_ACTIONS = [
   {
     id: 'lightgbm-no-market-benchmark',
     priority: 'P1',
-    status: 'queued',
+    status: 'implemented',
     automationPhase: 'Phase B',
     title: '复现 no-market LightGBM / LambdaRank benchmark',
     sourceRefs: ['Hongkong-Horse-Racing-Prediction', 'catowabisabi'],
     action: '导出 leakage-safe matrix，训练 no-market tree baseline，评估 log loss、Brier、Top-pick 入前三、QIN/QPL ROI。',
     expectedOutcome: '知道我们的基本面模型是否真的比当前 heuristic 强。',
-    automationExecutable: true,
+    automationExecutable: false,
   },
   {
     id: 'parimutuel-stacker-copula-study',

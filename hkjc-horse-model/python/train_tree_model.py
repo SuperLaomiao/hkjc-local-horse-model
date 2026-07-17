@@ -27,6 +27,10 @@ METADATA_COLUMNS = (
 LABEL_COLUMNS = frozenset(("targetWin", "targetPlace"))
 MARKET_TOKENS = frozenset(("market", "odds", "pool", "money", "investment", "dividend", "payout"))
 PROBABILITY_EPSILON = 1e-6
+SELECTION_PARAMETER_NAMES = (
+    "learning_rate", "num_leaves", "max_depth", "min_child_samples",
+    "reg_lambda", "reg_alpha", "subsample", "colsample_bytree",
+)
 
 
 class MissingDependencyError(RuntimeError):
@@ -62,17 +66,21 @@ def _is_metadata_or_identifier(feature_name):
     return bool(tokens & {"id", "identifier", "metadata"})
 
 
-def fit_feature_encoder(rows, feature_names, train_split="train"):
-    """Fit numeric/category handling using train rows only.
+def fit_feature_encoder(rows, feature_names, train_split="train", fit_splits=None):
+    """Fit numeric/category handling using fit splits only.
 
-    Categories are assigned stable integer codes from sorted train-only values;
-    values first seen outside train therefore transform to -1.
+    ``train_split`` remains as a backward-compatible alias for the default
+    behavior. Categories are assigned stable integer codes from sorted values
+    in ``fit_splits``; values first seen outside those splits transform to -1.
     """
-    train_rows = [row for row in rows if row.get("split") == train_split]
+    if fit_splits is None:
+        fit_splits = (train_split,)
+    fit_splits = _normalize_fit_splits(fit_splits)
+    fit_rows = [row for row in rows if row.get("split") in fit_splits]
     feature_types = {}
     categorical_mappings = {}
     for feature_name in feature_names:
-        values = [row.get(feature_name) for row in train_rows if not _is_missing(row.get(feature_name))]
+        values = [row.get(feature_name) for row in fit_rows if not _is_missing(row.get(feature_name))]
         if values and all(_as_float(value) is not None for value in values):
             feature_types[feature_name] = "numeric"
             continue
@@ -84,6 +92,7 @@ def fit_feature_encoder(rows, feature_names, train_split="train"):
         "featureTypes": feature_types,
         "categoricalMappings": categorical_mappings,
         "trainSplit": train_split,
+        "fitSplits": list(fit_splits),
         "unknownCategoryValue": -1,
     }
 
@@ -106,6 +115,20 @@ def transform_feature_rows(rows, encoder):
                 )))
         transformed.append(values)
     return transformed
+
+
+def _build_feature_frame(rows, encoder, pandas_module, numpy_module):
+    frame = pandas_module.DataFrame(
+        transform_feature_rows(rows, encoder),
+        columns=encoder["featureNames"],
+        dtype=float,
+    )
+    for feature_name, feature_type in encoder["featureTypes"].items():
+        if feature_type == "categorical":
+            frame[feature_name] = numpy_module.asarray(
+                frame[feature_name].tolist(), dtype=numpy_module.int32
+            )
+    return frame
 
 
 def normalize_race_probabilities(rows, raw_probabilities, epsilon=PROBABILITY_EPSILON):
@@ -198,27 +221,39 @@ def load_matrix_rows(input_path, pandas_module=None):
     return rows
 
 
-def run_training(input_path, output_path, *, target="targetWin", mode="no-market", parameters=None):
+def run_training(
+    input_path,
+    output_path,
+    *,
+    target="targetWin",
+    mode="no-market",
+    fit_splits=("train",),
+    parameters=None,
+    selection_report_path=None,
+):
     """Train LightGBM and write report, model text, and feature manifest."""
     dependencies = _require_training_dependencies()
     pandas_module, numpy_module, _sklearn_module, lightgbm_module = dependencies
     rows = load_matrix_rows(input_path, pandas_module)
     _validate_rows(rows, target)
+    fit_splits = _normalize_fit_splits(fit_splits)
+    if "validation" in fit_splits and not any(row.get("split") == "validation" for row in rows):
+        raise ValueError("validation is included in fit_splits but has no rows")
     all_columns = _ordered_columns(rows)
     feature_names, excluded_features = select_feature_columns(all_columns, mode=mode, target=target)
     if not feature_names:
         raise ValueError("No usable features remain after metadata/identifier/label/no-market exclusion")
-    train_rows = [row for row in rows if row.get("split") == "train"]
-    if not train_rows:
-        raise ValueError("No train split rows found; existing chronological split labels are required")
+    fit_indexes = [index for index, row in enumerate(rows) if row.get("split") in fit_splits]
+    if not fit_indexes:
+        raise ValueError("No rows found for fit_splits; train/validation rows are required")
 
-    encoder = fit_feature_encoder(rows, feature_names)
-    x = pandas_module.DataFrame(transform_feature_rows(rows, encoder), columns=feature_names, dtype=float)
+    encoder = fit_feature_encoder(rows, feature_names, fit_splits=fit_splits)
+    x = _build_feature_frame(rows, encoder, pandas_module, numpy_module)
     y = numpy_module.asarray([_label_value(row.get(target)) for row in rows], dtype=int)
-    train_indexes = [index for index, row in enumerate(rows) if row.get("split") == "train"]
-    train_labels = y[train_indexes]
-    if len(set(train_labels.tolist())) < 2:
-        raise ValueError(f"Train split target {target} must contain both 0 and 1 labels")
+    fit_labels = y[fit_indexes]
+    if len(set(fit_labels.tolist())) < 2:
+        joined_splits = ", ".join(fit_splits)
+        raise ValueError(f"Fit splits ({joined_splits}) target {target} must contain both 0 and 1 labels")
 
     params = {
         "objective": "binary",
@@ -229,6 +264,11 @@ def run_training(input_path, output_path, *, target="targetWin", mode="no-market
         "max_depth": -1,
         "min_child_samples": 20,
         "reg_lambda": 0.1,
+        "reg_alpha": 0.0,
+        "subsample": 1.0,
+        "subsample_freq": 1,
+        "colsample_bytree": 1.0,
+        "early_stopping_rounds": 0,
         "random_state": 20260718,
         "bagging_seed": 20260718,
         "feature_fraction_seed": 20260718,
@@ -240,19 +280,72 @@ def run_training(input_path, output_path, *, target="targetWin", mode="no-market
     }
     if parameters:
         params.update(parameters)
-    model = lightgbm_module.LGBMClassifier(**params)
-    model.fit(x.iloc[train_indexes], train_labels)
+    selection_report = None
+    if selection_report_path is not None:
+        if "validation" not in fit_splits:
+            raise ValueError("selection_report requires validation in fit_splits")
+        selection_report = _load_selection_report(selection_report_path)
+        params.update(selection_report["selectedParameters"])
+        params["n_estimators"] = selection_report["selectedBestIteration"]
+        params["early_stopping_rounds"] = 0
+    _validate_model_parameters(params)
+    early_stopping_rounds = _validate_early_stopping_rounds(params.get("early_stopping_rounds", 0))
+    if early_stopping_rounds > 0 and "validation" in fit_splits:
+        raise ValueError(
+            "Cannot enable early stopping when validation is included in fit_splits; "
+            "final-refit uses fixed iterations. Set --early-stopping-rounds 0."
+        )
+    validation_indexes = [index for index, row in enumerate(rows) if row.get("split") == "validation"]
+    validation_labels = y[validation_indexes]
+    if early_stopping_rounds > 0:
+        if not validation_indexes:
+            raise ValueError(
+                "Validation split is required when early stopping is enabled "
+                "(--early-stopping-rounds > 0)"
+            )
+        if len(set(validation_labels.tolist())) < 2:
+            raise ValueError(
+                f"Validation split target {target} must contain both 0 and 1 labels "
+                "when early stopping is enabled"
+            )
+
+    model_parameters = dict(params)
+    model_parameters.pop("early_stopping_rounds", None)
+    model = lightgbm_module.LGBMClassifier(**model_parameters)
+    fit_kwargs = {}
+    if early_stopping_rounds > 0:
+        fit_kwargs = {
+            "eval_set": [(x.iloc[validation_indexes], validation_labels)],
+            "eval_names": ["validation"],
+            "callbacks": [lightgbm_module.early_stopping(early_stopping_rounds, verbose=False)],
+        }
+    categorical_features = [
+        feature_name for feature_name in feature_names
+        if encoder["featureTypes"][feature_name] == "categorical"
+    ]
+    fit_kwargs["categorical_feature"] = categorical_features
+    model.fit(x.iloc[fit_indexes], fit_labels, **fit_kwargs)
+    best_iteration = (
+        _positive_int_or_none(getattr(model, "best_iteration_", None))
+        if early_stopping_rounds > 0 else None
+    )
+    effective_iterations = best_iteration or int(params["n_estimators"])
     raw_probabilities = model.predict_proba(x)[:, 1]
     probabilities = normalize_race_probabilities(rows, raw_probabilities.tolist())
 
-    metrics_by_split = {
-        split: compute_split_metrics(
+    metrics_by_split = {}
+    for split in SPLITS:
+        metrics_by_split[split] = compute_split_metrics(
             [row for row in rows if row.get("split") == split],
             [probability for row, probability in zip(rows, probabilities) if row.get("split") == split],
             target=target,
         )
-        for split in SPLITS
-    }
+        is_model_selection_sample = split == "validation" and early_stopping_rounds > 0
+        metrics_by_split[split]["isOutOfSample"] = (
+            split == "holdout"
+            or (split not in fit_splits and not is_model_selection_sample)
+        )
+        metrics_by_split[split]["isModelSelectionSample"] = is_model_selection_sample
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
     model_path = output.with_suffix(".model.txt")
@@ -268,6 +361,7 @@ def run_training(input_path, output_path, *, target="targetWin", mode="no-market
         "features": feature_names,
         "featureTypes": encoder["featureTypes"],
         "categoricalMappings": encoder["categoricalMappings"],
+        "fitSplits": list(fit_splits),
         "unknownCategoryValue": encoder["unknownCategoryValue"],
         "numericMissingValue": "NaN passed to LightGBM",
     }
@@ -293,6 +387,18 @@ def run_training(input_path, output_path, *, target="targetWin", mode="no-market
         "parameters": params,
         "target": target,
         "mode": mode,
+        "fitSplits": list(fit_splits),
+        "validationIsInSample": "validation" in fit_splits,
+        "lineage": "selection-report" if selection_report is not None else (
+            "manual" if "validation" in fit_splits else "selection"
+        ),
+        "bestIteration": best_iteration if early_stopping_rounds > 0 else None,
+        "effectiveIterations": effective_iterations,
+        "earlyStopping": {
+            "enabled": early_stopping_rounds > 0,
+            "rounds": early_stopping_rounds,
+            "validationSplit": "validation" if early_stopping_rounds > 0 else None,
+        },
         "chronologicalSplits": list(SPLITS),
         "metadataColumnsExcluded": list(METADATA_COLUMNS),
         "labelColumnsExcluded": sorted(LABEL_COLUMNS),
@@ -311,6 +417,12 @@ def run_training(input_path, output_path, *, target="targetWin", mode="no-market
             "bySplit": metrics_by_split,
         },
     }
+    if selection_report is not None:
+        report["selectionReport"] = {
+            "basename": Path(selection_report_path).name,
+            "selectedBestIteration": selection_report["selectedBestIteration"],
+            "selectedParameters": selection_report["selectedParameters"],
+        }
     output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return report
 
@@ -326,11 +438,120 @@ def _validate_rows(rows, target):
     invalid_splits = sorted({str(row.get("split")) for row in rows if row.get("split") not in SPLITS})
     if invalid_splits:
         raise ValueError(f"Training matrix contains unsupported split values: {', '.join(invalid_splits)}")
+    race_splits = defaultdict(set)
+    for row in rows:
+        race_splits[row.get("raceId")].add(row.get("split"))
+    for race_id, splits in race_splits.items():
+        if len(splits) > 1:
+            joined_splits = ", ".join(sorted(splits))
+            raise ValueError(
+                f"raceId {race_id!r} appears in multiple splits: {joined_splits}"
+            )
     for index, row in enumerate(rows, start=1):
         try:
             _label_value(row.get(target))
         except ValueError as error:
             raise ValueError(f"Row {index} has invalid {target}: {row.get(target)!r}") from error
+
+
+def _normalize_fit_splits(fit_splits):
+    if isinstance(fit_splits, str):
+        fit_splits = (fit_splits,)
+    try:
+        normalized = tuple(fit_splits)
+    except TypeError as error:
+        raise ValueError("fit_splits must be a non-empty sequence of train/validation") from error
+    if not normalized:
+        raise ValueError("fit_splits must be a non-empty sequence of train/validation")
+    if len(set(normalized)) != len(normalized):
+        raise ValueError("fit_splits must not contain duplicate split names")
+    if "holdout" in normalized:
+        raise ValueError("holdout must never be included in fit_splits")
+    if "train" not in normalized:
+        raise ValueError("fit_splits must include train")
+    unsupported = sorted(set(normalized) - {"train", "validation"})
+    if unsupported:
+        names = ", ".join(str(value) for value in unsupported)
+        raise ValueError(f"Unsupported fit split(s): {names}; only train and validation are allowed")
+    return normalized
+
+
+def _validate_early_stopping_rounds(value):
+    try:
+        rounds = int(value)
+    except (TypeError, ValueError) as error:
+        raise ValueError("early_stopping_rounds must be a non-negative integer") from error
+    if rounds < 0:
+        raise ValueError("early_stopping_rounds must be a non-negative integer")
+    return rounds
+
+
+def _validate_model_parameters(params):
+    _validate_numeric_boundary(params, "n_estimators", lambda value: value > 0, "must be > 0")
+    _validate_numeric_boundary(params, "learning_rate", lambda value: value > 0, "must be > 0")
+    _validate_numeric_boundary(params, "num_leaves", lambda value: value > 1, "must be > 1")
+    _validate_numeric_boundary(params, "min_child_samples", lambda value: value > 0, "must be > 0")
+    _validate_numeric_boundary(params, "reg_alpha", lambda value: value >= 0, "must be >= 0")
+    _validate_numeric_boundary(params, "reg_lambda", lambda value: value >= 0, "must be >= 0")
+    for parameter_name in ("subsample", "colsample_bytree"):
+        _validate_numeric_boundary(
+            params,
+            parameter_name,
+            lambda value: value > 0 and value <= 1,
+            "must be > 0 and <= 1",
+        )
+
+
+def _validate_numeric_boundary(params, parameter_name, predicate, constraint):
+    value = params.get(parameter_name)
+    try:
+        number = float(value)
+    except (TypeError, ValueError) as error:
+        raise ValueError(f"{parameter_name} {constraint}") from error
+    if not math.isfinite(number) or not predicate(number):
+        raise ValueError(f"{parameter_name} {constraint}")
+
+
+def _load_selection_report(selection_report_path):
+    path = Path(selection_report_path)
+    try:
+        report = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise ValueError(f"Unable to read selection report: {path}") from error
+    if not isinstance(report, dict):
+        raise ValueError("selection report must be a JSON object")
+    fit_splits = report.get("fitSplits")
+    if not isinstance(fit_splits, list) or "holdout" in fit_splits:
+        raise ValueError("selection report must not fit holdout")
+    holdout_metrics = report.get("metrics", {}).get("bySplit", {}).get("holdout", {})
+    if holdout_metrics.get("isOutOfSample") is not True:
+        raise ValueError("selection report must not fit holdout")
+    best_iteration = _positive_int_or_none(report.get("bestIteration"))
+    if best_iteration is None:
+        raise ValueError("selection report must contain a positive bestIteration")
+    report_parameters = report.get("parameters")
+    if not isinstance(report_parameters, dict):
+        raise ValueError("selection report must contain parameters")
+    missing = [name for name in SELECTION_PARAMETER_NAMES if name not in report_parameters]
+    if missing:
+        raise ValueError(
+            "selection report is missing parameters: " + ", ".join(missing)
+        )
+    selected_parameters = {
+        name: report_parameters[name] for name in SELECTION_PARAMETER_NAMES
+    }
+    return {
+        "selectedBestIteration": best_iteration,
+        "selectedParameters": selected_parameters,
+    }
+
+
+def _positive_int_or_none(value):
+    try:
+        integer = int(value)
+    except (TypeError, ValueError):
+        return None
+    return integer if integer > 0 else None
 
 
 def _ordered_columns(rows):
@@ -446,12 +667,27 @@ def build_parser():
     parser.add_argument("--max-depth", type=int, default=-1)
     parser.add_argument("--min-child-samples", type=int, default=20)
     parser.add_argument("--reg-lambda", type=float, default=0.1)
+    parser.add_argument("--reg-alpha", type=float, default=0.0)
+    parser.add_argument("--subsample", type=float, default=1.0)
+    parser.add_argument("--colsample-bytree", type=float, default=1.0)
+    parser.add_argument("--early-stopping-rounds", type=int, default=0)
+    parser.add_argument(
+        "--include-validation-in-fit",
+        action="store_true",
+        help="final-refit on train and validation with fixed n_estimators; disables early stopping",
+    )
+    parser.add_argument(
+        "--selection-report",
+        help="completed selection report used to choose final-refit iterations and parameters",
+    )
     parser.add_argument("--seed", type=int, default=20260718)
     return parser
 
 
 def main(argv=None):
     args = build_parser().parse_args(argv)
+    if args.selection_report and not args.include_validation_in_fit:
+        raise SystemExit("--selection-report requires --include-validation-in-fit")
     seed = args.seed
     parameters = {
         "n_estimators": args.n_estimators,
@@ -460,6 +696,10 @@ def main(argv=None):
         "max_depth": args.max_depth,
         "min_child_samples": args.min_child_samples,
         "reg_lambda": args.reg_lambda,
+        "reg_alpha": args.reg_alpha,
+        "subsample": args.subsample,
+        "colsample_bytree": args.colsample_bytree,
+        "early_stopping_rounds": args.early_stopping_rounds,
         "random_state": seed,
         "bagging_seed": seed,
         "feature_fraction_seed": seed,
@@ -471,7 +711,9 @@ def main(argv=None):
             args.output,
             target=args.target,
             mode=args.mode,
+            fit_splits=("train", "validation") if args.include_validation_in_fit else ("train",),
             parameters=parameters,
+            selection_report_path=args.selection_report,
         )
     except (MissingDependencyError, ValueError, OSError) as error:
         raise SystemExit(str(error)) from error
