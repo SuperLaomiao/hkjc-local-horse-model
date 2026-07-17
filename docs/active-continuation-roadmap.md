@@ -156,7 +156,7 @@ Goal: reproduce the strongest public GitHub ideas on our own SQLite history befo
     - It reports bets, wins, hit rate, ROI, max drawdown, and profit concentration.
     - It separates validation and holdout results.
 
-- [ ] Add Tianxi local-only feature backfill audit. Research Lab action: `tianxi-feature-backfill` / P1.
+- [x] Add Tianxi local-only feature backfill audit. Research Lab action: `tianxi-feature-backfill` / P1.
   - Suggested files:
     - Create `hkjc-horse-model/src/external-feature-source-audit.js`
     - Create `hkjc-horse-model/test/external-feature-source-audit.test.js`
@@ -257,7 +257,7 @@ This queue is mirrored in `research-program.js` and surfaced in the dashboard Re
 
 ## Latest continuation note
 
-- 2026-07-17: Recommendation audit now locks one final executable pre-race run per race/strategy and excludes prepare, superseded, post-race, invalid-time, and missing-post-time records. Real SQLite replay found 0/21 eligible historical runs: 17 were prepare-only and 4 were generated after race day, so the previous recommendation-run ROI is not valid evidence. Next task: implement the external source registry/provenance audit before importing Tianxi or SpeedPRO-derived features.
+- 2026-07-17: External source policy now covers 11 approved donors and forbids raw publication/code reuse for unknown or restricted licenses. Tianxi and `mag-dot/race-data` were cloned to an external local cache and audited at commits `a64456e` and `1cae092`: 14,089 files total, 9,018 pre-race candidates, 4,684 post-race-only, and 387 unsafe/unclassified. Raw paths/rows are omitted from the compact report. Next task: implement the Tianxi per-horse form as-of adapter with a failing current/future-row leakage test, then join optional derived features into the local training matrix.
 - 2026-07-17: Completed `live-market-due-snapshots` with dry-run reporting, planner-backed T-window capture, race/window duplicate skipping, focused SQLite queries, and the `hkjc:live-market-due-snapshots` npm script. Focused tests: `node --test hkjc-horse-model/test/live-market-due-snapshots.test.js hkjc-horse-model/test/live-snapshot-planner.test.js hkjc-horse-model/test/live-market-snapshot.test.js`. Next task: create `hkjc-horse-model/test/pool-money-features.test.js` and add leakage-safe WIN / PLACE / QIN / QPL pool-money feature expectations.
 - 2026-07-10: Completed `live-snapshot-planner` with SQLite-backed upcoming-race loading, HK-time T-30/T-10/T-3 planning, and settled/scratched/out-of-window guards. Next command: `node --test hkjc-horse-model/test/live-snapshot-planner.test.js`; next task: add the `live-market-due-snapshots` CLI command with dry-run and idempotent capture behavior.
 - 2026-07-10: ChatGPT-suggested reference list reconciled with Research Lab. Added `j-csc/HK-Horse-Racing-Data-Scraper`; kept `neigh` as schema/SDK reference because GitHub API currently cannot resolve it; data-leverage priority is now explicit: Tianxi local-only feature audit, Bobosky/rkwyu live pool capture, j-csc scraper schema audit, then model reproduction.

@@ -1,0 +1,608 @@
+{
+  "reportVersion": "external-source-coverage-v1",
+  "generatedAt": "2026-07-17T06:40:00.000Z",
+  "summary": {
+    "requestedSources": 2,
+    "availableSources": 2,
+    "missingSources": 0,
+    "totalFiles": 14089,
+    "preRaceCandidateFiles": 9018,
+    "postRaceFiles": 4684,
+    "unsafeFiles": 387
+  },
+  "sources": [
+    {
+      "sourceId": "mag-dot-race-data",
+      "status": "available",
+      "cacheLabel": "mag-dot-race-data",
+      "checkoutRef": "1cae0922f0e84a241d06a6dd7cb77dc0f1e464fa",
+      "inventoryChecksum": "sha256:72b1ad63a41bbfd550390f4572fc7dd9443ef2003bc33f5311d1ee764fa3dbb6",
+      "summary": {
+        "files": 222,
+        "byExtension": {
+          "html": 1,
+          "json": 105,
+          "md": 102,
+          "none": 1,
+          "pdf": 1,
+          "py": 12
+        },
+        "earliestDatedFile": "2025-09-07",
+        "latestDatedFile": "2026-04-22"
+      },
+      "categories": {
+        "barrier-trials": {
+          "timing": "pre-race-candidate",
+          "files": 20,
+          "examples": [
+            "data/barrier-trials/2026-02-20.json",
+            "data/barrier-trials/2026-02-24.json",
+            "data/barrier-trials/2026-02-26.json"
+          ]
+        },
+        "current-rankings": {
+          "timing": "unsafe",
+          "files": 2,
+          "examples": [
+            "data/jockeys/rankings-current.json",
+            "data/trainers/rankings-current.json"
+          ]
+        },
+        "derived-analysis": {
+          "timing": "unsafe",
+          "files": 16,
+          "examples": [
+            "analysis/2026-03-18.json",
+            "analysis/2026-03-18.md",
+            "analysis/2026-03-22.json"
+          ]
+        },
+        "formguide": {
+          "timing": "pre-race-candidate",
+          "files": 5,
+          "examples": [
+            "data/formguide/2026-03-18.json",
+            "data/formguide/2026-03-22.json",
+            "data/formguide/2026-03-25.json"
+          ]
+        },
+        "other": {
+          "timing": "unsafe",
+          "files": 113,
+          "examples": [
+            ".gitignore",
+            "backtest.py",
+            "batch_scrape.py"
+          ]
+        },
+        "results": {
+          "timing": "post-race",
+          "files": 65,
+          "examples": [
+            "data/results/2025-09-07.json",
+            "data/results/2025-09-10.json",
+            "data/results/2025-09-14.json"
+          ]
+        },
+        "trackwork": {
+          "timing": "pre-race-candidate",
+          "files": 1,
+          "examples": [
+            "data/trackwork/2026-04-01.json"
+          ]
+        }
+      },
+      "schemaSamples": [
+        {
+          "category": "barrier-trials",
+          "path": "data/barrier-trials/2026-02-20.json",
+          "format": "json",
+          "fields": [
+            "batches",
+            "totalBatches",
+            "totalHorses",
+            "trialDate"
+          ],
+          "omittedFields": 0
+        },
+        {
+          "category": "current-rankings",
+          "path": "data/jockeys/rankings-current.json",
+          "format": "json",
+          "fields": [
+            "fifths",
+            "fourths",
+            "jockeyId",
+            "name",
+            "seconds",
+            "stakesWon",
+            "thirds",
+            "totalRides",
+            "wins"
+          ],
+          "omittedFields": 0
+        },
+        {
+          "category": "derived-analysis",
+          "path": "analysis/2026-03-18.json",
+          "format": "json",
+          "fields": [
+            "class",
+            "distance",
+            "horses",
+            "raceName",
+            "raceNo",
+            "surface",
+            "venue"
+          ],
+          "omittedFields": 0
+        },
+        {
+          "category": "formguide",
+          "path": "data/formguide/2026-03-18.json",
+          "format": "json",
+          "fields": [
+            "headerText",
+            "horses",
+            "info",
+            "raceNo",
+            "scrapedAt"
+          ],
+          "omittedFields": 0
+        },
+        {
+          "category": "results",
+          "path": "data/results/2025-09-07.json",
+          "format": "json",
+          "fields": [
+            "horses",
+            "raceDate",
+            "raceInfo",
+            "raceNo",
+            "scrapedAt"
+          ],
+          "omittedFields": 0
+        },
+        {
+          "category": "trackwork",
+          "path": "data/trackwork/2026-04-01.json",
+          "format": "json",
+          "fields": [
+            "class",
+            "date",
+            "distance",
+            "horses",
+            "prizeMoney",
+            "raceInfo",
+            "raceName",
+            "raceNo",
+            "rating",
+            "surface",
+            "time",
+            "venue"
+          ],
+          "omittedFields": 0
+        }
+      ]
+    },
+    {
+      "sourceId": "sleepingarhat-tianxi-database",
+      "status": "available",
+      "cacheLabel": "tianxi-database",
+      "checkoutRef": "a64456e671f1b019cbef6d7c0a31d332f31748ce",
+      "inventoryChecksum": "sha256:e8dc041aa9ded847c76720d2ac19e427087bdfb3503055ca2efb685b9a4954c4",
+      "summary": {
+        "files": 13867,
+        "byExtension": {
+          "csv": 13723,
+          "json": 69,
+          "md": 12,
+          "none": 1,
+          "py": 22,
+          "sh": 3,
+          "sql": 1,
+          "txt": 16,
+          "yml": 20
+        },
+        "earliestDatedFile": "2016-01-01",
+        "latestDatedFile": "2026-07-17"
+      },
+      "categories": {
+        "entries": {
+          "timing": "pre-race-candidate",
+          "files": 15,
+          "examples": [
+            "entries/entries_2026-05-27.txt",
+            "entries/entries_2026-05-31.txt",
+            "entries/entries_2026-06-03.txt"
+          ]
+        },
+        "historical-commentary": {
+          "timing": "post-race",
+          "files": 925,
+          "examples": [
+            "data/2016/commentary_2016-01-01.csv",
+            "data/2016/commentary_2016-01-06.csv",
+            "data/2016/commentary_2016-01-09.csv"
+          ]
+        },
+        "historical-dividends": {
+          "timing": "post-race",
+          "files": 925,
+          "examples": [
+            "data/2016/dividends_2016-01-01.csv",
+            "data/2016/dividends_2016-01-06.csv",
+            "data/2016/dividends_2016-01-09.csv"
+          ]
+        },
+        "historical-results": {
+          "timing": "post-race",
+          "files": 919,
+          "examples": [
+            "data/2016/results_2016-01-01.csv",
+            "data/2016/results_2016-01-06.csv",
+            "data/2016/results_2016-01-09.csv"
+          ]
+        },
+        "historical-sectionals": {
+          "timing": "post-race",
+          "files": 925,
+          "examples": [
+            "data/2016/sectional_times_2016-01-01.csv",
+            "data/2016/sectional_times_2016-01-06.csv",
+            "data/2016/sectional_times_2016-01-09.csv"
+          ]
+        },
+        "historical-video-links": {
+          "timing": "post-race",
+          "files": 925,
+          "examples": [
+            "data/2016/video_links_2016-01-01.csv",
+            "data/2016/video_links_2016-01-06.csv",
+            "data/2016/video_links_2016-01-09.csv"
+          ]
+        },
+        "other": {
+          "timing": "unsafe",
+          "files": 127,
+          "examples": [
+            ".github/workflows/capy_d1_sync_entries.yml",
+            ".github/workflows/capy_d1_sync_pool_a.yml",
+            ".github/workflows/capy_d1_sync.yml"
+          ]
+        },
+        "prior-horse-form": {
+          "timing": "pre-race-candidate",
+          "files": 6063,
+          "examples": [
+            "horses/form_records/form_A001.csv",
+            "horses/form_records/form_A002.csv",
+            "horses/form_records/form_A003.csv"
+          ]
+        },
+        "prior-trackwork": {
+          "timing": "pre-race-candidate",
+          "files": 2105,
+          "examples": [
+            "horses/trackwork/trackwork_A111.csv",
+            "horses/trackwork/trackwork_A113.csv",
+            "horses/trackwork/trackwork_A118.csv"
+          ]
+        },
+        "prior-trials": {
+          "timing": "pre-race-candidate",
+          "files": 2,
+          "examples": [
+            "trials/trial_results.csv",
+            "trials/trial_sessions.csv"
+          ]
+        },
+        "prior-veterinary-records": {
+          "timing": "pre-race-candidate",
+          "files": 802,
+          "examples": [
+            "horses/injury/_horseid_map.json",
+            "horses/injury/injury_D241.csv",
+            "horses/injury/injury_D435.csv"
+          ]
+        },
+        "profiles-and-current-rankings": {
+          "timing": "unsafe",
+          "files": 129,
+          "examples": [
+            "horses/profiles/horse_profiles.csv",
+            "jockeys/jockey_profiles.csv",
+            "jockeys/records/jockey_AA.csv"
+          ]
+        },
+        "speedpro-form": {
+          "timing": "pre-race-candidate",
+          "files": 5,
+          "examples": [
+            "speedpro/data/2026-07-01_ST.json",
+            "speedpro/data/2026-07-04_ST.json",
+            "speedpro/data/2026-07-08_HV.json"
+          ]
+        }
+      },
+      "schemaSamples": [
+        {
+          "category": "historical-commentary",
+          "path": "data/2016/commentary_2016-01-01.csv",
+          "format": "csv",
+          "fields": [
+            "date",
+            "venue",
+            "race_no",
+            "place",
+            "horse_no",
+            "horse_name",
+            "jockey",
+            "gear",
+            "commentary"
+          ],
+          "omittedFields": 0
+        },
+        {
+          "category": "historical-dividends",
+          "path": "data/2016/dividends_2016-01-01.csv",
+          "format": "csv",
+          "fields": [
+            "date",
+            "venue",
+            "race_no",
+            "pool",
+            "combination",
+            "dividend_hkd"
+          ],
+          "omittedFields": 0
+        },
+        {
+          "category": "historical-results",
+          "path": "data/2016/results_2016-01-01.csv",
+          "format": "csv",
+          "fields": [
+            "date",
+            "venue",
+            "race_no",
+            "race_meeting_no",
+            "race_name",
+            "race_class",
+            "distance_m",
+            "rating_range",
+            "going",
+            "course",
+            "prize_hkd",
+            "race_finish_time",
+            "sectional_times_header",
+            "place",
+            "horse_no",
+            "horse_name",
+            "jockey",
+            "trainer",
+            "actual_wt_lbs",
+            "declared_wt_lbs",
+            "draw",
+            "lbw",
+            "running_position",
+            "finish_time",
+            "win_odds"
+          ],
+          "omittedFields": 0
+        },
+        {
+          "category": "historical-sectionals",
+          "path": "data/2016/sectional_times_2016-01-01.csv",
+          "format": "csv",
+          "fields": [
+            "date",
+            "venue",
+            "race_no",
+            "finish_pos",
+            "horse_no",
+            "horse_name",
+            "finish_time",
+            "sec1_margin",
+            "sec1_running_pos",
+            "sec1_time",
+            "sec2_margin",
+            "sec2_running_pos",
+            "sec2_time",
+            "sec3_margin",
+            "sec3_running_pos",
+            "sec3_time",
+            "sec4_margin",
+            "sec4_running_pos",
+            "sec4_time",
+            "sec5_margin",
+            "sec5_running_pos",
+            "sec5_time",
+            "sec6_margin",
+            "sec6_running_pos",
+            "sec6_time"
+          ],
+          "omittedFields": 0
+        },
+        {
+          "category": "historical-video-links",
+          "path": "data/2016/video_links_2016-01-01.csv",
+          "format": "csv",
+          "fields": [
+            "date",
+            "venue",
+            "race_no",
+            "video_full_url",
+            "video_passthrough_url",
+            "video_aerial_url"
+          ],
+          "omittedFields": 0
+        },
+        {
+          "category": "prior-horse-form",
+          "path": "horses/form_records/form_A001.csv",
+          "format": "csv",
+          "fields": [
+            "horse_no",
+            "race_index",
+            "place",
+            "date",
+            "racecourse",
+            "track",
+            "course",
+            "distance_m",
+            "going",
+            "race_class",
+            "draw",
+            "rating",
+            "trainer",
+            "jockey",
+            "lbw",
+            "win_odds",
+            "actual_wt_lbs",
+            "running_position",
+            "finish_time",
+            "declared_wt_lbs",
+            "gear"
+          ],
+          "omittedFields": 0
+        },
+        {
+          "category": "prior-trackwork",
+          "path": "horses/trackwork/trackwork_A111.csv",
+          "format": "csv",
+          "fields": [
+            "horse_no",
+            "date",
+            "work_type",
+            "racecourse",
+            "track",
+            "workout_details",
+            "gear"
+          ],
+          "omittedFields": 0
+        },
+        {
+          "category": "prior-trials",
+          "path": "trials/trial_results.csv",
+          "format": "csv",
+          "fields": [
+            "trial_date",
+            "group_no",
+            "trial_venue",
+            "distance_m",
+            "going",
+            "group_time",
+            "group_sectional_times",
+            "horse_name",
+            "horse_no",
+            "jockey",
+            "trainer",
+            "draw",
+            "gear",
+            "lbw",
+            "running_position",
+            "finish_time",
+            "result",
+            "commentary"
+          ],
+          "omittedFields": 0
+        },
+        {
+          "category": "prior-veterinary-records",
+          "path": "horses/injury/_horseid_map.json",
+          "format": "json",
+          "fields": [
+            "A001",
+            "A002",
+            "A003",
+            "A004",
+            "A005",
+            "A006",
+            "A007",
+            "A008",
+            "A009",
+            "A010",
+            "A011",
+            "A012",
+            "A013",
+            "A014",
+            "A015",
+            "A017",
+            "A018",
+            "A019",
+            "A020",
+            "A021",
+            "A022",
+            "A023",
+            "A024",
+            "A025",
+            "A026",
+            "A027",
+            "A029",
+            "A030",
+            "A031",
+            "A033",
+            "A034",
+            "A036",
+            "A037",
+            "A038",
+            "A039",
+            "A040",
+            "A041",
+            "A042",
+            "A044",
+            "A045"
+          ],
+          "omittedFields": 6023
+        },
+        {
+          "category": "profiles-and-current-rankings",
+          "path": "horses/profiles/horse_profiles.csv",
+          "format": "csv",
+          "fields": [
+            "horse_no",
+            "name",
+            "last_race_date",
+            "status",
+            "profile_last_scraped",
+            "出生地",
+            "毛色___性別",
+            "進口類別",
+            "總獎金",
+            "冠-亞-季-總出賽次數",
+            "馬主",
+            "最後評分",
+            "父系",
+            "母系",
+            "外祖父",
+            "同父系馬",
+            "出生地___馬齡",
+            "今季獎金*",
+            "總獎金*",
+            "冠-亞-季-總出賽次數*",
+            "最近十個賽馬日"
+          ],
+          "omittedFields": 0
+        },
+        {
+          "category": "speedpro-form",
+          "path": "speedpro/data/2026-07-01_ST.json",
+          "format": "json",
+          "fields": [
+            "expiredate",
+            "lastupdatetime",
+            "racedate",
+            "racedate_raw",
+            "races",
+            "scraped_at",
+            "source",
+            "source_base",
+            "venue"
+          ],
+          "omittedFields": 0
+        }
+      ]
+    }
+  ],
+  "publicationBoundary": "Derived coverage metadata only; source roots and raw rows are omitted."
+}

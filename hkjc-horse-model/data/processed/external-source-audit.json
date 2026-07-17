@@ -1,6 +1,6 @@
 {
   "policyVersion": "external-source-policy-v1",
-  "generatedAt": "2026-07-17T00:00:00.000Z",
+  "generatedAt": "2026-07-17T06:40:00.000Z",
   "summary": {
     "sources": 11,
     "byLicenseStatus": {
@@ -17,7 +17,7 @@
     "codeReuseAllowedSources": 4,
     "featureTiming": {
       "post-race": 6,
-      "pre-race-candidate": 10,
+      "pre-race-candidate": 11,
       "unsafe": 3
     },
     "invalidSources": 0
@@ -315,6 +315,11 @@
           "policy": "Require a dated observation before the target race."
         },
         {
+          "featureGroup": "prior-veterinary-records",
+          "timing": "pre-race-candidate",
+          "policy": "Use only dated notices known before the target race cutoff."
+        },
+        {
           "featureGroup": "current-race-results",
           "timing": "post-race",
           "policy": "Never expose to a prediction row for the same race."
@@ -336,7 +341,7 @@
         }
       ],
       "publicationBoundary": "derived-aggregates-only",
-      "predictiveFeatureGroups": 3,
+      "predictiveFeatureGroups": 4,
       "blockedFeatureGroups": 4
     },
     {

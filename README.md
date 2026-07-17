@@ -171,6 +171,18 @@ dashboard. Only leakage-safe derived aggregates or features allowed by the
 source policy may be published. Current-race results, dividends, comments, and
 sectionals are always treated as post-race fields for that race.
 
+After cloning Tianxi and `mag-dot/race-data` into a local cache, scan their
+coverage without copying raw rows into this repository:
+
+```bash
+npm run hkjc:external-source-coverage -- --cacheRoot /path/to/external-sources
+```
+
+This writes compact file counts, date coverage, Git checkout references,
+inventory checksums, schema field names, and timing classifications to
+`hkjc-horse-model/data/processed/external-source-coverage.json`. Absolute cache
+paths and raw records are intentionally omitted.
+
 Market snapshots can be imported once official odds/capital-pool data is
 available in normalized JSON:
 

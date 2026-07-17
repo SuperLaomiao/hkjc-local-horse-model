@@ -16,6 +16,7 @@ export const EXTERNAL_SOURCE_REGISTRY = Object.freeze([
       feature('prior-form-and-sectionals', 'pre-race-candidate', 'Require race-date ordering and an as-of cutoff.'),
       feature('prior-trials', 'pre-race-candidate', 'Use only trials published before the target race cutoff.'),
       feature('prior-trackwork', 'pre-race-candidate', 'Require a dated observation before the target race.'),
+      feature('prior-veterinary-records', 'pre-race-candidate', 'Use only dated notices known before the target race cutoff.'),
       feature('current-race-results', 'post-race', 'Never expose to a prediction row for the same race.'),
       feature('current-race-dividends', 'post-race', 'Settlement only.'),
       feature('current-race-comments-and-sectionals', 'post-race', 'Available only after the race.'),

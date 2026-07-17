@@ -18,6 +18,7 @@ import {
 } from './model-leaderboard.js';
 import { buildExternalModelComparison } from './external-model-comparison.js';
 import { buildExternalSourceAudit } from './external-source-audit.js';
+import { buildExternalSourceCoverage } from './external-source-coverage.js';
 import { buildStrategyRiskReport } from './strategy-risk-report.js';
 import { buildMarketSnapshotCoverageReport } from './market-snapshot-coverage.js';
 import { buildMarketWindowResearchReport } from './market-window-research.js';
@@ -124,6 +125,11 @@ async function main(argv) {
 
   if (command === 'external-source-audit') {
     await externalSourceAuditCommand(args);
+    return;
+  }
+
+  if (command === 'external-source-coverage') {
+    await externalSourceCoverageCommand(args);
     return;
   }
 
@@ -743,6 +749,33 @@ async function externalSourceAuditCommand(args) {
   console.log(`Saved external source audit to ${outputPath}`);
 }
 
+async function externalSourceCoverageCommand(args) {
+  const cacheRoot = path.resolve(args.cacheRoot
+    ?? process.env.HKJC_EXTERNAL_SOURCE_CACHE
+    ?? path.join(projectRoot, 'data', 'external', 'raw-local'));
+  const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'external-source-coverage.json'));
+  const report = await buildExternalSourceCoverage({
+    sources: [
+      {
+        sourceId: 'sleepingarhat-tianxi-database',
+        rootPath: path.join(cacheRoot, 'tianxi-database'),
+      },
+      {
+        sourceId: 'mag-dot-race-data',
+        rootPath: path.join(cacheRoot, 'mag-dot-race-data'),
+      },
+    ],
+    generatedAt: args.generatedAt ?? new Date().toISOString(),
+  });
+
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeJson(outputPath, report);
+
+  console.log(`External source coverage: ${report.summary.availableSources}/${report.summary.requestedSources} sources available`);
+  console.log(`Files: ${report.summary.totalFiles} total, ${report.summary.preRaceCandidateFiles} pre-race candidates, ${report.summary.postRaceFiles} post-race only`);
+  console.log(`Saved external source coverage to ${outputPath}`);
+}
+
 async function marketWindowResearchCommand(args) {
   const dbPath = path.resolve(args.db ?? sqliteDbPath);
   const races = loadRacesFromDatabase({ dbPath, status: 'settled' });
@@ -1176,6 +1209,7 @@ Commands:
   model-leaderboard --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/model-leaderboard.json
   external-model-comparison --date 2026-07-08 --venue HV --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/external-model-comparison-2026-07-08-HV.json
   external-source-audit --output hkjc-horse-model/data/processed/external-source-audit.json
+  external-source-coverage --cacheRoot /path/to/external-sources --output hkjc-horse-model/data/processed/external-source-coverage.json
   train-model --input hkjc-horse-model/data/processed/training-dataset.json --output hkjc-horse-model/data/processed/model-training-report.json
   strategy-risk-report --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/strategy-risk-report.json
   market-snapshot --input hkjc-horse-model/data/market-snapshot.json --db hkjc-horse-model/data/hkjc.sqlite
