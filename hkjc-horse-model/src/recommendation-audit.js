@@ -1,8 +1,14 @@
 export function auditRecommendationRuns({ runs = [], races = [] } = {}) {
   const raceById = new Map(races.map((race) => [race.raceId, race]));
-  const auditedRuns = runs.map((run) => auditRun(run, raceById.get(run.raceId)));
-  const settledRuns = auditedRuns.filter((run) => run.status === 'SETTLED');
-  const openRuns = auditedRuns.filter((run) => run.status === 'OPEN');
+  const classifiedRuns = selectRecommendationRunsForAudit({ runs, raceById });
+  const auditedRuns = classifiedRuns.map((run) => (
+    run.auditDecision === 'INCLUDED'
+      ? auditRun(run, raceById.get(run.raceId))
+      : excludedRun(run)
+  ));
+  const includedRuns = auditedRuns.filter((run) => run.auditDecision === 'INCLUDED');
+  const settledRuns = includedRuns.filter((run) => run.status === 'SETTLED');
+  const openRuns = includedRuns.filter((run) => run.status === 'OPEN');
   const allSettledLines = settledRuns.flatMap((run) => run.lines);
   const totalStake = round(sum(allSettledLines, (line) => line.stake));
   const totalReturn = round(sum(allSettledLines, (line) => line.returned));
@@ -10,7 +16,11 @@ export function auditRecommendationRuns({ runs = [], races = [] } = {}) {
 
   return {
     summary: {
-      runs: auditedRuns.length,
+      runs: includedRuns.length,
+      recordedRuns: auditedRuns.length,
+      eligibleRuns: includedRuns.length,
+      excludedRuns: auditedRuns.length - includedRuns.length,
+      exclusionReasons: countExclusionReasons(auditedRuns),
       settledRuns: settledRuns.length,
       openRuns: openRuns.length,
       totalStake,
@@ -23,6 +33,87 @@ export function auditRecommendationRuns({ runs = [], races = [] } = {}) {
     },
     runs: auditedRuns,
   };
+}
+
+export function selectRecommendationRunsForAudit({ runs = [], raceById = new Map() } = {}) {
+  const classified = runs.map((run) => classifyRunTiming(run, raceById.get(run.raceId)));
+  const groups = new Map();
+
+  for (const run of classified) {
+    if (run.auditDecision === 'EXCLUDED') continue;
+    const key = [run.raceId, run.strategyVersion ?? 'unknown'].join('|');
+    groups.set(key, [...(groups.get(key) ?? []), run]);
+  }
+
+  const finalRunIds = new Set();
+  for (const items of groups.values()) {
+    items.sort((a, b) => Date.parse(b.generatedAt) - Date.parse(a.generatedAt)
+      || String(b.runId).localeCompare(String(a.runId)));
+    finalRunIds.add(items[0].runId);
+  }
+
+  return classified.map((run) => {
+    if (run.auditDecision === 'EXCLUDED') return run;
+    return finalRunIds.has(run.runId)
+      ? { ...run, auditDecision: 'INCLUDED', exclusionReason: null }
+      : { ...run, auditDecision: 'EXCLUDED', exclusionReason: 'SUPERSEDED' };
+  });
+}
+
+function classifyRunTiming(run, race) {
+  const mode = String(run.summary?.mode ?? run.raw?.summary?.mode ?? '').toLowerCase();
+  if (mode === 'prepare') {
+    return { ...run, auditDecision: 'EXCLUDED', exclusionReason: 'PREPARE_ONLY' };
+  }
+  if (!race || race.status === 'upcoming') {
+    return { ...run, auditDecision: 'CANDIDATE', exclusionReason: null };
+  }
+  const postTime = racePostTime(race);
+  if (!postTime) {
+    return { ...run, auditDecision: 'EXCLUDED', exclusionReason: 'MISSING_POST_TIME' };
+  }
+  const generatedAtMs = Date.parse(run.generatedAt);
+  if (!Number.isFinite(generatedAtMs)) {
+    return { ...run, auditDecision: 'EXCLUDED', exclusionReason: 'INVALID_GENERATED_AT' };
+  }
+  if (generatedAtMs >= postTime.getTime()) {
+    return { ...run, auditDecision: 'EXCLUDED', exclusionReason: 'POST_RACE' };
+  }
+  return { ...run, auditDecision: 'CANDIDATE', exclusionReason: null };
+}
+
+function racePostTime(race) {
+  if (!race?.date || !race?.startTime) return null;
+  const raw = String(race.startTime);
+  const time = /^\d{1,2}:\d{2}$/.test(raw) ? `${raw.padStart(5, '0')}:00` : raw;
+  const parsed = new Date(`${race.date}T${time}+08:00`);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+function excludedRun(run) {
+  return {
+    ...run,
+    status: 'EXCLUDED',
+    stake: 0,
+    returned: 0,
+    profit: 0,
+    lines: (run.recommendations ?? []).map((line) => ({
+      ...line,
+      status: 'EXCLUDED',
+      stake: 0,
+      returned: 0,
+      profit: 0,
+    })),
+  };
+}
+
+function countExclusionReasons(runs) {
+  return runs.reduce((counts, run) => {
+    if (run.exclusionReason) {
+      counts[run.exclusionReason] = (counts[run.exclusionReason] ?? 0) + 1;
+    }
+    return counts;
+  }, {});
 }
 
 function auditRun(run, race) {
