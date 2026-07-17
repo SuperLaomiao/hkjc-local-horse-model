@@ -1,11 +1,12 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { describe, it } from 'node:test';
 
 import * as trainingDataset from '../src/training-dataset.js';
+import { writeTrainingMatrixAtomically } from '../src/training-matrix-writer.js';
 
 describe('training matrix exporter', () => {
   it('exposes a deterministic matrix builder', () => {
@@ -85,6 +86,14 @@ describe('training matrix exporter', () => {
     assert.deepEqual(Object.keys(exported[0]), matrix.columns);
   });
 
+  it('sorts feature columns by Unicode code point rather than the host locale', () => {
+    const matrix = trainingDataset.buildTrainingMatrix({
+      rows: [trainingRow({ features: { z: 1, ä: 2, a: 3 } })],
+    });
+
+    assert.deepEqual(matrix.columns.slice(10), ['a', 'z', 'ä']);
+  });
+
   it('serializes CSV with correct quoting and empty fields for missing values', () => {
     const matrix = trainingDataset.buildTrainingMatrix({
       rows: [trainingRow({
@@ -102,10 +111,8 @@ describe('training matrix exporter', () => {
     );
   });
 
-  it('deduplicates identical non-label metadata features and rejects mismatched values', () => {
-    const deduplicatedMetadataColumns = [
-      'raceId', 'date', 'split', 'horseId', 'horseNo', 'racecourse', 'raceNo', 'fieldSize',
-    ];
+  it('deduplicates exact generator metadata features but rejects other metadata and identifier aliases', () => {
+    const deduplicatedMetadataColumns = ['racecourse', 'fieldSize'];
     const baseRow = trainingRow();
 
     for (const featureName of deduplicatedMetadataColumns) {
@@ -122,6 +129,19 @@ describe('training matrix exporter', () => {
         new RegExp(`feature ${featureName}.*reserved metadata column.*does not match`, 'i'),
       );
     }
+
+    for (const featureName of [
+      'raceId', 'date', 'split', 'horseId', 'horseNo', 'raceNo',
+      'race_id', 'horse_id', 'runner_id', 'race_identifier', 'horseIdentifier',
+      'race_course', 'field_size',
+    ]) {
+      assert.throws(
+        () => trainingDataset.buildTrainingMatrix({
+          rows: [trainingRow({ features: { [featureName]: 'not-a-feature' } })],
+        }),
+        /metadata|identifier/i,
+      );
+    }
   });
 
   it('rejects label metadata features as leakage even when values match', () => {
@@ -135,8 +155,11 @@ describe('training matrix exporter', () => {
     }
   });
 
-  it('rejects composite post-race leakage names while allowing normal pre-race features', () => {
-    for (const featureName of ['officialResult', 'dividendAmount', 'postRaceComment']) {
+  it('rejects plural and composite post-race leakage names while allowing normal pre-race features', () => {
+    for (const featureName of [
+      'officialResult', 'officialResults', 'raceResults', 'resultsStatus', 'finishingOrder',
+      'dividendAmount', 'postRaceComment',
+    ]) {
       assert.throws(
         () => trainingDataset.buildTrainingMatrix({ rows: [trainingRow({ features: { [featureName]: 1 } })] }),
         /leakage/i,
@@ -147,6 +170,62 @@ describe('training matrix exporter', () => {
       assert.doesNotThrow(() => trainingDataset.buildTrainingMatrix({
         rows: [trainingRow({ features: { [featureName]: 1 } })],
       }));
+    }
+  });
+
+  it('prepares validated source rows for streaming without creating dense matrix rows', () => {
+    const row = trainingRow({ features: { z: 1, a: 2 } });
+    const prepared = trainingDataset.prepareTrainingMatrix({ rows: [row] });
+
+    assert.deepEqual(prepared.columns.slice(10), ['a', 'z']);
+    assert.equal(prepared.sourceRows[0], row);
+    assert.equal(Object.hasOwn(prepared.sourceRows[0], 'a'), false);
+  });
+
+  it('atomically replaces a destination with streamed matrix lines', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'training-matrix-atomic-'));
+    try {
+      const outputPath = path.join(tempDir, 'matrix.jsonl');
+      await writeFile(outputPath, 'old-output\n', 'utf8');
+      const prepared = trainingDataset.prepareTrainingMatrix({
+        rows: [trainingRow({ features: { marketWinOddsT30: 3.4 } })],
+      });
+
+      await writeTrainingMatrixAtomically({ outputPath, format: 'jsonl', matrix: prepared });
+
+      assert.deepEqual(JSON.parse(await readFile(outputPath, 'utf8')), {
+        raceId: 'R1', date: '2026-01-03', split: 'holdout', horseId: 'H1', horseNo: 1,
+        racecourse: 'ST', raceNo: 1, fieldSize: 12, targetWin: 1, targetPlace: 1,
+        marketWinOddsT30: 3.4,
+      });
+      assert.deepEqual((await readdir(tempDir)).filter((name) => name.includes('.tmp')), []);
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('cleans a failed temporary stream and preserves the original destination', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'training-matrix-atomic-'));
+    try {
+      const outputPath = path.join(tempDir, 'matrix.jsonl');
+      await writeFile(outputPath, 'old-output\n', 'utf8');
+      const prepared = trainingDataset.prepareTrainingMatrix({ rows: [trainingRow()] });
+      await assert.rejects(
+        writeTrainingMatrixAtomically({
+          outputPath,
+          format: 'jsonl',
+          matrix: prepared,
+          renameFn: async () => {
+            throw new Error('simulated rename failure');
+          },
+        }),
+        /simulated rename failure/,
+      );
+
+      assert.equal(await readFile(outputPath, 'utf8'), 'old-output\n');
+      assert.deepEqual((await readdir(tempDir)).filter((name) => name.includes('.tmp')), []);
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
     }
   });
 

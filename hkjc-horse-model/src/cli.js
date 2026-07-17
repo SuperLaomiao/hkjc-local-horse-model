@@ -10,11 +10,11 @@ import { splitDashboardForPublishing } from './dashboard-publish.js';
 import { auditRecommendationRuns } from './recommendation-audit.js';
 import {
   buildAsOfTrainingRows,
-  buildTrainingMatrix,
+  prepareTrainingMatrix,
   summarizeTrainingRows,
-  serializeTrainingMatrix,
   trainingMatrixFormatFor,
 } from './training-dataset.js';
+import { writeTrainingMatrixAtomically } from './training-matrix-writer.js';
 import {
   buildModelLeaderboard,
   predictionRowsFromLedger,
@@ -366,12 +366,11 @@ async function trainingMatrixCommand(args) {
   const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'training-matrix.jsonl'));
   const format = trainingMatrixFormatFor({ format: args.format, output: outputPath });
   const payload = JSON.parse(await readFile(inputPath, 'utf8'));
-  const matrix = buildTrainingMatrix(payload);
+  const matrix = prepareTrainingMatrix(payload);
 
-  await mkdir(path.dirname(outputPath), { recursive: true });
-  await writeFile(outputPath, serializeTrainingMatrix(matrix, format), 'utf8');
+  await writeTrainingMatrixAtomically({ outputPath, format, matrix });
 
-  console.log(`Training matrix: ${matrix.rows.length} runner rows, ${matrix.columns.length} columns (${format})`);
+  console.log(`Training matrix: ${matrix.sourceRows.length} runner rows, ${matrix.columns.length} columns (${format})`);
   console.log(`Saved training matrix to ${outputPath}`);
 }
 

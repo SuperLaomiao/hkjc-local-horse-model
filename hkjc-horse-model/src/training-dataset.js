@@ -15,6 +15,14 @@ const MATRIX_METADATA_COLUMNS = [
 ];
 const MATRIX_METADATA_COLUMN_SET = new Set(MATRIX_METADATA_COLUMNS);
 const MATRIX_LABEL_COLUMN_SET = new Set(['targetWin', 'targetPlace']);
+const DEDUPLICATED_FEATURE_METADATA_COLUMNS = new Set(['racecourse', 'fieldSize']);
+const METADATA_OR_IDENTIFIER_ALIASES = new Set([
+  ...MATRIX_METADATA_COLUMNS.map((column) => compactFeatureKey(normalizeFeatureKey(column))),
+  'runnerid',
+  'runneridentifier',
+  'raceidentifier',
+  'horseidentifier',
+]);
 
 const SUPPORTED_MATRIX_FORMATS = new Set(['jsonl', 'csv']);
 const LEAKAGE_FEATURE_KEYS = new Set([
@@ -51,6 +59,10 @@ const LEAKAGE_FEATURE_KEYS = new Set([
   'postraceplacing',
   'postraceresult',
   'postracepayout',
+  'raceresults',
+  'resultsstatus',
+  'officialresults',
+  'finishingorder',
 ]);
 const COMPOSITE_LEAKAGE_TOKENS = new Set(['dividend', 'payout', 'refund', 'result', 'settlement']);
 const UNSAFE_FEATURE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
@@ -155,24 +167,26 @@ export function summarizeTrainingRows(rows) {
 }
 
 export function buildTrainingMatrix(payload) {
+  const prepared = prepareTrainingMatrix(payload);
+
+  return {
+    columns: prepared.columns,
+    rows: prepared.sourceRows.map((row) => flattenTrainingMatrixRow(row, prepared.columns)),
+  };
+}
+
+export function prepareTrainingMatrix(payload) {
   if (!isPlainObject(payload) || !Array.isArray(payload.rows)) {
     throw new Error('Training dataset payload must contain a rows array');
   }
 
   const featureColumns = new Set();
   const validatedRows = payload.rows.map((row, index) => validateMatrixRow(row, index, featureColumns));
-  const columns = [...MATRIX_METADATA_COLUMNS, ...[...featureColumns].sort((a, b) => a.localeCompare(b))];
+  const columns = [...MATRIX_METADATA_COLUMNS, ...[...featureColumns].sort(compareFeatureNamesByCodePoint)];
 
   return {
     columns,
-    rows: validatedRows.map((row) => {
-      const matrixRow = {};
-      for (const column of MATRIX_METADATA_COLUMNS) matrixRow[column] = row[column];
-      for (const featureName of columns.slice(MATRIX_METADATA_COLUMNS.length)) {
-        matrixRow[featureName] = Object.hasOwn(row.features, featureName) ? row.features[featureName] : null;
-      }
-      return matrixRow;
-    }),
+    sourceRows: validatedRows,
   };
 }
 
@@ -191,6 +205,26 @@ export function serializeTrainingMatrix(matrix, format) {
     ...matrix.rows.map((row) => matrix.columns.map((column) => escapeCsvValue(row[column])).join(',')),
     '',
   ].join('\n');
+}
+
+export function *iteratePreparedTrainingMatrixLines(matrix, format) {
+  if (!SUPPORTED_MATRIX_FORMATS.has(format)) {
+    throw new Error(`Unsupported training matrix format: ${format}`);
+  }
+  validatePreparedTrainingMatrix(matrix);
+
+  if (format === 'csv') {
+    yield `${matrix.columns.map(escapeCsvValue).join(',')}\n`;
+  }
+
+  for (const sourceRow of matrix.sourceRows) {
+    const row = flattenTrainingMatrixRow(sourceRow, matrix.columns);
+    if (format === 'jsonl') {
+      yield `${JSON.stringify(row)}\n`;
+    } else {
+      yield `${matrix.columns.map((column) => escapeCsvValue(row[column])).join(',')}\n`;
+    }
+  }
 }
 
 export function trainingMatrixFormatFor({ format, output } = {}) {
@@ -232,10 +266,19 @@ function validateMatrixRow(row, index, featureColumns) {
       throw new Error(`Training matrix row ${index} feature ${featureName} is explicit post-race leakage`);
     }
     if (MATRIX_METADATA_COLUMN_SET.has(featureName)) {
+      if (!DEDUPLICATED_FEATURE_METADATA_COLUMNS.has(featureName)) {
+        throw new Error(`Training matrix row ${index} feature ${featureName} is metadata or identifier leakage`);
+      }
       if (!Object.is(value, row[featureName])) {
-        throw new Error(`Training matrix row ${index} feature ${featureName} collides with reserved metadata column ${featureName}: value does not match`);
+        const featureLabel = `Training matrix row ${index} feature ${featureName}`;
+        throw new Error(
+          `${featureLabel} collides with reserved metadata column ${featureName}: value does not match`,
+        );
       }
       continue;
+    }
+    if (isMetadataOrIdentifierAlias(featureName)) {
+      throw new Error(`Training matrix row ${index} feature ${featureName} is a metadata or identifier alias`);
     }
     if (isLeakageFeatureKey(featureName)) {
       throw new Error(`Training matrix row ${index} feature ${featureName} is explicit post-race leakage`);
@@ -248,16 +291,52 @@ function validateMatrixRow(row, index, featureColumns) {
 }
 
 function isLeakageFeatureKey(featureName) {
-  const normalized = featureName
+  const normalized = normalizeFeatureKey(featureName);
+  if (LEAKAGE_FEATURE_KEYS.has(compactFeatureKey(normalized))) return true;
+
+  const tokens = normalized.split('_');
+  return tokens.some((token) => COMPOSITE_LEAKAGE_TOKENS.has(token) || token === 'results')
+    || (tokens.includes('finishing') && tokens.includes('order'))
+    || (tokens.includes('post') && tokens.includes('race'));
+}
+
+function isMetadataOrIdentifierAlias(featureName) {
+  const normalized = normalizeFeatureKey(featureName);
+  const compact = compactFeatureKey(normalized);
+  return METADATA_OR_IDENTIFIER_ALIASES.has(compact)
+    || normalized.split('_').some((token) => token === 'id' || token === 'identifier');
+}
+
+function normalizeFeatureKey(featureName) {
+  return featureName
     .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '_')
     .replace(/^_|_$/g, '');
-  if (LEAKAGE_FEATURE_KEYS.has(normalized.replaceAll('_', ''))) return true;
+}
 
-  const tokens = normalized.split('_');
-  return tokens.some((token) => COMPOSITE_LEAKAGE_TOKENS.has(token))
-    || (tokens.includes('post') && tokens.includes('race'));
+function compactFeatureKey(featureName) {
+  return featureName.replaceAll('_', '');
+}
+
+function compareFeatureNamesByCodePoint(left, right) {
+  const leftCodePoints = Array.from(left);
+  const rightCodePoints = Array.from(right);
+  const length = Math.min(leftCodePoints.length, rightCodePoints.length);
+  for (let index = 0; index < length; index += 1) {
+    const difference = leftCodePoints[index].codePointAt(0) - rightCodePoints[index].codePointAt(0);
+    if (difference !== 0) return difference;
+  }
+  return leftCodePoints.length - rightCodePoints.length;
+}
+
+function flattenTrainingMatrixRow(row, columns) {
+  const matrixRow = {};
+  for (const column of MATRIX_METADATA_COLUMNS) matrixRow[column] = row[column];
+  for (const featureName of columns.slice(MATRIX_METADATA_COLUMNS.length)) {
+    matrixRow[featureName] = Object.hasOwn(row.features, featureName) ? row.features[featureName] : null;
+  }
+  return matrixRow;
 }
 
 function validateMatrix(matrix) {
@@ -272,6 +351,15 @@ function validateMatrix(matrix) {
     for (const column of matrix.columns) {
       requireNullableScalar(row[column], `Training matrix row ${index} column ${column}`);
     }
+  }
+}
+
+function validatePreparedTrainingMatrix(matrix) {
+  if (!isPlainObject(matrix) || !Array.isArray(matrix.columns) || !Array.isArray(matrix.sourceRows)) {
+    throw new Error('Prepared training matrix must contain columns and sourceRows arrays');
+  }
+  if (matrix.columns.some((column) => typeof column !== 'string' || !column)) {
+    throw new Error('Prepared training matrix columns must be non-empty strings');
   }
 }
 
