@@ -129,6 +129,36 @@ describe('pool money features', () => {
     assert.equal(preRace.featuresByRunner.get(`${race.raceId}|1`).poolWinAvailableT3, 1);
   });
 
+  it('rejects raw terminal statuses when snapshot sellStatus fields are absent', () => {
+    const race = testRace([1, 2]);
+
+    for (const status of ['RESULT', 'STOP', 'CLOSE', 'SUSPEND']) {
+      const capturedAt = `2026-07-18T08:00:00.00${status.length}Z`;
+      const result = buildPoolMoneyFeatureIndex({
+        races: [race],
+        oddsSnapshots: [
+          {
+            ...oddsSnapshot(race.raceId, 'WIN', [1], 2, 30, capturedAt),
+            raw: { status },
+          },
+          {
+            ...oddsSnapshot(race.raceId, 'WIN', [2], 4, 30, capturedAt),
+            raw: { status },
+          },
+        ],
+        poolSnapshots: [{
+          ...poolSnapshot(race.raceId, 'WIN', 100000, 30, capturedAt),
+          raw: { status },
+        }],
+      });
+
+      const horseOne = result.featuresByRunner.get(`${race.raceId}|1`);
+      assert.equal(horseOne.poolWinAvailableT30, 0, status);
+      assert.equal(result.summary.selectedOddsBooks, 0, status);
+      assert.equal(result.summary.selectedPoolSnapshots, 0, status);
+    }
+  });
+
   it('selects one timestamped odds book instead of mixing combinations across captures', () => {
     const race = testRace([1, 2]);
     const earlier = '2026-07-18T07:59:00.000Z';
