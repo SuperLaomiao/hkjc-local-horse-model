@@ -14,6 +14,7 @@ const MATRIX_METADATA_COLUMNS = [
   'targetPlace',
 ];
 const MATRIX_METADATA_COLUMN_SET = new Set(MATRIX_METADATA_COLUMNS);
+const MATRIX_LABEL_COLUMN_SET = new Set(['targetWin', 'targetPlace']);
 
 const SUPPORTED_MATRIX_FORMATS = new Set(['jsonl', 'csv']);
 const LEAKAGE_FEATURE_KEYS = new Set([
@@ -227,8 +228,14 @@ function validateMatrixRow(row, index, featureColumns) {
     if (!featureName || UNSAFE_FEATURE_KEYS.has(featureName)) {
       throw new Error(`Training matrix row ${index} has an unsafe feature key`);
     }
+    if (MATRIX_LABEL_COLUMN_SET.has(featureName)) {
+      throw new Error(`Training matrix row ${index} feature ${featureName} is explicit post-race leakage`);
+    }
     if (MATRIX_METADATA_COLUMN_SET.has(featureName)) {
-      throw new Error(`Training matrix row ${index} feature ${featureName} collides with reserved metadata column ${featureName}`);
+      if (!Object.is(value, row[featureName])) {
+        throw new Error(`Training matrix row ${index} feature ${featureName} collides with reserved metadata column ${featureName}: value does not match`);
+      }
+      continue;
     }
     if (isLeakageFeatureKey(featureName)) {
       throw new Error(`Training matrix row ${index} feature ${featureName} is explicit post-race leakage`);

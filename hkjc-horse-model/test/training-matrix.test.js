@@ -12,6 +12,34 @@ describe('training matrix exporter', () => {
     assert.equal(typeof trainingDataset.buildTrainingMatrix, 'function');
   });
 
+  it('builds a deduplicated matrix from real as-of training rows', () => {
+    const rows = trainingDataset.buildAsOfTrainingRows([{
+      raceId: '2026-01-03-ST-1',
+      date: '2026-01-03',
+      racecourse: 'ST',
+      raceNo: 1,
+      distance: 1200,
+      surface: 'TURF',
+      runners: [
+        { horseId: 'H1', horseNo: 1, placing: 1 },
+        { horseId: 'H2', horseNo: 2, placing: 2 },
+      ],
+    }]);
+
+    const matrix = trainingDataset.buildTrainingMatrix({ rows });
+
+    assert.equal(matrix.rows.length, 2);
+    assert.equal(matrix.columns.filter((column) => column === 'racecourse').length, 1);
+    assert.equal(matrix.columns.filter((column) => column === 'fieldSize').length, 1);
+    assert.deepEqual(
+      matrix.rows.map(({ raceId, racecourse, fieldSize }) => ({ raceId, racecourse, fieldSize })),
+      [
+        { raceId: '2026-01-03-ST-1', racecourse: 'ST', fieldSize: 2 },
+        { raceId: '2026-01-03-ST-1', racecourse: 'ST', fieldSize: 2 },
+      ],
+    );
+  });
+
   it('keeps approved metadata first, sorts nested feature columns, and preserves JSON values', () => {
     const matrix = trainingDataset.buildTrainingMatrix({
       rows: [
@@ -74,18 +102,35 @@ describe('training matrix exporter', () => {
     );
   });
 
-  it('rejects features that collide with any reserved metadata column', () => {
-    const metadataColumns = [
-      'raceId', 'date', 'split', 'horseId', 'horseNo',
-      'racecourse', 'raceNo', 'fieldSize', 'targetWin', 'targetPlace',
+  it('deduplicates identical non-label metadata features and rejects mismatched values', () => {
+    const deduplicatedMetadataColumns = [
+      'raceId', 'date', 'split', 'horseId', 'horseNo', 'racecourse', 'raceNo', 'fieldSize',
     ];
+    const baseRow = trainingRow();
 
-    for (const featureName of metadataColumns) {
+    for (const featureName of deduplicatedMetadataColumns) {
+      const matrix = trainingDataset.buildTrainingMatrix({
+        rows: [trainingRow({ features: { [featureName]: baseRow[featureName] } })],
+      });
+
+      assert.equal(matrix.columns.filter((column) => column === featureName).length, 1);
+      assert.equal(matrix.rows[0][featureName], baseRow[featureName]);
       assert.throws(
         () => trainingDataset.buildTrainingMatrix({
-          rows: [trainingRow({ features: { [featureName]: 'shadow metadata' } })],
+          rows: [trainingRow({ features: { [featureName]: differentScalar(baseRow[featureName]) } })],
         }),
-        new RegExp(`reserved metadata column.*${featureName}`, 'i'),
+        new RegExp(`feature ${featureName}.*reserved metadata column.*does not match`, 'i'),
+      );
+    }
+  });
+
+  it('rejects label metadata features as leakage even when values match', () => {
+    for (const featureName of ['targetWin', 'targetPlace']) {
+      assert.throws(
+        () => trainingDataset.buildTrainingMatrix({
+          rows: [trainingRow({ features: { [featureName]: trainingRow()[featureName] } })],
+        }),
+        /leakage/i,
       );
     }
   });
@@ -177,6 +222,10 @@ function trainingRow(overrides = {}) {
     features: {},
     ...overrides,
   };
+}
+
+function differentScalar(value) {
+  return typeof value === 'number' ? value + 1 : `${value}-different`;
 }
 
 function runCli(...args) {
