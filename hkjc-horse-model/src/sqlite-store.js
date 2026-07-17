@@ -354,29 +354,38 @@ export function loadRunnerMarketFeatures({ dbPath } = {}) {
   try {
     const featuresByRunner = new Map();
     let marketOddsRows = 0;
+    let marketOddsRowsRejected = 0;
+    const marketOddsRejectionReasons = {};
 
     for (const window of MARKET_FEATURE_WINDOWS) {
-      const rows = db.prepare(`
-        SELECT race_id, pool_key, combination_key, odds_value, minutes_to_post, captured_at
-        FROM (
-          SELECT
-            race_id,
-            pool_key,
-            combination_key,
-            odds_value,
-            minutes_to_post,
-            captured_at,
-            ROW_NUMBER() OVER (
-              PARTITION BY race_id, pool_key, combination_key
-              ORDER BY ABS(minutes_to_post - ?) ASC, captured_at DESC
-            ) AS rank_in_window
-          FROM odds_snapshots
-          WHERE pool_key IN ('win', 'place')
-            AND minutes_to_post BETWEEN ? AND ?
-            AND odds_value IS NOT NULL
-        )
-        WHERE rank_in_window = 1
-      `).all(window.target, window.min, window.max);
+      const candidates = db.prepare(`
+        SELECT
+          odds.race_id,
+          odds.pool_key,
+          odds.combination_key,
+          odds.odds_value,
+          odds.minutes_to_post,
+          odds.captured_at,
+          odds.raw_json,
+          races.date AS race_date,
+          races.raw_json AS race_raw_json
+        FROM odds_snapshots AS odds
+        LEFT JOIN races ON races.race_id = odds.race_id
+        WHERE odds.pool_key IN ('win', 'place')
+          AND odds.minutes_to_post BETWEEN ? AND ?
+          AND odds.odds_value IS NOT NULL
+      `).all(window.min, window.max);
+      const safeCandidates = [];
+      for (const candidate of candidates) {
+        const safety = marketOddsSnapshotSafety(candidate);
+        if (!safety.safe) {
+          marketOddsRowsRejected += 1;
+          marketOddsRejectionReasons[safety.reason] = (marketOddsRejectionReasons[safety.reason] ?? 0) + 1;
+          continue;
+        }
+        safeCandidates.push(candidate);
+      }
+      const rows = selectNearestMarketFeatureRows(safeCandidates, window);
       marketOddsRows += rows.length;
       assignMarketFeatureWindow(featuresByRunner, rows, window);
     }
@@ -388,6 +397,8 @@ export function loadRunnerMarketFeatures({ dbPath } = {}) {
       summary: {
         runnerFeatureRows: featuresByRunner.size,
         marketOddsRows,
+        marketOddsRowsRejected,
+        marketOddsRejectionReasons,
         windows: MARKET_FEATURE_WINDOWS.map((window) => window.featureLabel),
         pools: ['WIN', 'PLACE'],
       },
@@ -863,6 +874,64 @@ const MARKET_POOL_FEATURE_LABELS = {
   win: 'Win',
   place: 'Place',
 };
+
+function marketOddsSnapshotSafety(row) {
+  const minutesToPost = Number(row.minutes_to_post);
+  if (!Number.isFinite(minutesToPost) || minutesToPost < 0) {
+    return { safe: false, reason: 'INVALID_MINUTES_TO_POST' };
+  }
+
+  const raw = parseJsonObject(row.raw_json);
+  const sellStatus = String(raw?.sellStatus ?? '').toUpperCase();
+  if (/(STOP|CLOSE|RESULT|SUSPEND)/.test(sellStatus)) {
+    return { safe: false, reason: 'SELL_STATUS' };
+  }
+  if (minutesToPost > 0) return { safe: true };
+
+  const raceRaw = parseJsonObject(row.race_raw_json);
+  const postTime = scheduledPostTime({
+    date: row.race_date,
+    startTime: raceRaw?.startTime,
+  });
+  const capturedAt = Date.parse(row.captured_at ?? '');
+  if (Number.isFinite(postTime) && Number.isFinite(capturedAt) && capturedAt < postTime) {
+    return { safe: true };
+  }
+  return { safe: false, reason: 'UNVERIFIED_POST_TIME' };
+}
+
+function selectNearestMarketFeatureRows(rows, window) {
+  const selected = new Map();
+  for (const row of rows) {
+    const key = `${row.race_id}|${row.pool_key}|${row.combination_key}`;
+    const current = selected.get(key);
+    if (!current || (
+      Math.abs(row.minutes_to_post - window.target) < Math.abs(current.minutes_to_post - window.target)
+      || (
+        Math.abs(row.minutes_to_post - window.target) === Math.abs(current.minutes_to_post - window.target)
+        && String(row.captured_at).localeCompare(String(current.captured_at)) > 0
+      )
+    )) {
+      selected.set(key, row);
+    }
+  }
+  return [...selected.values()];
+}
+
+function parseJsonObject(value) {
+  try {
+    const parsed = JSON.parse(value ?? 'null');
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function scheduledPostTime(race) {
+  if (!race?.date || !/^\d{1,2}:\d{2}(?::\d{2})?$/.test(String(race.startTime ?? ''))) return NaN;
+  const time = String(race.startTime).length === 5 ? `${race.startTime}:00` : race.startTime;
+  return Date.parse(`${race.date}T${time}+08:00`);
+}
 
 function distinctSnapshotRaceCount(db) {
   return Number(db.prepare(`
