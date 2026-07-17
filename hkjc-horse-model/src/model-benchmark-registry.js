@@ -1,5 +1,3 @@
-import { isIP } from 'node:net';
-
 export const MODEL_BENCHMARK_REGISTRY_VERSION = 'model-benchmark-registry-v1';
 
 const ALLOWED_KINDS = new Set([
