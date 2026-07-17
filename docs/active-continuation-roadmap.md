@@ -103,7 +103,7 @@ Goal: reproduce the strongest public GitHub ideas on our own SQLite history befo
     - Export works as JSONL or CSV without adding large generated files to git.
   - Delivered by `training-matrix`: accepts generated `training-dataset` JSON, flattens only approved metadata plus nested pre-race features, sorts feature columns, and rejects malformed rows plus explicit result/target/dividend/payout/post-race keys.
 
-- [ ] Implement `lightgbm-no-market-v1` or the closest available local tree-model fallback.
+- [x] Implement `lightgbm-no-market-v1` local tree-model trainer.
   Research Lab action: `lightgbm-no-market-benchmark` / P1.
   - Suggested files:
     - Create `hkjc-horse-model/python/train_tree_model.py`
@@ -111,7 +111,8 @@ Goal: reproduce the strongest public GitHub ideas on our own SQLite history befo
     - Modify `package.json` scripts
   - Acceptance:
     - If LightGBM is unavailable, the command exits with a clear installation note and does not break `npm test`.
-    - If available, it writes model metrics including log loss, Brier score, top-pick win rate, and split metrics.
+    - If available, it writes a LightGBM model artifact, feature manifest, and JSON report with log loss, Brier score, race-normalized top-pick win rate, winner-in-top3, and split metrics.
+  - Delivered by `hkjc:train-tree-model`: accepts the existing JSONL/CSV matrix, uses only chronological matrix splits, learns category mappings on train, and excludes market/odds/pool/money/investment/dividend/payout features.
 
 - [ ] Reproduce catowabisabi LightGBM no-odds Quinella/QPL benchmark. Research Lab action: `catowabisabi-lgb-no-odds-quinella` / P0.
   - Suggested files:
@@ -258,7 +259,8 @@ This queue is mirrored in `research-program.js` and surfaced in the dashboard Re
 
 ## Latest continuation note
 
-- 2026-07-18: Completed the leakage-safe `training-matrix` exporter. `npm run hkjc:training-matrix -- --input ...training-dataset.json --output ...training-matrix.jsonl` writes deterministic JSONL (or CSV via `--format csv`/`.csv`) with approved metadata first and sorted flattened feature columns. It preserves categorical, odds, Tianxi, and pool features, emits null/empty missing values, rejects malformed payloads and explicit leakage keys, and ignores generated matrices. Focused test: `node --test hkjc-horse-model/test/training-matrix.test.js`. Tree-model training remains intentionally out of scope.
+- 2026-07-18: Completed the leakage-safe `training-matrix` exporter. `npm run hkjc:training-matrix -- --input ...training-dataset.json --output ...training-matrix.jsonl` writes deterministic JSONL (or CSV via `--format csv`/`.csv`) with approved metadata first and sorted flattened feature columns. It preserves categorical, odds, Tianxi, and pool features, emits null/empty missing values, rejects malformed payloads and explicit leakage keys, and ignores generated matrices. Focused test: `node --test hkjc-horse-model/test/training-matrix.test.js`.
+- 2026-07-18: Completed `lightgbm-no-market-v1`: `PYTHON=/path/to/python npm run hkjc:train-tree-model -- --input ...training-matrix.jsonl --output ...tree-model-report.json` accepts JSONL/CSV, excludes market features, preserves train-only category mappings and matrix chronological splits, and writes report/model/manifest artifacts. Run `python3 -m unittest -v hkjc-horse-model/python/test_train_tree_model.py` for the focused test.
 - 2026-07-18: Follow-up optimization remains queued: `training-matrix` still reads the monolithic JSON input with `JSON.parse(await readFile(...))`; the observed approximately 230 MB input / 175,574 rows reached approximately 329 MB peak memory. Do not treat this as a blocker for the leakage and prepared-writer safeguards; revisit with a streaming JSON approach later without adding a third-party parser or redesigning SQLite in this round.
 - 2026-07-17: Completed the model benchmark registry with the current baseline plus catowabisabi LightGBM/QIN, jerrydaphantom CatBoost calibration, neigh SpeedPRO, HKJC pool-tracker, and HKJC Edge Lab CLV ideas. Every entry now records required data, leakage risks, metrics, local adoption status, and explicit promotion gates; deterministic summary/snapshot helpers are ready for later Research Lab wiring without loading race data. Focused test: `node --test hkjc-horse-model/test/model-benchmark-registry.test.js`. Next Phase B task: connect the registry snapshot to the separate Tier1 Acceleration Lab dashboard registry.
 - 2026-07-17: Completed leakage-safe WIN/PLACE/QIN/QPL pool-money features with coherent timestamped books, strict T3 post-time/sell-status guards, valid-arity filtering, book-participant crowding baselines, normalized market/involvement shares, estimated money, HHI, overround, imbalance, availability flags, and pool movement. SQLite now restricts reads to requested races with usable pool investment, indexes snapshots by race/pool, and emits sparse features, avoiding a 6.38M-row materialization and full-history OOM. Real export succeeded for 175,574 runners / 14,250 races; the database has 36 pool snapshots but all are 1,144-1,404 minutes pre-race, so usable T60/T30/T10/T3 coverage is 0 and no model/ROI gain can yet be estimated. Next task: add the low-frequency race-day due-snapshot automation step.
