@@ -1,5 +1,33 @@
 export const MODEL_BENCHMARK_REGISTRY_VERSION = 'model-benchmark-registry-v1';
 
+const ALLOWED_KINDS = new Set([
+  'baseline',
+  'calibrated-market-aware-model',
+  'feature-donor',
+  'model-and-pool-strategy',
+  'validation-method',
+]);
+
+const ALLOWED_LOCAL_ADOPTION_STATUSES = new Set([
+  'active-baseline',
+  'implemented-awaiting-coverage',
+  'reproduce-next',
+  'research-backlog',
+]);
+
+const DASHBOARD_ENTRY_FIELDS = [
+  'id',
+  'label',
+  'source',
+  'sourceUrl',
+  'kind',
+  'localAdoptionStatus',
+  'requiredData',
+  'leakageRisks',
+  'metrics',
+  'promotionGates',
+];
+
 export const MODEL_BENCHMARK_REGISTRY = Object.freeze([
   benchmark({
     id: 'catowabisabi-lgb-quinella',
@@ -223,30 +251,80 @@ export const MODEL_BENCHMARK_REGISTRY = Object.freeze([
 ]);
 
 export function validateModelBenchmarkRegistry(registry = MODEL_BENCHMARK_REGISTRY) {
+  if (!Array.isArray(registry)) {
+    return ['[registry] registry must be an array'];
+  }
+
   const issues = [];
   const ids = new Set();
 
-  for (const entry of registry ?? []) {
-    const prefix = entry?.id ? `[${entry.id}]` : '[missing-id]';
-    if (!entry?.id) issues.push(`${prefix} id is required`);
-    if (ids.has(entry?.id)) issues.push(`${prefix} id must be unique`);
-    ids.add(entry?.id);
-    if (!entry?.label) issues.push(`${prefix} label is required`);
-    if (!entry?.source) issues.push(`${prefix} source is required`);
-    if (!entry?.localAdoptionStatus) issues.push(`${prefix} localAdoptionStatus is required`);
-    requireNonEmptyArray(issues, prefix, entry, 'requiredData');
-    requireNonEmptyArray(issues, prefix, entry, 'leakageRisks');
-    requireNonEmptyArray(issues, prefix, entry, 'metrics');
-    requireNonEmptyArray(issues, prefix, entry, 'promotionGates');
-
-    for (const promotionGate of entry?.promotionGates ?? []) {
-      if (!promotionGate?.id || !promotionGate?.requirement) {
-        issues.push(`${prefix} each promotion gate requires id and requirement`);
-      }
+  for (const [index, entry] of registry.entries()) {
+    if (!isRecord(entry)) {
+      issues.push(`[entry:${index}] entry must be an object`);
+      continue;
     }
+
+    const prefix = isNonEmptyTrimmedString(entry.id) ? `[${entry.id}]` : `[entry:${index}]`;
+    requireTrimmedString(issues, prefix, entry, 'id');
+    requireTrimmedString(issues, prefix, entry, 'label');
+    requireTrimmedString(issues, prefix, entry, 'source');
+    requireTrimmedString(issues, prefix, entry, 'kind');
+    requireTrimmedString(issues, prefix, entry, 'localAdoptionStatus');
+
+    if (isNonEmptyTrimmedString(entry.id)) {
+      if (ids.has(entry.id)) issues.push(`${prefix} id must be unique`);
+      ids.add(entry.id);
+    }
+    if (isNonEmptyTrimmedString(entry.kind) && !ALLOWED_KINDS.has(entry.kind)) {
+      issues.push(`${prefix} kind is invalid`);
+    }
+    if (
+      isNonEmptyTrimmedString(entry.localAdoptionStatus)
+      && !ALLOWED_LOCAL_ADOPTION_STATUSES.has(entry.localAdoptionStatus)
+    ) {
+      issues.push(`${prefix} localAdoptionStatus is invalid`);
+    }
+    if (entry.sourceUrl !== null && !isPublicHttpsUrl(entry.sourceUrl)) {
+      issues.push(`${prefix} sourceUrl must be a public HTTPS URL or null`);
+    }
+
+    requireStringList(issues, prefix, entry, 'requiredData');
+    requireStringList(issues, prefix, entry, 'leakageRisks');
+    requireStringList(issues, prefix, entry, 'metrics');
+    validatePromotionGates(issues, prefix, entry.promotionGates);
   }
 
   return issues;
+}
+
+function validatePromotionGates(issues, prefix, promotionGates) {
+  if (!Array.isArray(promotionGates) || promotionGates.length === 0) {
+    issues.push(`${prefix} promotionGates must be a non-empty array`);
+    return;
+  }
+
+  const gateIds = new Set();
+  for (const promotionGate of promotionGates) {
+    if (!isRecord(promotionGate)) {
+      issues.push(`${prefix} promotion gate must be an object`);
+      continue;
+    }
+
+    if (Object.keys(promotionGate).some((field) => !['id', 'requirement'].includes(field))) {
+      issues.push(`${prefix} promotion gate fields are invalid`);
+    }
+    if (!isNonEmptyTrimmedString(promotionGate.id)) {
+      issues.push(`${prefix} promotion gate id must be a non-empty trimmed string`);
+    } else {
+      if (gateIds.has(promotionGate.id)) {
+        issues.push(`${prefix} promotion gate id must be unique`);
+      }
+      gateIds.add(promotionGate.id);
+    }
+    if (!isNonEmptyTrimmedString(promotionGate.requirement)) {
+      issues.push(`${prefix} promotion gate requirement must be a non-empty trimmed string`);
+    }
+  }
 }
 
 export function summarizeModelBenchmarkRegistry(registry = MODEL_BENCHMARK_REGISTRY) {
@@ -265,7 +343,7 @@ export function summarizeModelBenchmarkRegistry(registry = MODEL_BENCHMARK_REGIS
     externalIdeas: entries.filter((entry) => entry.id !== 'current-baseline').length,
     ids: entries.map((entry) => entry.id),
     byLocalAdoptionStatus: Object.fromEntries(
-      [...statusCounts.entries()].sort(([left], [right]) => left.localeCompare(right)),
+      [...statusCounts.entries()].sort(([left], [right]) => compareByCodePoint(left, right)),
     ),
     promotionGateCount,
   };
@@ -274,17 +352,16 @@ export function summarizeModelBenchmarkRegistry(registry = MODEL_BENCHMARK_REGIS
 export function buildModelBenchmarkRegistrySnapshot({
   registry = MODEL_BENCHMARK_REGISTRY,
 } = {}) {
+  const issues = validateModelBenchmarkRegistry(registry);
+  if (issues.length > 0) {
+    throw new Error(`Model benchmark registry is invalid: ${issues.join('; ')}`);
+  }
+
   const entries = [...registry].sort(compareById);
   return {
     version: MODEL_BENCHMARK_REGISTRY_VERSION,
     summary: summarizeModelBenchmarkRegistry(entries),
-    entries: entries.map((entry) => ({
-      ...entry,
-      requiredData: [...entry.requiredData],
-      leakageRisks: [...entry.leakageRisks],
-      metrics: [...entry.metrics],
-      promotionGates: entry.promotionGates.map((item) => ({ ...item })),
-    })),
+    entries: entries.map(projectDashboardEntry),
   };
 }
 
@@ -304,12 +381,109 @@ function gate(id, requirement) {
   return { id, requirement };
 }
 
-function requireNonEmptyArray(issues, prefix, entry, field) {
-  if (!Array.isArray(entry?.[field]) || entry[field].length === 0) {
-    issues.push(`${prefix} ${field} must be a non-empty array`);
+function requireTrimmedString(issues, prefix, entry, field) {
+  if (!isNonEmptyTrimmedString(entry[field])) {
+    issues.push(`${prefix} ${field} must be a non-empty trimmed string`);
+  }
+}
+
+function requireStringList(issues, prefix, entry, field) {
+  const values = entry[field];
+  if (
+    !Array.isArray(values)
+    || values.length === 0
+    || values.some((value) => !isNonEmptyTrimmedString(value))
+  ) {
+    issues.push(`${prefix} ${field} must contain non-empty trimmed strings`);
   }
 }
 
 function compareById(left, right) {
-  return String(left.id).localeCompare(String(right.id));
+  return compareByCodePoint(String(left.id), String(right.id));
+}
+
+function compareByCodePoint(left, right) {
+  const leftCodePoints = [...left];
+  const rightCodePoints = [...right];
+  const length = Math.min(leftCodePoints.length, rightCodePoints.length);
+
+  for (let index = 0; index < length; index += 1) {
+    const difference = leftCodePoints[index].codePointAt(0) - rightCodePoints[index].codePointAt(0);
+    if (difference !== 0) return difference;
+  }
+
+  return leftCodePoints.length - rightCodePoints.length;
+}
+
+function projectDashboardEntry(entry) {
+  const projected = {};
+  for (const field of DASHBOARD_ENTRY_FIELDS) {
+    switch (field) {
+      case 'requiredData':
+      case 'leakageRisks':
+      case 'metrics':
+        projected[field] = [...entry[field]];
+        break;
+      case 'promotionGates':
+        projected[field] = entry.promotionGates.map(({ id, requirement }) => ({ id, requirement }));
+        break;
+      default:
+        projected[field] = entry[field];
+    }
+  }
+  return projected;
+}
+
+function isNonEmptyTrimmedString(value) {
+  return typeof value === 'string' && value.length > 0 && value.trim() === value;
+}
+
+function isRecord(value) {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function isPublicHttpsUrl(value) {
+  if (!isNonEmptyTrimmedString(value)) return false;
+
+  try {
+    const parsed = new URL(value);
+    if (parsed.protocol !== 'https:' || !parsed.hostname) return false;
+    return !isLocalHostname(parsed.hostname);
+  } catch {
+    return false;
+  }
+}
+
+function isLocalHostname(hostname) {
+  const normalized = hostname.toLowerCase().replace(/^\[|\]$/g, '');
+  if (normalized === 'localhost' || normalized.endsWith('.localhost')) return true;
+  if (normalized === '::1' || normalized === '0.0.0.0') return true;
+  if (/^(fc|fd|fe8|fe9|fea|feb)/.test(normalized)) return true;
+
+  const ipv4MappedIpv6 = normalized.match(/^::ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/);
+  if (ipv4MappedIpv6) {
+    const highWord = Number.parseInt(ipv4MappedIpv6[1], 16);
+    const lowWord = Number.parseInt(ipv4MappedIpv6[2], 16);
+    return isLocalIpv4([
+      highWord >> 8,
+      highWord & 0xff,
+      lowWord >> 8,
+      lowWord & 0xff,
+    ]);
+  }
+
+  const parts = normalized.split('.').map(Number);
+  return isLocalIpv4(parts);
+}
+
+function isLocalIpv4(parts) {
+  if (parts.length !== 4 || parts.some((part) => !Number.isInteger(part))) return false;
+  return (
+    parts[0] === 0
+    || parts[0] === 10
+    || parts[0] === 127
+    || (parts[0] === 169 && parts[1] === 254)
+    || (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31)
+    || (parts[0] === 192 && parts[1] === 168)
+  );
 }
