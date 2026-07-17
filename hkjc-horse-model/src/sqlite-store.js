@@ -166,9 +166,9 @@ function insertOddsSnapshotStatement(db) {
   return db.prepare(`
     INSERT INTO odds_snapshots (
       race_id, date, racecourse, race_no, captured_at, minutes_to_post,
-      pool_key, pool, combination_key, combination_json, odds_value, source, raw_json
+      pool_key, pool, combination_key, combination_json, odds_value, sell_status, source, raw_json
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ON CONFLICT(race_id, captured_at, pool_key, combination_key) DO UPDATE SET
       date = excluded.date,
       racecourse = excluded.racecourse,
@@ -177,6 +177,7 @@ function insertOddsSnapshotStatement(db) {
       pool = excluded.pool,
       combination_json = excluded.combination_json,
       odds_value = excluded.odds_value,
+      sell_status = excluded.sell_status,
       source = excluded.source,
       raw_json = excluded.raw_json
   `);
@@ -186,6 +187,7 @@ function upsertOddsSnapshot(db, statement, snapshot) {
   const capturedAt = nullableText(snapshot.capturedAt) ?? new Date().toISOString();
   const poolKey = normalizePoolKey(snapshot.pool);
   const combination = normalizeCombination(snapshot.combination ?? snapshot.combString);
+  const sellStatus = nullableText(snapshot.sellStatus ?? snapshot.raw?.sellStatus ?? snapshot.raw?.status);
   statement.run(
     snapshot.raceId,
     nullableText(snapshot.date),
@@ -198,6 +200,7 @@ function upsertOddsSnapshot(db, statement, snapshot) {
     combinationKey(combination, poolKey),
     JSON.stringify(combination),
     nullableNumber(snapshot.oddsValue),
+    sellStatus,
     nullableText(snapshot.source),
     JSON.stringify(snapshot.raw ?? snapshot),
   );
@@ -364,6 +367,7 @@ export function loadRunnerMarketFeatures({ dbPath } = {}) {
           odds.pool_key,
           odds.combination_key,
           odds.odds_value,
+          odds.sell_status,
           odds.minutes_to_post,
           odds.captured_at,
           odds.raw_json,
@@ -682,6 +686,7 @@ function openDatabase(dbPath) {
       combination_key TEXT NOT NULL,
       combination_json TEXT NOT NULL,
       odds_value REAL,
+      sell_status TEXT,
       source TEXT,
       raw_json TEXT NOT NULL,
       PRIMARY KEY (race_id, captured_at, pool_key, combination_key)
@@ -720,6 +725,10 @@ function openDatabase(dbPath) {
     );
     CREATE INDEX IF NOT EXISTS idx_recommendation_runs_race ON recommendation_runs(race_id, generated_at);
   `);
+  const oddsColumns = db.prepare('PRAGMA table_info(odds_snapshots)').all();
+  if (!oddsColumns.some((column) => column.name === 'sell_status')) {
+    db.exec('ALTER TABLE odds_snapshots ADD COLUMN sell_status TEXT');
+  }
   return db;
 }
 
@@ -882,7 +891,10 @@ function marketOddsSnapshotSafety(row) {
   }
 
   const raw = parseJsonObject(row.raw_json);
-  const sellStatus = String(raw?.sellStatus ?? '').toUpperCase();
+  const storedSellStatus = row.sell_status == null || row.sell_status === ''
+    ? raw?.sellStatus ?? raw?.status
+    : row.sell_status;
+  const sellStatus = String(storedSellStatus ?? '').toUpperCase();
   if (/(STOP|CLOSE|RESULT|SUSPEND)/.test(sellStatus)) {
     return { safe: false, reason: 'SELL_STATUS' };
   }
@@ -1159,6 +1171,7 @@ function oddsSnapshotFromRow(row) {
     pool: row.pool,
     combination: JSON.parse(row.combination_json),
     oddsValue: row.odds_value,
+    sellStatus: row.sell_status,
     source: row.source,
     raw: JSON.parse(row.raw_json),
   };
