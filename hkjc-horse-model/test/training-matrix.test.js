@@ -179,6 +179,30 @@ describe('training matrix exporter', () => {
     }
   });
 
+  it('rejects obvious winner, outcome, and entry aliases without rejecting historical as-of features', () => {
+    for (const featureName of [
+      'winnerFlag', 'winner_flag', 'isWinner', 'is_winner', 'won',
+      'raceOutcome', 'race_outcome', 'entryNo', 'entry_no',
+      'entryNumber', 'entry_number',
+    ]) {
+      assert.throws(
+        () => trainingDataset.buildTrainingMatrix({ rows: [trainingRow({ features: { [featureName]: 1 } })] }),
+        /leakage|metadata|identifier/i,
+        featureName,
+      );
+    }
+
+    for (const featureName of [
+      'horseWinsBefore', 'priorRaceResult', 'historicalResult',
+      'raceResultAsOf', 'marketWinOddsT30',
+    ]) {
+      assert.doesNotThrow(
+        () => trainingDataset.buildTrainingMatrix({ rows: [trainingRow({ features: { [featureName]: 1 } })] }),
+        featureName,
+      );
+    }
+  });
+
   it('prepares validated source rows for streaming without creating dense matrix rows', () => {
     const row = trainingRow({ features: { z: 1, a: 2 } });
     const prepared = trainingDataset.prepareTrainingMatrix({ rows: [row] });
@@ -186,6 +210,52 @@ describe('training matrix exporter', () => {
     assert.deepEqual(prepared.columns.slice(10), ['a', 'z']);
     assert.equal(prepared.sourceRows[0], row);
     assert.equal(Object.hasOwn(prepared.sourceRows[0], 'a'), false);
+  });
+
+  it('rejects a hand-built prepared matrix when sourceRows contain a leakage feature', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'training-matrix-prepared-validation-'));
+    try {
+      const outputPath = path.join(tempDir, 'matrix.jsonl');
+      const prepared = {
+        columns: [
+          'raceId', 'date', 'split', 'horseId', 'horseNo',
+          'racecourse', 'raceNo', 'fieldSize', 'targetWin', 'targetPlace',
+        ],
+        sourceRows: [trainingRow({ features: { winnerFlag: 1 } })],
+      };
+
+      await assert.rejects(
+        writeTrainingMatrixAtomically({ outputPath, format: 'jsonl', matrix: prepared }),
+        /leakage/i,
+      );
+
+      assert.deepEqual(await readdir(tempDir), []);
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('rejects a hand-built prepared matrix when columns do not match sourceRows features', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'training-matrix-column-validation-'));
+    try {
+      const outputPath = path.join(tempDir, 'matrix.jsonl');
+      const prepared = {
+        columns: [
+          'raceId', 'date', 'split', 'horseId', 'horseNo',
+          'racecourse', 'raceNo', 'fieldSize', 'targetWin', 'targetPlace', 'marketWinOddsT30',
+        ],
+        sourceRows: [trainingRow()],
+      };
+
+      await assert.rejects(
+        writeTrainingMatrixAtomically({ outputPath, format: 'jsonl', matrix: prepared }),
+        /columns.*sourceRows/i,
+      );
+
+      assert.deepEqual(await readdir(tempDir), []);
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
+    }
   });
 
   it('atomically replaces a destination with streamed matrix lines', async () => {

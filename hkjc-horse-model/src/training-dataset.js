@@ -22,6 +22,8 @@ const METADATA_OR_IDENTIFIER_ALIASES = new Set([
   'runneridentifier',
   'raceidentifier',
   'horseidentifier',
+  'entryno',
+  'entrynumber',
   'racenumber',
   'horsenumber',
   'runnernumber',
@@ -34,6 +36,10 @@ const LEAKAGE_FEATURE_KEYS = new Set([
   'targetwin',
   'targetplace',
   'win',
+  'winnerflag',
+  'iswinner',
+  'won',
+  'raceoutcome',
   'placing',
   'place',
   'position',
@@ -319,9 +325,9 @@ function isLeakageFeatureKey(featureName) {
   if (LEAKAGE_FEATURE_KEYS.has(compactFeatureKey(normalized))) return true;
 
   const tokens = normalized.split('_');
-  if (tokens.some((token) => COMPOSITE_LEAKAGE_TOKENS.has(token) || token === 'results')) return true;
   if (tokens.includes('post') && tokens.includes('race')) return true;
   if (hasExplicitPreRaceTiming(tokens)) return false;
+  if (tokens.some((token) => COMPOSITE_LEAKAGE_TOKENS.has(token) || token === 'results')) return true;
   return tokens.some((token) => OUTCOME_LEAKAGE_TOKENS.has(token));
 }
 
@@ -400,6 +406,20 @@ function validatePreparedTrainingMatrix(matrix) {
   }
   if (matrix.columns.some((column) => typeof column !== 'string' || !column)) {
     throw new Error('Prepared training matrix columns must be non-empty strings');
+  }
+
+  const featureColumns = new Set();
+  for (const [index, sourceRow] of matrix.sourceRows.entries()) {
+    validateMatrixRow(sourceRow, index, featureColumns);
+  }
+
+  const expectedColumns = [
+    ...MATRIX_METADATA_COLUMNS,
+    ...[...featureColumns].sort(compareFeatureNamesByCodePoint),
+  ];
+  if (matrix.columns.length !== expectedColumns.length
+    || matrix.columns.some((column, index) => column !== expectedColumns[index])) {
+    throw new Error('Prepared training matrix columns do not match sourceRows features');
   }
 }
 
