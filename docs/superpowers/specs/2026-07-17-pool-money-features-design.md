@@ -19,7 +19,8 @@ Alternatives considered:
 - Supported windows are T60, T30, T10, and T3, using the same minute ranges as existing odds features.
 - A market book is selected as a whole by `(raceId, pool, capturedAt)` and nearest distance to the target minute. Combinations from different capture times are never mixed into one book.
 - Pool investment is selected independently from the nearest in-window pool snapshot, preferring an exact capture-time match with the selected odds book.
-- Negative `minutesToPost`, dividends, results, placing, and post-race records are excluded.
+- Negative `minutesToPost`, dividends, results, placing, and post-race records are excluded. A rounded `minutesToPost = 0` is accepted only when `capturedAt` is strictly before the scheduled Hong Kong post time and the sell status is not closed, stopped, suspended, or resulted; missing timing fails closed.
+- Invalid combination arities are removed before overround, normalization, and HHI are calculated, so malformed WIN/PLACE or QIN/QPL rows cannot distort a valid book.
 - Payout rate is a configurable research constant, defaulting to `0.825`; takeout is represented as `1 - payoutRate`. It is context, not a measured live deduction.
 
 ## Feature contract
@@ -35,13 +36,13 @@ Each runner receives features for each supported pool/window. Common fields incl
 - odds-book overround;
 - configured payout and takeout rates.
 
-WIN and PLACE use the selected runner combination directly. QIN and QPL sum the normalized shares of every pair containing the runner. For pair pools, the equal-share involvement baseline is `2 / uniqueRunnerCount`.
+WIN and PLACE use the selected runner combination directly. QIN and QPL sum the normalized shares of every pair containing the runner. Equal-share baselines use the selected valid book's unique runners: `1 / uniqueRunnerCount` for single-runner pools and `2 / uniqueRunnerCount` for pair pools.
 
 Pool-level investment movement is attached to every runner in the race for T60-to-T30, T30-to-T10, and T10-to-T3 when both endpoints exist. Missing endpoints return null.
 
 ## Integration and reporting
 
-`loadPoolMoneyFeatures` will read races and market snapshots from SQLite, invoke the pure builder, and return `featuresByRunner` plus coverage diagnostics. The training CLI will merge its output into the existing market feature map and publish only sanitized summary counts. The Python baseline will include the new numeric fields, with missing values continuing to map to zero after availability flags preserve missingness information.
+`loadPoolMoneyFeatures` will read only pre-race odds for requested race/pool pairs that also have a non-null, non-negative pool investment, invoke the pure builder, and return `featuresByRunner` plus coverage diagnostics. A temporary requested-race table keeps SQLite queries bounded, and in-memory snapshots are indexed once by race and pool instead of being globally rescanned. This avoids materializing millions of unrelated historical odds rows. The SQLite adapter also uses a sparse representation: covered races receive explicit availability fields, while wholly uncovered races have no pool feature object and the fixed Python feature reader maps those absent fields to zero. The training CLI merges this output into the existing market feature map and publishes only sanitized summary counts.
 
 The real database smoke check must report actual pool coverage. Zero coverage is a valid result and must not be represented as a model gain.
 
@@ -51,4 +52,3 @@ The real database smoke check must report actual pool coverage. Zero coverage is
 - SQLite integration tests prove snapshots become runner features.
 - Training-row tests prove missing pool data does not remove or invalidate rows.
 - Focused tests run after each red-green cycle, followed by the complete `npm test` suite.
-

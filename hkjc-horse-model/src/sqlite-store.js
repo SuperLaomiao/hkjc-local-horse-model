@@ -3,6 +3,8 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, statSync } from 'node
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 
+import { buildPoolMoneyFeatureIndex } from './pool-money-features.js';
+
 export function syncRaceFilesToDatabase({ dbPath, inputPath, sourceKind = 'raw' }) {
   if (!dbPath) throw new Error('syncRaceFilesToDatabase requires dbPath');
   if (!inputPath) throw new Error('syncRaceFilesToDatabase requires inputPath');
@@ -389,6 +391,95 @@ export function loadRunnerMarketFeatures({ dbPath } = {}) {
         windows: MARKET_FEATURE_WINDOWS.map((window) => window.featureLabel),
         pools: ['WIN', 'PLACE'],
       },
+    };
+  } finally {
+    db.close();
+  }
+}
+
+export function loadPoolMoneyFeatures({ dbPath, races = null } = {}) {
+  if (!dbPath) throw new Error('loadPoolMoneyFeatures requires dbPath');
+
+  const raceRows = races ?? loadRacesFromDatabase({ dbPath });
+  const snapshots = loadPoolBackedFeatureSnapshots({
+    dbPath,
+    raceIds: raceRows.map((race) => race.raceId),
+  });
+  const poolBackedRaceIds = new Set(snapshots.pools.map((snapshot) => snapshot.raceId));
+  const featureRaces = raceRows.filter((race) => poolBackedRaceIds.has(race.raceId));
+  const result = buildPoolMoneyFeatureIndex({
+    races: featureRaces,
+    oddsSnapshots: snapshots.odds,
+    poolSnapshots: snapshots.pools,
+  });
+  return {
+    ...result,
+    summary: {
+      ...result.summary,
+      races: raceRows.length,
+      poolBackedRaces: featureRaces.length,
+      loadedOddsSnapshots: snapshots.odds.length,
+      loadedPoolSnapshots: snapshots.pools.length,
+    },
+  };
+}
+
+function loadPoolBackedFeatureSnapshots({ dbPath, raceIds }) {
+  const requestedRaceIds = [...new Set((raceIds ?? []).map(String).filter(Boolean))];
+  if (requestedRaceIds.length === 0) return { odds: [], pools: [] };
+
+  const db = openDatabase(dbPath);
+  try {
+    db.exec(`
+      CREATE TEMP TABLE requested_pool_feature_races (
+        race_id TEXT PRIMARY KEY
+      ) WITHOUT ROWID
+    `);
+    const insertRace = db.prepare('INSERT OR IGNORE INTO requested_pool_feature_races (race_id) VALUES (?)');
+    db.exec('BEGIN');
+    try {
+      for (const raceId of requestedRaceIds) insertRace.run(raceId);
+      db.exec('COMMIT');
+    } catch (error) {
+      db.exec('ROLLBACK');
+      throw error;
+    }
+
+    const poolRows = db.prepare(`
+      SELECT pools.*
+      FROM pool_snapshots AS pools
+      INNER JOIN requested_pool_feature_races AS requested
+        ON requested.race_id = pools.race_id
+      WHERE pools.minutes_to_post BETWEEN 0 AND 75
+        AND pools.pool_key IN ('win', 'place', 'quinella', 'quinellaPlace')
+        AND pools.investment IS NOT NULL
+        AND pools.investment >= 0
+      ORDER BY pools.race_id, pools.captured_at, pools.pool_key
+    `).all();
+    if (poolRows.length === 0) return { odds: [], pools: [] };
+
+    const oddsRows = db.prepare(`
+      SELECT odds.*
+      FROM odds_snapshots AS odds
+      INNER JOIN (
+        SELECT DISTINCT pools.race_id, pools.pool_key
+        FROM pool_snapshots AS pools
+        INNER JOIN requested_pool_feature_races AS requested
+          ON requested.race_id = pools.race_id
+        WHERE pools.minutes_to_post BETWEEN 0 AND 75
+          AND pools.pool_key IN ('win', 'place', 'quinella', 'quinellaPlace')
+          AND pools.investment IS NOT NULL
+          AND pools.investment >= 0
+      ) AS supported
+        ON supported.race_id = odds.race_id
+       AND supported.pool_key = odds.pool_key
+      WHERE odds.minutes_to_post BETWEEN 0 AND 75
+      ORDER BY odds.race_id, odds.captured_at, odds.pool_key, odds.combination_key
+    `).all();
+
+    return {
+      odds: oddsRows.map(oddsSnapshotFromRow),
+      pools: poolRows.map(poolSnapshotFromRow),
     };
   } finally {
     db.close();

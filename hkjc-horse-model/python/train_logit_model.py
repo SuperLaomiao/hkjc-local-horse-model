@@ -8,6 +8,16 @@ from pathlib import Path
 import numpy as np
 
 
+POOL_FEATURE_DEFINITIONS = [
+    ("Win", "MarketShare", "Imbalance"),
+    ("Place", "MarketShare", "Imbalance"),
+    ("Quinella", "InvolvementShare", "InvolvementImbalance"),
+    ("QuinellaPlace", "InvolvementShare", "InvolvementImbalance"),
+]
+POOL_FEATURE_WINDOWS = ["T30", "T10", "T3"]
+POOL_MOVEMENT_PAIRS = ["T60ToT30", "T30ToT10", "T10ToT3"]
+
+
 FEATURES = [
     "distance",
     "raceClass",
@@ -60,6 +70,28 @@ FEATURES = [
     "marketPlaceImpliedProbT3",
     "marketPlaceRankT3",
     "marketPlaceOddsPctChangeT60ToT30",
+    *[
+        f"pool{pool_label}{field}{window}"
+        for pool_label, share_field, imbalance_field in POOL_FEATURE_DEFINITIONS
+        for window in POOL_FEATURE_WINDOWS
+        for field in (
+            "OddsAvailable",
+            "InvestmentAvailable",
+            "Available",
+            "Investment",
+            share_field,
+            "EstimatedMoney",
+            "CrowdingRatio",
+            "Concentration",
+            "Overround",
+            imbalance_field,
+        )
+    ],
+    *[
+        f"pool{pool_label}InvestmentPctChange{movement_pair}"
+        for pool_label, _share_field, _imbalance_field in POOL_FEATURE_DEFINITIONS
+        for movement_pair in POOL_MOVEMENT_PAIRS
+    ],
     "tianxiFormAvailable",
     "tianxiPriorStarts",
     "tianxiPriorWins",

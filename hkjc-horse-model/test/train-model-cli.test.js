@@ -43,6 +43,9 @@ describe('train-model CLI', () => {
       assert.equal(report.features.includes('horseWinRateBefore'), true);
       assert.equal(report.features.includes('marketWinOddsT30'), true);
       assert.equal(report.features.includes('marketWinOddsPctChangeT60ToT30'), true);
+      for (const feature of expectedPoolModelFeatures()) {
+        assert.equal(report.features.includes(feature), true, `missing pool model feature ${feature}`);
+      }
       assert.equal(report.features.includes('tianxiFormAvailable'), true);
       assert.equal(report.features.includes('tianxiPriorWinRate'), true);
       assert.equal(report.features.includes('tianxiLatestRating'), true);
@@ -53,6 +56,34 @@ describe('train-model CLI', () => {
     }
   });
 });
+
+function expectedPoolModelFeatures() {
+  const definitions = [
+    ['Win', 'MarketShare', 'Imbalance'],
+    ['Place', 'MarketShare', 'Imbalance'],
+    ['Quinella', 'InvolvementShare', 'InvolvementImbalance'],
+    ['QuinellaPlace', 'InvolvementShare', 'InvolvementImbalance'],
+  ];
+  const windows = ['T30', 'T10', 'T3'];
+  const features = definitions.flatMap(([pool, share, imbalance]) => windows.flatMap((window) => [
+    `pool${pool}OddsAvailable${window}`,
+    `pool${pool}InvestmentAvailable${window}`,
+    `pool${pool}Available${window}`,
+    `pool${pool}Investment${window}`,
+    `pool${pool}${share}${window}`,
+    `pool${pool}EstimatedMoney${window}`,
+    `pool${pool}CrowdingRatio${window}`,
+    `pool${pool}Concentration${window}`,
+    `pool${pool}Overround${window}`,
+    `pool${pool}${imbalance}${window}`,
+  ]));
+  features.push(...definitions.flatMap(([pool]) => [
+    `pool${pool}InvestmentPctChangeT60ToT30`,
+    `pool${pool}InvestmentPctChangeT30ToT10`,
+    `pool${pool}InvestmentPctChangeT10ToT3`,
+  ]));
+  return features;
+}
 
 function trainingFixture() {
   return {

@@ -53,6 +53,7 @@ import {
   loadRacesFromDatabase,
   loadLatestMarketSnapshots,
   loadMarketSnapshots,
+  loadPoolMoneyFeatures,
   loadRunnerMarketFeatures,
   loadRecommendationRuns,
   recordOddsSnapshot,
@@ -307,6 +308,7 @@ async function trainingDatasetCommand(args) {
   const dbPath = path.resolve(args.db ?? sqliteDbPath);
   const settledRaces = loadRacesFromDatabase({ dbPath, status: 'settled' });
   const marketFeatures = loadRunnerMarketFeatures({ dbPath });
+  const poolMoneyFeatures = loadPoolMoneyFeatures({ dbPath, races: settledRaces });
   const tianxiFeatures = args.tianxiRoot
     ? await loadTianxiFormFeatureIndex({
       rootPath: path.resolve(args.tianxiRoot),
@@ -316,7 +318,10 @@ async function trainingDatasetCommand(args) {
     : null;
   const rows = buildAsOfTrainingRows(settledRaces, {
     marketFeaturesForRunner: ({ race, runner }) => (
-      marketFeatures.featuresByRunner.get(`${race.raceId}|${runner.horseNo}`) ?? {}
+      {
+        ...(marketFeatures.featuresByRunner.get(`${race.raceId}|${runner.horseNo}`) ?? {}),
+        ...(poolMoneyFeatures.featuresByRunner.get(`${race.raceId}|${runner.horseNo}`) ?? {}),
+      }
     ),
     externalFeaturesForRunner: tianxiFeatures
       ? ({ race, runner }) => tianxiFeatures.featuresByRunner.get(tianxiRunnerFeatureKey(race, runner)) ?? {}
@@ -334,12 +339,14 @@ async function trainingDatasetCommand(args) {
       settledRaces: settledRaces.length,
     },
     marketFeatures: marketFeatures.summary,
+    poolMoneyFeatures: poolMoneyFeatures.summary,
     ...(tianxiFeatures ? { externalFeatures: { tianxi: tianxiFeatures.summary } } : {}),
     summary,
     rows,
   });
 
   console.log(`Training dataset from SQLite: ${summary.rows} runner rows, ${summary.races} races`);
+  console.log(`Pool money coverage: ${poolMoneyFeatures.summary.racesWithAnyPoolMoney}/${poolMoneyFeatures.summary.races} races`);
   if (tianxiFeatures) {
     console.log(`Tianxi form coverage: ${tianxiFeatures.summary.availableFeatureRows}/${tianxiFeatures.summary.requestedRunnerRows} runner rows`);
   }
