@@ -73,7 +73,7 @@ Goal: automatically accumulate the missing 2026 live market data that our ROI mo
 
 Goal: reproduce the strongest public GitHub ideas on our own SQLite history before trusting them.
 
-- [ ] Add a benchmark registry for external ideas. Research Lab action: `benchmark-registry-refresh` / P0.
+- [x] Add a benchmark registry for external ideas. Research Lab action: `benchmark-registry-refresh` / P0.
   - Suggested files:
     - Create `hkjc-horse-model/src/model-benchmark-registry.js`
     - Create `hkjc-horse-model/test/model-benchmark-registry.test.js`
@@ -257,6 +257,7 @@ This queue is mirrored in `research-program.js` and surfaced in the dashboard Re
 
 ## Latest continuation note
 
+- 2026-07-17: Completed the model benchmark registry with the current baseline plus catowabisabi LightGBM/QIN, jerrydaphantom CatBoost calibration, neigh SpeedPRO, HKJC pool-tracker, and HKJC Edge Lab CLV ideas. Every entry now records required data, leakage risks, metrics, local adoption status, and explicit promotion gates; deterministic summary/snapshot helpers are ready for later Research Lab wiring without loading race data. Focused test: `node --test hkjc-horse-model/test/model-benchmark-registry.test.js`. Next Phase B task: connect the registry snapshot to the separate Tier1 Acceleration Lab dashboard registry.
 - 2026-07-17: Completed leakage-safe WIN/PLACE/QIN/QPL pool-money features with coherent timestamped books, strict T3 post-time/sell-status guards, valid-arity filtering, book-participant crowding baselines, normalized market/involvement shares, estimated money, HHI, overround, imbalance, availability flags, and pool movement. SQLite now restricts reads to requested races with usable pool investment, indexes snapshots by race/pool, and emits sparse features, avoiding a 6.38M-row materialization and full-history OOM. Real export succeeded for 175,574 runners / 14,250 races; the database has 36 pool snapshots but all are 1,144-1,404 minutes pre-race, so usable T60/T30/T10/T3 coverage is 0 and no model/ROI gain can yet be estimated. Next task: add the low-frequency race-day due-snapshot automation step.
 - 2026-07-17: Tianxi prior-form as-of enrichment is implemented and optional in `training-dataset --tianxiRoot`. Real replay enriched 112,603/175,574 runner rows (64.1%) and filtered 2,479,721 not-yet-available row evaluations. On identical splits, holdout log loss improved from 0.267120 to 0.265832, Brier from 0.071932 to 0.071738, and top-pick win rate from 21.45% to 22.16% (121 to 125 wins over 564 races). This is probability evidence only; ROI/drawdown are not yet evaluated and cash mode remains blocked. Next task: build pool-money features, then reproduce a tree-model baseline on the enriched matrix.
 - 2026-07-17: Completed `live-market-due-snapshots` with dry-run reporting, planner-backed T-window capture, race/window duplicate skipping, focused SQLite queries, and the `hkjc:live-market-due-snapshots` npm script. Focused tests: `node --test hkjc-horse-model/test/live-market-due-snapshots.test.js hkjc-horse-model/test/live-snapshot-planner.test.js hkjc-horse-model/test/live-market-snapshot.test.js`. Next task: create `hkjc-horse-model/test/pool-money-features.test.js` and add leakage-safe WIN / PLACE / QIN / QPL pool-money feature expectations.
