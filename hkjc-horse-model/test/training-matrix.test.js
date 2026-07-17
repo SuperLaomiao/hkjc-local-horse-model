@@ -74,12 +74,43 @@ describe('training matrix exporter', () => {
     );
   });
 
+  it('rejects features that collide with any reserved metadata column', () => {
+    const metadataColumns = [
+      'raceId', 'date', 'split', 'horseId', 'horseNo',
+      'racecourse', 'raceNo', 'fieldSize', 'targetWin', 'targetPlace',
+    ];
+
+    for (const featureName of metadataColumns) {
+      assert.throws(
+        () => trainingDataset.buildTrainingMatrix({
+          rows: [trainingRow({ features: { [featureName]: 'shadow metadata' } })],
+        }),
+        new RegExp(`reserved metadata column.*${featureName}`, 'i'),
+      );
+    }
+  });
+
+  it('rejects composite post-race leakage names while allowing normal pre-race features', () => {
+    for (const featureName of ['officialResult', 'dividendAmount', 'postRaceComment']) {
+      assert.throws(
+        () => trainingDataset.buildTrainingMatrix({ rows: [trainingRow({ features: { [featureName]: 1 } })] }),
+        /leakage/i,
+      );
+    }
+
+    for (const featureName of ['preRaceComment', 'marketWinOddsT30', 'horseAverageLbwBefore']) {
+      assert.doesNotThrow(() => trainingDataset.buildTrainingMatrix({
+        rows: [trainingRow({ features: { [featureName]: 1 } })],
+      }));
+    }
+  });
+
   it('rejects malformed input and explicit post-race leakage without rejecting as-of LBW features', () => {
     assert.throws(() => trainingDataset.buildTrainingMatrix({}), /rows/i);
     assert.throws(() => trainingDataset.buildTrainingMatrix({ rows: [{}] }), /features|raceId/i);
     assert.throws(
       () => trainingDataset.buildTrainingMatrix({ rows: [trainingRow({ features: { targetWin: 1 } })] }),
-      /leakage/i,
+      /leakage|reserved metadata column/i,
     );
     assert.throws(
       () => trainingDataset.buildTrainingMatrix({ rows: [trainingRow({ features: { postRacePayout: 10 } })] }),

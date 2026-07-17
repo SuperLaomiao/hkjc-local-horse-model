@@ -13,6 +13,7 @@ const MATRIX_METADATA_COLUMNS = [
   'targetWin',
   'targetPlace',
 ];
+const MATRIX_METADATA_COLUMN_SET = new Set(MATRIX_METADATA_COLUMNS);
 
 const SUPPORTED_MATRIX_FORMATS = new Set(['jsonl', 'csv']);
 const LEAKAGE_FEATURE_KEYS = new Set([
@@ -50,6 +51,7 @@ const LEAKAGE_FEATURE_KEYS = new Set([
   'postraceresult',
   'postracepayout',
 ]);
+const COMPOSITE_LEAKAGE_TOKENS = new Set(['dividend', 'payout', 'refund', 'result', 'settlement']);
 const UNSAFE_FEATURE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 
 export function buildAsOfTrainingRows(races, options = {}) {
@@ -225,7 +227,10 @@ function validateMatrixRow(row, index, featureColumns) {
     if (!featureName || UNSAFE_FEATURE_KEYS.has(featureName)) {
       throw new Error(`Training matrix row ${index} has an unsafe feature key`);
     }
-    if (LEAKAGE_FEATURE_KEYS.has(featureName.toLowerCase())) {
+    if (MATRIX_METADATA_COLUMN_SET.has(featureName)) {
+      throw new Error(`Training matrix row ${index} feature ${featureName} collides with reserved metadata column ${featureName}`);
+    }
+    if (isLeakageFeatureKey(featureName)) {
       throw new Error(`Training matrix row ${index} feature ${featureName} is explicit post-race leakage`);
     }
     requireNullableScalar(value, `Training matrix row ${index} feature ${featureName}`);
@@ -233,6 +238,19 @@ function validateMatrixRow(row, index, featureColumns) {
   }
 
   return row;
+}
+
+function isLeakageFeatureKey(featureName) {
+  const normalized = featureName
+    .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_|_$/g, '');
+  if (LEAKAGE_FEATURE_KEYS.has(normalized.replaceAll('_', ''))) return true;
+
+  const tokens = normalized.split('_');
+  return tokens.some((token) => COMPOSITE_LEAKAGE_TOKENS.has(token))
+    || (tokens.includes('post') && tokens.includes('race'));
 }
 
 function validateMatrix(matrix) {
