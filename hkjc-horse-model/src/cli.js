@@ -32,6 +32,8 @@ import {
   importLiveMarketSnapshotsToDatabase,
   normalizeLiveMarketPayload,
 } from './live-market-snapshot.js';
+import { runDueLiveMarketSnapshots } from './live-market-due-snapshots.js';
+import { DEFAULT_SNAPSHOT_WINDOWS } from './live-snapshot-planner.js';
 import {
   fetchFixtureMeetings,
   fetchMeetingRaceCards,
@@ -141,6 +143,11 @@ async function main(argv) {
 
   if (command === 'live-market-snapshot') {
     await liveMarketSnapshotCommand(args);
+    return;
+  }
+
+  if (command === 'live-market-due-snapshots') {
+    await liveMarketDueSnapshotsCommand(args);
     return;
   }
 
@@ -672,6 +679,32 @@ async function liveMarketSnapshotCommand(args) {
   }
 }
 
+async function liveMarketDueSnapshotsCommand(args) {
+  const dbPath = path.resolve(args.db ?? sqliteDbPath);
+  const requestedLabels = new Set(parseStringList(args.windows ?? 'T-30,T-10,T-3'));
+  const windows = DEFAULT_SNAPSHOT_WINDOWS.filter((window) => requestedLabels.has(window.label));
+  if (windows.length === 0) throw new Error('live-market-due-snapshots requires at least one valid --windows label');
+  const pools = parseStringList(args.pools ?? DEFAULT_LIVE_MARKET_ODDS_TYPES.join(','));
+  const report = await runDueLiveMarketSnapshots({
+    dbPath,
+    windows,
+    pools,
+    dryRun: Boolean(args.dryRun),
+    now: args.now ?? new Date(),
+  });
+  const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'live-market-source-report.json'));
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeJson(outputPath, {
+    ...report,
+    dataSource: { source: 'sqlite', database: publicDatabaseLabel(dbPath) },
+    windows: windows.map((window) => window.label),
+    pools,
+  });
+  console.log(`Due live market snapshots: ${report.summary.due} due, ${report.summary.captured} captured, ${report.summary.skippedDuplicates} duplicate windows skipped`);
+  console.log(`Imported: ${report.summary.oddsSnapshots} odds, ${report.summary.poolSnapshots} pools`);
+  console.log(`Saved due snapshot report to ${outputPath}`);
+}
+
 async function marketCoverageReportCommand(args) {
   const dbPath = path.resolve(args.db ?? sqliteDbPath);
   const report = loadMarketSnapshotCoverageSummary({ dbPath });
@@ -1128,6 +1161,7 @@ Commands:
   market-snapshot --input hkjc-horse-model/data/market-snapshot.json --db hkjc-horse-model/data/hkjc.sqlite
   external-live-odds --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/external-live-odds-import.json
   live-market-snapshot --date 2026-07-08 --venue HV --race 1 --pools WIN,PLA,QIN,QPL --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/live-market-source-report.json
+  live-market-due-snapshots --db hkjc-horse-model/data/hkjc.sqlite --windows T-30,T-10,T-3 --pools WIN,PLA,QIN,QPL --output hkjc-horse-model/data/processed/live-market-source-report.json --dryRun
   market-coverage-report --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/market-snapshot-coverage.json
   market-window-research --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/market-window-research.json
   recommendation-audit --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/latest-recommendation-audit.json

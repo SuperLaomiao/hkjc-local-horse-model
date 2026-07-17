@@ -40,7 +40,7 @@ Goal: automatically accumulate the missing 2026 live market data that our ROI mo
     - A race outside the window is skipped.
     - Scratched/settled races are not captured.
 
-- [ ] Add a CLI command `live-market-due-snapshots`.
+- [x] Add a CLI command `live-market-due-snapshots`.
   - Suggested command:
     ```bash
     npm run hkjc:live-market-due-snapshots -- --db hkjc-horse-model/data/hkjc.sqlite --windows T-30,T-10,T-3 --pools WIN,PLA,QIN,QPL --output hkjc-horse-model/data/processed/live-market-source-report.json
@@ -251,5 +251,6 @@ This queue is mirrored in `research-program.js` and surfaced in the dashboard Re
 
 ## Latest continuation note
 
+- 2026-07-17: Completed `live-market-due-snapshots` with dry-run reporting, planner-backed T-window capture, race/window duplicate skipping, focused SQLite queries, and the `hkjc:live-market-due-snapshots` npm script. Focused tests: `node --test hkjc-horse-model/test/live-market-due-snapshots.test.js hkjc-horse-model/test/live-snapshot-planner.test.js hkjc-horse-model/test/live-market-snapshot.test.js`. Next task: create `hkjc-horse-model/test/pool-money-features.test.js` and add leakage-safe WIN / PLACE / QIN / QPL pool-money feature expectations.
 - 2026-07-10: Completed `live-snapshot-planner` with SQLite-backed upcoming-race loading, HK-time T-30/T-10/T-3 planning, and settled/scratched/out-of-window guards. Next command: `node --test hkjc-horse-model/test/live-snapshot-planner.test.js`; next task: add the `live-market-due-snapshots` CLI command with dry-run and idempotent capture behavior.
 - 2026-07-10: ChatGPT-suggested reference list reconciled with Research Lab. Added `j-csc/HK-Horse-Racing-Data-Scraper`; kept `neigh` as schema/SDK reference because GitHub API currently cannot resolve it; data-leverage priority is now explicit: Tianxi local-only feature audit, Bobosky/rkwyu live pool capture, j-csc scraper schema audit, then model reproduction.

@@ -267,6 +267,35 @@ export function loadMarketSnapshots({ dbPath, raceId = null } = {}) {
   }
 }
 
+export function loadCapturedSnapshotWindows({ dbPath, windows = [
+  { label: 'T-30', minMinutes: 21, maxMinutes: 45 },
+  { label: 'T-10', minMinutes: 6, maxMinutes: 20 },
+  { label: 'T-3', minMinutes: 0, maxMinutes: 5 },
+], raceIds = [] } = {}) {
+  if (!dbPath) throw new Error('loadCapturedSnapshotWindows requires dbPath');
+  const normalizedRaceIds = [...new Set(raceIds.map(String).filter(Boolean))];
+  if (normalizedRaceIds.length === 0) return new Set();
+  const db = openDatabase(dbPath);
+  try {
+    const placeholders = normalizedRaceIds.map(() => '?').join(', ');
+    const rows = db.prepare(`
+      SELECT race_id, minutes_to_post FROM odds_snapshots WHERE race_id IN (${placeholders})
+      UNION ALL
+      SELECT race_id, minutes_to_post FROM pool_snapshots WHERE race_id IN (${placeholders})
+    `).all(...normalizedRaceIds, ...normalizedRaceIds);
+    const captured = new Set();
+    for (const row of rows) {
+      const window = windows.find((item) => (
+        row.minutes_to_post >= item.minMinutes && row.minutes_to_post <= item.maxMinutes
+      ));
+      if (window) captured.add(`${row.race_id}|${window.label}`);
+    }
+    return captured;
+  } finally {
+    db.close();
+  }
+}
+
 export function loadMarketSnapshotCoverageSummary({ dbPath } = {}) {
   if (!dbPath) throw new Error('loadMarketSnapshotCoverageSummary requires dbPath');
 

@@ -164,6 +164,12 @@ command. It writes directly to the local SQLite `odds_snapshots` and
 npm run hkjc:live-market-snapshot -- --date 2026-07-08 --venue HV --race 1-7 --pools WIN,PLA,QIN,QPL --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/live-market-source-report.json --dryRun
 ```
 
+To capture only currently due T-30/T-10/T-3 windows, run the planner-backed command. It skips a race/window when SQLite already contains odds or pool rows for that window:
+
+```bash
+npm run hkjc:live-market-due-snapshots -- --db hkjc-horse-model/data/hkjc.sqlite --windows T-30,T-10,T-3 --pools WIN,PLA,QIN,QPL --output hkjc-horse-model/data/processed/live-market-source-report.json --dryRun
+```
+
 The command uses HKJC's whitelisted GraphQL query shapes and requests odds
 types in small batches. `PLA` is normalized to `PLACE`, `QIN` to `QUINELLA`,
 and `QPL` to `QUINELLA PLACE` so the existing market-feature code can read the
