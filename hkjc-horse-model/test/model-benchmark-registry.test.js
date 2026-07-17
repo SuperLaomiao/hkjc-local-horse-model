@@ -169,7 +169,7 @@ describe('model benchmark registry', () => {
     );
   });
 
-  it('requires trimmed scalar fields, allowed enums, and public HTTPS source URLs', () => {
+  it('requires trimmed scalar fields, allowed enums, and GitHub HTTPS source URLs', () => {
     const invalidValues = [
       ['id', ' benchmark'],
       ['label', ' '],
@@ -185,15 +185,24 @@ describe('model benchmark registry', () => {
       ['sourceUrl', 'https://127.0.0.1/private-repo'],
       ['sourceUrl', 'https://[::ffff:127.0.0.1]/private-repo'],
       ['sourceUrl', '/Users/example/private-repo'],
+      ['sourceUrl', 'https://github.com.evil.example/owner/repo'],
+      ['sourceUrl', 'https://[fc00::1]/owner/repo'],
+      ['sourceUrl', 'https://example.com/owner/repo'],
+      ['sourceUrl', 'https://8.8.8.8/owner/repo'],
+      ['sourceUrl', 'https://[2001:4860:4860::8888]/owner/repo'],
     ];
 
     for (const [field, value] of invalidValues) {
       const issues = validateModelBenchmarkRegistry([validEntry({ [field]: value })]);
       assert.match(issues.join(' '), new RegExp(field), `${field} should be rejected`);
     }
+
+    assert.deepEqual(validateModelBenchmarkRegistry([
+      validEntry({ sourceUrl: 'https://GITHUB.COM/owner/repo' }),
+    ]), []);
   });
 
-  it('rejects private paths from every projected string field', () => {
+  it('rejects file URIs and absolute path tokens from every projected text field', () => {
     const cases = [
       ['id', (entry, value) => ({ ...entry, id: value })],
       ['label', (entry, value) => ({ ...entry, label: value })],
@@ -213,7 +222,12 @@ describe('model benchmark registry', () => {
       })],
     ];
 
-    for (const privateText of ['/Users/alice/private', 'file:///Users/alice/private']) {
+    for (const privateText of [
+      'file:/tmp/secrets.json',
+      '/tmp/secrets.json',
+      'C:\\secrets.json',
+      '\\\\server\\share\\secrets.json',
+    ]) {
       for (const [field, makeEntry] of cases) {
         const issues = validateModelBenchmarkRegistry([
           makeEntry(validEntry(), privateText),

@@ -286,8 +286,8 @@ export function validateModelBenchmarkRegistry(registry = MODEL_BENCHMARK_REGIST
     ) {
       issues.push(`${prefix} localAdoptionStatus is invalid`);
     }
-    if (entry.sourceUrl !== null && !isPublicHttpsUrl(entry.sourceUrl)) {
-      issues.push(`${prefix} sourceUrl must be a public HTTPS URL or null`);
+    if (entry.sourceUrl !== null && !isApprovedSourceUrl(entry.sourceUrl)) {
+      issues.push(`${prefix} sourceUrl must be a GitHub HTTPS URL or null`);
     }
 
     requireStringList(issues, prefix, entry, 'requiredData');
@@ -450,169 +450,28 @@ function isNonEmptyTrimmedString(value) {
 }
 
 function isPrivacySafeText(value) {
-  return !/(?:file:\/\/|\/Users\/)/i.test(value);
+  return typeof value === 'string'
+    && !/(?:^|[^A-Za-z0-9_])(?:file:|\/(?!\/)|[A-Za-z]:[\\/]|\\\\)/i.test(value);
 }
 
 function isRecord(value) {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-function isPublicHttpsUrl(value) {
+function isApprovedSourceUrl(value) {
   if (!isNonEmptyTrimmedString(value)) return false;
-  if (!isPrivacySafeText(value)) return false;
 
   try {
     const parsed = new URL(value);
-    if (
-      parsed.protocol !== 'https:'
-      || !parsed.hostname
-      || parsed.username
-      || parsed.password
-    ) {
-      return false;
-    }
-    return !isNonPublicHostname(parsed.hostname);
+    return (
+      parsed.protocol === 'https:'
+      && parsed.hostname.toLowerCase() === 'github.com'
+      && !parsed.username
+      && !parsed.password
+    );
   } catch {
     return false;
   }
-}
-
-function isNonPublicHostname(hostname) {
-  const normalized = hostname.toLowerCase().replace(/^\[|\]$/g, '').replace(/\.$/, '');
-  if (
-    normalized === 'localhost'
-    || normalized.endsWith('.localhost')
-    || normalized.endsWith('.local')
-  ) {
-    return true;
-  }
-
-  const ipVersion = isIP(normalized);
-  if (ipVersion === 4) return isNonPublicIpv4(normalized);
-  if (ipVersion === 6) return isNonPublicIpv6(normalized);
-  return false;
-}
-
-function isNonPublicIpv4(value) {
-  const parts = value.split('.').map(Number);
-  if (parts.length !== 4 || parts.some((part) => !Number.isInteger(part) || part < 0 || part > 255)) {
-    return true;
-  }
-
-  const [first, second, third] = parts;
-  return (
-    first === 0
-    || first === 10
-    || (first === 100 && second >= 64 && second <= 127)
-    || first === 127
-    || (first === 169 && second === 254)
-    || (first === 172 && second >= 16 && second <= 31)
-    || (first === 192 && second === 0 && third === 0)
-    || (first === 192 && second === 0 && third === 2)
-    || (first === 192 && second === 88 && third === 99)
-    || (first === 192 && second === 168)
-    || (first === 198 && second >= 18 && second <= 19)
-    || (first === 198 && second === 51 && third === 100)
-    || (first === 203 && second === 0 && third === 113)
-    || first >= 224
-  );
-}
-
-function isNonPublicIpv6(value) {
-  const words = parseIpv6(value);
-  if (!words) return true;
-
-  const address = wordsToBigInt(words);
-  const mappedIpv4 = address >> 32n;
-  if (mappedIpv4 === 0xffffn) {
-    return isNonPublicIpv4(bigIntToIpv4(address & 0xffffffffn));
-  }
-
-  return (
-    address === 0n
-    || address === 1n
-    || isIpv6InRange(address, 'fc000000000000000000000000000000', 7)
-    || isIpv6InRange(address, 'fe800000000000000000000000000000', 10)
-    || isIpv6InRange(address, 'ff000000000000000000000000000000', 8)
-    || isIpv6InRange(address, '01000000000000000000000000000000', 64)
-    || isIpv6InRange(address, '00000000000000000000000000000000', 96)
-    || isIpv6InRange(address, '0064ff9b000000000000000000000000', 96)
-    || isIpv6InRange(address, '20010db8000000000000000000000000', 32)
-    || isIpv6InRange(address, '20010000000000000000000000000000', 32)
-    || isIpv6InRange(address, '20010020000000000000000000000000', 28)
-    || isIpv6InRange(address, '20010002000000000000000000000000', 48)
-    || isIpv6InRange(address, '3fff0000000000000000000000000000', 20)
-  );
-}
-
-function parseIpv6(value) {
-  const sections = value.split('::');
-  if (sections.length > 2) return null;
-
-  const left = sections[0] ? sections[0].split(':') : [];
-  const right = sections.length === 2 && sections[1] ? sections[1].split(':') : [];
-  const expandedLeft = expandIpv6Parts(left);
-  const expandedRight = expandIpv6Parts(right);
-  if (!expandedLeft || !expandedRight) return null;
-
-  const missing = sections.length === 2
-    ? 8 - expandedLeft.length - expandedRight.length
-    : 0;
-  if (missing < 0 || (sections.length === 1 && expandedLeft.length !== 8)) return null;
-
-  const parts = [
-    ...expandedLeft,
-    ...Array.from({ length: missing }, () => '0'),
-    ...expandedRight,
-  ];
-  if (parts.length !== 8) return null;
-
-  return parts.map((part) => {
-    if (!/^[0-9a-f]{1,4}$/i.test(part)) return null;
-    return Number.parseInt(part, 16);
-  });
-}
-
-function expandIpv6Parts(parts) {
-  const expanded = [];
-  for (const part of parts) {
-    if (!part.includes('.')) {
-      expanded.push(part);
-      continue;
-    }
-
-    const ipv4Parts = part.split('.').map(Number);
-    if (
-      ipv4Parts.length !== 4
-      || ipv4Parts.some((octet) => !Number.isInteger(octet) || octet < 0 || octet > 255)
-    ) {
-      return null;
-    }
-    expanded.push(
-      ((ipv4Parts[0] << 8) | ipv4Parts[1]).toString(16),
-      ((ipv4Parts[2] << 8) | ipv4Parts[3]).toString(16),
-    );
-  }
-  return expanded;
-}
-
-function wordsToBigInt(words) {
-  return words.reduce((value, word) => (value << 16n) | BigInt(word), 0n);
-}
-
-function isIpv6InRange(address, prefixHex, prefixLength) {
-  const prefix = BigInt(`0x${prefixHex}`);
-  const shift = 128n - BigInt(prefixLength);
-  return (address >> shift) === (prefix >> shift);
-}
-
-function bigIntToIpv4(value) {
-  return [
-    Number((value >> 24n) & 0xffn),
-    Number((value >> 16n) & 0xffn),
-    Number((value >> 8n) & 0xffn),
-    Number(value & 0xffn),
-  ].join('.');
 }
 
 function assertValidRegistry(registry) {
