@@ -37,6 +37,10 @@ import {
 import { runDueLiveMarketSnapshots } from './live-market-due-snapshots.js';
 import { DEFAULT_SNAPSHOT_WINDOWS } from './live-snapshot-planner.js';
 import {
+  loadTianxiFormFeatureIndex,
+  tianxiRunnerFeatureKey,
+} from './tianxi-form-feature-loader.js';
+import {
   fetchFixtureMeetings,
   fetchMeetingRaceCards,
   fetchMeetingResults,
@@ -303,10 +307,20 @@ async function trainingDatasetCommand(args) {
   const dbPath = path.resolve(args.db ?? sqliteDbPath);
   const settledRaces = loadRacesFromDatabase({ dbPath, status: 'settled' });
   const marketFeatures = loadRunnerMarketFeatures({ dbPath });
+  const tianxiFeatures = args.tianxiRoot
+    ? await loadTianxiFormFeatureIndex({
+      rootPath: path.resolve(args.tianxiRoot),
+      races: settledRaces,
+      availabilityLagDays: args.tianxiLagDays == null ? 1 : Number(args.tianxiLagDays),
+    })
+    : null;
   const rows = buildAsOfTrainingRows(settledRaces, {
     marketFeaturesForRunner: ({ race, runner }) => (
       marketFeatures.featuresByRunner.get(`${race.raceId}|${runner.horseNo}`) ?? {}
     ),
+    externalFeaturesForRunner: tianxiFeatures
+      ? ({ race, runner }) => tianxiFeatures.featuresByRunner.get(tianxiRunnerFeatureKey(race, runner)) ?? {}
+      : undefined,
   });
   const summary = summarizeTrainingRows(rows);
   const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'training-dataset.json'));
@@ -320,11 +334,15 @@ async function trainingDatasetCommand(args) {
       settledRaces: settledRaces.length,
     },
     marketFeatures: marketFeatures.summary,
+    ...(tianxiFeatures ? { externalFeatures: { tianxi: tianxiFeatures.summary } } : {}),
     summary,
     rows,
   });
 
   console.log(`Training dataset from SQLite: ${summary.rows} runner rows, ${summary.races} races`);
+  if (tianxiFeatures) {
+    console.log(`Tianxi form coverage: ${tianxiFeatures.summary.availableFeatureRows}/${tianxiFeatures.summary.requestedRunnerRows} runner rows`);
+  }
   console.log(`Saved training dataset to ${outputPath}`);
 }
 
@@ -1205,7 +1223,7 @@ Commands:
   auto-run   --input hkjc-horse-model/data/raw --db hkjc-horse-model/data/hkjc.sqlite --output data/dashboard.json --auditOutput data/latest-recommendation-audit.json
   sync-db    --input hkjc-horse-model/data/raw --upcoming hkjc-horse-model/data/upcoming --db hkjc-horse-model/data/hkjc.sqlite
   dashboard-db --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/dashboard.json --historyOutput hkjc-horse-model/data/processed/dashboard-history.json
-  training-dataset --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/training-dataset.json
+  training-dataset --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/training-dataset.json --tianxiRoot /path/to/tianxi-database
   model-leaderboard --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/model-leaderboard.json
   external-model-comparison --date 2026-07-08 --venue HV --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/external-model-comparison-2026-07-08-HV.json
   external-source-audit --output hkjc-horse-model/data/processed/external-source-audit.json

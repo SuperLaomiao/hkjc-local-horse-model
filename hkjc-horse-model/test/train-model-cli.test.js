@@ -34,12 +34,19 @@ describe('train-model CLI', () => {
       assert.match(result.stdout, /Trained model logit-runner-v1/);
       const report = JSON.parse(await readFile(outputPath, 'utf8'));
       assert.equal(report.modelId, 'logit-runner-v1');
+      assert.equal(report.training.input, 'training-dataset.json');
+      assert.equal(JSON.stringify(report).includes(tempDir), false);
+      assert.equal(report.training.externalFeatures.tianxi.availableFeatureRows, 6);
       assert.equal(report.metrics.bySplit.train.races, 2);
       assert.equal(report.metrics.bySplit.validation.races, 1);
       assert.equal(report.metrics.bySplit.holdout.races, 1);
       assert.equal(report.features.includes('horseWinRateBefore'), true);
       assert.equal(report.features.includes('marketWinOddsT30'), true);
       assert.equal(report.features.includes('marketWinOddsPctChangeT60ToT30'), true);
+      assert.equal(report.features.includes('tianxiFormAvailable'), true);
+      assert.equal(report.features.includes('tianxiPriorWinRate'), true);
+      assert.equal(report.features.includes('tianxiLatestRating'), true);
+      assert.equal(report.features.includes('tianxiSameDistanceWinRate'), true);
       assert.equal(report.weights.length, report.features.length + 1);
     } finally {
       await rm(tempDir, { recursive: true, force: true });
@@ -51,6 +58,13 @@ function trainingFixture() {
   return {
     generatedAt: '2026-07-07T00:00:00.000Z',
     summary: { rows: 8, races: 4 },
+    externalFeatures: {
+      tianxi: {
+        sourceId: 'sleepingarhat-tianxi-database',
+        checkoutRef: 'test-checkout',
+        availableFeatureRows: 6,
+      },
+    },
     rows: [
       row('r1', '2023-01-01', 'train', 'A', 1, { horseWinRateBefore: 0.4, jockeyWinRateBefore: 0.3, trainerWinRateBefore: 0.2, draw: 1 }),
       row('r1', '2023-01-01', 'train', 'B', 0, { horseWinRateBefore: 0.1, jockeyWinRateBefore: 0.1, trainerWinRateBefore: 0.1, draw: 8 }),

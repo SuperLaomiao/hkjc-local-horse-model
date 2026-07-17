@@ -107,6 +107,17 @@ Generate leakage-safe runner rows:
 npm run hkjc:training-dataset -- --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/training-dataset.json
 ```
 
+To add local-only Tianxi prior-form aggregates, point the same command at the
+external cache. The adapter uses a conservative one-day availability lag and
+excludes target-race/future rows:
+
+```bash
+npm run hkjc:training-dataset -- --db hkjc-horse-model/data/hkjc.sqlite --tianxiRoot /path/to/tianxi-database --output hkjc-horse-model/data/processed/training-dataset.json
+```
+
+The generated training matrix remains local and ignored by Git. Only compact
+coverage metadata is suitable for publication.
+
 Generate the current baseline model leaderboard:
 
 ```bash

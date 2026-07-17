@@ -270,6 +270,53 @@ describe('local SQLite race store', () => {
     }
   });
 
+  it('exports Tianxi-enriched training rows from an explicitly configured local cache', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-sqlite-'));
+    try {
+      const rawDir = path.join(tempDir, 'raw');
+      const dbPath = path.join(tempDir, 'hkjc.sqlite');
+      const outputPath = path.join(tempDir, 'training-dataset.json');
+      const tianxiRoot = path.join(tempDir, 'tianxi-database');
+      const formDir = path.join(tianxiRoot, 'horses', 'form_records');
+      await mkdir(rawDir, { recursive: true });
+      await mkdir(formDir, { recursive: true });
+      await writeFile(path.join(rawDir, '2026-07-04-ST.json'), JSON.stringify([settledRace()], null, 2), 'utf8');
+      await writeFile(path.join(formDir, 'form_L245.csv'), [
+        'horse_no,date,place,rating,distance_m,win_odds,lbw',
+        'L245,04/07/26,1,51,1200,7.8,0',
+        'L245,01/07/26,2,49,1200,4.2,1',
+      ].join('\n'), 'utf8');
+      syncRaceFilesToDatabase({ dbPath, inputPath: rawDir, sourceKind: 'raw' });
+
+      const result = spawnSync(process.execPath, [
+        'hkjc-horse-model/src/cli.js',
+        'training-dataset',
+        '--db',
+        dbPath,
+        '--tianxiRoot',
+        tianxiRoot,
+        '--output',
+        outputPath,
+      ], {
+        cwd: path.resolve(import.meta.dirname, '..', '..'),
+        encoding: 'utf8',
+      });
+
+      assert.equal(result.status, 0, result.stderr || result.stdout);
+      assert.match(result.stdout, /Tianxi form coverage: 1\/3 runner rows/);
+      const payload = JSON.parse(await readFile(outputPath, 'utf8'));
+      const winnerRow = payload.rows.find((row) => row.horseNo === 2);
+      assert.equal(winnerRow.features.tianxiFormAvailable, 1);
+      assert.equal(winnerRow.features.tianxiPriorStarts, 1);
+      assert.equal(winnerRow.features.tianxiPriorWins, 0);
+      assert.equal(payload.externalFeatures.tianxi.availableFeatureRows, 1);
+      assert.equal(payload.externalFeatures.tianxi.excludedNotAvailableRows, 1);
+      assert.equal(JSON.stringify(payload.externalFeatures).includes(tempDir), false);
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
   it('exports a model leaderboard from settled SQLite races', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-sqlite-'));
     try {
