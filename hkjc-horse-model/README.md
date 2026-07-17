@@ -152,6 +152,22 @@ chronological order. This protects model training from post-race leakage.
 npm run hkjc:training-dataset -- --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/training-dataset.json
 ```
 
+Export the generated dataset as a Python-ready tree-model matrix. It keeps only
+approved runner/race metadata plus flattened pre-race `features`; columns are
+deterministic, labels remain available, and explicit result/dividend/payout/
+post-race feature keys are rejected.
+
+```bash
+# JSONL is inferred from the output extension (and is the default format).
+npm run hkjc:training-matrix -- --input hkjc-horse-model/data/processed/training-dataset.json --output hkjc-horse-model/data/processed/training-matrix.jsonl
+
+# CSV can be inferred from .csv or requested explicitly.
+npm run hkjc:training-matrix -- --input hkjc-horse-model/data/processed/training-dataset.json --output hkjc-horse-model/data/processed/training-matrix.csv --format csv
+```
+
+Missing feature values are JSON `null` or empty CSV cells. Generated matrices
+under `data/processed` are ignored by git.
+
 `model-leaderboard` scores the current heuristic model by split:
 
 - train: through 2023-12-31

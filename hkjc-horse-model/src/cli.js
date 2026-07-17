@@ -10,7 +10,10 @@ import { splitDashboardForPublishing } from './dashboard-publish.js';
 import { auditRecommendationRuns } from './recommendation-audit.js';
 import {
   buildAsOfTrainingRows,
+  buildTrainingMatrix,
   summarizeTrainingRows,
+  serializeTrainingMatrix,
+  trainingMatrixFormatFor,
 } from './training-dataset.js';
 import {
   buildModelLeaderboard,
@@ -115,6 +118,11 @@ async function main(argv) {
 
   if (command === 'training-dataset') {
     await trainingDatasetCommand(args);
+    return;
+  }
+
+  if (command === 'training-matrix') {
+    await trainingMatrixCommand(args);
     return;
   }
 
@@ -351,6 +359,20 @@ async function trainingDatasetCommand(args) {
     console.log(`Tianxi form coverage: ${tianxiFeatures.summary.availableFeatureRows}/${tianxiFeatures.summary.requestedRunnerRows} runner rows`);
   }
   console.log(`Saved training dataset to ${outputPath}`);
+}
+
+async function trainingMatrixCommand(args) {
+  const inputPath = path.resolve(args.input ?? path.join(processedDataDir, 'training-dataset.json'));
+  const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'training-matrix.jsonl'));
+  const format = trainingMatrixFormatFor({ format: args.format, output: outputPath });
+  const payload = JSON.parse(await readFile(inputPath, 'utf8'));
+  const matrix = buildTrainingMatrix(payload);
+
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeFile(outputPath, serializeTrainingMatrix(matrix, format), 'utf8');
+
+  console.log(`Training matrix: ${matrix.rows.length} runner rows, ${matrix.columns.length} columns (${format})`);
+  console.log(`Saved training matrix to ${outputPath}`);
 }
 
 async function modelLeaderboardCommand(args) {
@@ -1231,6 +1253,7 @@ Commands:
   sync-db    --input hkjc-horse-model/data/raw --upcoming hkjc-horse-model/data/upcoming --db hkjc-horse-model/data/hkjc.sqlite
   dashboard-db --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/dashboard.json --historyOutput hkjc-horse-model/data/processed/dashboard-history.json
   training-dataset --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/training-dataset.json --tianxiRoot /path/to/tianxi-database
+  training-matrix --input hkjc-horse-model/data/processed/training-dataset.json --output hkjc-horse-model/data/processed/training-matrix.jsonl [--format jsonl|csv]
   model-leaderboard --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/model-leaderboard.json
   external-model-comparison --date 2026-07-08 --venue HV --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/external-model-comparison-2026-07-08-HV.json
   external-source-audit --output hkjc-horse-model/data/processed/external-source-audit.json

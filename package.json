@@ -10,6 +10,7 @@
     "hkjc:sync-db": "node hkjc-horse-model/src/cli.js sync-db",
     "hkjc:dashboard-db": "node hkjc-horse-model/src/cli.js dashboard-db --output data/dashboard.json",
     "hkjc:training-dataset": "node hkjc-horse-model/src/cli.js training-dataset",
+    "hkjc:training-matrix": "node hkjc-horse-model/src/cli.js training-matrix",
     "hkjc:model-leaderboard": "node hkjc-horse-model/src/cli.js model-leaderboard",
     "hkjc:external-model-comparison": "node hkjc-horse-model/src/cli.js external-model-comparison",
     "hkjc:external-source-audit": "node hkjc-horse-model/src/cli.js external-source-audit",

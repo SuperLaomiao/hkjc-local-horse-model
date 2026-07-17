@@ -1,6 +1,57 @@
 const TRAIN_END = '2023-12-31';
 const VALIDATION_END = '2025-12-31';
 
+const MATRIX_METADATA_COLUMNS = [
+  'raceId',
+  'date',
+  'split',
+  'horseId',
+  'horseNo',
+  'racecourse',
+  'raceNo',
+  'fieldSize',
+  'targetWin',
+  'targetPlace',
+];
+
+const SUPPORTED_MATRIX_FORMATS = new Set(['jsonl', 'csv']);
+const LEAKAGE_FEATURE_KEYS = new Set([
+  'target',
+  'targetwin',
+  'targetplace',
+  'placing',
+  'place',
+  'position',
+  'rank',
+  'finish',
+  'finishposition',
+  'finishingposition',
+  'finishorder',
+  'result',
+  'raceresult',
+  'resultstatus',
+  'winresult',
+  'placeresult',
+  'winner',
+  'dividend',
+  'dividends',
+  'windividend',
+  'placedividend',
+  'qindividend',
+  'qpldividend',
+  'payout',
+  'payouts',
+  'winpayout',
+  'placepayout',
+  'refund',
+  'settlement',
+  'postrace',
+  'postraceplacing',
+  'postraceresult',
+  'postracepayout',
+]);
+const UNSAFE_FEATURE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+
 export function buildAsOfTrainingRows(races, options = {}) {
   const orderedRaces = [...(races ?? [])]
     .filter((race) => race?.status !== 'upcoming')
@@ -98,6 +149,141 @@ export function summarizeTrainingRows(rows) {
     holdoutRows: items.filter((row) => row.split === 'holdout').length,
     generatedAt: new Date().toISOString(),
   };
+}
+
+export function buildTrainingMatrix(payload) {
+  if (!isPlainObject(payload) || !Array.isArray(payload.rows)) {
+    throw new Error('Training dataset payload must contain a rows array');
+  }
+
+  const featureColumns = new Set();
+  const validatedRows = payload.rows.map((row, index) => validateMatrixRow(row, index, featureColumns));
+  const columns = [...MATRIX_METADATA_COLUMNS, ...[...featureColumns].sort((a, b) => a.localeCompare(b))];
+
+  return {
+    columns,
+    rows: validatedRows.map((row) => {
+      const matrixRow = {};
+      for (const column of MATRIX_METADATA_COLUMNS) matrixRow[column] = row[column];
+      for (const featureName of columns.slice(MATRIX_METADATA_COLUMNS.length)) {
+        matrixRow[featureName] = Object.hasOwn(row.features, featureName) ? row.features[featureName] : null;
+      }
+      return matrixRow;
+    }),
+  };
+}
+
+export function serializeTrainingMatrix(matrix, format) {
+  if (!SUPPORTED_MATRIX_FORMATS.has(format)) {
+    throw new Error(`Unsupported training matrix format: ${format}`);
+  }
+  validateMatrix(matrix);
+
+  if (format === 'jsonl') {
+    return matrix.rows.map((row) => JSON.stringify(row)).join('\n') + (matrix.rows.length > 0 ? '\n' : '');
+  }
+
+  return [
+    matrix.columns.map(escapeCsvValue).join(','),
+    ...matrix.rows.map((row) => matrix.columns.map((column) => escapeCsvValue(row[column])).join(',')),
+    '',
+  ].join('\n');
+}
+
+export function trainingMatrixFormatFor({ format, output } = {}) {
+  if (format != null) {
+    if (!SUPPORTED_MATRIX_FORMATS.has(format)) {
+      throw new Error(`Unsupported training matrix format: ${format}`);
+    }
+    return format;
+  }
+
+  const extension = String(output ?? '').match(/\.([^.]+)$/)?.[1]?.toLowerCase();
+  if (!extension) return 'jsonl';
+  if (SUPPORTED_MATRIX_FORMATS.has(extension)) return extension;
+  throw new Error(`Unsupported training matrix format: ${extension}`);
+}
+
+function validateMatrixRow(row, index, featureColumns) {
+  if (!isPlainObject(row)) throw new Error(`Training matrix row ${index} must be an object`);
+  if (!isPlainObject(row.features)) throw new Error(`Training matrix row ${index} features must be an object`);
+
+  requireNonEmptyString(row.raceId, `Training matrix row ${index} raceId`);
+  requireNonEmptyString(row.date, `Training matrix row ${index} date`);
+  if (!['train', 'validation', 'holdout'].includes(row.split)) {
+    throw new Error(`Training matrix row ${index} split must be train, validation, or holdout`);
+  }
+  requireNonEmptyString(row.horseId, `Training matrix row ${index} horseId`);
+  requireNullableScalar(row.horseNo, `Training matrix row ${index} horseNo`);
+  requireNullableString(row.racecourse, `Training matrix row ${index} racecourse`);
+  requireNullableFiniteNumber(row.raceNo, `Training matrix row ${index} raceNo`);
+  requireNullableFiniteNumber(row.fieldSize, `Training matrix row ${index} fieldSize`);
+  requireBinaryLabel(row.targetWin, `Training matrix row ${index} targetWin`);
+  requireBinaryLabel(row.targetPlace, `Training matrix row ${index} targetPlace`);
+
+  for (const [featureName, value] of Object.entries(row.features)) {
+    if (!featureName || UNSAFE_FEATURE_KEYS.has(featureName)) {
+      throw new Error(`Training matrix row ${index} has an unsafe feature key`);
+    }
+    if (LEAKAGE_FEATURE_KEYS.has(featureName.toLowerCase())) {
+      throw new Error(`Training matrix row ${index} feature ${featureName} is explicit post-race leakage`);
+    }
+    requireNullableScalar(value, `Training matrix row ${index} feature ${featureName}`);
+    featureColumns.add(featureName);
+  }
+
+  return row;
+}
+
+function validateMatrix(matrix) {
+  if (!isPlainObject(matrix) || !Array.isArray(matrix.columns) || !Array.isArray(matrix.rows)) {
+    throw new Error('Training matrix must contain columns and rows arrays');
+  }
+  if (matrix.columns.some((column) => typeof column !== 'string' || !column)) {
+    throw new Error('Training matrix columns must be non-empty strings');
+  }
+  for (const [index, row] of matrix.rows.entries()) {
+    if (!isPlainObject(row)) throw new Error(`Training matrix row ${index} must be an object`);
+    for (const column of matrix.columns) {
+      requireNullableScalar(row[column], `Training matrix row ${index} column ${column}`);
+    }
+  }
+}
+
+function requireNonEmptyString(value, label) {
+  if (typeof value !== 'string' || !value) throw new Error(`${label} must be a non-empty string`);
+}
+
+function requireNullableString(value, label) {
+  if (value !== null && typeof value !== 'string') throw new Error(`${label} must be a string or null`);
+}
+
+function requireNullableFiniteNumber(value, label) {
+  if (value !== null && (!Number.isFinite(value) || typeof value !== 'number')) {
+    throw new Error(`${label} must be a finite number or null`);
+  }
+}
+
+function requireBinaryLabel(value, label) {
+  if (value !== 0 && value !== 1) throw new Error(`${label} must be 0 or 1`);
+}
+
+function requireNullableScalar(value, label) {
+  if (value === null || typeof value === 'string' || typeof value === 'boolean') return;
+  if (typeof value === 'number' && Number.isFinite(value)) return;
+  throw new Error(`${label} must be a scalar or null`);
+}
+
+function isPlainObject(value) {
+  if (value == null || typeof value !== 'object' || Array.isArray(value)) return false;
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+}
+
+function escapeCsvValue(value) {
+  if (value == null) return '';
+  const text = String(value);
+  return /[",\n\r]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
 }
 
 function updateStateWithRace(state, race, placeCutoff) {

@@ -93,7 +93,7 @@ Goal: reproduce the strongest public GitHub ideas on our own SQLite history befo
     - Each card states public metric, our gap, leverage path, required local data, promotion gate, access policy, and local adoption status.
     - Summary clearly says the current model is still behind tier1, identifies the next benchmark to reproduce, and separately identifies the next data-leverage action.
 
-- [ ] Export a leakage-safe Python training matrix for tree models.
+- [x] Export a leakage-safe Python training matrix for tree models.
   - Suggested files:
     - Modify `hkjc-horse-model/src/training-dataset.js`
     - Modify `hkjc-horse-model/src/cli.js`
@@ -101,6 +101,7 @@ Goal: reproduce the strongest public GitHub ideas on our own SQLite history befo
   - Acceptance:
     - Output includes chronological split, race id, runner id, label, odds features when available, and no future/post-race fields.
     - Export works as JSONL or CSV without adding large generated files to git.
+  - Delivered by `training-matrix`: accepts generated `training-dataset` JSON, flattens only approved metadata plus nested pre-race features, sorts feature columns, and rejects malformed rows plus explicit result/target/dividend/payout/post-race keys.
 
 - [ ] Implement `lightgbm-no-market-v1` or the closest available local tree-model fallback.
   Research Lab action: `lightgbm-no-market-benchmark` / P1.
@@ -257,6 +258,7 @@ This queue is mirrored in `research-program.js` and surfaced in the dashboard Re
 
 ## Latest continuation note
 
+- 2026-07-18: Completed the leakage-safe `training-matrix` exporter. `npm run hkjc:training-matrix -- --input ...training-dataset.json --output ...training-matrix.jsonl` writes deterministic JSONL (or CSV via `--format csv`/`.csv`) with approved metadata first and sorted flattened feature columns. It preserves categorical, odds, Tianxi, and pool features, emits null/empty missing values, rejects malformed payloads and explicit leakage keys, and ignores generated matrices. Focused test: `node --test hkjc-horse-model/test/training-matrix.test.js`. Tree-model training remains intentionally out of scope.
 - 2026-07-17: Completed the model benchmark registry with the current baseline plus catowabisabi LightGBM/QIN, jerrydaphantom CatBoost calibration, neigh SpeedPRO, HKJC pool-tracker, and HKJC Edge Lab CLV ideas. Every entry now records required data, leakage risks, metrics, local adoption status, and explicit promotion gates; deterministic summary/snapshot helpers are ready for later Research Lab wiring without loading race data. Focused test: `node --test hkjc-horse-model/test/model-benchmark-registry.test.js`. Next Phase B task: connect the registry snapshot to the separate Tier1 Acceleration Lab dashboard registry.
 - 2026-07-17: Completed leakage-safe WIN/PLACE/QIN/QPL pool-money features with coherent timestamped books, strict T3 post-time/sell-status guards, valid-arity filtering, book-participant crowding baselines, normalized market/involvement shares, estimated money, HHI, overround, imbalance, availability flags, and pool movement. SQLite now restricts reads to requested races with usable pool investment, indexes snapshots by race/pool, and emits sparse features, avoiding a 6.38M-row materialization and full-history OOM. Real export succeeded for 175,574 runners / 14,250 races; the database has 36 pool snapshots but all are 1,144-1,404 minutes pre-race, so usable T60/T30/T10/T3 coverage is 0 and no model/ROI gain can yet be estimated. Next task: add the low-frequency race-day due-snapshot automation step.
 - 2026-07-17: Tianxi prior-form as-of enrichment is implemented and optional in `training-dataset --tianxiRoot`. Real replay enriched 112,603/175,574 runner rows (64.1%) and filtered 2,479,721 not-yet-available row evaluations. On identical splits, holdout log loss improved from 0.267120 to 0.265832, Brier from 0.071932 to 0.071738, and top-pick win rate from 21.45% to 22.16% (121 to 125 wins over 564 races). This is probability evidence only; ROI/drawdown are not yet evaluated and cash mode remains blocked. Next task: build pool-money features, then reproduce a tree-model baseline on the enriched matrix.
