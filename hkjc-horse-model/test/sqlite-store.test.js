@@ -714,12 +714,29 @@ describe('local SQLite race store', () => {
           date: '2026-07-04',
           racecourse: 'ST',
           raceNo: 1,
-          generatedAt: '2026-07-04T08:00:00.000Z',
+          generatedAt: '2026-07-04T07:50:00.000Z',
           modelVersion: 'test-model',
           strategyVersion: 'audit-test',
+          summary: { mode: 'execute' },
           recommendations: [
             { pool: 'PLACE', combination: [2], stake: 10 },
             { pool: 'WIN', combination: [8], stake: 10 },
+          ],
+        },
+      });
+      sqliteStore.recordRecommendationRun({
+        dbPath,
+        run: {
+          raceId: '2026-07-04-ST-1',
+          date: '2026-07-04',
+          racecourse: 'ST',
+          raceNo: 1,
+          generatedAt: '2026-07-04T08:05:00.000Z',
+          modelVersion: 'test-model',
+          strategyVersion: 'audit-test',
+          summary: { mode: 'execute' },
+          recommendations: [
+            { pool: 'PLACE', combination: [1], stake: 10 },
           ],
         },
       });
@@ -738,8 +755,13 @@ describe('local SQLite race store', () => {
 
       assert.equal(result.status, 0, result.stderr || result.stdout);
       assert.match(result.stdout, /Recommendation audit/);
+      assert.match(result.stdout, /1\/2 final pre-race runs eligible/);
       assert.match(result.stdout, /profit -5.00/);
       const report = JSON.parse(await readFile(outputPath, 'utf8'));
+      assert.equal(report.summary.recordedRuns, 2);
+      assert.equal(report.summary.eligibleRuns, 1);
+      assert.equal(report.summary.excludedRuns, 1);
+      assert.equal(report.summary.exclusionReasons.POST_RACE, 1);
       assert.equal(report.summary.totalStake, 20);
       assert.equal(report.summary.totalReturn, 15);
       assert.equal(report.summary.profit, -5);
@@ -758,6 +780,7 @@ function settledRace() {
     racecourse: 'ST',
     raceNo: 1,
     raceIndex: 827,
+    startTime: '16:00',
     raceClass: 'Class 5',
     distance: 1200,
     ratingBand: '40-0',

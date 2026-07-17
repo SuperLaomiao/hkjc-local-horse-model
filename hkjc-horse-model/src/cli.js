@@ -765,7 +765,8 @@ async function recommendationAuditCommand(args) {
   await writeJson(outputPath, report);
 
   console.log(`Saved recommendation audit to ${outputPath}`);
-  console.log(`Recommendation audit: ${report.summary.settledRuns}/${report.summary.runs} runs settled, stake ${money(report.summary.totalStake)}, return ${money(report.summary.totalReturn)}, profit ${formatSigned(report.summary.profit)}, ROI ${report.summary.roi == null ? 'n/a' : percent(report.summary.roi)}`);
+  console.log(`Recommendation audit: ${report.summary.eligibleRuns}/${report.summary.recordedRuns} final pre-race runs eligible, ${report.summary.settledRuns} settled, ${report.summary.excludedRuns} excluded`);
+  console.log(`Stake ${money(report.summary.totalStake)}, return ${money(report.summary.totalReturn)}, profit ${formatSigned(report.summary.profit)}, ROI ${report.summary.roi == null ? 'n/a' : percent(report.summary.roi)}`);
   console.log(`Lines: ${report.summary.hitLines} hit, ${report.summary.missLines} miss, ${report.summary.passLines} pass`);
 }
 
