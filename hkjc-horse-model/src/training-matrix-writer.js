@@ -11,6 +11,7 @@ export async function writeTrainingMatrixAtomically({
   outputPath,
   format,
   matrix,
+  highWaterMark,
   createWriteStreamFn = createWriteStream,
   renameFn = rename,
   rmFn = rm,
@@ -23,9 +24,13 @@ export async function writeTrainingMatrixAtomically({
 
   await mkdir(directory, { recursive: true });
   try {
+    const writeStreamOptions = {
+      encoding: 'utf8',
+      ...(highWaterMark == null ? {} : { highWaterMark }),
+    };
     await pipeline(
       Readable.from(iteratePreparedTrainingMatrixLines(matrix, format)),
-      createWriteStreamFn(temporaryPath, { encoding: 'utf8' }),
+      createWriteStreamFn(temporaryPath, writeStreamOptions),
     );
     await renameFn(temporaryPath, outputPath);
   } catch (error) {

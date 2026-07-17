@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { createWriteStream } from 'node:fs';
 import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
@@ -133,7 +134,8 @@ describe('training matrix exporter', () => {
     for (const featureName of [
       'raceId', 'date', 'split', 'horseId', 'horseNo', 'raceNo',
       'race_id', 'horse_id', 'runner_id', 'race_identifier', 'horseIdentifier',
-      'race_course', 'field_size',
+      'race_course', 'field_size', 'raceNumber', 'race_number', 'horseNumber',
+      'horse_number', 'runnerNumber', 'runner_number', 'runnerNo',
     ]) {
       assert.throws(
         () => trainingDataset.buildTrainingMatrix({
@@ -155,10 +157,11 @@ describe('training matrix exporter', () => {
     }
   });
 
-  it('rejects plural and composite post-race leakage names while allowing normal pre-race features', () => {
+  it('rejects post-race result fields and preserves explicitly timed pre-race features', () => {
     for (const featureName of [
       'officialResult', 'officialResults', 'raceResults', 'resultsStatus', 'finishingOrder',
-      'dividendAmount', 'postRaceComment',
+      'dividendAmount', 'postRaceComment', 'finishTime', 'finishSeconds', 'racePosition',
+      'racePlacing', 'placingPosition', 'finalRank', 'win',
     ]) {
       assert.throws(
         () => trainingDataset.buildTrainingMatrix({ rows: [trainingRow({ features: { [featureName]: 1 } })] }),
@@ -166,7 +169,10 @@ describe('training matrix exporter', () => {
       );
     }
 
-    for (const featureName of ['preRaceComment', 'marketWinOddsT30', 'horseAverageLbwBefore']) {
+    for (const featureName of [
+      'preRaceComment', 'horseWinsBefore', 'horseWinRateBefore', 'marketWinOddsT30',
+      'marketWinRankT30', 'horseAverageLbwBefore', 'priorFinishPosition', 'placingRankAsOf',
+    ]) {
       assert.doesNotThrow(() => trainingDataset.buildTrainingMatrix({
         rows: [trainingRow({ features: { [featureName]: 1 } })],
       }));
@@ -204,7 +210,7 @@ describe('training matrix exporter', () => {
     }
   });
 
-  it('cleans a failed temporary stream and preserves the original destination', async () => {
+  it('cleans the temporary file when atomic rename fails and preserves the original destination', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'training-matrix-atomic-'));
     try {
       const outputPath = path.join(tempDir, 'matrix.jsonl');
@@ -223,6 +229,90 @@ describe('training matrix exporter', () => {
       );
 
       assert.equal(await readFile(outputPath, 'utf8'), 'old-output\n');
+      assert.deepEqual((await readdir(tempDir)).filter((name) => name.includes('.tmp')), []);
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('propagates a real write-stream failure, removes the temporary file, and preserves the destination', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'training-matrix-stream-failure-'));
+    try {
+      const outputPath = path.join(tempDir, 'matrix.jsonl');
+      await writeFile(outputPath, 'old-output\n', 'utf8');
+      const prepared = trainingDataset.prepareTrainingMatrix({
+        rows: Array.from({ length: 20 }, (_, index) => trainingRow({
+          raceId: `R${index}`,
+          horseId: `H${index}`,
+          features: { marketWinOddsT30: index + 1 },
+        })),
+      });
+      let writeCalls = 0;
+
+      await assert.rejects(
+        writeTrainingMatrixAtomically({
+          outputPath,
+          format: 'jsonl',
+          matrix: prepared,
+          highWaterMark: 1,
+          createWriteStreamFn: (temporaryPath, options) => {
+            const stream = createWriteStream(temporaryPath, options);
+            const write = stream.write.bind(stream);
+            stream.write = (...args) => {
+              writeCalls += 1;
+              if (writeCalls === 3) {
+                queueMicrotask(() => stream.destroy(new Error('simulated mid-stream write failure')));
+                return false;
+              }
+              return write(...args);
+            };
+            return stream;
+          },
+        }),
+        /simulated mid-stream write failure/,
+      );
+
+      assert.equal(writeCalls, 3);
+      assert.equal(await readFile(outputPath, 'utf8'), 'old-output\n');
+      assert.deepEqual((await readdir(tempDir)).filter((name) => name.includes('.tmp')), []);
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('streams successfully under low highWaterMark backpressure', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'training-matrix-backpressure-'));
+    try {
+      const outputPath = path.join(tempDir, 'matrix.jsonl');
+      const prepared = trainingDataset.prepareTrainingMatrix({
+        rows: Array.from({ length: 64 }, (_, index) => trainingRow({
+          raceId: `R${index}`,
+          horseId: `H${index}`,
+          features: { marketWinOddsT30: index + 1 },
+        })),
+      });
+      let backpressureSignals = 0;
+
+      await writeTrainingMatrixAtomically({
+        outputPath,
+        format: 'jsonl',
+        matrix: prepared,
+        highWaterMark: 1,
+        createWriteStreamFn: (temporaryPath, options) => {
+          assert.equal(options.highWaterMark, 1);
+          const stream = createWriteStream(temporaryPath, options);
+          const write = stream.write.bind(stream);
+          stream.write = (...args) => {
+            const accepted = write(...args);
+            if (!accepted) backpressureSignals += 1;
+            return accepted;
+          };
+          return stream;
+        },
+      });
+
+      assert.equal((await readFile(outputPath, 'utf8')).trim().split('\n').length, 64);
+      assert.ok(backpressureSignals > 0);
       assert.deepEqual((await readdir(tempDir)).filter((name) => name.includes('.tmp')), []);
     } finally {
       await rm(tempDir, { recursive: true, force: true });

@@ -22,6 +22,10 @@ const METADATA_OR_IDENTIFIER_ALIASES = new Set([
   'runneridentifier',
   'raceidentifier',
   'horseidentifier',
+  'racenumber',
+  'horsenumber',
+  'runnernumber',
+  'runnerno',
 ]);
 
 const SUPPORTED_MATRIX_FORMATS = new Set(['jsonl', 'csv']);
@@ -29,6 +33,7 @@ const LEAKAGE_FEATURE_KEYS = new Set([
   'target',
   'targetwin',
   'targetplace',
+  'win',
   'placing',
   'place',
   'position',
@@ -65,6 +70,25 @@ const LEAKAGE_FEATURE_KEYS = new Set([
   'finishingorder',
 ]);
 const COMPOSITE_LEAKAGE_TOKENS = new Set(['dividend', 'payout', 'refund', 'result', 'settlement']);
+const OUTCOME_LEAKAGE_TOKENS = new Set([
+  'finish',
+  'finished',
+  'finishing',
+  'final',
+  'placing',
+  'position',
+  'rank',
+]);
+const EXPLICIT_PRE_RACE_TIMING_TOKENS = new Set([
+  'before',
+  'prior',
+  'previous',
+  'recent',
+  'historical',
+  'history',
+  'lagged',
+  'prerace',
+]);
 const UNSAFE_FEATURE_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 
 export function buildAsOfTrainingRows(races, options = {}) {
@@ -295,9 +319,25 @@ function isLeakageFeatureKey(featureName) {
   if (LEAKAGE_FEATURE_KEYS.has(compactFeatureKey(normalized))) return true;
 
   const tokens = normalized.split('_');
-  return tokens.some((token) => COMPOSITE_LEAKAGE_TOKENS.has(token) || token === 'results')
-    || (tokens.includes('finishing') && tokens.includes('order'))
-    || (tokens.includes('post') && tokens.includes('race'));
+  if (tokens.some((token) => COMPOSITE_LEAKAGE_TOKENS.has(token) || token === 'results')) return true;
+  if (tokens.includes('post') && tokens.includes('race')) return true;
+  if (hasExplicitPreRaceTiming(tokens)) return false;
+  return tokens.some((token) => OUTCOME_LEAKAGE_TOKENS.has(token));
+}
+
+function hasExplicitPreRaceTiming(tokens) {
+  if (tokens.some((token) => EXPLICIT_PRE_RACE_TIMING_TOKENS.has(token))) return true;
+  if (tokens.some((token) => /^t\d+$/.test(token))) return true;
+
+  for (let index = 0; index < tokens.length - 1; index += 1) {
+    if (tokens[index] === 'as' && tokens[index + 1] === 'of') return true;
+    if (tokens[index] === 't' && /^\d+$/.test(tokens[index + 1])) return true;
+    if (tokens[index] === 't' && tokens[index + 1] === 'minus' && /^\d+$/.test(tokens[index + 2])) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 function isMetadataOrIdentifierAlias(featureName) {
