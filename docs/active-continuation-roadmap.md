@@ -27,7 +27,7 @@ Reach a tested, leakage-safe recommendation system that combines:
 
 Goal: automatically accumulate the missing 2026 live market data that our ROI model needs.
 
-- [ ] Add a race-day snapshot planner that reads upcoming races from SQLite and returns due snapshot windows for T-30, T-10, and T-3. Research Lab action: `live-snapshot-planner` / P0.
+- [x] Add a race-day snapshot planner that reads upcoming races from SQLite and returns due snapshot windows for T-30, T-10, and T-3. Research Lab action: `live-snapshot-planner` / P0.
   - Suggested files:
     - Create `hkjc-horse-model/src/live-snapshot-planner.js`
     - Create `hkjc-horse-model/test/live-snapshot-planner.test.js`
@@ -40,7 +40,7 @@ Goal: automatically accumulate the missing 2026 live market data that our ROI mo
     - A race outside the window is skipped.
     - Scratched/settled races are not captured.
 
-- [ ] Add a CLI command `live-market-due-snapshots`.
+- [x] Add a CLI command `live-market-due-snapshots`.
   - Suggested command:
     ```bash
     npm run hkjc:live-market-due-snapshots -- --db hkjc-horse-model/data/hkjc.sqlite --windows T-30,T-10,T-3 --pools WIN,PLA,QIN,QPL --output hkjc-horse-model/data/processed/live-market-source-report.json
@@ -50,7 +50,7 @@ Goal: automatically accumulate the missing 2026 live market data that our ROI mo
     - Without `--dryRun`, it calls the existing `live-market-snapshot` logic and imports snapshots.
     - Duplicate captures for the same race/window are skipped or overwritten idempotently.
 
-- [ ] Add pool-money feature builder for WIN / PLACE / QIN / QPL. Research Lab action: `pool-money-features` / P0.
+- [x] Add pool-money feature builder for WIN / PLACE / QIN / QPL. Research Lab action: `pool-money-features` / P0.
   - Suggested files:
     - Create `hkjc-horse-model/src/pool-money-features.js`
     - Create `hkjc-horse-model/test/pool-money-features.test.js`
@@ -156,7 +156,7 @@ Goal: reproduce the strongest public GitHub ideas on our own SQLite history befo
     - It reports bets, wins, hit rate, ROI, max drawdown, and profit concentration.
     - It separates validation and holdout results.
 
-- [ ] Add Tianxi local-only feature backfill audit. Research Lab action: `tianxi-feature-backfill` / P1.
+- [x] Add Tianxi local-only feature backfill audit. Research Lab action: `tianxi-feature-backfill` / P1.
   - Suggested files:
     - Create `hkjc-horse-model/src/external-feature-source-audit.js`
     - Create `hkjc-horse-model/test/external-feature-source-audit.test.js`
@@ -218,6 +218,12 @@ Goal: make recommendations robust instead of over-dependent on one horse.
 
 Goal: make progress visible and resumable.
 
+- [x] Count only final executable pre-race recommendation locks in audit ROI.
+  - Acceptance:
+    - Prepare, superseded, and post-race generated runs remain visible but contribute zero stake and return.
+    - Missing post times fail closed; a later Hong Kong calendar date is still classified as post-race.
+    - Audit output reports recorded, eligible, excluded, and exclusion-reason counts.
+
 - [x] Update daily algorithm automation to continue this roadmap after the normal inspection.
   - Acceptance:
     - Automation reads this file.
@@ -236,7 +242,7 @@ This queue is mirrored in `research-program.js` and surfaced in the dashboard Re
 | Priority | Action id | Phase | Automation status | Purpose |
 | --- | --- | --- | --- | --- |
 | P0 | `live-snapshot-planner` | Phase A | queued, executable | Capture T-30/T-10/T-3 live odds/pool windows. |
-| P0 | `pool-money-features` | Phase A/B | queued, executable | Turn pool money and crowding into leakage-safe features. |
+| P0 | `pool-money-features` | Phase A/B | implemented, awaiting T-window coverage | Turn pool money and crowding into leakage-safe features. |
 | P0 | `benchmark-registry-refresh` | Phase B | queued, executable | Compare our baseline against stronger public ideas. |
 | P0 | `tier1-external-benchmark-registry` | Phase B | queued, executable | Surface public benchmark metrics, our gap, and promotion gates. |
 | P0 | `catowabisabi-lgb-no-odds-quinella` | Phase B | queued, executable | Reproduce no-odds LightGBM QIN/QPL edge on our SQLite data. |
@@ -251,4 +257,8 @@ This queue is mirrored in `research-program.js` and surfaced in the dashboard Re
 
 ## Latest continuation note
 
+- 2026-07-17: Completed leakage-safe WIN/PLACE/QIN/QPL pool-money features with coherent timestamped books, strict T3 post-time/sell-status guards, valid-arity filtering, book-participant crowding baselines, normalized market/involvement shares, estimated money, HHI, overround, imbalance, availability flags, and pool movement. SQLite now restricts reads to requested races with usable pool investment, indexes snapshots by race/pool, and emits sparse features, avoiding a 6.38M-row materialization and full-history OOM. Real export succeeded for 175,574 runners / 14,250 races; the database has 36 pool snapshots but all are 1,144-1,404 minutes pre-race, so usable T60/T30/T10/T3 coverage is 0 and no model/ROI gain can yet be estimated. Next task: add the low-frequency race-day due-snapshot automation step.
+- 2026-07-17: Tianxi prior-form as-of enrichment is implemented and optional in `training-dataset --tianxiRoot`. Real replay enriched 112,603/175,574 runner rows (64.1%) and filtered 2,479,721 not-yet-available row evaluations. On identical splits, holdout log loss improved from 0.267120 to 0.265832, Brier from 0.071932 to 0.071738, and top-pick win rate from 21.45% to 22.16% (121 to 125 wins over 564 races). This is probability evidence only; ROI/drawdown are not yet evaluated and cash mode remains blocked. Next task: build pool-money features, then reproduce a tree-model baseline on the enriched matrix.
+- 2026-07-17: Completed `live-market-due-snapshots` with dry-run reporting, planner-backed T-window capture, race/window duplicate skipping, focused SQLite queries, and the `hkjc:live-market-due-snapshots` npm script. Focused tests: `node --test hkjc-horse-model/test/live-market-due-snapshots.test.js hkjc-horse-model/test/live-snapshot-planner.test.js hkjc-horse-model/test/live-market-snapshot.test.js`. Next task: create `hkjc-horse-model/test/pool-money-features.test.js` and add leakage-safe WIN / PLACE / QIN / QPL pool-money feature expectations.
+- 2026-07-10: Completed `live-snapshot-planner` with SQLite-backed upcoming-race loading, HK-time T-30/T-10/T-3 planning, and settled/scratched/out-of-window guards. Next command: `node --test hkjc-horse-model/test/live-snapshot-planner.test.js`; next task: add the `live-market-due-snapshots` CLI command with dry-run and idempotent capture behavior.
 - 2026-07-10: ChatGPT-suggested reference list reconciled with Research Lab. Added `j-csc/HK-Horse-Racing-Data-Scraper`; kept `neigh` as schema/SDK reference because GitHub API currently cannot resolve it; data-leverage priority is now explicit: Tianxi local-only feature audit, Bobosky/rkwyu live pool capture, j-csc scraper schema audit, then model reproduction.

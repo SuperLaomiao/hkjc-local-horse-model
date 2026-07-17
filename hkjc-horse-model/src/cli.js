@@ -17,6 +17,8 @@ import {
   predictionRowsFromLedger,
 } from './model-leaderboard.js';
 import { buildExternalModelComparison } from './external-model-comparison.js';
+import { buildExternalSourceAudit } from './external-source-audit.js';
+import { buildExternalSourceCoverage } from './external-source-coverage.js';
 import { buildStrategyRiskReport } from './strategy-risk-report.js';
 import { buildMarketSnapshotCoverageReport } from './market-snapshot-coverage.js';
 import { buildMarketWindowResearchReport } from './market-window-research.js';
@@ -32,6 +34,12 @@ import {
   importLiveMarketSnapshotsToDatabase,
   normalizeLiveMarketPayload,
 } from './live-market-snapshot.js';
+import { runDueLiveMarketSnapshots } from './live-market-due-snapshots.js';
+import { DEFAULT_SNAPSHOT_WINDOWS } from './live-snapshot-planner.js';
+import {
+  loadTianxiFormFeatureIndex,
+  tianxiRunnerFeatureKey,
+} from './tianxi-form-feature-loader.js';
 import {
   fetchFixtureMeetings,
   fetchMeetingRaceCards,
@@ -45,6 +53,7 @@ import {
   loadRacesFromDatabase,
   loadLatestMarketSnapshots,
   loadMarketSnapshots,
+  loadPoolMoneyFeatures,
   loadRunnerMarketFeatures,
   loadRecommendationRuns,
   recordOddsSnapshot,
@@ -119,6 +128,16 @@ async function main(argv) {
     return;
   }
 
+  if (command === 'external-source-audit') {
+    await externalSourceAuditCommand(args);
+    return;
+  }
+
+  if (command === 'external-source-coverage') {
+    await externalSourceCoverageCommand(args);
+    return;
+  }
+
   if (command === 'train-model') {
     await trainModelCommand(args);
     return;
@@ -141,6 +160,11 @@ async function main(argv) {
 
   if (command === 'live-market-snapshot') {
     await liveMarketSnapshotCommand(args);
+    return;
+  }
+
+  if (command === 'live-market-due-snapshots') {
+    await liveMarketDueSnapshotsCommand(args);
     return;
   }
 
@@ -284,10 +308,24 @@ async function trainingDatasetCommand(args) {
   const dbPath = path.resolve(args.db ?? sqliteDbPath);
   const settledRaces = loadRacesFromDatabase({ dbPath, status: 'settled' });
   const marketFeatures = loadRunnerMarketFeatures({ dbPath });
+  const poolMoneyFeatures = loadPoolMoneyFeatures({ dbPath, races: settledRaces });
+  const tianxiFeatures = args.tianxiRoot
+    ? await loadTianxiFormFeatureIndex({
+      rootPath: path.resolve(args.tianxiRoot),
+      races: settledRaces,
+      availabilityLagDays: args.tianxiLagDays == null ? 1 : Number(args.tianxiLagDays),
+    })
+    : null;
   const rows = buildAsOfTrainingRows(settledRaces, {
     marketFeaturesForRunner: ({ race, runner }) => (
-      marketFeatures.featuresByRunner.get(`${race.raceId}|${runner.horseNo}`) ?? {}
+      {
+        ...(marketFeatures.featuresByRunner.get(`${race.raceId}|${runner.horseNo}`) ?? {}),
+        ...(poolMoneyFeatures.featuresByRunner.get(`${race.raceId}|${runner.horseNo}`) ?? {}),
+      }
     ),
+    externalFeaturesForRunner: tianxiFeatures
+      ? ({ race, runner }) => tianxiFeatures.featuresByRunner.get(tianxiRunnerFeatureKey(race, runner)) ?? {}
+      : undefined,
   });
   const summary = summarizeTrainingRows(rows);
   const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'training-dataset.json'));
@@ -301,11 +339,17 @@ async function trainingDatasetCommand(args) {
       settledRaces: settledRaces.length,
     },
     marketFeatures: marketFeatures.summary,
+    poolMoneyFeatures: poolMoneyFeatures.summary,
+    ...(tianxiFeatures ? { externalFeatures: { tianxi: tianxiFeatures.summary } } : {}),
     summary,
     rows,
   });
 
   console.log(`Training dataset from SQLite: ${summary.rows} runner rows, ${summary.races} races`);
+  console.log(`Pool money coverage: ${poolMoneyFeatures.summary.racesWithAnyPoolMoney}/${poolMoneyFeatures.summary.races} races`);
+  if (tianxiFeatures) {
+    console.log(`Tianxi form coverage: ${tianxiFeatures.summary.availableFeatureRows}/${tianxiFeatures.summary.requestedRunnerRows} runner rows`);
+  }
   console.log(`Saved training dataset to ${outputPath}`);
 }
 
@@ -672,6 +716,32 @@ async function liveMarketSnapshotCommand(args) {
   }
 }
 
+async function liveMarketDueSnapshotsCommand(args) {
+  const dbPath = path.resolve(args.db ?? sqliteDbPath);
+  const requestedLabels = new Set(parseStringList(args.windows ?? 'T-30,T-10,T-3'));
+  const windows = DEFAULT_SNAPSHOT_WINDOWS.filter((window) => requestedLabels.has(window.label));
+  if (windows.length === 0) throw new Error('live-market-due-snapshots requires at least one valid --windows label');
+  const pools = parseStringList(args.pools ?? DEFAULT_LIVE_MARKET_ODDS_TYPES.join(','));
+  const report = await runDueLiveMarketSnapshots({
+    dbPath,
+    windows,
+    pools,
+    dryRun: Boolean(args.dryRun),
+    now: args.now ?? new Date(),
+  });
+  const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'live-market-source-report.json'));
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeJson(outputPath, {
+    ...report,
+    dataSource: { source: 'sqlite', database: publicDatabaseLabel(dbPath) },
+    windows: windows.map((window) => window.label),
+    pools,
+  });
+  console.log(`Due live market snapshots: ${report.summary.due} due, ${report.summary.captured} captured, ${report.summary.skippedDuplicates} duplicate windows skipped`);
+  console.log(`Imported: ${report.summary.oddsSnapshots} odds, ${report.summary.poolSnapshots} pools`);
+  console.log(`Saved due snapshot report to ${outputPath}`);
+}
+
 async function marketCoverageReportCommand(args) {
   const dbPath = path.resolve(args.db ?? sqliteDbPath);
   const report = loadMarketSnapshotCoverageSummary({ dbPath });
@@ -690,6 +760,45 @@ async function marketCoverageReportCommand(args) {
   console.log(`Market coverage report: ${report.summary.readiness}`);
   console.log(`Odds coverage ${percent(report.summary.oddsRaceCoverage)}, pool coverage ${percent(report.summary.poolRaceCoverage)}`);
   console.log(`Saved market snapshot coverage to ${outputPath}`);
+}
+
+async function externalSourceAuditCommand(args) {
+  const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'external-source-audit.json'));
+  const report = buildExternalSourceAudit({ generatedAt: args.generatedAt ?? new Date().toISOString() });
+
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeJson(outputPath, report);
+
+  console.log(`External source audit: ${report.summary.sources} sources, ${report.summary.localOnlySources} local-only`);
+  console.log(`License status: ${Object.entries(report.summary.byLicenseStatus).map(([key, value]) => `${key}=${value}`).join(', ')}`);
+  console.log(`Saved external source audit to ${outputPath}`);
+}
+
+async function externalSourceCoverageCommand(args) {
+  const cacheRoot = path.resolve(args.cacheRoot
+    ?? process.env.HKJC_EXTERNAL_SOURCE_CACHE
+    ?? path.join(projectRoot, 'data', 'external', 'raw-local'));
+  const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'external-source-coverage.json'));
+  const report = await buildExternalSourceCoverage({
+    sources: [
+      {
+        sourceId: 'sleepingarhat-tianxi-database',
+        rootPath: path.join(cacheRoot, 'tianxi-database'),
+      },
+      {
+        sourceId: 'mag-dot-race-data',
+        rootPath: path.join(cacheRoot, 'mag-dot-race-data'),
+      },
+    ],
+    generatedAt: args.generatedAt ?? new Date().toISOString(),
+  });
+
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeJson(outputPath, report);
+
+  console.log(`External source coverage: ${report.summary.availableSources}/${report.summary.requestedSources} sources available`);
+  console.log(`Files: ${report.summary.totalFiles} total, ${report.summary.preRaceCandidateFiles} pre-race candidates, ${report.summary.postRaceFiles} post-race only`);
+  console.log(`Saved external source coverage to ${outputPath}`);
 }
 
 async function marketWindowResearchCommand(args) {
@@ -732,7 +841,8 @@ async function recommendationAuditCommand(args) {
   await writeJson(outputPath, report);
 
   console.log(`Saved recommendation audit to ${outputPath}`);
-  console.log(`Recommendation audit: ${report.summary.settledRuns}/${report.summary.runs} runs settled, stake ${money(report.summary.totalStake)}, return ${money(report.summary.totalReturn)}, profit ${formatSigned(report.summary.profit)}, ROI ${report.summary.roi == null ? 'n/a' : percent(report.summary.roi)}`);
+  console.log(`Recommendation audit: ${report.summary.eligibleRuns}/${report.summary.recordedRuns} final pre-race runs eligible, ${report.summary.settledRuns} settled, ${report.summary.excludedRuns} excluded`);
+  console.log(`Stake ${money(report.summary.totalStake)}, return ${money(report.summary.totalReturn)}, profit ${formatSigned(report.summary.profit)}, ROI ${report.summary.roi == null ? 'n/a' : percent(report.summary.roi)}`);
   console.log(`Lines: ${report.summary.hitLines} hit, ${report.summary.missLines} miss, ${report.summary.passLines} pass`);
 }
 
@@ -1120,14 +1230,17 @@ Commands:
   auto-run   --input hkjc-horse-model/data/raw --db hkjc-horse-model/data/hkjc.sqlite --output data/dashboard.json --auditOutput data/latest-recommendation-audit.json
   sync-db    --input hkjc-horse-model/data/raw --upcoming hkjc-horse-model/data/upcoming --db hkjc-horse-model/data/hkjc.sqlite
   dashboard-db --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/dashboard.json --historyOutput hkjc-horse-model/data/processed/dashboard-history.json
-  training-dataset --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/training-dataset.json
+  training-dataset --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/training-dataset.json --tianxiRoot /path/to/tianxi-database
   model-leaderboard --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/model-leaderboard.json
   external-model-comparison --date 2026-07-08 --venue HV --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/external-model-comparison-2026-07-08-HV.json
+  external-source-audit --output hkjc-horse-model/data/processed/external-source-audit.json
+  external-source-coverage --cacheRoot /path/to/external-sources --output hkjc-horse-model/data/processed/external-source-coverage.json
   train-model --input hkjc-horse-model/data/processed/training-dataset.json --output hkjc-horse-model/data/processed/model-training-report.json
   strategy-risk-report --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/strategy-risk-report.json
   market-snapshot --input hkjc-horse-model/data/market-snapshot.json --db hkjc-horse-model/data/hkjc.sqlite
   external-live-odds --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/external-live-odds-import.json
   live-market-snapshot --date 2026-07-08 --venue HV --race 1 --pools WIN,PLA,QIN,QPL --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/live-market-source-report.json
+  live-market-due-snapshots --db hkjc-horse-model/data/hkjc.sqlite --windows T-30,T-10,T-3 --pools WIN,PLA,QIN,QPL --output hkjc-horse-model/data/processed/live-market-source-report.json --dryRun
   market-coverage-report --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/market-snapshot-coverage.json
   market-window-research --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/market-window-research.json
   recommendation-audit --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/latest-recommendation-audit.json

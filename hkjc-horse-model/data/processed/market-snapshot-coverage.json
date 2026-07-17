@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-07-07T07:51:47.146Z",
+  "generatedAt": "2026-07-10T03:03:50.343Z",
   "summary": {
     "races": 14230,
-    "racesWithOdds": 1510,
-    "racesWithPools": 0,
-    "oddsSnapshots": 6374047,
-    "poolSnapshots": 0,
-    "oddsRaceCoverage": 0.1061,
-    "poolRaceCoverage": 0,
+    "racesWithOdds": 1519,
+    "racesWithPools": 9,
+    "oddsSnapshots": 6375343,
+    "poolSnapshots": 36,
+    "oddsRaceCoverage": 0.1067,
+    "poolRaceCoverage": 0.0006,
     "earliestCapturedAt": "2016-09-27T05:18:23.528Z",
-    "latestCapturedAt": "2018-06-27T15:14:22.532Z",
+    "latestCapturedAt": "2026-07-07T15:25:45.237Z",
     "readiness": "partial-market-data"
   },
   "byWindow": {
@@ -38,35 +38,53 @@
       "racesWithPools": 0
     },
     "unknown": {
-      "oddsSnapshots": 5906958,
-      "poolSnapshots": 0,
-      "racesWithOdds": 1510,
-      "racesWithPools": 0
+      "oddsSnapshots": 5908254,
+      "poolSnapshots": 36,
+      "racesWithOdds": 1519,
+      "racesWithPools": 9
     }
   },
   "byPool": {
     "PLACE": {
-      "oddsSnapshots": 3187011,
-      "poolSnapshots": 0,
-      "racesWithOdds": 1510,
-      "racesWithPools": 0,
-      "oddsRaceCoverage": 0.1061,
-      "poolRaceCoverage": 0,
-      "latestCapturedAt": "2018-06-27T15:14:22.532Z"
+      "oddsSnapshots": 3187114,
+      "poolSnapshots": 9,
+      "racesWithOdds": 1519,
+      "racesWithPools": 9,
+      "oddsRaceCoverage": 0.1067,
+      "poolRaceCoverage": 0.0006,
+      "latestCapturedAt": "2026-07-07T15:25:45.237Z"
+    },
+    "QUINELLA": {
+      "oddsSnapshots": 545,
+      "poolSnapshots": 9,
+      "racesWithOdds": 9,
+      "racesWithPools": 9,
+      "oddsRaceCoverage": 0.0006,
+      "poolRaceCoverage": 0.0006,
+      "latestCapturedAt": "2026-07-07T15:25:45.237Z"
+    },
+    "QUINELLAPLACE": {
+      "oddsSnapshots": 545,
+      "poolSnapshots": 9,
+      "racesWithOdds": 9,
+      "racesWithPools": 9,
+      "oddsRaceCoverage": 0.0006,
+      "poolRaceCoverage": 0.0006,
+      "latestCapturedAt": "2026-07-07T15:25:45.237Z"
     },
     "WIN": {
-      "oddsSnapshots": 3187036,
-      "poolSnapshots": 0,
-      "racesWithOdds": 1510,
-      "racesWithPools": 0,
-      "oddsRaceCoverage": 0.1061,
-      "poolRaceCoverage": 0,
-      "latestCapturedAt": "2018-06-27T15:14:22.532Z"
+      "oddsSnapshots": 3187139,
+      "poolSnapshots": 9,
+      "racesWithOdds": 1519,
+      "racesWithPools": 9,
+      "oddsRaceCoverage": 0.1067,
+      "poolRaceCoverage": 0.0006,
+      "latestCapturedAt": "2026-07-07T15:25:45.237Z"
     }
   },
   "gaps": [
-    "Odds snapshots cover 10.6% of races in scope.",
-    "Pool snapshots cover 0.0% of races in scope."
+    "Odds snapshots cover 10.7% of races in scope.",
+    "Pool snapshots cover 0.1% of races in scope."
   ],
   "note": "Coverage only says whether live market data exists; it does not prove the model has a betting edge.",
   "dataSource": {

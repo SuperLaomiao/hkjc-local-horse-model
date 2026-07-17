@@ -9,6 +9,8 @@ describe('recommendation audit', () => {
       runs: [{
         runId: 'rec_test',
         raceId: '2026-07-04-ST-1',
+        generatedAt: '2026-07-04T07:50:00.000Z',
+        summary: { mode: 'execute' },
         recommendations: [
           { pool: 'PLACE', combination: [2], stake: 10 },
           { pool: 'QUINELLA_PLACE', combination: [1, 2], stake: 10 },
@@ -35,6 +37,8 @@ describe('recommendation audit', () => {
       runs: [{
         runId: 'rec_open',
         raceId: '2026-07-08-HV-1',
+        generatedAt: '2026-07-08T09:00:00.000Z',
+        summary: { mode: 'execute' },
         recommendations: [{ pool: 'PLACE', combination: [2], stake: 10 }],
       }],
       races: [],
@@ -45,11 +49,57 @@ describe('recommendation audit', () => {
     assert.equal(audit.runs[0].status, 'OPEN');
     assert.equal(audit.runs[0].lines[0].status, 'OPEN');
   });
+
+  it('counts only the latest executable pre-race run per strategy', () => {
+    const race = { ...settledRace(), date: '2026-07-04', startTime: '16:00' };
+    const audit = auditRecommendationRuns({
+      races: [race],
+      runs: [
+        recommendationRun('prepare', '2026-07-04T07:00:00.000Z', 'prepare', 2),
+        recommendationRun('early', '2026-07-04T07:20:00.000Z', 'execute', 2),
+        recommendationRun('final', '2026-07-04T07:50:00.000Z', 'execute', 1),
+        recommendationRun('after', '2026-07-04T08:05:00.000Z', 'execute', 2),
+      ],
+    });
+
+    assert.equal(audit.summary.recordedRuns, 4);
+    assert.equal(audit.summary.eligibleRuns, 1);
+    assert.equal(audit.summary.excludedRuns, 3);
+    assert.equal(audit.summary.totalStake, 10);
+    assert.equal(audit.summary.totalReturn, 10.1);
+    assert.equal(audit.runs.find((run) => run.runId === 'final').auditDecision, 'INCLUDED');
+    assert.equal(audit.runs.find((run) => run.runId === 'prepare').exclusionReason, 'PREPARE_ONLY');
+    assert.equal(audit.runs.find((run) => run.runId === 'early').exclusionReason, 'SUPERSEDED');
+    assert.equal(audit.runs.find((run) => run.runId === 'after').exclusionReason, 'POST_RACE');
+  });
+
+  it('fails closed when a settled race has no trustworthy post time', () => {
+    const audit = auditRecommendationRuns({
+      races: [{ ...settledRace(), date: '2026-07-04', startTime: null }],
+      runs: [recommendationRun('unknown-time', '2026-07-04T07:50:00.000Z', 'execute', 2)],
+    });
+
+    assert.equal(audit.summary.eligibleRuns, 0);
+    assert.equal(audit.summary.totalStake, 0);
+    assert.equal(audit.runs[0].exclusionReason, 'MISSING_POST_TIME');
+  });
+
+  it('classifies a later Hong Kong date as post-race even when post time is missing', () => {
+    const audit = auditRecommendationRuns({
+      races: [{ ...settledRace(), date: '2026-07-04', startTime: null }],
+      runs: [recommendationRun('next-day', '2026-07-06T03:56:44.952Z', 'execute', 2)],
+    });
+
+    assert.equal(audit.summary.eligibleRuns, 0);
+    assert.equal(audit.runs[0].exclusionReason, 'POST_RACE');
+  });
 });
 
 function settledRace() {
   return {
     raceId: '2026-07-04-ST-1',
+    date: '2026-07-04',
+    startTime: '16:00',
     status: 'settled',
     runners: [
       { placing: 1, horseNo: 2, horseId: 'HK_2025_L245', horseName: 'ALMIGHTY WARRIOR', winOdds: 7.8 },
@@ -64,5 +114,16 @@ function settledRace() {
       ],
       quinellaPlace: [{ pool: 'QUINELLA PLACE', combination: [1, 2], dividendPer10: 13.5 }],
     },
+  };
+}
+
+function recommendationRun(runId, generatedAt, mode, horseNo) {
+  return {
+    runId,
+    raceId: '2026-07-04-ST-1',
+    generatedAt,
+    strategyVersion: 'ev-portfolio-v1',
+    summary: { mode },
+    recommendations: [{ pool: 'PLACE', combination: [horseNo], stake: 10 }],
   };
 }

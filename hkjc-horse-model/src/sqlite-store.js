@@ -3,6 +3,8 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, statSync } from 'node
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 
+import { buildPoolMoneyFeatureIndex } from './pool-money-features.js';
+
 export function syncRaceFilesToDatabase({ dbPath, inputPath, sourceKind = 'raw' }) {
   if (!dbPath) throw new Error('syncRaceFilesToDatabase requires dbPath');
   if (!inputPath) throw new Error('syncRaceFilesToDatabase requires inputPath');
@@ -267,6 +269,35 @@ export function loadMarketSnapshots({ dbPath, raceId = null } = {}) {
   }
 }
 
+export function loadCapturedSnapshotWindows({ dbPath, windows = [
+  { label: 'T-30', minMinutes: 21, maxMinutes: 45 },
+  { label: 'T-10', minMinutes: 6, maxMinutes: 20 },
+  { label: 'T-3', minMinutes: 0, maxMinutes: 5 },
+], raceIds = [] } = {}) {
+  if (!dbPath) throw new Error('loadCapturedSnapshotWindows requires dbPath');
+  const normalizedRaceIds = [...new Set(raceIds.map(String).filter(Boolean))];
+  if (normalizedRaceIds.length === 0) return new Set();
+  const db = openDatabase(dbPath);
+  try {
+    const placeholders = normalizedRaceIds.map(() => '?').join(', ');
+    const rows = db.prepare(`
+      SELECT race_id, minutes_to_post FROM odds_snapshots WHERE race_id IN (${placeholders})
+      UNION ALL
+      SELECT race_id, minutes_to_post FROM pool_snapshots WHERE race_id IN (${placeholders})
+    `).all(...normalizedRaceIds, ...normalizedRaceIds);
+    const captured = new Set();
+    for (const row of rows) {
+      const window = windows.find((item) => (
+        row.minutes_to_post >= item.minMinutes && row.minutes_to_post <= item.maxMinutes
+      ));
+      if (window) captured.add(`${row.race_id}|${window.label}`);
+    }
+    return captured;
+  } finally {
+    db.close();
+  }
+}
+
 export function loadMarketSnapshotCoverageSummary({ dbPath } = {}) {
   if (!dbPath) throw new Error('loadMarketSnapshotCoverageSummary requires dbPath');
 
@@ -366,6 +397,95 @@ export function loadRunnerMarketFeatures({ dbPath } = {}) {
   }
 }
 
+export function loadPoolMoneyFeatures({ dbPath, races = null } = {}) {
+  if (!dbPath) throw new Error('loadPoolMoneyFeatures requires dbPath');
+
+  const raceRows = races ?? loadRacesFromDatabase({ dbPath });
+  const snapshots = loadPoolBackedFeatureSnapshots({
+    dbPath,
+    raceIds: raceRows.map((race) => race.raceId),
+  });
+  const poolBackedRaceIds = new Set(snapshots.pools.map((snapshot) => snapshot.raceId));
+  const featureRaces = raceRows.filter((race) => poolBackedRaceIds.has(race.raceId));
+  const result = buildPoolMoneyFeatureIndex({
+    races: featureRaces,
+    oddsSnapshots: snapshots.odds,
+    poolSnapshots: snapshots.pools,
+  });
+  return {
+    ...result,
+    summary: {
+      ...result.summary,
+      races: raceRows.length,
+      poolBackedRaces: featureRaces.length,
+      loadedOddsSnapshots: snapshots.odds.length,
+      loadedPoolSnapshots: snapshots.pools.length,
+    },
+  };
+}
+
+function loadPoolBackedFeatureSnapshots({ dbPath, raceIds }) {
+  const requestedRaceIds = [...new Set((raceIds ?? []).map(String).filter(Boolean))];
+  if (requestedRaceIds.length === 0) return { odds: [], pools: [] };
+
+  const db = openDatabase(dbPath);
+  try {
+    db.exec(`
+      CREATE TEMP TABLE requested_pool_feature_races (
+        race_id TEXT PRIMARY KEY
+      ) WITHOUT ROWID
+    `);
+    const insertRace = db.prepare('INSERT OR IGNORE INTO requested_pool_feature_races (race_id) VALUES (?)');
+    db.exec('BEGIN');
+    try {
+      for (const raceId of requestedRaceIds) insertRace.run(raceId);
+      db.exec('COMMIT');
+    } catch (error) {
+      db.exec('ROLLBACK');
+      throw error;
+    }
+
+    const poolRows = db.prepare(`
+      SELECT pools.*
+      FROM pool_snapshots AS pools
+      INNER JOIN requested_pool_feature_races AS requested
+        ON requested.race_id = pools.race_id
+      WHERE pools.minutes_to_post BETWEEN 0 AND 75
+        AND pools.pool_key IN ('win', 'place', 'quinella', 'quinellaPlace')
+        AND pools.investment IS NOT NULL
+        AND pools.investment >= 0
+      ORDER BY pools.race_id, pools.captured_at, pools.pool_key
+    `).all();
+    if (poolRows.length === 0) return { odds: [], pools: [] };
+
+    const oddsRows = db.prepare(`
+      SELECT odds.*
+      FROM odds_snapshots AS odds
+      INNER JOIN (
+        SELECT DISTINCT pools.race_id, pools.pool_key
+        FROM pool_snapshots AS pools
+        INNER JOIN requested_pool_feature_races AS requested
+          ON requested.race_id = pools.race_id
+        WHERE pools.minutes_to_post BETWEEN 0 AND 75
+          AND pools.pool_key IN ('win', 'place', 'quinella', 'quinellaPlace')
+          AND pools.investment IS NOT NULL
+          AND pools.investment >= 0
+      ) AS supported
+        ON supported.race_id = odds.race_id
+       AND supported.pool_key = odds.pool_key
+      WHERE odds.minutes_to_post BETWEEN 0 AND 75
+      ORDER BY odds.race_id, odds.captured_at, odds.pool_key, odds.combination_key
+    `).all();
+
+    return {
+      odds: oddsRows.map(oddsSnapshotFromRow),
+      pools: poolRows.map(poolSnapshotFromRow),
+    };
+  } finally {
+    db.close();
+  }
+}
+
 export function recordRecommendationRun({ dbPath, run }) {
   if (!dbPath) throw new Error('recordRecommendationRun requires dbPath');
   if (!run?.raceId) throw new Error('recordRecommendationRun requires run.raceId');
@@ -436,6 +556,7 @@ export function loadRacesFromDatabase({ dbPath, status = null } = {}) {
       : db.prepare('SELECT * FROM races ORDER BY date, racecourse, race_no').all();
 
     return raceRows.map((raceRow) => {
+      const rawRace = JSON.parse(raceRow.raw_json);
       const runners = db.prepare(`
         SELECT * FROM runners
         WHERE race_id = ?
@@ -456,6 +577,7 @@ export function loadRacesFromDatabase({ dbPath, status = null } = {}) {
         racecourse: raceRow.racecourse,
         raceNo: raceRow.race_no,
         raceIndex: raceRow.race_index,
+        startTime: rawRace.startTime ?? null,
         status: raceRow.status,
         raceClass: raceRow.race_class,
         distance: raceRow.distance,

@@ -107,6 +107,17 @@ Generate leakage-safe runner rows:
 npm run hkjc:training-dataset -- --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/training-dataset.json
 ```
 
+To add local-only Tianxi prior-form aggregates, point the same command at the
+external cache. The adapter uses a conservative one-day availability lag and
+excludes target-race/future rows:
+
+```bash
+npm run hkjc:training-dataset -- --db hkjc-horse-model/data/hkjc.sqlite --tianxiRoot /path/to/tianxi-database --output hkjc-horse-model/data/processed/training-dataset.json
+```
+
+The generated training matrix remains local and ignored by Git. Only compact
+coverage metadata is suitable for publication.
+
 Generate the current baseline model leaderboard:
 
 ```bash
@@ -149,6 +160,40 @@ outlier races.
 The first leaderboard is a baseline for research. It should not be treated as
 proof of a betting edge.
 
+## External research source audit
+
+Before importing data or code from another project, generate the source-policy
+report:
+
+```bash
+npm run hkjc:external-source-audit
+```
+
+The report is saved to
+`hkjc-horse-model/data/processed/external-source-audit.json`. It records the
+canonical URL, source role, license status, permitted uses, provenance
+requirements, cache policy, and pre-race/post-race timing classification for
+each approved external source.
+
+Raw files from sources without an explicit reusable data license stay under
+the ignored `hkjc-horse-model/data/external/raw-local/` boundary or an external
+local cache. They are not committed and do not flow directly into the public
+dashboard. Only leakage-safe derived aggregates or features allowed by the
+source policy may be published. Current-race results, dividends, comments, and
+sectionals are always treated as post-race fields for that race.
+
+After cloning Tianxi and `mag-dot/race-data` into a local cache, scan their
+coverage without copying raw rows into this repository:
+
+```bash
+npm run hkjc:external-source-coverage -- --cacheRoot /path/to/external-sources
+```
+
+This writes compact file counts, date coverage, Git checkout references,
+inventory checksums, schema field names, and timing classifications to
+`hkjc-horse-model/data/processed/external-source-coverage.json`. Absolute cache
+paths and raw records are intentionally omitted.
+
 Market snapshots can be imported once official odds/capital-pool data is
 available in normalized JSON:
 
@@ -162,6 +207,12 @@ command. It writes directly to the local SQLite `odds_snapshots` and
 
 ```bash
 npm run hkjc:live-market-snapshot -- --date 2026-07-08 --venue HV --race 1-7 --pools WIN,PLA,QIN,QPL --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/live-market-source-report.json --dryRun
+```
+
+To capture only currently due T-30/T-10/T-3 windows, run the planner-backed command. It skips a race/window when SQLite already contains odds or pool rows for that window:
+
+```bash
+npm run hkjc:live-market-due-snapshots -- --db hkjc-horse-model/data/hkjc.sqlite --windows T-30,T-10,T-3 --pools WIN,PLA,QIN,QPL --output hkjc-horse-model/data/processed/live-market-source-report.json --dryRun
 ```
 
 The command uses HKJC's whitelisted GraphQL query shapes and requests odds

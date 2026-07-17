@@ -65,6 +65,7 @@ describe('local SQLite race store', () => {
       assert.equal(stats.settledRaces, 0);
       assert.equal(stats.dividends, 0);
       assert.equal(races[0].status, 'upcoming');
+      assert.equal(races[0].startTime, '16:00');
       assert.equal(races[0].runners[0].placing, null);
     } finally {
       await rm(tempDir, { recursive: true, force: true });
@@ -223,6 +224,9 @@ describe('local SQLite race store', () => {
       assert.equal(payload.rows[0].raceId, '2026-07-04-ST-1');
       assert.equal(payload.rows[0].split, 'holdout');
       assert.equal(payload.rows[0].features.horseRunsBefore, 0);
+      assert.equal(payload.rows.find((row) => row.horseNo === 1).targetWin, 0);
+      assert.equal(payload.poolMoneyFeatures.racesWithAnyPoolMoney, 0);
+      assert.equal(Object.keys(payload.rows[0].features).some((key) => key.startsWith('pool')), false);
     } finally {
       await rm(tempDir, { recursive: true, force: true });
     }
@@ -244,6 +248,17 @@ describe('local SQLite race store', () => {
           oddsSnapshot('2026-07-04-ST-1', 2, 'PLACE', 1.5, 30, '2026-07-04T07:00:00.000Z'),
         ],
       });
+      sqliteStore.recordPoolSnapshot({
+        dbPath,
+        snapshot: {
+          raceId: '2026-07-04-ST-1',
+          pool: 'WIN',
+          investment: 150000,
+          minutesToPost: 30,
+          capturedAt: '2026-07-04T07:00:00.000Z',
+          source: 'test-pool-feature',
+        },
+      });
 
       const result = spawnSync(process.execPath, [
         'hkjc-horse-model/src/cli.js',
@@ -263,7 +278,58 @@ describe('local SQLite race store', () => {
       assert.equal(winnerRow.features.marketWinOddsT30, 7.8);
       assert.equal(winnerRow.features.marketWinImpliedProbT30, 0.128205);
       assert.equal(winnerRow.features.marketPlaceOddsT30, 1.5);
+      assert.equal(winnerRow.features.poolWinAvailableT30, 1);
+      assert.equal(winnerRow.features.poolWinInvestmentT30, 150000);
+      assert.equal(winnerRow.features.poolWinEstimatedMoneyT30, 150000);
       assert.equal(payload.marketFeatures.runnerFeatureRows, 1);
+      assert.equal(payload.poolMoneyFeatures.racesWithAnyPoolMoney, 1);
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('exports Tianxi-enriched training rows from an explicitly configured local cache', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-sqlite-'));
+    try {
+      const rawDir = path.join(tempDir, 'raw');
+      const dbPath = path.join(tempDir, 'hkjc.sqlite');
+      const outputPath = path.join(tempDir, 'training-dataset.json');
+      const tianxiRoot = path.join(tempDir, 'tianxi-database');
+      const formDir = path.join(tianxiRoot, 'horses', 'form_records');
+      await mkdir(rawDir, { recursive: true });
+      await mkdir(formDir, { recursive: true });
+      await writeFile(path.join(rawDir, '2026-07-04-ST.json'), JSON.stringify([settledRace()], null, 2), 'utf8');
+      await writeFile(path.join(formDir, 'form_L245.csv'), [
+        'horse_no,date,place,rating,distance_m,win_odds,lbw',
+        'L245,04/07/26,1,51,1200,7.8,0',
+        'L245,01/07/26,2,49,1200,4.2,1',
+      ].join('\n'), 'utf8');
+      syncRaceFilesToDatabase({ dbPath, inputPath: rawDir, sourceKind: 'raw' });
+
+      const result = spawnSync(process.execPath, [
+        'hkjc-horse-model/src/cli.js',
+        'training-dataset',
+        '--db',
+        dbPath,
+        '--tianxiRoot',
+        tianxiRoot,
+        '--output',
+        outputPath,
+      ], {
+        cwd: path.resolve(import.meta.dirname, '..', '..'),
+        encoding: 'utf8',
+      });
+
+      assert.equal(result.status, 0, result.stderr || result.stdout);
+      assert.match(result.stdout, /Tianxi form coverage: 1\/3 runner rows/);
+      const payload = JSON.parse(await readFile(outputPath, 'utf8'));
+      const winnerRow = payload.rows.find((row) => row.horseNo === 2);
+      assert.equal(winnerRow.features.tianxiFormAvailable, 1);
+      assert.equal(winnerRow.features.tianxiPriorStarts, 1);
+      assert.equal(winnerRow.features.tianxiPriorWins, 0);
+      assert.equal(payload.externalFeatures.tianxi.availableFeatureRows, 1);
+      assert.equal(payload.externalFeatures.tianxi.excludedNotAvailableRows, 1);
+      assert.equal(JSON.stringify(payload.externalFeatures).includes(tempDir), false);
     } finally {
       await rm(tempDir, { recursive: true, force: true });
     }
@@ -505,6 +571,148 @@ describe('local SQLite race store', () => {
     }
   });
 
+  it('loads runner-level pool money features from SQLite pre-race snapshots', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-sqlite-'));
+    try {
+      const rawDir = path.join(tempDir, 'raw');
+      const dbPath = path.join(tempDir, 'hkjc.sqlite');
+      await mkdir(rawDir, { recursive: true });
+      await writeFile(path.join(rawDir, '2026-07-04-ST.json'), JSON.stringify([settledRace()], null, 2), 'utf8');
+      syncRaceFilesToDatabase({ dbPath, inputPath: rawDir, sourceKind: 'raw' });
+      const races = loadRacesFromDatabase({ dbPath, status: 'settled' });
+      const capturedAt = '2026-07-04T07:00:00.000Z';
+
+      sqliteStore.recordOddsSnapshots({
+        dbPath,
+        snapshots: [
+          oddsSnapshot('2026-07-04-ST-1', 1, 'WIN', 2, 30, capturedAt),
+          oddsSnapshot('2026-07-04-ST-1', 2, 'WIN', 4, 30, capturedAt),
+          oddsSnapshot('2026-07-04-ST-1', 9, 'WIN', 4, 30, capturedAt),
+        ],
+      });
+      sqliteStore.recordPoolSnapshot({
+        dbPath,
+        snapshot: {
+          raceId: '2026-07-04-ST-1',
+          pool: 'WIN',
+          investment: 120000,
+          minutesToPost: 30,
+          capturedAt,
+          source: 'test-pool-feature',
+        },
+      });
+
+      const { featuresByRunner, summary } = sqliteStore.loadPoolMoneyFeatures({ dbPath, races });
+      const horseOne = featuresByRunner.get('2026-07-04-ST-1|1');
+      const horseTwo = featuresByRunner.get('2026-07-04-ST-1|2');
+
+      assert.equal(summary.runnerFeatureRows, 3);
+      assert.equal(summary.racesWithAnyPoolMoney, 1);
+      assert.equal(horseOne.poolWinAvailableT30, 1);
+      assert.equal(horseOne.poolWinMarketShareT30, 0.5);
+      assert.equal(horseOne.poolWinEstimatedMoneyT30, 60000);
+      assert.equal(horseTwo.poolWinMarketShareT30, 0.25);
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('does not materialize odds-only history when no pool snapshots can support money features', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-sqlite-'));
+    try {
+      const rawDir = path.join(tempDir, 'raw');
+      const dbPath = path.join(tempDir, 'hkjc.sqlite');
+      await mkdir(rawDir, { recursive: true });
+      await writeFile(path.join(rawDir, '2026-07-04-ST.json'), JSON.stringify([settledRace()], null, 2), 'utf8');
+      syncRaceFilesToDatabase({ dbPath, inputPath: rawDir, sourceKind: 'raw' });
+      const races = loadRacesFromDatabase({ dbPath, status: 'settled' });
+      sqliteStore.recordOddsSnapshots({
+        dbPath,
+        snapshots: [
+          oddsSnapshot('2026-07-04-ST-1', 1, 'WIN', 2, 30, '2026-07-04T07:00:00.000Z'),
+          oddsSnapshot('2026-07-04-ST-1', 2, 'WIN', 4, 30, '2026-07-04T07:00:00.000Z'),
+        ],
+      });
+      sqliteStore.recordPoolSnapshot({
+        dbPath,
+        snapshot: {
+          raceId: '2026-07-04-ST-1',
+          pool: 'WIN',
+          investment: null,
+          minutesToPost: 30,
+          capturedAt: '2026-07-04T07:00:00.000Z',
+          source: 'test-null-pool-feature',
+        },
+      });
+
+      const { featuresByRunner, summary } = sqliteStore.loadPoolMoneyFeatures({ dbPath, races });
+
+      assert.equal(summary.loadedPoolSnapshots, 0);
+      assert.equal(summary.loadedOddsSnapshots, 0);
+      assert.equal(summary.selectedOddsBooks, 0);
+      assert.equal(featuresByRunner.has('2026-07-04-ST-1|1'), false);
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('restricts pool feature snapshot loading to the requested race set', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-sqlite-'));
+    try {
+      const rawDir = path.join(tempDir, 'raw');
+      const dbPath = path.join(tempDir, 'hkjc.sqlite');
+      const secondRace = {
+        ...settledRace(),
+        raceId: '2026-07-05-ST-1',
+        date: '2026-07-05',
+      };
+      await mkdir(rawDir, { recursive: true });
+      await writeFile(
+        path.join(rawDir, 'two-races.json'),
+        JSON.stringify([settledRace(), secondRace], null, 2),
+        'utf8',
+      );
+      syncRaceFilesToDatabase({ dbPath, inputPath: rawDir, sourceKind: 'raw' });
+      sqliteStore.recordOddsSnapshots({
+        dbPath,
+        snapshots: [
+          oddsSnapshot('2026-07-04-ST-1', 1, 'WIN', 2, 30, '2026-07-04T07:00:00.000Z'),
+          oddsSnapshot('2026-07-05-ST-1', 1, 'WIN', 3, 30, '2026-07-05T07:00:00.000Z'),
+        ],
+      });
+      for (const [raceId, capturedAt] of [
+        ['2026-07-04-ST-1', '2026-07-04T07:00:00.000Z'],
+        ['2026-07-05-ST-1', '2026-07-05T07:00:00.000Z'],
+      ]) {
+        sqliteStore.recordPoolSnapshot({
+          dbPath,
+          snapshot: {
+            raceId,
+            pool: 'WIN',
+            investment: 100000,
+            minutesToPost: 30,
+            capturedAt,
+            source: 'test-requested-races',
+          },
+        });
+      }
+      const requestedRaces = loadRacesFromDatabase({ dbPath, status: 'settled' })
+        .filter((race) => race.raceId === '2026-07-04-ST-1');
+
+      const { featuresByRunner, summary } = sqliteStore.loadPoolMoneyFeatures({
+        dbPath,
+        races: requestedRaces,
+      });
+
+      assert.equal(summary.loadedPoolSnapshots, 1);
+      assert.equal(summary.loadedOddsSnapshots, 1);
+      assert.equal(summary.poolBackedRaces, 1);
+      assert.equal([...featuresByRunner.keys()].some((key) => key.startsWith('2026-07-05')), false);
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
   it('records recommendation runs for later betting strategy audits', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-sqlite-'));
     try {
@@ -713,12 +921,29 @@ describe('local SQLite race store', () => {
           date: '2026-07-04',
           racecourse: 'ST',
           raceNo: 1,
-          generatedAt: '2026-07-04T08:00:00.000Z',
+          generatedAt: '2026-07-04T07:50:00.000Z',
           modelVersion: 'test-model',
           strategyVersion: 'audit-test',
+          summary: { mode: 'execute' },
           recommendations: [
             { pool: 'PLACE', combination: [2], stake: 10 },
             { pool: 'WIN', combination: [8], stake: 10 },
+          ],
+        },
+      });
+      sqliteStore.recordRecommendationRun({
+        dbPath,
+        run: {
+          raceId: '2026-07-04-ST-1',
+          date: '2026-07-04',
+          racecourse: 'ST',
+          raceNo: 1,
+          generatedAt: '2026-07-04T08:05:00.000Z',
+          modelVersion: 'test-model',
+          strategyVersion: 'audit-test',
+          summary: { mode: 'execute' },
+          recommendations: [
+            { pool: 'PLACE', combination: [1], stake: 10 },
           ],
         },
       });
@@ -737,8 +962,13 @@ describe('local SQLite race store', () => {
 
       assert.equal(result.status, 0, result.stderr || result.stdout);
       assert.match(result.stdout, /Recommendation audit/);
+      assert.match(result.stdout, /1\/2 final pre-race runs eligible/);
       assert.match(result.stdout, /profit -5.00/);
       const report = JSON.parse(await readFile(outputPath, 'utf8'));
+      assert.equal(report.summary.recordedRuns, 2);
+      assert.equal(report.summary.eligibleRuns, 1);
+      assert.equal(report.summary.excludedRuns, 1);
+      assert.equal(report.summary.exclusionReasons.POST_RACE, 1);
       assert.equal(report.summary.totalStake, 20);
       assert.equal(report.summary.totalReturn, 15);
       assert.equal(report.summary.profit, -5);
@@ -757,6 +987,7 @@ function settledRace() {
     racecourse: 'ST',
     raceNo: 1,
     raceIndex: 827,
+    startTime: '16:00',
     raceClass: 'Class 5',
     distance: 1200,
     ratingBand: '40-0',
@@ -788,6 +1019,7 @@ function upcomingRace() {
     racecourse: 'ST',
     raceNo: 1,
     raceIndex: 900,
+    startTime: '16:00',
     raceClass: 'Class 4',
     distance: 1400,
     surface: 'TURF',

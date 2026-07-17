@@ -66,6 +66,29 @@ describe('as-of training dataset', () => {
     assert.equal(rowC.targetWin, 1);
   });
 
+  it('can attach optional external as-of features while keeping missing rows valid', () => {
+    const rows = buildAsOfTrainingRows([
+      race('2024-01-07-ST-1', '2024-01-07', [
+        runner('A', 1, 'J1', 'T1', 2),
+        runner('C', 3, 'J3', 'T3', 1),
+      ]),
+    ], {
+      externalFeaturesForRunner: ({ runner: currentRunner }) => (
+        currentRunner.horseNo === 1
+          ? { tianxiFormAvailable: 1, tianxiPriorStarts: 8, tianxiPriorWinRate: 0.25 }
+          : { tianxiFormAvailable: 0, tianxiPriorStarts: 0, tianxiPriorWinRate: 0 }
+      ),
+    });
+
+    const rowA = rows.find((row) => row.horseId === 'A');
+    const rowC = rows.find((row) => row.horseId === 'C');
+    assert.equal(rowA.features.tianxiFormAvailable, 1);
+    assert.equal(rowA.features.tianxiPriorStarts, 8);
+    assert.equal(rowA.features.tianxiPriorWinRate, 0.25);
+    assert.equal(rowC.features.tianxiFormAvailable, 0);
+    assert.equal(rowC.targetWin, 1);
+  });
+
   it('assigns fixed calendar splits and summarizes row counts', () => {
     const rows = splitTrainingRows([
       row('2023-12-31', 'a'),

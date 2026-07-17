@@ -1,0 +1,84 @@
+{
+  "experimentId": "tianxi-form-logit-v1",
+  "generatedAt": "2026-07-17T14:06:00.000Z",
+  "status": "research-positive-probability-no-roi",
+  "source": {
+    "sourceId": "sleepingarhat-tianxi-database",
+    "checkoutRef": "a64456e671f1b019cbef6d7c0a31d332f31748ce",
+    "licenseStatus": "unknown",
+    "publicationBoundary": "Derived metrics only; raw data remains local."
+  },
+  "dataset": {
+    "rows": 175574,
+    "races": 14250,
+    "trainRows": 148326,
+    "validationRows": 20234,
+    "holdoutRows": 7014,
+    "holdoutRaces": 564,
+    "tianxiAvailableFeatureRows": 112603,
+    "tianxiCoverage": 0.641342,
+    "availabilityLagDays": 1,
+    "excludedNotAvailableRowEvaluations": 2479721,
+    "invalidDateRowEvaluations": 0
+  },
+  "model": {
+    "modelId": "logit-runner-v1",
+    "iterations": 160,
+    "learningRate": 0.05,
+    "l2": 0.001,
+    "comparison": "Same SQLite snapshot, rows, chronological split, trainer, and hyperparameters; Tianxi feature columns are zero in baseline."
+  },
+  "baseline": {
+    "validation": {
+      "races": 1657,
+      "brierScore": 0.073073,
+      "logLoss": 0.271122,
+      "topPickWins": 363,
+      "topPickWinRate": 0.219071
+    },
+    "holdout": {
+      "races": 564,
+      "brierScore": 0.071932,
+      "logLoss": 0.26712,
+      "topPickWins": 121,
+      "topPickWinRate": 0.214539
+    }
+  },
+  "tianxiEnriched": {
+    "validation": {
+      "races": 1657,
+      "brierScore": 0.072864,
+      "logLoss": 0.269837,
+      "topPickWins": 368,
+      "topPickWinRate": 0.222088
+    },
+    "holdout": {
+      "races": 564,
+      "brierScore": 0.071738,
+      "logLoss": 0.265832,
+      "topPickWins": 125,
+      "topPickWinRate": 0.221631
+    }
+  },
+  "delta": {
+    "validationBrierScore": -0.000209,
+    "validationLogLoss": -0.001285,
+    "validationTopPickWinRate": 0.003017,
+    "validationTopPickWins": 5,
+    "holdoutBrierScore": -0.000194,
+    "holdoutLogLoss": -0.001288,
+    "holdoutTopPickWinRate": 0.007092,
+    "holdoutTopPickWins": 4,
+    "holdoutRelativeLogLossImprovement": 0.004822,
+    "holdoutRelativeBrierImprovement": 0.002697
+  },
+  "promotionGates": {
+    "probabilityQualityImprovedOnValidation": true,
+    "probabilityQualityImprovedOnHoldout": true,
+    "asOfLeakageTestsPassed": true,
+    "roiEvaluatedAtPreRacePrices": false,
+    "drawdownEvaluated": false,
+    "cashModeAllowed": false
+  },
+  "conclusion": "Prior-form enrichment is promising for probability quality, but remains research-only until ROI, drawdown, calibration, and tree-model comparisons pass the project promotion gates."
+}
