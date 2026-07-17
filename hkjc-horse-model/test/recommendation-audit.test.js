@@ -83,6 +83,16 @@ describe('recommendation audit', () => {
     assert.equal(audit.summary.totalStake, 0);
     assert.equal(audit.runs[0].exclusionReason, 'MISSING_POST_TIME');
   });
+
+  it('classifies a later Hong Kong date as post-race even when post time is missing', () => {
+    const audit = auditRecommendationRuns({
+      races: [{ ...settledRace(), date: '2026-07-04', startTime: null }],
+      runs: [recommendationRun('next-day', '2026-07-06T03:56:44.952Z', 'execute', 2)],
+    });
+
+    assert.equal(audit.summary.eligibleRuns, 0);
+    assert.equal(audit.runs[0].exclusionReason, 'POST_RACE');
+  });
 });
 
 function settledRace() {

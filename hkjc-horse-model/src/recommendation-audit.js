@@ -68,18 +68,24 @@ function classifyRunTiming(run, race) {
   if (!race || race.status === 'upcoming') {
     return { ...run, auditDecision: 'CANDIDATE', exclusionReason: null };
   }
-  const postTime = racePostTime(race);
-  if (!postTime) {
-    return { ...run, auditDecision: 'EXCLUDED', exclusionReason: 'MISSING_POST_TIME' };
-  }
   const generatedAtMs = Date.parse(run.generatedAt);
   if (!Number.isFinite(generatedAtMs)) {
     return { ...run, auditDecision: 'EXCLUDED', exclusionReason: 'INVALID_GENERATED_AT' };
+  }
+  const postTime = racePostTime(race);
+  if (!postTime) {
+    const generatedDate = hongKongDate(generatedAtMs);
+    const exclusionReason = generatedDate > race.date ? 'POST_RACE' : 'MISSING_POST_TIME';
+    return { ...run, auditDecision: 'EXCLUDED', exclusionReason };
   }
   if (generatedAtMs >= postTime.getTime()) {
     return { ...run, auditDecision: 'EXCLUDED', exclusionReason: 'POST_RACE' };
   }
   return { ...run, auditDecision: 'CANDIDATE', exclusionReason: null };
+}
+
+function hongKongDate(timestampMs) {
+  return new Date(timestampMs + (8 * 60 * 60 * 1000)).toISOString().slice(0, 10);
 }
 
 function racePostTime(race) {
