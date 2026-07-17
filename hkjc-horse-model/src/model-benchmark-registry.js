@@ -1,3 +1,5 @@
+import { isIP } from 'node:net';
+
 export const MODEL_BENCHMARK_REGISTRY_VERSION = 'model-benchmark-registry-v1';
 
 const ALLOWED_KINDS = new Set([
@@ -315,6 +317,8 @@ function validatePromotionGates(issues, prefix, promotionGates) {
     }
     if (!isNonEmptyTrimmedString(promotionGate.id)) {
       issues.push(`${prefix} promotion gate id must be a non-empty trimmed string`);
+    } else if (!isPrivacySafeText(promotionGate.id)) {
+      issues.push(`${prefix} promotion gate id must be privacy-safe text`);
     } else {
       if (gateIds.has(promotionGate.id)) {
         issues.push(`${prefix} promotion gate id must be unique`);
@@ -323,11 +327,14 @@ function validatePromotionGates(issues, prefix, promotionGates) {
     }
     if (!isNonEmptyTrimmedString(promotionGate.requirement)) {
       issues.push(`${prefix} promotion gate requirement must be a non-empty trimmed string`);
+    } else if (!isPrivacySafeText(promotionGate.requirement)) {
+      issues.push(`${prefix} promotion gate requirement must be privacy-safe text`);
     }
   }
 }
 
 export function summarizeModelBenchmarkRegistry(registry = MODEL_BENCHMARK_REGISTRY) {
+  assertValidRegistry(registry);
   const entries = [...(registry ?? [])].sort(compareById);
   const statusCounts = new Map();
   let promotionGateCount = 0;
@@ -349,13 +356,13 @@ export function summarizeModelBenchmarkRegistry(registry = MODEL_BENCHMARK_REGIS
   };
 }
 
-export function buildModelBenchmarkRegistrySnapshot({
-  registry = MODEL_BENCHMARK_REGISTRY,
-} = {}) {
-  const issues = validateModelBenchmarkRegistry(registry);
-  if (issues.length > 0) {
-    throw new Error(`Model benchmark registry is invalid: ${issues.join('; ')}`);
+export function buildModelBenchmarkRegistrySnapshot(options = {}) {
+  if (!isRecord(options)) {
+    assertValidRegistry(null);
   }
+
+  const { registry = MODEL_BENCHMARK_REGISTRY } = options;
+  assertValidRegistry(registry);
 
   const entries = [...registry].sort(compareById);
   return {
@@ -384,6 +391,8 @@ function gate(id, requirement) {
 function requireTrimmedString(issues, prefix, entry, field) {
   if (!isNonEmptyTrimmedString(entry[field])) {
     issues.push(`${prefix} ${field} must be a non-empty trimmed string`);
+  } else if (!isPrivacySafeText(entry[field])) {
+    issues.push(`${prefix} ${field} must be privacy-safe text`);
   }
 }
 
@@ -395,6 +404,8 @@ function requireStringList(issues, prefix, entry, field) {
     || values.some((value) => !isNonEmptyTrimmedString(value))
   ) {
     issues.push(`${prefix} ${field} must contain non-empty trimmed strings`);
+  } else if (values.some((value) => !isPrivacySafeText(value))) {
+    issues.push(`${prefix} ${field} must contain privacy-safe text`);
   }
 }
 
@@ -438,52 +449,175 @@ function isNonEmptyTrimmedString(value) {
   return typeof value === 'string' && value.length > 0 && value.trim() === value;
 }
 
+function isPrivacySafeText(value) {
+  return !/(?:file:\/\/|\/Users\/)/i.test(value);
+}
+
 function isRecord(value) {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 function isPublicHttpsUrl(value) {
   if (!isNonEmptyTrimmedString(value)) return false;
+  if (!isPrivacySafeText(value)) return false;
 
   try {
     const parsed = new URL(value);
-    if (parsed.protocol !== 'https:' || !parsed.hostname) return false;
-    return !isLocalHostname(parsed.hostname);
+    if (
+      parsed.protocol !== 'https:'
+      || !parsed.hostname
+      || parsed.username
+      || parsed.password
+    ) {
+      return false;
+    }
+    return !isNonPublicHostname(parsed.hostname);
   } catch {
     return false;
   }
 }
 
-function isLocalHostname(hostname) {
-  const normalized = hostname.toLowerCase().replace(/^\[|\]$/g, '');
-  if (normalized === 'localhost' || normalized.endsWith('.localhost')) return true;
-  if (normalized === '::1' || normalized === '0.0.0.0') return true;
-  if (/^(fc|fd|fe8|fe9|fea|feb)/.test(normalized)) return true;
-
-  const ipv4MappedIpv6 = normalized.match(/^::ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/);
-  if (ipv4MappedIpv6) {
-    const highWord = Number.parseInt(ipv4MappedIpv6[1], 16);
-    const lowWord = Number.parseInt(ipv4MappedIpv6[2], 16);
-    return isLocalIpv4([
-      highWord >> 8,
-      highWord & 0xff,
-      lowWord >> 8,
-      lowWord & 0xff,
-    ]);
+function isNonPublicHostname(hostname) {
+  const normalized = hostname.toLowerCase().replace(/^\[|\]$/g, '').replace(/\.$/, '');
+  if (
+    normalized === 'localhost'
+    || normalized.endsWith('.localhost')
+    || normalized.endsWith('.local')
+  ) {
+    return true;
   }
 
-  const parts = normalized.split('.').map(Number);
-  return isLocalIpv4(parts);
+  const ipVersion = isIP(normalized);
+  if (ipVersion === 4) return isNonPublicIpv4(normalized);
+  if (ipVersion === 6) return isNonPublicIpv6(normalized);
+  return false;
 }
 
-function isLocalIpv4(parts) {
-  if (parts.length !== 4 || parts.some((part) => !Number.isInteger(part))) return false;
+function isNonPublicIpv4(value) {
+  const parts = value.split('.').map(Number);
+  if (parts.length !== 4 || parts.some((part) => !Number.isInteger(part) || part < 0 || part > 255)) {
+    return true;
+  }
+
+  const [first, second, third] = parts;
   return (
-    parts[0] === 0
-    || parts[0] === 10
-    || parts[0] === 127
-    || (parts[0] === 169 && parts[1] === 254)
-    || (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31)
-    || (parts[0] === 192 && parts[1] === 168)
+    first === 0
+    || first === 10
+    || (first === 100 && second >= 64 && second <= 127)
+    || first === 127
+    || (first === 169 && second === 254)
+    || (first === 172 && second >= 16 && second <= 31)
+    || (first === 192 && second === 0 && third === 0)
+    || (first === 192 && second === 0 && third === 2)
+    || (first === 192 && second === 88 && third === 99)
+    || (first === 192 && second === 168)
+    || (first === 198 && second >= 18 && second <= 19)
+    || (first === 198 && second === 51 && third === 100)
+    || (first === 203 && second === 0 && third === 113)
+    || first >= 224
   );
+}
+
+function isNonPublicIpv6(value) {
+  const words = parseIpv6(value);
+  if (!words) return true;
+
+  const address = wordsToBigInt(words);
+  const mappedIpv4 = address >> 32n;
+  if (mappedIpv4 === 0xffffn) {
+    return isNonPublicIpv4(bigIntToIpv4(address & 0xffffffffn));
+  }
+
+  return (
+    address === 0n
+    || address === 1n
+    || isIpv6InRange(address, 'fc000000000000000000000000000000', 7)
+    || isIpv6InRange(address, 'fe800000000000000000000000000000', 10)
+    || isIpv6InRange(address, 'ff000000000000000000000000000000', 8)
+    || isIpv6InRange(address, '01000000000000000000000000000000', 64)
+    || isIpv6InRange(address, '00000000000000000000000000000000', 96)
+    || isIpv6InRange(address, '0064ff9b000000000000000000000000', 96)
+    || isIpv6InRange(address, '20010db8000000000000000000000000', 32)
+    || isIpv6InRange(address, '20010000000000000000000000000000', 32)
+    || isIpv6InRange(address, '20010020000000000000000000000000', 28)
+    || isIpv6InRange(address, '20010002000000000000000000000000', 48)
+    || isIpv6InRange(address, '3fff0000000000000000000000000000', 20)
+  );
+}
+
+function parseIpv6(value) {
+  const sections = value.split('::');
+  if (sections.length > 2) return null;
+
+  const left = sections[0] ? sections[0].split(':') : [];
+  const right = sections.length === 2 && sections[1] ? sections[1].split(':') : [];
+  const expandedLeft = expandIpv6Parts(left);
+  const expandedRight = expandIpv6Parts(right);
+  if (!expandedLeft || !expandedRight) return null;
+
+  const missing = sections.length === 2
+    ? 8 - expandedLeft.length - expandedRight.length
+    : 0;
+  if (missing < 0 || (sections.length === 1 && expandedLeft.length !== 8)) return null;
+
+  const parts = [
+    ...expandedLeft,
+    ...Array.from({ length: missing }, () => '0'),
+    ...expandedRight,
+  ];
+  if (parts.length !== 8) return null;
+
+  return parts.map((part) => {
+    if (!/^[0-9a-f]{1,4}$/i.test(part)) return null;
+    return Number.parseInt(part, 16);
+  });
+}
+
+function expandIpv6Parts(parts) {
+  const expanded = [];
+  for (const part of parts) {
+    if (!part.includes('.')) {
+      expanded.push(part);
+      continue;
+    }
+
+    const ipv4Parts = part.split('.').map(Number);
+    if (
+      ipv4Parts.length !== 4
+      || ipv4Parts.some((octet) => !Number.isInteger(octet) || octet < 0 || octet > 255)
+    ) {
+      return null;
+    }
+    expanded.push(
+      ((ipv4Parts[0] << 8) | ipv4Parts[1]).toString(16),
+      ((ipv4Parts[2] << 8) | ipv4Parts[3]).toString(16),
+    );
+  }
+  return expanded;
+}
+
+function wordsToBigInt(words) {
+  return words.reduce((value, word) => (value << 16n) | BigInt(word), 0n);
+}
+
+function isIpv6InRange(address, prefixHex, prefixLength) {
+  const prefix = BigInt(`0x${prefixHex}`);
+  const shift = 128n - BigInt(prefixLength);
+  return (address >> shift) === (prefix >> shift);
+}
+
+function bigIntToIpv4(value) {
+  return [
+    Number((value >> 24n) & 0xffn),
+    Number((value >> 16n) & 0xffn),
+    Number((value >> 8n) & 0xffn),
+    Number(value & 0xffn),
+  ].join('.');
+}
+
+function assertValidRegistry(registry) {
+  const issues = validateModelBenchmarkRegistry(registry);
+  if (issues.length > 0) {
+    throw new Error(`Model benchmark registry is invalid: ${issues.join('; ')}`);
+  }
 }

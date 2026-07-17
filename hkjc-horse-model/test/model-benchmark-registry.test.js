@@ -153,6 +153,22 @@ describe('model benchmark registry', () => {
     assert.match(validateModelBenchmarkRegistry([[]]).join(' '), /entry must be an object/);
   });
 
+  it('fails closed for null registries across validation, summary, and snapshot', () => {
+    assert.match(validateModelBenchmarkRegistry(null).join(' '), /registry must be an array/);
+    assert.throws(
+      () => summarizeModelBenchmarkRegistry(null),
+      /registry must be an array/,
+    );
+    assert.throws(
+      () => buildModelBenchmarkRegistrySnapshot({ registry: null }),
+      /registry must be an array/,
+    );
+    assert.throws(
+      () => buildModelBenchmarkRegistrySnapshot(null),
+      /registry must be an array/,
+    );
+  });
+
   it('requires trimmed scalar fields, allowed enums, and public HTTPS source URLs', () => {
     const invalidValues = [
       ['id', ' benchmark'],
@@ -162,6 +178,10 @@ describe('model benchmark registry', () => {
       ['localAdoptionStatus', 'unknown-status'],
       ['sourceUrl', 'file:///Users/example/private-repo'],
       ['sourceUrl', 'https://localhost/private-repo'],
+      ['sourceUrl', 'https://[::]/x'],
+      ['sourceUrl', 'https://100.64.0.1/x'],
+      ['sourceUrl', 'https://host.local/x'],
+      ['sourceUrl', 'https://user:secret@example.com/x'],
       ['sourceUrl', 'https://127.0.0.1/private-repo'],
       ['sourceUrl', 'https://[::ffff:127.0.0.1]/private-repo'],
       ['sourceUrl', '/Users/example/private-repo'],
@@ -170,6 +190,44 @@ describe('model benchmark registry', () => {
     for (const [field, value] of invalidValues) {
       const issues = validateModelBenchmarkRegistry([validEntry({ [field]: value })]);
       assert.match(issues.join(' '), new RegExp(field), `${field} should be rejected`);
+    }
+  });
+
+  it('rejects private paths from every projected string field', () => {
+    const cases = [
+      ['id', (entry, value) => ({ ...entry, id: value })],
+      ['label', (entry, value) => ({ ...entry, label: value })],
+      ['source', (entry, value) => ({ ...entry, source: value })],
+      ['kind', (entry, value) => ({ ...entry, kind: value })],
+      ['localAdoptionStatus', (entry, value) => ({ ...entry, localAdoptionStatus: value })],
+      ['requiredData', (entry, value) => ({ ...entry, requiredData: [value] })],
+      ['leakageRisks', (entry, value) => ({ ...entry, leakageRisks: [value] })],
+      ['metrics', (entry, value) => ({ ...entry, metrics: [value] })],
+      ['promotion gate id', (entry, value) => ({
+        ...entry,
+        promotionGates: [{ id: value, requirement: 'Safe requirement.' }],
+      })],
+      ['promotion gate requirement', (entry, value) => ({
+        ...entry,
+        promotionGates: [{ id: 'safe-gate', requirement: value }],
+      })],
+    ];
+
+    for (const privateText of ['/Users/alice/private', 'file:///Users/alice/private']) {
+      for (const [field, makeEntry] of cases) {
+        const issues = validateModelBenchmarkRegistry([
+          makeEntry(validEntry(), privateText),
+        ]);
+
+        assert.match(issues.join(' '), /privacy-safe|private path|local path/i, `${field} should be rejected`);
+        assert.throws(
+          () => buildModelBenchmarkRegistrySnapshot({
+            registry: [makeEntry(validEntry(), privateText)],
+          }),
+          /model benchmark registry is invalid/i,
+          `${field} should not be projected`,
+        );
+      }
     }
   });
 
