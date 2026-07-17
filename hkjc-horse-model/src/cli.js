@@ -17,6 +17,7 @@ import {
   predictionRowsFromLedger,
 } from './model-leaderboard.js';
 import { buildExternalModelComparison } from './external-model-comparison.js';
+import { buildExternalSourceAudit } from './external-source-audit.js';
 import { buildStrategyRiskReport } from './strategy-risk-report.js';
 import { buildMarketSnapshotCoverageReport } from './market-snapshot-coverage.js';
 import { buildMarketWindowResearchReport } from './market-window-research.js';
@@ -118,6 +119,11 @@ async function main(argv) {
 
   if (command === 'external-model-comparison') {
     await externalModelComparisonCommand(args);
+    return;
+  }
+
+  if (command === 'external-source-audit') {
+    await externalSourceAuditCommand(args);
     return;
   }
 
@@ -725,6 +731,18 @@ async function marketCoverageReportCommand(args) {
   console.log(`Saved market snapshot coverage to ${outputPath}`);
 }
 
+async function externalSourceAuditCommand(args) {
+  const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'external-source-audit.json'));
+  const report = buildExternalSourceAudit({ generatedAt: args.generatedAt ?? new Date().toISOString() });
+
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeJson(outputPath, report);
+
+  console.log(`External source audit: ${report.summary.sources} sources, ${report.summary.localOnlySources} local-only`);
+  console.log(`License status: ${Object.entries(report.summary.byLicenseStatus).map(([key, value]) => `${key}=${value}`).join(', ')}`);
+  console.log(`Saved external source audit to ${outputPath}`);
+}
+
 async function marketWindowResearchCommand(args) {
   const dbPath = path.resolve(args.db ?? sqliteDbPath);
   const races = loadRacesFromDatabase({ dbPath, status: 'settled' });
@@ -1157,6 +1175,7 @@ Commands:
   training-dataset --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/training-dataset.json
   model-leaderboard --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/model-leaderboard.json
   external-model-comparison --date 2026-07-08 --venue HV --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/external-model-comparison-2026-07-08-HV.json
+  external-source-audit --output hkjc-horse-model/data/processed/external-source-audit.json
   train-model --input hkjc-horse-model/data/processed/training-dataset.json --output hkjc-horse-model/data/processed/model-training-report.json
   strategy-risk-report --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/strategy-risk-report.json
   market-snapshot --input hkjc-horse-model/data/market-snapshot.json --db hkjc-horse-model/data/hkjc.sqlite

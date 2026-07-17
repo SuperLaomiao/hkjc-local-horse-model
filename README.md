@@ -149,6 +149,28 @@ outlier races.
 The first leaderboard is a baseline for research. It should not be treated as
 proof of a betting edge.
 
+## External research source audit
+
+Before importing data or code from another project, generate the source-policy
+report:
+
+```bash
+npm run hkjc:external-source-audit
+```
+
+The report is saved to
+`hkjc-horse-model/data/processed/external-source-audit.json`. It records the
+canonical URL, source role, license status, permitted uses, provenance
+requirements, cache policy, and pre-race/post-race timing classification for
+each approved external source.
+
+Raw files from sources without an explicit reusable data license stay under
+the ignored `hkjc-horse-model/data/external/raw-local/` boundary or an external
+local cache. They are not committed and do not flow directly into the public
+dashboard. Only leakage-safe derived aggregates or features allowed by the
+source policy may be published. Current-race results, dividends, comments, and
+sectionals are always treated as post-race fields for that race.
+
 Market snapshots can be imported once official odds/capital-pool data is
 available in normalized JSON:
 
