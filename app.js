@@ -511,6 +511,7 @@ function renderFinalBetPlanPanel(entry, snapshot, todayStatus) {
         <span class="plan-badge ${badgeClass}">${escapeHtml(resolvedPlan.label)}</span>
         <h2 class="plan-title">${escapeHtml(horseLabel)}</h2>
         <p class="plan-headline">${escapeHtml(resolvedPlan.headline)}</p>
+        ${renderTripwireStatus(resolvedPlan.tripwire)}
         <div class="plan-grid">
           <div>
             <span>入场窗口</span>
@@ -703,6 +704,7 @@ function renderMobileActionBar(entry, todayStatus) {
       <div>
         <span>${escapeHtml(plan.label ?? "方案")}</span>
         <strong>${escapeHtml(plan.horseName ? `${plan.horseNo ? `No. ${plan.horseNo} · ` : ""}${plan.horseName}` : "不下注")}</strong>
+        ${plan.tripwire?.summaryZh ? `<small class="mobile-tripwire">${escapeHtml(plan.tripwire.summaryZh)}</small>` : ""}
       </div>
       ${renderRefreshButton("刷新", "mobile")}
     </div>
@@ -716,13 +718,14 @@ function renderStakingStrategyPanel(entry) {
     <section class="panel staking-strategy-panel">
       <div class="panel-header">
         <div>
-          <h3>建议投注策略</h3>
-          <p>${escapeHtml(formatRaceContext(entry))} · 每场 HK$10-100，优先位置 / 位置Q / 小额独赢。</p>
+          <h3>纸上预算草案</h3>
+          <p>${escapeHtml(formatRaceContext(entry))} · 只展示候选结构；不能绕过 EV、临场市场和不确定性保护闸。</p>
         </div>
         <span class="strategy-budget ${isPass ? "is-pass" : ""}">${formatHkd(strategy.budget)}</span>
       </div>
       <div class="staking-body">
         <span class="race-context-pill">${escapeHtml(formatRaceContext(entry))}</span>
+        <span class="plan-badge is-prepare">PAPER ONLY / 非执行</span>
         <span class="strategy-mode ${isPass ? "is-pass" : ""}">${escapeHtml(strategy.label)}</span>
         <h2 class="strategy-title">${escapeHtml(strategy.primaryHorse?.horseName ?? "不下注")}</h2>
         <p class="strategy-rationale">${escapeHtml(strategy.rationale)}</p>
@@ -782,7 +785,7 @@ function renderStakeBetLine(entry, bet) {
 
 function renderMultiPlayPortfolioPanel(entry, snapshot = uiState.snapshot) {
   const executionPolicy = dashboardExecutionPolicy(snapshot);
-  const portfolio = buildStructuredBetPortfolio(entry, buildPublicPortfolioOptions(snapshot));
+  const portfolio = buildStructuredBetPortfolio(entry, buildPublicPortfolioOptions(snapshot, entry));
   return `
     <section class="panel multi-play-panel">
       <div class="panel-header">
@@ -797,6 +800,7 @@ function renderMultiPlayPortfolioPanel(entry, snapshot = uiState.snapshot) {
         ${executionPolicy.allowExecutableRecommendations ? "" : '<span class="plan-badge is-pass">PUBLIC RESEARCH · NO BET</span>'}
         <span class="strategy-mode ${portfolio.mode === "PASS" ? "is-pass" : ""}">${escapeHtml(portfolio.label)}</span>
         <p class="strategy-rationale">${escapeHtml(portfolio.summary)}</p>
+        ${renderTripwireStatus(portfolio.tripwire)}
         ${portfolio.cashLines.length ? `
           <div class="multi-play-section">
             <strong>建议现金组合</strong>
@@ -1483,6 +1487,20 @@ function renderPlanStep(label, value) {
     <div class="plan-step">
       <span>${escapeHtml(label)}</span>
       <strong>${escapeHtml(value ?? "-")}</strong>
+    </div>
+  `;
+}
+
+function renderTripwireStatus(tripwire) {
+  if (!tripwire?.summaryZh) return "";
+  const status = String(tripwire.status ?? "PASS").toLowerCase();
+  const score = Number.isFinite(Number(tripwire.uncertaintyScore))
+    ? ` · uncertainty ${formatPercent(Number(tripwire.uncertaintyScore))}`
+    : "";
+  return `
+    <div class="tripwire-status is-${escapeHtml(status)}" aria-label="uncertainty tripwire">
+      <strong>不确定性保护闸 · ${escapeHtml(tripwire.status ?? "PASS")}</strong>
+      <span>${escapeHtml(tripwire.summaryZh)}${escapeHtml(score)}</span>
     </div>
   `;
 }

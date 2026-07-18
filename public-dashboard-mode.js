@@ -1,3 +1,5 @@
+import { buildRecentConfidenceBaseline } from './hkjc-horse-model/src/uncertainty-tripwire.js';
+
 export function dashboardExecutionPolicy(snapshot = {}) {
   const publication = snapshot?.publication ?? {};
   const functionalPublic = publication.visibility === 'PUBLIC_FUNCTIONAL_SANITIZED'
@@ -37,15 +39,25 @@ export function dashboardExecutionPolicy(snapshot = {}) {
   };
 }
 
-export function buildPublicPortfolioOptions(snapshot = {}) {
+export function buildPublicPortfolioOptions(snapshot = {}, entry = null) {
   const policy = dashboardExecutionPolicy(snapshot);
-  if (policy.allowExecutableRecommendations) return {};
-  return {
-    probabilityStatus: 'RESEARCH_ONLY',
-    maxBudget: 0,
-    bankroll: 0,
-    remainingDailyBudget: 0,
-  };
+  const options = policy.allowExecutableRecommendations
+    ? {}
+    : {
+        probabilityStatus: 'RESEARCH_ONLY',
+        maxBudget: 0,
+        bankroll: 0,
+        remainingDailyBudget: 0,
+      };
+  const baseline = entry ? buildRecentConfidenceBaseline(snapshot?.recentEntries, {
+    currentProbability: entry?.forecast?.topPick?.probability
+      ?? entry?.forecast?.predictions?.[0]?.probability,
+    asOf: entry?.postTime ?? entry?.scheduledPostTime ?? entry?.date,
+    excludeRaceId: entry?.raceId,
+  }) : null;
+  return baseline
+    ? { ...options, uncertaintyContext: { confidenceBaseline: baseline } }
+    : options;
 }
 
 export function publicationBadge(policy = {}) {
