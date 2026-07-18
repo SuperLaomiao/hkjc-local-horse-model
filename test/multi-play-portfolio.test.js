@@ -2,12 +2,72 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import {
+  applyPortfolioRiskCaps,
   buildMultiPlayProbabilityBoard,
   buildStructuredBetPortfolio,
 } from '../multi-play-portfolio.js';
 import { createRankingProbabilityModel } from '../ranking-probabilities.js';
 
 describe('multi-play portfolio optimizer', () => {
+  it('caps exposure for every horse rather than only the top pick', () => {
+    const result = applyPortfolioRiskCaps([
+      riskLine('PLACE', ['A'], 30, 0.4),
+      riskLine('WIN', ['A'], 10, 0.3),
+      riskLine('PLACE', ['B'], 30, 0.2),
+    ], {
+      maxBudget: 100,
+      bankroll: 1000,
+      maxRaceBankrollShare: 0.1,
+      maxHorseExposureShare: 0.3,
+    });
+
+    assert.deepEqual(result.lines.map((line) => line.key), ['PLACE:A', 'PLACE:B']);
+    assert.equal(result.risk.effectiveBudget, 100);
+    assert.equal(result.risk.horseExposure.A, 30);
+    assert.equal(result.risk.horseExposure.B, 30);
+    assert.equal(result.rejected[0].reasonCode, 'HORSE_EXPOSURE_CAP');
+  });
+
+  it('caps correlated QIN and QPL exposure on the same horse pair', () => {
+    const result = applyPortfolioRiskCaps([
+      riskLine('QUINELLA_PLACE', ['A', 'B'], 20, 0.4),
+      riskLine('QUINELLA', ['A', 'B'], 20, 0.3),
+      riskLine('PLACE', ['C'], 20, 0.2),
+    ], {
+      maxBudget: 100,
+      bankroll: 1000,
+      maxRaceBankrollShare: 0.1,
+      maxHorseExposureShare: 0.8,
+      maxPairExposureShare: 0.2,
+      maxExoticExposureShare: 0.5,
+    });
+
+    assert.deepEqual(result.lines.map((line) => line.key), ['QUINELLA_PLACE:A+B', 'PLACE:C']);
+    assert.equal(result.risk.pairExposure['A+B'], 20);
+    assert.equal(result.rejected[0].reasonCode, 'PAIR_CORRELATION_CAP');
+  });
+
+  it('uses the smallest of race budget, bankroll share, and remaining daily budget', () => {
+    const result = applyPortfolioRiskCaps([
+      riskLine('PLACE', ['A'], 10, 0.4),
+      riskLine('PLACE', ['B'], 10, 0.3),
+      riskLine('PLACE', ['C'], 10, 0.2),
+    ], {
+      maxBudget: 100,
+      bankroll: 200,
+      maxRaceBankrollShare: 0.1,
+      remainingDailyBudget: 15,
+      minUnit: 10,
+      maxHorseExposureShare: 1,
+    });
+
+    assert.equal(result.risk.effectiveBudget, 10);
+    assert.equal(result.lines.length, 1);
+    assert.equal(result.risk.totalStake, 10);
+    assert.equal(result.rejected.length, 2);
+    assert(result.rejected.every((line) => line.reasonCode === 'RACE_BUDGET_CAP'));
+  });
+
   it('estimates probabilities and required dividends for the main HKJC pools', () => {
     const board = buildMultiPlayProbabilityBoard(entry([
       runner('A', 'Standout', 0.24, 6.2, 2.4),
@@ -275,6 +335,17 @@ function runner(horseId, horseName, probability, winOdds, placeOdds) {
 
 function round(value) {
   return Math.round(value * 1_000_000) / 1_000_000;
+}
+
+function riskLine(type, horseIds, stake, expectedRoi) {
+  return {
+    type,
+    key: `${type}:${horseIds.join('+')}`,
+    candidateKey: `${type}:${horseIds.join('+')}`,
+    stake,
+    expectedRoi,
+    selections: horseIds.map((horseId) => ({ horseId })),
+  };
 }
 
 function liveOptions(overrides = {}) {

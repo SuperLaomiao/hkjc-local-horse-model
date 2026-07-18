@@ -50,8 +50,8 @@ This sequence overrides the older phase ordering below when the daily continuati
 
 ### P2 — Portfolio and exotic-pool expansion
 
-- [ ] Add independently calibrated QIN/QPL models and per-pool promotion gates.
-- [ ] Add single-horse exposure, correlated-loss, and bankroll caps before any multi-play executable portfolio.
+- [x] Add independently calibrated QIN/QPL models and per-pool promotion gates.
+- [x] Add single-horse exposure, correlated-loss, and bankroll caps before any multi-play executable portfolio.
 
 ### P3 — Privacy separation
 
@@ -240,7 +240,7 @@ Goal: make recommendations robust instead of over-dependent on one horse.
     - If odds are below fair odds plus buffer, the line is rejected.
     - Reasons are visible in dashboard data.
 
-- [ ] Add single-horse exposure cap across WIN / PLACE / QPL / QIN.
+- [x] Add single-horse exposure cap across WIN / PLACE / QPL / QIN.
   - Acceptance:
     - A portfolio cannot lose 100% solely because one top horse misses unless explicitly marked "aggressive research".
     - Conservative mode prefers PLACE/QPL diversification over naked WIN.
@@ -251,7 +251,7 @@ Goal: make recommendations robust instead of over-dependent on one horse.
     - Dashboard exposes the exact tripwire reason.
     - Tests cover at least high-disagreement, missing-live-market, and normal-pass cases.
 
-- [ ] Add per-pool promotion gates.
+- [x] Add per-pool promotion gates.
   - Acceptance:
     - WIN, PLACE, QIN, and QPL each need their own validation/holdout ROI, drawdown, and sample-size thresholds.
     - Exotic exact-order pools remain paper-only unless separately validated.
@@ -299,6 +299,7 @@ This queue is mirrored in `research-program.js` and surfaced in the dashboard Re
 
 ## Latest continuation note
 
+- 2026-07-18: Completed P2 implementation without promoting a weak exotic strategy. Leakage-safe unordered pair matrices contain 102,036 QIN pairs from 1,460 races (1,464 positives) and 101,871 QPL pairs from 1,448 races (4,357 positives); races missing a pool label are excluded rather than converted to negatives. Independent CatBoost pair models are calibrated on validation only and compared with T-10 Harville QIN / PLACE-product QPL baselines. A validation-selected Benter-style stack chooses 50% model + 50% market for both pools. The chronological holdout is algorithmically out of sample for fitting, calibration, and stack selection, but it was already viewed during prior P1/P2 research iterations and is therefore explicitly marked `REUSED` and ineligible for promotion. On that reused cohort, QIN stack log loss is 0.066830, Brier 0.014187, Top-pair 12.17%, and blind one-pair ROI -21.93%; QPL stack log loss is 0.157542, Brier 0.039941, Top-pair 27.75%, and blind one-pair ROI -3.22%. Both improve log loss over market and QPL improves Top-pair by 4.41 percentage points, but Brier is slightly worse and ROI is negative; independent pool reports therefore remain `NO_GO / BLOCKED_DATA / NO_BET`. Multi-play allocation now applies the smallest of race budget, bankroll share, and remaining daily budget, then caps every horse, same-pair QIN/QPL correlation, total exotic exposure, and per-pool exposure in conservative-EV order with explicit rejection reasons. P2 code is complete; a fresh later 2026 cohort plus genuine prospective QIN/QPL locks is required before any promotion. Next implementation phase: P3 public/private artifact separation.
 - 2026-07-18: Completed the prospective recommendation-audit fields without mixing paper and cash results. Final eligible pre-race lines now attach the safest positive-minute T-3 quote, indicative CLV (`locked quote / T-3 quote - 1`), T-3 price slippage, and outcome-conditioned official-dividend movement. Cash and `PAPER` stake/return/profit/ROI/drawdown are summarized independently; non-`PLAY` decisions still contribute zero cash stake. The CLI loads odds only for races with recorded recommendation runs. Real audit: 21 historical records, 0 eligible pre-race locks, 17 `PREPARE_ONLY`, 4 `POST_RACE`, therefore CLV lines 0 and paper ROI unavailable. This is an honest `BLOCKED_DATA` prospective baseline, not a zero-ROI result. P1 implementation is now complete; the next unblocked model task is P2 independent QIN/QPL calibration, while race-day collection must accumulate genuine 2026 locks before any cash promotion.
 - 2026-07-18: Completed `closing-price-forecast-v1` after the separate T-3 gate passed with 1,039 races (723 train / 158 validation / 158 untouched holdout) and 12,585 runner rows at 100% race-level WIN+PLACE coverage. The leakage-safe baseline uses only T-30/T-10 log-odds movement to forecast T-3 and selects its trend coefficient on validation. Both pools select alpha 0, so T-10 persistence beats every tested trend extrapolation: holdout WIN RMSLE 0.136963 / MAPE 10.19%, PLACE RMSLE 0.104715 / MAPE 7.70%. Outcome-conditioned T-3 versus official-dividend MAPE is 19.50% for WIN winners and 16.28% for placed runners, confirming material final-price slippage. A parity bug where the alpha-zero path clamped 1.00 to 1.01 but the persistence baseline did not was reproduced with a regression test and fixed by sharing the same forecast path. Because HKJC odds are pari-mutuel and indicative rather than locked, this remains price-drift research and cash stays `NO_BET`. Next P1 task: persist per-lock T-10/T-3/final price, CLV/slippage, settlement, and drawdown in the prospective recommendation audit.
 - 2026-07-18: Completed the identical-cohort P1 T-10 model comparison on 1,460 races / 17,844 runners with 100% runner WIN+PLACE odds coverage. Market-aware CatBoost is the research probability champion for both pools on the untouched 230-race holdout: WIN log loss 0.245335 / Brier 0.068501 / Top-pick win 30.43%, improving the best no-market candidate by 0.017168 log loss and 8.70 percentage points Top-pick; PLACE log loss 0.484970 / Brier 0.159901 / Top-pick PLACE 57.39%, improving by 0.038559 and 11.74 points. Calibration/blending did not beat the strongest single model. Validation-selected T-10 EV/gap grids were settled with official dividends, one bet per race. All eight direct value candidates fail at least one ROI, sample, concentration, monthly stability, or drawdown gate. The superficially positive no-market LightGBM WIN holdout ROI +26.04% is rejected because one return contributes 32.45%, validation concentration is 34.14%, monthly results are unstable, and losing runs reach 99 validation / 54 holdout. `market-aware-comparison-v1` therefore records value `NO_GO`, prospective promotion `BLOCKED_DATA`, and cash `NO_BET`. Next P1 task: forecast T-10-to-final WIN/PLACE dividends and measure price error/CLV without using final prices as prediction features.
