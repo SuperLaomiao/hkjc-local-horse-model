@@ -58,6 +58,14 @@ describe('research upgrade program', () => {
       && item.status === 'data-leverage'
       && /兽医|veterinary|排位|racecard/i.test(item.leveragePath)
     )));
+    assert(program.externalBenchmarkRegistry.some((item) => (
+      item.id === 'jonzielo-parimutuel-copula-study'
+      && item.status === 'research-only-unverified'
+      && /6\.63|35\.99/.test(item.publicMetric)
+      && /unverified|未验证|不可复现|不一致/i.test(item.ourGap)
+      && /TRI|TIERCE|三重彩|顺序/i.test(`${item.leveragePath} ${item.promotionGate}`)
+      && /clean-room|不复制|no code reuse/i.test(item.accessPolicy)
+    )));
     assert(program.externalBenchmarkRegistry.every((item) => item.localAdoption !== 'cash-ready'));
     assert.equal(program.externalBenchmarkRegistry.some((item) => (
       /hkjc-analytics/i.test(`${item.id} ${item.sourceName} ${item.sourceUrl}`)
@@ -117,6 +125,13 @@ describe('research upgrade program', () => {
       && item.evidence.some((entry) => /source-coverage-audit\.js/.test(entry))
       && item.remaining.some((entry) => /fixture|HTML|页面/i.test(entry))
     )));
+    assert(program.followUpActions.some((item) => (
+      item.id === 'parimutuel-stacker-copula-study'
+      && item.status === 'research-only'
+      && item.evidence.some((entry) => /parimutuel-stacker-copula-notes\.md/.test(entry))
+      && item.remaining.some((entry) => /T-30|T-10|T-3|snapshot|快照/i.test(entry))
+      && item.remaining.some((entry) => /不进入|NO_BET|cash/i.test(entry))
+    )));
     assert(program.followUpActions.every((item) => (
       Array.isArray(item.evidence)
       && item.evidence.length > 0
@@ -140,7 +155,7 @@ describe('research upgrade program', () => {
     assert.equal(summary.queuedActionCount, 0);
     assert.equal(summary.researchOnlyActionCount, 1);
     assert.equal(summary.automationReadyCount > 0, true);
-    assert.equal(summary.externalBenchmarkCount >= 7, true);
+    assert.equal(summary.externalBenchmarkCount >= 8, true);
     assert.equal(summary.reproducedBenchmarkCount, 2);
     assert.equal(summary.reproductionReadyCount >= 1, true);
     assert.equal(summary.dataLeverageCount >= 3, true);

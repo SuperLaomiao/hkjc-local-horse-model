@@ -11,7 +11,7 @@ describe('external source registry', () => {
   it('registers every approved data, model, and collector donor with provenance policy', () => {
     const ids = EXTERNAL_SOURCE_REGISTRY.map((source) => source.sourceId);
 
-    assert.equal(ids.length, 13);
+    assert.equal(ids.length, 14);
     assert.equal(new Set(ids).size, ids.length);
     assert.deepEqual(validateExternalSourceRegistry(EXTERNAL_SOURCE_REGISTRY), []);
     assert.equal(ids.includes('sleepingarhat-tianxi-database'), true);
@@ -27,6 +27,7 @@ describe('external source registry', () => {
     assert.equal(ids.includes('rkwyu-sport-betting-data'), true);
     assert.equal(ids.includes('snookerlivehk-hkjc-analytics'), true);
     assert.equal(ids.includes('j-csc-hk-horse-racing-data-scraper'), true);
+    assert.equal(ids.includes('jonzielo-hkjc-project'), true);
   });
 
   it('fails closed for unknown or restricted licenses', () => {
@@ -86,6 +87,20 @@ describe('external source registry', () => {
       && group.timing === 'unsafe'
     )));
   });
+
+  it('pins JonzieLo to unverified clean-room methodology instead of adopting headline ROI', () => {
+    const source = EXTERNAL_SOURCE_REGISTRY.find((entry) => entry.sourceId === 'jonzielo-hkjc-project');
+
+    assert.equal(source.role, 'model');
+    assert.equal(source.licenseStatus, 'unknown');
+    assert.equal(source.codeReuseAllowed, false);
+    assert.equal(source.rawPublicationAllowed, false);
+    assert(source.allowedUses.includes('clean-room-methodology-reimplementation'));
+    assert.equal(
+      source.featureGroups.find((group) => group.featureGroup === 'synthetic-missing-combination-prices').timing,
+      'unsafe',
+    );
+  });
 });
 
 describe('external source audit', () => {
@@ -97,13 +112,13 @@ describe('external source audit', () => {
 
     assert.equal(report.policyVersion, 'external-source-policy-v1');
     assert.equal(report.generatedAt, '2026-07-17T00:00:00.000Z');
-    assert.equal(report.summary.sources, 13);
-    assert.equal(report.summary.byLicenseStatus.unknown, 7);
+    assert.equal(report.summary.sources, 14);
+    assert.equal(report.summary.byLicenseStatus.unknown, 8);
     assert.equal(report.summary.byLicenseStatus.restricted, 1);
     assert.equal(report.summary.byLicenseStatus['open-data'], 1);
     assert.equal(report.summary.byLicenseStatus.licensed, 4);
     assert.equal(report.summary.localOnlySources, 3);
-    assert.equal(report.summary.modelDonors, 4);
+    assert.equal(report.summary.modelDonors, 5);
     assert.equal(report.summary.dataDonors, 5);
     assert.equal(report.summary.collectorDonors, 4);
     assert.equal(report.summary.invalidSources, 0);

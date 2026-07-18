@@ -60,8 +60,9 @@ const RESEARCH_SOURCES = [
     name: 'HKJC Benter Engine',
     url: 'https://github.com/JonzieLo/hkjc-project',
     type: 'Parimutuel pricing and stacker research',
-    lesson: 'XGBoost/Cox/Bayesian stacking、copula exotic pricing 和 drift-aware Kelly 很强，但 final dividend 回测容易被 late-money drift 夸大。',
-    borrow: 'log-linear/stacking、exotic pool 联合概率、drift-aware EV、simultaneous stake caps。',
+    lesson: '它提出 XGBoost/Cox/log-linear stacking、copula exotic pricing 和 drift-aware Kelly；但公开树没有数据、账本、测试或 LICENSE，README 指标与代码窗口/玩法语义存在不一致，不能视为已复现成绩。',
+    borrow: '只借鉴实验问题：顺序概率 baseline ladder、依赖残差诊断、late-money drift、联合 payoff 风控；全部 clean-room 重做。',
+    accessNote: '未知许可证；不复制代码。README 的 +6.63% ROI / TRI +35.99% 仅登记为作者声称，未经本地数据复现。',
   },
   {
     name: 'HKHorseRacing-Predictor',
@@ -311,8 +312,15 @@ const FOLLOW_UP_ACTIONS = [
     action: '只做方法笔记和小样本模拟，不进入现金推荐；重点检查 late-money drift 和 final dividend bias。',
     expectedOutcome: '给未来三重彩/四重彩研究保留方向，但不污染当前保守组合。',
     automationExecutable: false,
-    evidence: ['Research Lab registry 已记录 late-money drift 与 final-dividend bias 风险。'],
-    remaining: ['补研究笔记与小样本模拟；在数据和 promotion gate 完成前保持 research-only。'],
+    evidence: [
+      'docs/research/parimutuel-stacker-copula-notes.md：Harville/Plackett-Luce → Henery/Stern → residual dependence 的独立 benchmark ladder',
+      'JonzieLo public-tree audit：无公开数据/账本/测试/LICENSE，README 月度窗口与代码 6MS 不一致，TRI 被排序成无序前三、回测器存在类名断裂',
+      '2026 interim-odds research reinforces T-window path dependence and forbids final-price-only promotion',
+    ],
+    remaining: [
+      '等待同一组合的真实 T-30/T-10/T-3/STOP_SELL/CLOSED snapshots、完整 pool coverage 和官方结算，再实现依赖模型。',
+      '在独立新鲜 holdout、prospective CLV/ROI、race-cluster uncertainty 和玩法语义测试全部通过前，不进入 cash recommendation，保持 NO_BET。',
+    ],
   },
   {
     id: 'j-csc-scraper-schema-audit',
@@ -439,6 +447,21 @@ const EXTERNAL_BENCHMARK_REGISTRY = [
     promotionGate: '只把字段覆盖和 parser 测试思路纳入本地；任何原始 scraped data 不进入公开 repo；新增字段必须证明是赛前可得。',
     accessPolicy: 'Research/reference only; GitHub license metadata not machine-readable, so avoid copying code/data into public artifacts.',
     localAdoption: 'schema-audit',
+  },
+  {
+    id: 'jonzielo-parimutuel-copula-study',
+    priority: 'P2',
+    status: 'research-only-unverified',
+    sourceName: 'JonzieLo/hkjc-project',
+    sourceUrl: 'https://github.com/JonzieLo/hkjc-project',
+    benchmarkType: 'parimutuel-stacker-copula-methodology',
+    publicMetric: 'Author-claimed walk-forward ROI +6.63% overall and TRI +35.99% over 799 bets; these figures are not independently reproducible from the public tree.',
+    ourGap: 'Public evidence is unverified: no dataset, ledger, tests or LICENSE; README says 25 monthly windows while code uses 6MS windows; exotic price fallback and pool semantics are not promotion-safe.',
+    leveragePath: 'Clean-room benchmark Harville/Plackett-Luce first, then independent Henery/Stern order statistics, and only then a shrunk residual-dependence model; preserve ordered TIERCE/TRI separately from unordered TRIO.',
+    requiredLocalData: ['complete finishing order and dead-heat/scratch rules', 'pre-race pace and field context', 'same-combination T-window/STOP_SELL/CLOSED prices', 'official pool dividends and prospective locks'],
+    promotionGate: 'Ordered TIERCE/TRI and unordered TRIO/QIN/QPL must pass pool-semantic tests, marginal/rank calibration, fresh holdout, race-cluster uncertainty, CLV/slippage and prospective ROI independently.',
+    accessPolicy: 'Unknown license: clean-room methodology review only; no code reuse, raw-data import, threshold copying or adoption of headline ROI.',
+    localAdoption: 'research-design-only',
   },
 ];
 
