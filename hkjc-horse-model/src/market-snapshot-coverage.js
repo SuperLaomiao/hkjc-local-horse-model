@@ -107,7 +107,7 @@ function emptyCoverageBucket() {
 
 function windowLabel(minutesToPost) {
   const minutes = Number(minutesToPost);
-  if (!Number.isFinite(minutes)) return 'unknown';
+  if (!Number.isFinite(minutes) || minutes < 0 || Object.is(minutes, -0)) return 'unknown';
   const window = WINDOWS.find((item) => minutes >= item.min && minutes <= item.max);
   return window?.label ?? 'unknown';
 }

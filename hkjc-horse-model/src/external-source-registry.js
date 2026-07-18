@@ -145,6 +145,20 @@ export const EXTERNAL_SOURCE_REGISTRY = Object.freeze([
     allowedUses: ['collector-pattern-review'],
     cachePolicy: 'none',
   }),
+  source({
+    sourceId: 'snookerlivehk-hkjc-analytics',
+    label: 'snookerlivehk HKJC analytics methodology reference',
+    canonicalUrl: 'https://github.com/snookerlivehk-elton/hkjc-analytics',
+    role: 'collector',
+    licenseStatus: 'unknown',
+    license: null,
+    allowedUses: ['collector-pattern-review', 'clean-room-methodology-reimplementation'],
+    cachePolicy: 'none',
+    featureGroups: [
+      feature('repository-odds-milestone-labels', 'unsafe', 'Do not import: audited labels can be late, post-time, or duplicated across windows.'),
+      feature('repository-current-speedpro-captures', 'unsafe', 'Do not import: no historical data is shipped and current responses are not bound safely to a requested meeting.'),
+    ],
+  }),
 ]);
 
 export function validateExternalSourceRegistry(registry = EXTERNAL_SOURCE_REGISTRY) {

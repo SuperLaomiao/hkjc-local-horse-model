@@ -12,13 +12,17 @@ describe('research upgrade program', () => {
     const program = buildResearchUpgradeProgram();
 
     assert.equal(program.version, 'research-led-v2');
-    assert(program.sources.length >= 14);
+    assert(program.sources.length >= 15);
     assert(program.sources.some((source) => source.name === 'Ganyan'));
     assert(program.sources.some((source) => source.name.includes('HKJC Horse-Racing ML Research')));
     assert(program.sources.some((source) => source.name === 'neigh'));
     assert(program.sources.some((source) => source.name === 'HKJC Pool Money Calculator'));
     assert(program.sources.some((source) => source.name === 'HKJC Edge Lab'));
     assert(program.sources.some((source) => source.name === 'HK-Horse-Racing-Data-Scraper'));
+    assert(program.sources.some((source) => (
+      source.name === 'hkjc-analytics'
+      && /method|方法|heuristic|启发式/i.test(`${source.lesson} ${source.borrow}`)
+    )));
     assert(program.sources.every((source) => source.url.startsWith('https://github.com/')));
 
     assert(program.algorithmBorrowings.some((item) => item.status === 'active' && /Harville|Plackett-Luce/.test(item.concept)));
@@ -55,6 +59,9 @@ describe('research upgrade program', () => {
       && /兽医|veterinary|排位|racecard/i.test(item.leveragePath)
     )));
     assert(program.externalBenchmarkRegistry.every((item) => item.localAdoption !== 'cash-ready'));
+    assert.equal(program.externalBenchmarkRegistry.some((item) => (
+      /hkjc-analytics/i.test(`${item.id} ${item.sourceName} ${item.sourceUrl}`)
+    )), false);
   });
 
   it('orders research follow-up actions for the daily automation queue', () => {
@@ -66,7 +73,9 @@ describe('research upgrade program', () => {
     assert(program.followUpActions.some((item) => (
       item.id === 'live-snapshot-planner'
       && item.status === 'implemented'
+      && item.sourceRefs.includes('hkjc-analytics')
       && item.evidence.some((entry) => /live-snapshot-planner\.js/.test(entry))
+      && item.evidence.some((entry) => /post-time|赛后|开赛后/i.test(entry))
     )));
     assert(program.followUpActions.some((item) => (
       item.id === 'pool-money-features'
@@ -81,6 +90,7 @@ describe('research upgrade program', () => {
       item.id === 'speedpro-feature-importer'
       && item.status === 'partial'
       && item.sourceRefs.includes('tianxi-database')
+      && item.sourceRefs.includes('hkjc-analytics')
       && item.evidence.some((entry) => /speedpro-feature-importer\.js/.test(entry))
       && item.remaining.some((entry) => /historical|历史|cohort|回补/i.test(entry))
     )));

@@ -98,6 +98,14 @@ const RESEARCH_SOURCES = [
     lesson: 'Benter 的核心不是神秘规则，而是基本面模型 + 市场赔率修正 + 长期反馈。',
     borrow: 'Benter 路线：基本面概率、市场概率融合、特征数据库长期积累。',
   },
+  {
+    name: 'hkjc-analytics',
+    url: 'https://github.com/snookerlivehk-elton/hkjc-analytics',
+    type: 'Heuristic scoring and collector methodology reference',
+    lesson: '它主要是启发式加权系统，不是可复现的训练模型；仓库没有数据库、模型产物或数值 benchmark，且赔率里程碑、SpeedPRO 和预测快照存在时间/覆盖风险。',
+    borrow: '只做 clean-room 方法复现：不可变 as-of observations、严格赛前窗口、日期/场地/runner identity、收缩估计、recency、因子诊断和 pace 架构。',
+    accessNote: '无许可证、无公开历史数据；不复制代码/权重/阈值，不把它登记为经验 benchmark。',
+  },
 ];
 
 const ALGORITHM_BORROWINGS = [
@@ -182,13 +190,14 @@ const FOLLOW_UP_ACTIONS = [
     status: 'implemented',
     automationPhase: 'Phase A',
     title: '实现 T-30/T-10/T-3 live snapshot planner',
-    sourceRefs: ['hkjc-api', 'HKJC Horse-Racing ML Research Platform'],
+    sourceRefs: ['hkjc-api', 'HKJC Horse-Racing ML Research Platform', 'hkjc-analytics'],
     action: '读取 SQLite upcoming races，判断当前 HKT 是否进入 due window，并触发 WIN/PLA/QIN/QPL 抓取。',
     expectedOutcome: '每天巡检能自动积累 2026 临场 odds/pool 数据，先 dry-run 后导入。',
     automationExecutable: true,
     evidence: [
       'hkjc-horse-model/src/live-snapshot-planner.js + live-market-due-snapshots.js',
       'live-snapshot-planner / live-market-due-snapshots / live-market-snapshot tests',
+      'hkjc-analytics clean-room audit 后补上严格 post-time guard；开赛后的观察不会再被标成 T-3。',
     ],
     remaining: ['赛马日继续积累真实 2026 T-30/T-10/T-3 odds/pool snapshots；没有 due window 时不伪造数据。'],
   },
@@ -230,7 +239,7 @@ const FOLLOW_UP_ACTIONS = [
     status: 'partial',
     automationPhase: 'Phase B',
     title: '设计 SpeedPRO sectional/pace/fitness 特征导入',
-    sourceRefs: ['neigh', 'tianxi-database'],
+    sourceRefs: ['neigh', 'tianxi-database', 'hkjc-analytics'],
     action: '先做 schema 和无泄漏规则，再导入当前 meeting SpeedPRO，历史回补另列任务。',
     expectedOutcome: '基础模型能学习步速、末段、fitness、incident/comments 的滞后信号。',
     automationExecutable: true,
@@ -238,6 +247,7 @@ const FOLLOW_UP_ACTIONS = [
       'hkjc-horse-model/src/speedpro-feature-importer.js + CLI optional --speedproRoot wiring',
       '真实本地缓存抽样：2026-07-01 至 2026-07-15 共 5 个 meeting、637/637 runner rows 可用',
       'fixture tests 覆盖赛前快照、当前场排除、派生 pace/sectional/fitness/incident/health 特征',
+      '导入器校验 meeting date、venue、runner code 和 source update time；无法明确绑定目标场次即 fail closed。',
     ],
     remaining: ['回补有可信赛前时间戳的 historical SpeedPRO 快照，并完成有/无 SpeedPRO 的同 cohort holdout 对比。'],
   },

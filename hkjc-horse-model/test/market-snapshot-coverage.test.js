@@ -58,6 +58,15 @@ describe('market snapshot coverage report', () => {
     assert.equal(report.summary.poolRaceCoverage, 0);
     assert.match(report.gaps.join(' '), /No market snapshots/i);
   });
+
+  it('never counts a negative-zero post-time observation as T-3 coverage', () => {
+    const report = buildMarketSnapshotCoverageReport({
+      odds: [odds('2026-07-08-HV-1', 'WIN', [8], -0, '2026-07-08T10:30:10.000Z')],
+    });
+
+    assert.equal(report.byWindow['T-3'].oddsSnapshots, 0);
+    assert.equal(report.byWindow.unknown.oddsSnapshots, 1);
+  });
 });
 
 function race(raceId) {
