@@ -252,7 +252,7 @@ Goal: make recommendations robust instead of over-dependent on one horse.
     - A portfolio cannot lose 100% solely because one top horse misses unless explicitly marked "aggressive research".
     - Conservative mode prefers PLACE/QPL diversification over naked WIN.
 
-- [ ] Add Bayesian uncertainty tripwire before staking recommendations. Research Lab action: `bayesian-tripwire` / P1.
+- [x] Add Bayesian uncertainty tripwire before staking recommendations. Research Lab action: `bayesian-tripwire` / P1.
   - Acceptance:
     - When calibration drift, live-market gap, or model disagreement is high, recommendations downgrade to paper mode or reduce stake.
     - Dashboard exposes the exact tripwire reason.
@@ -301,11 +301,12 @@ This queue is mirrored in `research-program.js` and surfaced in the dashboard Re
 | P1 | `tianxi-feature-backfill` | Phase B | implemented audit and optional prior-form enrichment | Audit and design local-only derived feature imports. |
 | P1 | `j-csc-scraper-schema-audit` | Phase B | queued, executable | Audit HKJC scraper field coverage, veterinary/racecard pages, and parser fixtures. |
 | P1 | `no-bet-clv-gate` | Phase C | partial: fail-closed gate and CLV/slippage audit implemented; bootstrap/placebo and prospective locks remain | Reject lines without live edge and track closing-line value. |
-| P1 | `bayesian-tripwire` | Phase C | queued, executable | Reduce stake or paper-mode when uncertainty is too high. |
+| P1 | `bayesian-tripwire` | Phase C | implemented | Reduce stake or paper-mode when uncertainty is too high. |
 | P2 | `parimutuel-stacker-copula-study` | Phase B/C | research-only | Document exotic-pool modeling before any implementation. |
 
 ## Latest continuation note
 
+- 2026-07-18: Implemented the P1 uncertainty trip-wire across the final WIN plan and multi-play cash portfolio. It computes model-disagreement and calibration-drift signals, consumes a leakage-safe 90-day baseline built only from earlier settled forecasts, fails closed when no fresh selling market exists, halves moderate-risk stakes to valid HKJC units, and converts severe risk to `PAPER` with zero stake. Desktop/mobile UI exposes the exact Chinese reason, while the legacy heuristic budget card is labeled paper-only. Research Lab now reports 5 implemented, 2 partial, 0 queued, and 1 research-only follow-up actions; prospective threshold tuning remains ongoing and does not change current cash promotion gates.
 - 2026-07-18: Audited `snookerlivehk-elton/hkjc-analytics` at `2dba875`. It has no published historical database, immutable snapshot archive, fitted model artifact, numeric benchmark, or license, so it is not a data/model donor and does not change cash `NO_BET`. Research Lab now records it only as a clean-room collector/methodology reference. The audit found a local post-time rounding edge: a capture seconds after post could be labeled T-3. The planner and direct GraphQL normalizer now reject exact `observed_at >= post_at`, while coverage treats legacy negative-zero minutes as unknown. Regression tests cover all paths. SpeedPRO remains partial and requires trustworthy pre-race identity/timestamps before historical promotion.
 - 2026-07-18: Calibrated Research Lab against code, tests, and artifacts instead of stale queue labels. Follow-up actions now report 4 implemented, 1 partial, 2 queued, and 1 research-only item, each with public-safe delivery evidence and explicit remaining work. The catowabisabi QIN/QPL reproduction is marked partial/blocked-data because our fixed-line replay is negative and lacks verified T-30 cold-odds coverage; the jerrydaphantom market-aware reproduction is marked probability-improving but cash `NO_BET`. The deployed public-functional boundary remains separate from these model promotion decisions.
 - 2026-07-18: Approved the public functional Pages mode. The exact `PUBLIC_FUNCTIONAL_SANITIZED` contract enables prediction, EV, staking, pool-guide, adaptive-route, and review tools on phone and desktop while keeping personal state in browser-local storage. Unknown, legacy, or unsafe publication markers fail closed to research-only zero-budget mode. Private processed Research Lab reports remain inaccessible and are no longer fetched merely because recommendation tools are enabled. The artifact allowlist and privacy scan continue to block raw data, SQLite, row-level ledgers, audits, tickets, secrets, and local paths.

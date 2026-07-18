@@ -1,5 +1,9 @@
 import { createRankingProbabilityModel } from "./ranking-probabilities.js";
 import { evaluateValueCandidate, VALUE_RULE_VERSION } from "./hkjc-horse-model/src/value-betting-engine.js";
+import {
+  applyUncertaintyToStake,
+  evaluateUncertaintyTripwire,
+} from "./hkjc-horse-model/src/uncertainty-tripwire.js";
 
 const DEFAULT_OPTIONS = {
   minUnit: 10,
@@ -152,6 +156,7 @@ export function buildStructuredBetPortfolio(entry, options = {}) {
     config.maxHorseExposureShare = options.maxCoreExposureShare;
   }
   const board = buildMultiPlayProbabilityBoard(entry, config);
+  const tripwire = buildPortfolioTripwire(board, entry, config);
   const top = board.candidates.find((candidate) => candidate.type === "WIN")?.selections?.[0] ?? null;
 
   if (!top || Number(top.probability) < config.minTopProbability) {
@@ -163,21 +168,28 @@ export function buildStructuredBetPortfolio(entry, options = {}) {
       watchLines: [],
       paperLines: board.candidates.filter((candidate) => candidate.role === "paper"),
       board,
+      tripwire,
       summary: "头号马概率不足，多玩法也不硬凑。",
       disclaimer: "不保证盈利；实注前必须复核官方实时赔率、派彩、退出马和场地变化。",
     };
   }
 
   const cashCandidates = board.candidates.filter((candidate) => candidate.role === "cash");
-  const allocation = buildCashLines(cashCandidates, config);
+  const allocation = applyTripwireToAllocation(buildCashLines(cashCandidates, config), tripwire, config);
   const cashLines = allocation.lines;
   const totalStake = cashLines.reduce((sum, line) => sum + line.stake, 0);
   const watchLines = cashCandidates.filter((candidate) => !cashLines.some((line) => line.candidateKey === candidate.key));
   const paperLines = board.candidates.filter((candidate) => candidate.role === "paper");
 
   return {
-    mode: cashLines.length ? "PORTFOLIO" : "WATCH",
-    label: cashLines.length ? "多玩法组合 / 条件执行" : "WATCH / 等派彩",
+    mode: tripwire.status === "PAPER" ? "PAPER" : cashLines.length ? "PORTFOLIO" : "WATCH",
+    label: tripwire.status === "PAPER"
+      ? "PAPER / 不确定性保护"
+      : tripwire.status === "REDUCE" && cashLines.length
+        ? "REDUCED / 风控减注"
+        : cashLines.length
+          ? "多玩法组合 / 条件执行"
+          : "WATCH / 等派彩",
     totalStake,
     cashLines,
     riskRejectedLines: allocation.rejected,
@@ -185,10 +197,61 @@ export function buildStructuredBetPortfolio(entry, options = {}) {
     watchLines,
     paperLines,
     board,
-    summary: cashLines.length
-      ? `多玩法组合：${cashLines.map((line) => line.label).join(" + ")}，总额 ${formatHkd(totalStake)}。`
-      : "当前没有通过派彩入场线的现金组合，先观察。",
+    tripwire,
+    summary: tripwire.status === "PAPER"
+      ? tripwire.summaryZh
+      : cashLines.length
+        ? `${tripwire.status === "REDUCE" ? `${tripwire.summaryZh} ` : ""}多玩法组合：${cashLines.map((line) => line.label).join(" + ")}，总额 ${formatHkd(totalStake)}。`
+        : "当前没有通过派彩入场线的现金组合，先观察。",
     disclaimer: "组合优化只控制结构和风险，不保证盈利；没有实时派彩达到入场线就不执行。",
+  };
+}
+
+function buildPortfolioTripwire(board, entry, config) {
+  const cashCandidates = board.candidates.filter((candidate) => candidate.role === "cash");
+  const marketAvailable = cashCandidates.some((candidate) => {
+    const market = candidate.decision?.market;
+    const sellStatus = String(market?.sellStatus ?? "").trim().toUpperCase();
+    return Number.isFinite(Number(market?.dividendPer10))
+      && Number(market.dividendPer10) > 0
+      && market?.status === "FRESH"
+      && ["SELLING", "OPEN", "SALE_OPEN"].includes(sellStatus);
+  });
+  return evaluateUncertaintyTripwire({
+    ...(entry?.forecast?.uncertaintyContext ?? {}),
+    ...(config.uncertaintyContext ?? {}),
+    marketAvailable,
+    probabilityStatus: config.probabilityStatus,
+  });
+}
+
+function applyTripwireToAllocation(allocation, tripwire, config) {
+  if (tripwire.status === "PASS") return allocation;
+
+  const rejected = [...allocation.rejected];
+  const adjusted = [];
+  for (const line of allocation.lines) {
+    const stake = applyUncertaintyToStake(line.stake, tripwire, config.minUnit);
+    if (stake <= 0) {
+      rejected.push(riskRejection(
+        line,
+        tripwire.reasonCodes[0] ?? "UNCERTAINTY_TRIPWIRE",
+        tripwire.summaryZh,
+      ));
+      continue;
+    }
+    adjusted.push({
+      ...line,
+      originalStake: line.stake,
+      stake,
+      tripwireStatus: tripwire.status,
+    });
+  }
+  const guarded = applyPortfolioRiskCaps(adjusted, config);
+  return {
+    lines: guarded.lines,
+    rejected: [...rejected, ...guarded.rejected],
+    risk: guarded.risk,
   };
 }
 

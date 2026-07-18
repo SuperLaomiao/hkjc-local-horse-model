@@ -141,9 +141,9 @@ const ALGORITHM_BORROWINGS = [
   },
   {
     concept: 'Bayesian skip-gate / trip-wire',
-    status: 'next',
+    status: 'active',
     userImpact: '模型信心异常或数据质量异常时自动降低建议强度，宁可错过也不硬买。',
-    nextStep: '建立最近 90 日信心基线；偏离过大时前端显示“模型状态异常”。',
+    nextStep: '90 日已结算信心基线、模型分歧、校准漂移和临场市场缺口已进入保护闸；继续用 prospective 数据校准阈值。',
   },
   {
     concept: 'Pool money / takeout / crowding features',
@@ -270,15 +270,20 @@ const FOLLOW_UP_ACTIONS = [
   {
     id: 'bayesian-tripwire',
     priority: 'P1',
-    status: 'queued',
+    status: 'implemented',
     automationPhase: 'Phase C',
     title: '建立 Bayesian skip-gate / confidence trip-wire',
     sourceRefs: ['Ganyan'],
     action: '用最近 90 日信心分布作为 baseline，异常过低时暂停建议，异常过高时提示过拟合/数据漂移风险。',
     expectedOutcome: '前端能显示模型状态异常，避免坏数据日继续下注。',
-    automationExecutable: true,
-    evidence: ['docs/active-continuation-roadmap.md 已锁定 calibration drift、market gap 和 model disagreement 验收条件。'],
-    remaining: ['实现 uncertainty score、降级原因、stake reduction 与 high-disagreement/missing-market/normal-pass 测试。'],
+    automationExecutable: false,
+    evidence: [
+      'hkjc-horse-model/src/uncertainty-tripwire.js：90 日已结算信心 baseline、shrinkage z-score、分歧/漂移/市场缺口和合法注码降额',
+      'buildFinalBetPlan 与 multi-play-portfolio 的现金注码都经过 trip-wire；严重异常 PAPER，中度异常减注',
+      'high-disagreement / missing-market / normal-pass / calibration-drift 与 dashboard reason regression tests',
+      'app.js 桌面和手机端显示 exact trip-wire summary；旧预算面板明确为 PAPER ONLY。',
+    ],
+    remaining: ['继续积累 prospective 2026 样本，按滚动校准误差和实际 CLV 调整阈值；当前实现是保守风控，不是盈利保证。'],
   },
   {
     id: 'lightgbm-no-market-benchmark',

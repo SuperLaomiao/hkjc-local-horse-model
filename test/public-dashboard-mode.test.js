@@ -57,6 +57,32 @@ describe('public dashboard execution boundary', () => {
     assert.equal(policy.allowPrivateResearchReports, true);
   });
 
+  it('adds a leakage-safe recent confidence baseline when an entry is provided', () => {
+    const snapshot = {
+      publication: {
+        visibility: 'PUBLIC_FUNCTIONAL_SANITIZED',
+        executableRecommendationsPublished: true,
+        personalDataPublished: false,
+        rowLevelHistoryPublished: false,
+      },
+      recentEntries: [
+        settledConfidenceEntry('past-1', '2026-07-01T10:00:00.000Z', 0.28),
+        settledConfidenceEntry('past-2', '2026-07-10T10:00:00.000Z', 0.32),
+      ],
+    };
+    const current = {
+      raceId: 'current',
+      postTime: '2026-07-18T10:00:00.000Z',
+      forecast: { predictions: [{ probability: 0.31 }] },
+    };
+
+    const options = buildPublicPortfolioOptions(snapshot, current);
+
+    assert.equal(options.uncertaintyContext.confidenceBaseline.sampleSize, 2);
+    assert.equal(options.uncertaintyContext.confidenceBaseline.mean, 0.3);
+    assert.equal(options.uncertaintyContext.confidenceBaseline.recent, 0.31);
+  });
+
   it('fails closed for missing or unsafe publication contracts', () => {
     const unsafeSnapshot = {
       publication: {
@@ -92,3 +118,15 @@ describe('public dashboard execution boundary', () => {
     });
   });
 });
+
+function settledConfidenceEntry(raceId, generatedAt, probability) {
+  return {
+    raceId,
+    settlement: { status: 'SETTLED' },
+    forecast: {
+      generatedAt,
+      topPick: { probability },
+      predictions: [{ probability }],
+    },
+  };
+}

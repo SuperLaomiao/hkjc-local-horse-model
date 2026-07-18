@@ -100,6 +100,12 @@ describe('research upgrade program', () => {
       && item.remaining.some((entry) => /bootstrap|placebo|prospective/i.test(entry))
     )));
     assert(program.followUpActions.some((item) => (
+      item.id === 'bayesian-tripwire'
+      && item.status === 'implemented'
+      && item.evidence.some((entry) => /uncertainty-tripwire\.js/.test(entry))
+      && item.evidence.some((entry) => /high-disagreement|missing-market|normal-pass/i.test(entry))
+    )));
+    assert(program.followUpActions.some((item) => (
       item.id === 'lightgbm-no-market-benchmark'
       && item.status === 'implemented'
       && item.automationExecutable === false
@@ -122,9 +128,9 @@ describe('research upgrade program', () => {
     assert.equal(summary.nextCount > 0, true);
     assert.equal(summary.researchOnlyCount > 0, true);
     assert.equal(summary.followUpCount > 0, true);
-    assert.equal(summary.implementedActionCount, 4);
+    assert.equal(summary.implementedActionCount, 5);
     assert.equal(summary.partialActionCount, 2);
-    assert.equal(summary.queuedActionCount, 1);
+    assert.equal(summary.queuedActionCount, 0);
     assert.equal(summary.researchOnlyActionCount, 1);
     assert.equal(summary.automationReadyCount > 0, true);
     assert.equal(summary.externalBenchmarkCount >= 7, true);

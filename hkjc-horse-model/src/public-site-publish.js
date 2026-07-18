@@ -19,6 +19,7 @@ export const PUBLIC_SITE_STATIC_FILES = Object.freeze([
   'betting-products.js',
   'dashboard-layout.js',
   'external-model-summary.js',
+  'hkjc-horse-model/src/uncertainty-tripwire.js',
   'hkjc-horse-model/src/value-betting-engine.js',
   'icons/app-icon.svg',
   'index.html',

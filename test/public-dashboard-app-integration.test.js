@@ -30,4 +30,15 @@ describe('public dashboard app integration', () => {
     assert.match(appSource, /const program = buildResearchUpgradeProgram\(\);/);
     assert.doesNotMatch(appSource, /const program = snapshot\.research \?\?/);
   });
+
+  it('shows uncertainty tripwire reasons and labels the legacy budget as paper-only', async () => {
+    const appSource = await readFile(new URL('../app.js', import.meta.url), 'utf8');
+    const styles = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
+
+    assert.match(appSource, /renderTripwireStatus\(resolvedPlan\.tripwire\)/);
+    assert.match(appSource, /renderTripwireStatus\(portfolio\.tripwire\)/);
+    assert.match(appSource, /纸上预算草案/);
+    assert.match(appSource, /tripwire\.summaryZh/);
+    assert.match(styles, /\.tripwire-status/);
+  });
 });

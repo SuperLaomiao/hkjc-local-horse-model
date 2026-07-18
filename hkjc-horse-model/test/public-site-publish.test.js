@@ -133,6 +133,10 @@ describe('public site publishing boundary', () => {
         await readFile(path.join(output, 'hkjc-horse-model', 'src', 'value-betting-engine.js'), 'utf8'),
         /evaluateValueCandidate/,
       );
+      assert.match(
+        await readFile(path.join(output, 'hkjc-horse-model', 'src', 'uncertainty-tripwire.js'), 'utf8'),
+        /evaluateUncertaintyTripwire/,
+      );
 
       const scan = spawnSync(process.execPath, [
         'hkjc-horse-model/src/public-site-cli.js',

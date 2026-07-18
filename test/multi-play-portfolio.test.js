@@ -280,6 +280,39 @@ describe('multi-play portfolio optimizer', () => {
     assert(portfolio.cashLines.every((line) => line.ruleVersion === 'value-betting-v1'));
   });
 
+  it('blocks every cash line when ensemble model disagreement is high', () => {
+    const portfolio = buildStructuredBetPortfolio(entry([
+      runner('A', 'Disputed Top', 0.4, 7.2, 2.6),
+      runner('B', 'Support', 0.3, 8.5, 2.8),
+      runner('C', 'Third', 0.2, 11, 3.3),
+      runner('D', 'Fourth', 0.1, 14, 4.2),
+    ]), liveOptions({
+      uncertaintyContext: {
+        modelProbabilities: [0.42, 0.18, 0.37],
+        calibrationDrift: 0.01,
+      },
+    }));
+
+    assert.equal(portfolio.mode, 'PAPER');
+    assert.equal(portfolio.totalStake, 0);
+    assert.deepEqual(portfolio.cashLines, []);
+    assert.equal(portfolio.tripwire.status, 'PAPER');
+    assert(portfolio.tripwire.reasonCodes.includes('HIGH_MODEL_DISAGREEMENT'));
+    assert.match(portfolio.summary, /模型分歧/);
+  });
+
+  it('exposes the missing-live-market tripwire reason', () => {
+    const portfolio = buildStructuredBetPortfolio(entry([
+      runner('A', 'No Market Top', 0.4, null, null),
+      runner('B', 'No Market Support', 0.3, null, null),
+      runner('C', 'No Market Third', 0.2, null, null),
+      runner('D', 'No Market Fourth', 0.1, null, null),
+    ]), liveOptions());
+
+    assert.equal(portfolio.tripwire.status, 'PAPER');
+    assert(portfolio.tripwire.reasonCodes.includes('MISSING_LIVE_MARKET'));
+  });
+
   it('does not force a cash bet when the race has no usable signal', () => {
     const portfolio = buildStructuredBetPortfolio(entry([
       runner('A', 'Thin Top', 0.105, 10, 2.8),

@@ -74,4 +74,28 @@ describe('final bet plan value gate', () => {
     assert.equal(plan.decision.status, 'PAPER');
     assert.equal(plan.decision.reasonCode, 'PROBABILITY_NOT_PROMOTED');
   });
+
+  it('overrides an otherwise playable recommendation when model disagreement is high', () => {
+    const plan = buildFinalBetPlan({}, [prediction], recommendation, {
+      probabilityStatus: 'CALIBRATED',
+      probabilityArtifactId: 'runner-probability-stack-v1',
+      modelId: 'place-stack-v1',
+      calibrationMethod: 'isotonic',
+      marketCapturedAt: '2026-07-18T10:00:00.000Z',
+      evaluatedAt: '2026-07-18T10:05:00.000Z',
+      marketWindow: 'T-10',
+      marketSource: 'HKJC',
+      sellStatus: 'SELLING',
+      uncertaintyContext: {
+        modelProbabilities: [0.42, 0.18, 0.37],
+        calibrationDrift: 0.01,
+      },
+    });
+
+    assert.equal(plan.decision.status, 'PLAY');
+    assert.equal(plan.mode, 'paper');
+    assert.equal(plan.plannedStake, 0);
+    assert.equal(plan.tripwire.status, 'PAPER');
+    assert(plan.tripwire.reasonCodes.includes('HIGH_MODEL_DISAGREEMENT'));
+  });
 });

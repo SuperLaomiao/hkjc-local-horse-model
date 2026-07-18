@@ -1,6 +1,10 @@
 import { buildPerformanceSnapshot } from './performance.js';
 import { evaluateValueCandidate } from './value-betting-engine.js';
 import {
+  applyUncertaintyToStake,
+  evaluateUncertaintyTripwire,
+} from './uncertainty-tripwire.js';
+import {
   buildResearchUpgradeProgram,
   summarizeResearchUpgradeProgram,
 } from '../../research-program.js';
@@ -342,15 +346,25 @@ export function buildFinalBetPlan(race, predictions, recommendation, options = {
         maxAgeMinutes: options.maxPriceAgeMinutes ?? 15,
         probabilityStatus: options.probabilityStatus ?? 'RESEARCH_ONLY',
       });
+  const tripwire = evaluateUncertaintyTripwire({
+    ...(options.uncertaintyContext ?? {}),
+    marketAvailable: hasVerifiableLiveMarket(decision),
+    probabilityStatus: options.probabilityStatus ?? 'RESEARCH_ONLY',
+  });
   const minimumOdds = Number.isFinite(decision?.requiredDividendPer10)
     ? roundOdds(decision.requiredDividendPer10 / 10)
     : Number.isFinite(probability) && probability > 0
       ? roundOdds((1 + targetEdge) / probability)
       : null;
   const executable = recommendation.action === 'value' && decision?.status === 'PLAY';
-  const plannedStake = executable
+  const unguardedStake = executable
     ? roundMoney(Math.min(recommendation.suggestedStake ?? 0, bankroll * maxStakePct))
     : 0;
+  const plannedStake = applyUncertaintyToStake(
+    unguardedStake,
+    tripwire,
+    options.minUnit ?? 10,
+  );
   const valueLineage = {
     pool: 'WIN',
     combination: Number.isFinite(Number(recommendation.horseNo)) ? [Number(recommendation.horseNo)] : [],
@@ -367,10 +381,11 @@ export function buildFinalBetPlan(race, predictions, recommendation, options = {
     ruleVersion: decision?.ruleVersion ?? null,
     expectedRoi: decision?.expectedRoi ?? null,
     conservativeExpectedRoi: decision?.conservativeExpectedRoi ?? null,
+    tripwire,
   };
 
   if (recommendation.action === 'value') {
-    const presentation = finalPlanPresentation(decision);
+    const presentation = finalPlanPresentation(decision, tripwire, plannedStake);
     return {
       mode: presentation.mode,
       label: presentation.label,
@@ -463,8 +478,28 @@ export function buildFinalBetPlan(race, predictions, recommendation, options = {
   };
 }
 
-function finalPlanPresentation(decision) {
+function finalPlanPresentation(decision, tripwire, plannedStake = 0) {
   if (decision?.status === 'PLAY') {
+    if (tripwire?.status === 'PAPER') {
+      return {
+        mode: 'paper',
+        label: 'PAPER / 风控暂停',
+        headline: tripwire.summaryZh,
+      };
+    }
+    if (tripwire?.status === 'REDUCE') {
+      return plannedStake > 0
+        ? {
+            mode: 'execute',
+            label: 'REDUCED / 风控减注',
+            headline: tripwire.summaryZh,
+          }
+        : {
+            mode: 'paper',
+            label: 'PAPER / 低于最小注码',
+            headline: `${tripwire.summaryZh} 减注后低于最小投注单位。`,
+          };
+    }
     return {
       mode: 'execute',
       label: 'FINAL BUY / 可买',
@@ -497,6 +532,15 @@ function finalPlanPresentation(decision) {
     label: 'NO BET / 不买',
     headline: decision?.reasonZh ?? '没有通过保守 EV 门槛。',
   };
+}
+
+function hasVerifiableLiveMarket(decision) {
+  const market = decision?.market;
+  const sellStatus = String(market?.sellStatus ?? '').trim().toUpperCase();
+  return Number.isFinite(Number(market?.dividendPer10))
+    && Number(market.dividendPer10) > 0
+    && market?.status === 'FRESH'
+    && ['SELLING', 'OPEN', 'SALE_OPEN'].includes(sellStatus);
 }
 
 export function settleForecast(forecast, actualRace) {
