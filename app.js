@@ -1058,14 +1058,20 @@ function renderResearchUpgradePanel(snapshot) {
   const followUpActions = Array.isArray(program.followUpActions) ? program.followUpActions : [];
   const externalBenchmarks = Array.isArray(program.externalBenchmarkRegistry) ? program.externalBenchmarkRegistry : [];
   const followUpCount = summary.followUpCount ?? followUpActions.length;
+  const implementedActionCount = summary.implementedActionCount
+    ?? followUpActions.filter((item) => item.status === "implemented").length;
+  const partialActionCount = summary.partialActionCount
+    ?? followUpActions.filter((item) => item.status === "partial").length;
+  const queuedActionCount = summary.queuedActionCount
+    ?? followUpActions.filter((item) => item.status === "queued").length;
   const automationReadyCount = summary.automationReadyCount
-    ?? followUpActions.filter((item) => item.automationExecutable).length;
+    ?? followUpActions.filter((item) => (
+      item.automationExecutable
+      && ["queued", "partial"].includes(item.status)
+    )).length;
   const externalBenchmarkCount = summary.externalBenchmarkCount ?? externalBenchmarks.length;
-  const reproductionReadyCount = summary.reproductionReadyCount
-    ?? externalBenchmarks.filter((item) => item.status === "reproduce-next").length;
-  const dataLeverageCount = summary.dataLeverageCount
-    ?? externalBenchmarks.filter((item) => item.status === "data-leverage").length;
-
+  const reproducedBenchmarkCount = summary.reproducedBenchmarkCount
+    ?? externalBenchmarks.filter((item) => ["partial-blocked-data", "reproduced-no-go"].includes(item.status)).length;
   return `
     <section class="panel research-panel">
       <div class="panel-header">
@@ -1083,13 +1089,13 @@ function renderResearchUpgradePanel(snapshot) {
       </div>
       <div class="research-metrics">
         ${renderResearchMetric("参考项目", summary.sourceCount)}
-        ${renderResearchMetric("已进入系统", summary.activeCount)}
-        ${renderResearchMetric("下一步", summary.nextCount)}
-        ${renderResearchMetric("研究观察", summary.researchOnlyCount)}
-        ${renderResearchMetric("巡检队列", `${automationReadyCount}/${followUpCount}`)}
+        ${renderResearchMetric("机制已进入", summary.activeCount)}
+        ${renderResearchMetric("Action已完成", `${implementedActionCount}/${followUpCount}`)}
+        ${renderResearchMetric("部分完成", partialActionCount)}
+        ${renderResearchMetric("待执行", queuedActionCount)}
+        ${renderResearchMetric("巡检可续跑", automationReadyCount)}
         ${renderResearchMetric("外部Benchmark", externalBenchmarkCount)}
-        ${renderResearchMetric("可复现", reproductionReadyCount)}
-        ${renderResearchMetric("数据Leverage", dataLeverageCount)}
+        ${renderResearchMetric("已复现/部分", reproducedBenchmarkCount)}
       </div>
       <div class="research-section">
         <strong>从开源项目学习什么</strong>
@@ -1164,23 +1170,43 @@ function renderExternalBenchmarkCard(benchmark) {
 }
 
 function renderResearchFollowUpAction(action) {
-  const automationLabel = action.automationExecutable ? "每日巡检可执行" : "研究观察";
+  const automationLabel = researchActionAutomationLabel(action);
   const sourceRefs = Array.isArray(action.sourceRefs) ? action.sourceRefs.join(" / ") : "";
+  const evidence = Array.isArray(action.evidence) ? action.evidence : [];
+  const remaining = Array.isArray(action.remaining) ? action.remaining : [];
 
   return `
     <article>
       <div class="research-action-meta">
         <span class="research-status ${researchPriorityClass(action.priority)}">${escapeHtml(action.priority ?? "P?")}</span>
         <span>${escapeHtml(action.automationPhase ?? "未排期")}</span>
-        <span>${escapeHtml(action.status ?? "queued")}</span>
+        <span>${escapeHtml(researchActionStatusLabel(action.status))}</span>
         <span>${escapeHtml(automationLabel)}</span>
       </div>
       <strong>${escapeHtml(action.title)}</strong>
       <p>${escapeHtml(action.action)}</p>
       <em>${escapeHtml(action.expectedOutcome)}</em>
+      ${evidence.length ? `<small><b>已交付证据：</b>${escapeHtml(evidence.join(" / "))}</small>` : ""}
+      ${remaining.length ? `<small><b>剩余工作：</b>${escapeHtml(remaining.join(" / "))}</small>` : ""}
       ${sourceRefs ? `<small>参考：${escapeHtml(sourceRefs)}</small>` : ""}
     </article>
   `;
+}
+
+function researchActionStatusLabel(status) {
+  if (status === "implemented") return "已完成";
+  if (status === "partial") return "部分完成";
+  if (status === "queued") return "待执行";
+  if (status === "research-only") return "研究观察";
+  return status ?? "待确认";
+}
+
+function researchActionAutomationLabel(action) {
+  if (action.status === "implemented" && action.automationExecutable) return "赛马日继续运行";
+  if (action.status === "implemented") return "实现完成";
+  if (action.status === "partial" && action.automationExecutable) return "巡检继续补齐";
+  if (action.status === "queued" && action.automationExecutable) return "巡检待执行";
+  return "研究观察";
 }
 
 function renderResearchMetric(label, value) {
@@ -1234,7 +1260,8 @@ function researchPriorityClass(priority) {
 
 function researchBenchmarkStatusClass(status) {
   if (status === "reproduce-next") return "is-p0";
-  if (status === "data-leverage" || status === "partially-leveraged") return "is-next";
+  if (["data-leverage", "partially-leveraged", "partial-blocked-data"].includes(status)) return "is-next";
+  if (status === "reproduced-no-go") return "is-active";
   return "is-research";
 }
 

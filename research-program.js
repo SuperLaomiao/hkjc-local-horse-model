@@ -121,9 +121,9 @@ const ALGORITHM_BORROWINGS = [
   },
   {
     concept: 'Market odds 市场赔率融合与 favorite-longshot bias 修正',
-    status: 'next',
+    status: 'active',
     userImpact: '减少模型单边看好冷门导致整张票被一匹马拖死的风险。',
-    nextStep: '抓取独赢、位置、QPL、连赢即时派彩，学习“模型概率 vs 市场概率”的校准权重。',
+    nextStep: 'T-10 market-aware CatBoost 已完成历史比较；继续用 2026 prospective T-window 快照验证价格稳定性和现金 EV。',
   },
   {
     concept: 'Fractional Kelly + 资金/单马暴露上限',
@@ -139,9 +139,9 @@ const ALGORITHM_BORROWINGS = [
   },
   {
     concept: 'Pool money / takeout / crowding features',
-    status: 'next',
+    status: 'active',
     userImpact: '不只看赔率高低，还看某匹马或组合是否被资金过度拥挤，减少追热门和错买低价值组合。',
-    nextStep: '把 WIN/PLA/QIN/QPL total investment 和 pool-share 估算写入 SQLite market features。',
+    nextStep: '特征与 SQLite 读取链路已完成；继续积累 2026 T-window pool snapshots 后评估增益。',
   },
   {
     concept: 'SpeedPRO sectional / pace / fitness 特征',
@@ -151,15 +151,15 @@ const ALGORITHM_BORROWINGS = [
   },
   {
     concept: 'NO-BET default + Closing Line Value 守门',
-    status: 'next',
+    status: 'active',
     userImpact: '模型没证明能赢 closing line 时，前端主动显示“不下注/只纸上观察”，防止为了下注而下注。',
-    nextStep: '把推荐审计从赛果 ROI 扩展到 CLV、bootstrap CI 和 placebo 检查。',
+    nextStep: 'NO-BET、CLV、slippage 和 drawdown 已进入审计；仍需 prospective locks、bootstrap CI 和 placebo 检查。',
   },
   {
     concept: 'LightGBM / LambdaRank / 条件 logit 模型族',
-    status: 'research-only',
+    status: 'active',
     userImpact: '这是下一代基础胜率模型候选，不会立刻拿来真实下注。',
-    nextStep: '等历史数据足够后做时间切分训练和 walk-forward 回测。',
+    nextStep: 'no-market LightGBM 已按时间切分训练并导出 WIN/PLACE 概率；现金升级仍取决于独立 ROI 与 prospective market gate。',
   },
   {
     concept: 'SHAP / feature importance 解释层',
@@ -179,35 +179,50 @@ const FOLLOW_UP_ACTIONS = [
   {
     id: 'live-snapshot-planner',
     priority: 'P0',
-    status: 'queued',
+    status: 'implemented',
     automationPhase: 'Phase A',
     title: '实现 T-30/T-10/T-3 live snapshot planner',
     sourceRefs: ['hkjc-api', 'HKJC Horse-Racing ML Research Platform'],
     action: '读取 SQLite upcoming races，判断当前 HKT 是否进入 due window，并触发 WIN/PLA/QIN/QPL 抓取。',
     expectedOutcome: '每天巡检能自动积累 2026 临场 odds/pool 数据，先 dry-run 后导入。',
     automationExecutable: true,
+    evidence: [
+      'hkjc-horse-model/src/live-snapshot-planner.js + live-market-due-snapshots.js',
+      'live-snapshot-planner / live-market-due-snapshots / live-market-snapshot tests',
+    ],
+    remaining: ['赛马日继续积累真实 2026 T-30/T-10/T-3 odds/pool snapshots；没有 due window 时不伪造数据。'],
   },
   {
     id: 'pool-money-features',
     priority: 'P0',
-    status: 'queued',
+    status: 'implemented',
     automationPhase: 'Phase A/B',
     title: '把 pool money / takeout / crowding 写成市场特征',
     sourceRefs: ['HKJC Pool Money Calculator', 'hkjc-api'],
     action: '从 odds + total investment 估算单马和组合资金份额，进入 odds_snapshots/pool_snapshots 派生特征。',
     expectedOutcome: 'EV 过滤不只依赖赔率，也能识别 crowding 和低价值组合。',
-    automationExecutable: true,
+    automationExecutable: false,
+    evidence: [
+      'hkjc-horse-model/src/pool-money-features.js',
+      'pool-money-features and SQLite market-feature tests',
+    ],
+    remaining: ['等待足量 prospective T-window pool coverage 后，评估 crowding 特征的 holdout/forward lift。'],
   },
   {
     id: 'benchmark-registry-refresh',
     priority: 'P0',
-    status: 'queued',
+    status: 'implemented',
     automationPhase: 'Phase B',
     title: '更新 external benchmark registry',
     sourceRefs: ['catowabisabi', 'jerrydaphantom', 'HKJC Edge Lab', 'HKJC Benter Engine'],
     action: '登记每个外部思路的数据需求、泄漏风险、指标、promotion gate 和现金模式限制。',
     expectedOutcome: 'Research Lab 能显示哪些外部方法已复现、哪些仍不能用于下注。',
-    automationExecutable: true,
+    automationExecutable: false,
+    evidence: [
+      'hkjc-horse-model/src/model-benchmark-registry.js',
+      'model-benchmark-registry tests and dashboard-safe snapshot projection',
+    ],
+    remaining: ['外部项目有新证据时更新 registry；不把第三方 headline 当成本地已验证成绩。'],
   },
   {
     id: 'speedpro-feature-importer',
@@ -219,17 +234,24 @@ const FOLLOW_UP_ACTIONS = [
     action: '先做 schema 和无泄漏规则，再导入当前 meeting SpeedPRO，历史回补另列任务。',
     expectedOutcome: '基础模型能学习步速、末段、fitness、incident/comments 的滞后信号。',
     automationExecutable: true,
+    evidence: ['docs/research/tianxi-speedpro-local-import-plan.md 已定义 schema、时点和无泄漏边界。'],
+    remaining: ['实现 optional importer、覆盖率报告和有/无 SpeedPRO 的同 cohort holdout 对比。'],
   },
   {
     id: 'no-bet-clv-gate',
     priority: 'P1',
-    status: 'queued',
+    status: 'partial',
     automationPhase: 'Phase C',
     title: '加入 NO-BET default 与 CLV 守门',
     sourceRefs: ['HKJC Edge Lab', 'Ganyan'],
     action: '推荐审计增加 closing-line value、bootstrap CI、placebo；未过门槛时现金推荐降级为 paper-only。',
     expectedOutcome: '系统可以诚实地输出 NO BET，而不是每场硬给下注。',
     automationExecutable: true,
+    evidence: [
+      'value-betting-engine.js 的 PLAY/WATCH/PAPER/NO_BET fail-closed gate',
+      'recommendation-audit tests覆盖 CLV、slippage、cash drawdown 与 paper ROI 分离',
+    ],
+    remaining: ['积累 prospective recommendation locks，并补 bootstrap CI 与 placebo 稳健性检验。'],
   },
   {
     id: 'bayesian-tripwire',
@@ -241,6 +263,8 @@ const FOLLOW_UP_ACTIONS = [
     action: '用最近 90 日信心分布作为 baseline，异常过低时暂停建议，异常过高时提示过拟合/数据漂移风险。',
     expectedOutcome: '前端能显示模型状态异常，避免坏数据日继续下注。',
     automationExecutable: true,
+    evidence: ['docs/active-continuation-roadmap.md 已锁定 calibration drift、market gap 和 model disagreement 验收条件。'],
+    remaining: ['实现 uncertainty score、降级原因、stake reduction 与 high-disagreement/missing-market/normal-pass 测试。'],
   },
   {
     id: 'lightgbm-no-market-benchmark',
@@ -252,6 +276,11 @@ const FOLLOW_UP_ACTIONS = [
     action: '导出 leakage-safe matrix，训练 no-market tree baseline，评估 log loss、Brier、Top-pick 入前三、QIN/QPL ROI。',
     expectedOutcome: '知道我们的基本面模型是否真的比当前 heuristic 强。',
     automationExecutable: false,
+    evidence: [
+      'hkjc-horse-model/python/train_tree_model.py',
+      'target-aware WIN/PLACE LightGBM tests、versioned predictions 与 strict PLACE settlement benchmark',
+    ],
+    remaining: ['继续作为 no-market baseline；未经 per-pool ROI/promotion gate 不进入现金推荐。'],
   },
   {
     id: 'parimutuel-stacker-copula-study',
@@ -263,6 +292,8 @@ const FOLLOW_UP_ACTIONS = [
     action: '只做方法笔记和小样本模拟，不进入现金推荐；重点检查 late-money drift 和 final dividend bias。',
     expectedOutcome: '给未来三重彩/四重彩研究保留方向，但不污染当前保守组合。',
     automationExecutable: false,
+    evidence: ['Research Lab registry 已记录 late-money drift 与 final-dividend bias 风险。'],
+    remaining: ['补研究笔记与小样本模拟；在数据和 promotion gate 完成前保持 research-only。'],
   },
 ];
 
@@ -270,32 +301,32 @@ const EXTERNAL_BENCHMARK_REGISTRY = [
   {
     id: 'catowabisabi-lgb-no-odds-quinella',
     priority: 'P0',
-    status: 'reproduce-next',
+    status: 'partial-blocked-data',
     sourceName: 'catowabisabi/horse-racing-model-training',
     sourceUrl: 'https://github.com/catowabisabi/horse-racing-model-training',
     benchmarkType: 'model-plus-pool-strategy',
     publicMetric: 'LightGBM no-odds top-2 Quinella: 2017 +7.9% ROI, 2018 H1 OOS +2.6% ROI; top-1 pre-race hit about 27%.',
-    ourGap: '我们当前 WIN top-pick 约 20-23%，策略 ROI 仍为负；尚未在本地复现 no-odds 连赢 top2 edge。',
+    ourGap: '本地已重放固定 top-2 QIN 与 top-3-box QIN/QPL；validation/holdout 结果为负并维持 NO-BET。缺验证过的 T-30 赔率，尚不能复现 cold-quinella filter。',
     leveragePath: '复用它的实验设计：no-odds LightGBM、严格时间切分、top-2 连赢/QPL replay、cold-quinella filter，不复制结论。',
     requiredLocalData: ['settled races', 'official QIN/QPL dividends', 'leakage-safe no-market training matrix', 'chronological validation/holdout split'],
     promotionGate: '本地 validation 和 holdout 同时优于 current baseline；连赢/QPL ROI 为正；max drawdown 和 profit concentration 合格；不能只靠单场冷门。',
     accessPolicy: 'MIT code; processed parquet and reports can be studied, raw-derived data only local research unless license terms remain safe.',
-    localAdoption: 'benchmark-only',
+    localAdoption: 'historical-no-go',
   },
   {
     id: 'jerrydaphantom-catboost-market-aware',
     priority: 'P0',
-    status: 'reproduce-next',
+    status: 'reproduced-no-go',
     sourceName: 'jerrydaphantom/hkjc-ml-research',
     sourceUrl: 'https://github.com/jerrydaphantom/hkjc-ml-research',
     benchmarkType: 'calibrated-market-aware-model',
     publicMetric: 'CatBoost market-aware + sigmoid race normalization: log loss 0.234958, Brier 0.065478, top-pick win rate 32.7%, winner-in-top3 62.1%.',
-    ourGap: '我们本地 logistic runner report holdout log loss 约 0.267、top-pick 约 21.1%；缺 CatBoost/LightGBM market-aware calibration 对照。',
+    ourGap: '同 cohort T-10 market-aware CatBoost 已完成：holdout WIN log loss 0.245335、Top-pick 30.43%，仍弱于其公开 32.7%；全部历史 value candidates 未通过 ROI/稳定性/回撤 gate。',
     leveragePath: '复现 CatBoost/LightGBM market-aware + calibration + model-vs-market threshold grid，并把预测质量和下注 ROI 分开评估。',
     requiredLocalData: ['T-30/T-10/T-3 market odds', 'current/final odds labels separated', 'training dataset market feature flags', 'chronological test split'],
     promotionGate: '预测指标显著优于 baseline，且 EV/probability-gap 过滤后在 holdout 有足够样本和正期望；top-pick-all 不能直接进现金模式。',
     accessPolicy: 'MIT code; public repo lacks raw private scraper/data stack, so methodology only until local replay passes.',
-    localAdoption: 'benchmark-only',
+    localAdoption: 'probability-champion-cash-no-bet',
   },
   {
     id: 'anton-no-odds-feature-stack',
@@ -383,7 +414,7 @@ const STATUS_LABELS = {
 
 export function buildResearchUpgradeProgram() {
   return {
-    version: 'research-led-v1',
+    version: 'research-led-v2',
     headline: '研究驱动：先学术与开源验证，再进入下注建议。',
     sources: RESEARCH_SOURCES.map((source) => ({ ...source })),
     algorithmBorrowings: ALGORITHM_BORROWINGS.map((item) => ({
@@ -409,9 +440,18 @@ export function summarizeResearchUpgradeProgram(program = buildResearchUpgradePr
   const nextItems = program.algorithmBorrowings.filter((item) => item.status === 'next');
   const followUpActions = Array.isArray(program.followUpActions) ? program.followUpActions : [];
   const externalBenchmarkRegistry = Array.isArray(program.externalBenchmarkRegistry) ? program.externalBenchmarkRegistry : [];
-  const automationReadyActions = followUpActions.filter((item) => item.automationExecutable && item.status === 'queued');
-  const firstAction = automationReadyActions[0] ?? followUpActions[0];
-  const reproductionReadyBenchmarks = externalBenchmarkRegistry.filter((item) => item.status === 'reproduce-next');
+  const actionCountByStatus = (status) => followUpActions.filter((item) => item.status === status).length;
+  const automationReadyActions = followUpActions.filter((item) => (
+    item.automationExecutable
+    && ['queued', 'partial'].includes(item.status)
+  ));
+  const firstAction = automationReadyActions[0];
+  const reproductionReadyBenchmarks = externalBenchmarkRegistry.filter((item) => (
+    ['reproduce-next', 'reproduce-after-p0'].includes(item.status)
+  ));
+  const reproducedBenchmarks = externalBenchmarkRegistry.filter((item) => (
+    ['partial-blocked-data', 'reproduced-no-go'].includes(item.status)
+  ));
   const dataLeverageBenchmarks = externalBenchmarkRegistry
     .filter((item) => item.status === 'data-leverage')
     .sort((a, b) => dataLeverageRank(a.id) - dataLeverageRank(b.id));
@@ -419,7 +459,8 @@ export function summarizeResearchUpgradeProgram(program = buildResearchUpgradePr
     item.requiredLocalData.some((data) => /missing|缺|T-30|pool|market/i.test(data))
     || /缺|missing|尚未|pool_snapshots = 0/i.test(item.ourGap)
   )).length;
-  const nextBenchmark = reproductionReadyBenchmarks[0]
+  const nextBenchmark = reproducedBenchmarks.find((item) => item.status === 'partial-blocked-data')
+    ?? reproductionReadyBenchmarks[0]
     ?? externalBenchmarkRegistry.find((item) => item.status === 'data-leverage')
     ?? externalBenchmarkRegistry[0];
 
@@ -431,8 +472,13 @@ export function summarizeResearchUpgradeProgram(program = buildResearchUpgradePr
     nextCount: countByStatus('next'),
     researchOnlyCount: countByStatus('research-only'),
     followUpCount: followUpActions.length,
+    implementedActionCount: actionCountByStatus('implemented'),
+    partialActionCount: actionCountByStatus('partial'),
+    queuedActionCount: actionCountByStatus('queued'),
+    researchOnlyActionCount: actionCountByStatus('research-only'),
     automationReadyCount: automationReadyActions.length,
     externalBenchmarkCount: externalBenchmarkRegistry.length,
+    reproducedBenchmarkCount: reproducedBenchmarks.length,
     reproductionReadyCount: reproductionReadyBenchmarks.length,
     dataLeverageCount: dataLeverageBenchmarks.length,
     blockedBenchmarkCount,
