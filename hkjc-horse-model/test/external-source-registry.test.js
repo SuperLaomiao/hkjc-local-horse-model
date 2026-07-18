@@ -11,7 +11,7 @@ describe('external source registry', () => {
   it('registers every approved data, model, and collector donor with provenance policy', () => {
     const ids = EXTERNAL_SOURCE_REGISTRY.map((source) => source.sourceId);
 
-    assert.equal(ids.length, 11);
+    assert.equal(ids.length, 12);
     assert.equal(new Set(ids).size, ids.length);
     assert.deepEqual(validateExternalSourceRegistry(EXTERNAL_SOURCE_REGISTRY), []);
     assert.equal(ids.includes('sleepingarhat-tianxi-database'), true);
@@ -25,6 +25,7 @@ describe('external source registry', () => {
     assert.equal(ids.includes('tang-pool-tracker'), true);
     assert.equal(ids.includes('bobosky-hkjc-api'), true);
     assert.equal(ids.includes('rkwyu-sport-betting-data'), true);
+    assert.equal(ids.includes('snookerlivehk-hkjc-analytics'), true);
   });
 
   it('fails closed for unknown or restricted licenses', () => {
@@ -51,6 +52,19 @@ describe('external source registry', () => {
     assert.equal(tianxi.featureGroups.find((group) => group.featureGroup === 'undated-speedpro-fields').timing, 'unsafe');
     assert.equal(tianxi.featureGroups.find((group) => group.featureGroup === 'prior-trials').timing, 'pre-race-candidate');
   });
+
+  it('pins hkjc-analytics to clean-room review with no reuse or publication rights', () => {
+    const analytics = EXTERNAL_SOURCE_REGISTRY.find((source) => (
+      source.sourceId === 'snookerlivehk-hkjc-analytics'
+    ));
+
+    assert.equal(analytics.licenseStatus, 'unknown');
+    assert.equal(analytics.codeReuseAllowed, false);
+    assert.equal(analytics.rawPublicationAllowed, false);
+    assert.equal(analytics.cachePolicy, 'none');
+    assert.deepEqual(analytics.featureGroups.map((group) => group.timing), ['unsafe', 'unsafe']);
+    assert.equal(analytics.allowedUses.includes('clean-room-methodology-reimplementation'), true);
+  });
 });
 
 describe('external source audit', () => {
@@ -62,15 +76,15 @@ describe('external source audit', () => {
 
     assert.equal(report.policyVersion, 'external-source-policy-v1');
     assert.equal(report.generatedAt, '2026-07-17T00:00:00.000Z');
-    assert.equal(report.summary.sources, 11);
-    assert.equal(report.summary.byLicenseStatus.unknown, 5);
+    assert.equal(report.summary.sources, 12);
+    assert.equal(report.summary.byLicenseStatus.unknown, 6);
     assert.equal(report.summary.byLicenseStatus.restricted, 1);
     assert.equal(report.summary.byLicenseStatus['open-data'], 1);
     assert.equal(report.summary.byLicenseStatus.licensed, 4);
     assert.equal(report.summary.localOnlySources, 3);
     assert.equal(report.summary.modelDonors, 4);
     assert.equal(report.summary.dataDonors, 5);
-    assert.equal(report.summary.collectorDonors, 2);
+    assert.equal(report.summary.collectorDonors, 3);
     assert.equal(report.summary.invalidSources, 0);
     assert.ok(report.summary.featureTiming['pre-race-candidate'] > 0);
     assert.ok(report.summary.featureTiming['post-race'] > 0);

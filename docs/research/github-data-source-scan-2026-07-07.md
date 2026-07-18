@@ -26,6 +26,7 @@ are missing an explicit data license or have small out-of-sample samples.
 | --- | --- | --- | --- | --- | --- |
 | P0 | [rkwyu/sport-betting-data](https://github.com/rkwyu/sport-betting-data) | HKJC `getJSON.aspx` odds and pool fetchers for WIN/PLA/QIN/QPL/FCT/TCE/TRI/FF/QTT/DBL/JKC/TNC plus pool investments | No historical archive; scraper code | MIT license file present | Port endpoint coverage into our `market-snapshot` normalizer and capture T-30/T-10/T-3 going forward |
 | P0 | [Bobosky2005/hkjc-api](https://github.com/Bobosky2005/hkjc-api) | HKJC GraphQL wrapper for active meetings, runners, race odds, pool investments; football historical result helpers too | No historical archive; API client | MIT license file present | Use as reference for a cleaner GraphQL-based live snapshot path; fan out odds types to avoid upstream limits |
+| Audit-only | [snookerlivehk-elton/hkjc-analytics](https://github.com/snookerlivehk-elton/hkjc-analytics) | Collector, heuristic factor, pace, calibration, and settlement architecture | No database, immutable snapshots, model artifacts, or numeric benchmark shipped | No license detected | Use only as a clean-room negative-control/methodology audit; do not import its milestone labels, weights, thresholds, or code |
 | P1 | [sleepingarhat/tianxi-database](https://github.com/sleepingarhat/tianxi-database) | 2016-2026 CSV artefacts: results, dividends, sectionals, commentary, video links, horse profiles, form records, jockeys, trainers, trials, entries, fixtures, daily audits | Yes, raw CSV in repo | No explicit license detected | Build a local-only importer for non-duplicative features; avoid republishing raw rows unless license is clarified |
 | P1 | [mag-dot/race-data](https://github.com/mag-dot/race-data) | Recent scraper and JSON examples for SpeedPRO form guide, barrier trials, draw stats, race cards, jockey/trainer rankings | Some 2025-2026 JSON samples | No explicit license detected | Borrow schema ideas and optionally ingest recent JSON samples as local research-only data |
 | P2 | [catowabisabi/horse-racing-model-training](https://github.com/catowabisabi/horse-racing-model-training) | LightGBM/XGBoost, Kelly, Benter blend, quinella/exotic simulations, processed parquet and reports | Yes, processed parquet and reports | MIT license file present | Reproduce the LightGBM no-odds quinella experiment inside our pipeline; do not trust headline ROI until rerun |
@@ -92,6 +93,19 @@ The useful idea is not “copy the result”; it is the experimental design:
 Their headline positive result is LightGBM no-odds top-2 quinella, but the 2018
 H1 out-of-sample window is still small. We should reproduce the idea on our own
 local SQLite data before changing cash recommendations.
+
+### 4. `hkjc-analytics` is a methodology audit, not a stronger model
+
+The repository contains useful engineering vocabulary—source observations,
+factor diagnostics, pace features, calibration, and settlement adapters—but
+its deployable ranking remains heuristic and its fitted helpers are not backed
+by a published chronological holdout. Its private database and mutable
+snapshots make claimed hit rate, AUC, NLL, or ROI unreproducible.
+
+The most valuable result of the audit was defensive: we added a strict
+post-time guard to our own T-window planner and documented append-only/as-of
+requirements. Detailed evidence is in
+[`hkjc-analytics-audit-2026-07-18.md`](./hkjc-analytics-audit-2026-07-18.md).
 
 ## Recommended next implementation order
 

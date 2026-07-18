@@ -1048,9 +1048,7 @@ function renderPoolInfo(label, value) {
 }
 
 function renderResearchUpgradePanel(snapshot) {
-  const program = snapshot.research ?? {
-    ...buildResearchUpgradeProgram(),
-  };
+  const program = buildResearchUpgradeProgram();
   const summary = program.summary ?? summarizeResearchUpgradeProgram(program);
   const activeItems = program.algorithmBorrowings.filter((item) => item.status === "active");
   const nextItems = program.algorithmBorrowings.filter((item) => item.status === "next");

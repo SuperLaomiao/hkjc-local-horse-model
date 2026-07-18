@@ -174,6 +174,28 @@ describe('HKJC live market snapshot normalization', () => {
     ]);
   });
 
+  it('rejects exact-post and post-time observations before they reach market storage', () => {
+    for (const capturedAt of [
+      '2026-07-08T10:30:00.000Z',
+      '2026-07-08T10:30:10.000Z',
+    ]) {
+      const result = normalizeLiveMarketPayload({
+        payload: GRAPHQL_FIXTURE,
+        source: 'hkjc-live-graphql-test',
+        capturedAt,
+        date: '2026-07-08',
+        venueCode: 'HV',
+        raceNo: 1,
+      });
+
+      assert.equal(result.summary.oddsSnapshots, 0, capturedAt);
+      assert.equal(result.summary.poolSnapshots, 0, capturedAt);
+      assert.equal(result.summary.skipped.postTime, 5, capturedAt);
+      assert.deepEqual(result.oddsSnapshots, [], capturedAt);
+      assert.deepEqual(result.poolSnapshots, [], capturedAt);
+    }
+  });
+
   it('builds a compact report for dry-run visibility', () => {
     const normalized = normalizeLiveMarketPayload({
       payload: GRAPHQL_FIXTURE,

@@ -370,6 +370,7 @@ export function normalizeLiveMarketPayload({
     skipped: {
       nonNumericOdds: 0,
       missingRace: 0,
+      postTime: 0,
     },
   };
   const raceIds = new Set();
@@ -383,12 +384,17 @@ export function normalizeLiveMarketPayload({
       const currentRaceNo = poolRaceNo(pool, raceNo);
       if (!shouldKeepRace(currentRaceNo, raceFilter)) continue;
       const race = raceByNo.get(currentRaceNo);
+      const observationTime = capturedAtIso ?? normalizeTimestamp(pool.lastUpdateTime);
+      if (isAtOrAfterPostTime(race, observationTime)) {
+        summary.skipped.postTime += 1;
+        continue;
+      }
       const raceMeta = buildRaceMeta({
         meetingDate,
         racecourse,
         raceNo: currentRaceNo,
         race,
-        capturedAt: capturedAtIso ?? normalizeTimestamp(pool.lastUpdateTime),
+        capturedAt: observationTime,
       });
       if (!raceMeta) {
         summary.skipped.missingRace += 1;
@@ -431,12 +437,17 @@ export function normalizeLiveMarketPayload({
       const currentRaceNo = poolRaceNo(pool, raceNo);
       if (!shouldKeepRace(currentRaceNo, raceFilter)) continue;
       const race = raceByNo.get(currentRaceNo);
+      const observationTime = capturedAtIso ?? normalizeTimestamp(pool.lastUpdateTime);
+      if (isAtOrAfterPostTime(race, observationTime)) {
+        summary.skipped.postTime += 1;
+        continue;
+      }
       const raceMeta = buildRaceMeta({
         meetingDate,
         racecourse,
         raceNo: currentRaceNo,
         race,
-        capturedAt: capturedAtIso ?? normalizeTimestamp(pool.lastUpdateTime),
+        capturedAt: observationTime,
       });
       if (!raceMeta) {
         summary.skipped.missingRace += 1;
@@ -615,6 +626,16 @@ function buildRaceMeta({
     capturedAt,
     minutesToPost: postTime ? Math.round((new Date(postTime).getTime() - new Date(capturedAt).getTime()) / 60000) : null,
   };
+}
+
+function isAtOrAfterPostTime(race, observedAt) {
+  const postTime = normalizeTimestamp(race?.postTime);
+  if (!postTime || !observedAt) return false;
+  const observedAtMs = new Date(observedAt).getTime();
+  const postTimeMs = new Date(postTime).getTime();
+  return Number.isFinite(observedAtMs)
+    && Number.isFinite(postTimeMs)
+    && observedAtMs >= postTimeMs;
 }
 
 function poolRaceNo(pool, fallbackRaceNo) {

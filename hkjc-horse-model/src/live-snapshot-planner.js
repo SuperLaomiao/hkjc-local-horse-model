@@ -26,7 +26,9 @@ export function buildDueSnapshotPlan({ races = [], now = new Date(), windows = D
 function dueSnapshot(race, now, windows) {
   const postTime = racePostTime(race);
   if (!postTime) return null;
-  const minutesToPost = Math.round((new Date(postTime).getTime() - now.getTime()) / 60000);
+  const millisecondsToPost = new Date(postTime).getTime() - now.getTime();
+  if (millisecondsToPost <= 0) return null;
+  const minutesToPost = Math.round(millisecondsToPost / 60000);
   const window = windows.find((candidate) => (
     minutesToPost >= candidate.minMinutes && minutesToPost <= candidate.maxMinutes
   ));

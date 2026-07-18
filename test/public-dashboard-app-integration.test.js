@@ -27,5 +27,7 @@ describe('public dashboard app integration', () => {
     assert.match(appSource, /已完成/);
     assert.match(appSource, /部分完成/);
     assert.match(appSource, /待执行/);
+    assert.match(appSource, /const program = buildResearchUpgradeProgram\(\);/);
+    assert.doesNotMatch(appSource, /const program = snapshot\.research \?\?/);
   });
 });

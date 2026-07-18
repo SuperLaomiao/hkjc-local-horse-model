@@ -40,6 +40,13 @@ describe('race-day live snapshot planner', () => {
     }), []);
   });
 
+  it('never labels an observation captured after post time as a pre-race snapshot', () => {
+    assert.deepEqual(buildDueSnapshotPlan({
+      races: [race],
+      now: '2026-07-12T10:30:10.000Z',
+    }), []);
+  });
+
   it('skips settled and scratched races', () => {
     assert.deepEqual(buildDueSnapshotPlan({
       races: [
