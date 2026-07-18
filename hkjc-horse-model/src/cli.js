@@ -857,7 +857,11 @@ async function recommendationAuditCommand(args) {
   const dbPath = path.resolve(args.db ?? sqliteDbPath);
   const races = loadRacesFromDatabase({ dbPath, status: 'settled' });
   const runs = loadRecommendationRuns({ dbPath });
-  const report = auditRecommendationRuns({ runs, races });
+  const recommendationRaceIds = [...new Set(runs.map((run) => run.raceId).filter(Boolean))];
+  const marketSnapshots = recommendationRaceIds.flatMap((raceId) => (
+    loadMarketSnapshots({ dbPath, raceId }).odds
+  ));
+  const report = auditRecommendationRuns({ runs, races, marketSnapshots });
   const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'latest-recommendation-audit.json'));
 
   await mkdir(path.dirname(outputPath), { recursive: true });
@@ -866,6 +870,7 @@ async function recommendationAuditCommand(args) {
   console.log(`Saved recommendation audit to ${outputPath}`);
   console.log(`Recommendation audit: ${report.summary.eligibleRuns}/${report.summary.recordedRuns} final pre-race runs eligible, ${report.summary.settledRuns} settled, ${report.summary.excludedRuns} excluded`);
   console.log(`Stake ${money(report.summary.totalStake)}, return ${money(report.summary.totalReturn)}, profit ${formatSigned(report.summary.profit)}, ROI ${report.summary.roi == null ? 'n/a' : percent(report.summary.roi)}`);
+  console.log(`Indicative CLV lines ${report.summary.clvLines}, average ${report.summary.averageIndicativeClv == null ? 'n/a' : percent(report.summary.averageIndicativeClv)}; paper ROI ${report.summary.paperRoi == null ? 'n/a' : percent(report.summary.paperRoi)}`);
   console.log(`Lines: ${report.summary.hitLines} hit, ${report.summary.missLines} miss, ${report.summary.passLines} pass`);
 }
 

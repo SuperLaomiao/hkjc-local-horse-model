@@ -76,9 +76,14 @@ def build_probability_stack(
 
 def _build_pool_stack(lightgbm_rows, catboost_rows, *, target, pool, calibration_fitter):
     reference_rows = _validate_component_rows(lightgbm_rows, target, "LightGBM")
+    catboost_rows = _validate_component_rows(catboost_rows, target, "CatBoost")
+    component_models = {
+        "lightgbmModelId": _component_model_id(reference_rows, "LightGBM"),
+        "catboostModelId": _component_model_id(catboost_rows, "CatBoost"),
+    }
     catboost_probabilities = _align_component_probabilities(
         reference_rows,
-        _validate_component_rows(catboost_rows, target, "CatBoost"),
+        catboost_rows,
         "CatBoost",
     )
     lightgbm_probabilities = [_probability(row.get("probability")) for row in reference_rows]
@@ -170,6 +175,7 @@ def _build_pool_stack(lightgbm_rows, catboost_rows, *, target, pool, calibration
     )
     report = {
         "target": target,
+        "components": component_models,
         "selection": {
             "selectedOn": "validation",
             "holdoutUsedForSelection": False,
@@ -364,6 +370,16 @@ def _validate_component_rows(rows, target, component):
     return rows
 
 
+def _component_model_id(rows, component):
+    model_ids = {
+        str(row.get("modelId") or "").strip()
+        for row in rows
+    }
+    if "" in model_ids or len(model_ids) != 1:
+        raise ValueError(f"{component} predictions require one non-empty modelId")
+    return next(iter(model_ids))
+
+
 def _align_component_probabilities(reference_rows, candidate_rows, component):
     index = {_row_key(row): row for row in candidate_rows}
     if len(index) != len(reference_rows):
@@ -454,7 +470,7 @@ def load_prediction_jsonl(path):
 
 
 def build_parser():
-    parser = argparse.ArgumentParser(description="Calibrate and blend no-market runner predictions.")
+    parser = argparse.ArgumentParser(description="Calibrate and blend runner-model predictions.")
     parser.add_argument("--lightgbm-win", required=True)
     parser.add_argument("--catboost-win", required=True)
     parser.add_argument("--lightgbm-place", required=True)

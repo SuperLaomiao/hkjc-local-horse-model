@@ -70,6 +70,10 @@ class ProbabilityStackTest(unittest.TestCase):
             self.assertEqual(selection["selectedOn"], "validation")
             self.assertFalse(selection["holdoutUsedForSelection"])
             self.assertIn(selection["blendWeightLightgbm"], [0.0, 0.25, 0.5, 0.75, 1.0])
+            self.assertEqual(
+                report["pools"][pool]["components"],
+                {"lightgbmModelId": "lgb", "catboostModelId": "cat"},
+            )
 
         validation_win = [row["winProbability"] for row in output_rows if row["split"] == "validation"]
         validation_place = [row["placeProbability"] for row in output_rows if row["split"] == "validation"]

@@ -1,18 +1,25 @@
-export function auditRecommendationRuns({ runs = [], races = [] } = {}) {
+export function auditRecommendationRuns({ runs = [], races = [], marketSnapshots = [] } = {}) {
   const raceById = new Map(races.map((race) => [race.raceId, race]));
+  const t3MarketByLine = buildT3MarketIndex(marketSnapshots);
   const classifiedRuns = selectRecommendationRunsForAudit({ runs, raceById });
   const auditedRuns = classifiedRuns.map((run) => (
     run.auditDecision === 'INCLUDED'
-      ? auditRun(run, raceById.get(run.raceId))
+      ? auditRun(run, raceById.get(run.raceId), t3MarketByLine)
       : excludedRun(run)
   ));
   const includedRuns = auditedRuns.filter((run) => run.auditDecision === 'INCLUDED');
   const settledRuns = includedRuns.filter((run) => run.status === 'SETTLED');
   const openRuns = includedRuns.filter((run) => run.status === 'OPEN');
-  const allSettledLines = settledRuns.flatMap((run) => run.lines);
+  const chronologicalSettledRuns = [...settledRuns].sort(compareRunsChronologically);
+  const allSettledLines = chronologicalSettledRuns.flatMap((run) => run.lines);
+  const paperLines = allSettledLines.map((line) => line.paper).filter(Boolean);
+  const clvLines = allSettledLines.filter((line) => Number.isFinite(line.indicativeClv));
   const totalStake = round(sum(allSettledLines, (line) => line.stake));
   const totalReturn = round(sum(allSettledLines, (line) => line.returned));
   const profit = round(totalReturn - totalStake);
+  const paperStake = round(sum(paperLines, (line) => line.stake));
+  const paperReturn = round(sum(paperLines, (line) => line.returned));
+  const paperProfit = round(paperReturn - paperStake);
 
   return {
     summary: {
@@ -27,9 +34,24 @@ export function auditRecommendationRuns({ runs = [], races = [] } = {}) {
       totalReturn,
       profit,
       roi: totalStake > 0 ? round(profit / totalStake, 4) : null,
+      maxDrawdown: maxDrawdown(allSettledLines),
       hitLines: allSettledLines.filter((line) => line.status === 'HIT').length,
       missLines: allSettledLines.filter((line) => line.status === 'MISS').length,
       passLines: allSettledLines.filter((line) => line.status === 'PASS').length,
+      clvLines: clvLines.length,
+      averageIndicativeClv: clvLines.length > 0
+        ? round(sum(clvLines, (line) => line.indicativeClv) / clvLines.length, 4)
+        : null,
+      averagePriceSlippageToT3: clvLines.length > 0
+        ? round(sum(clvLines, (line) => line.priceSlippageToT3) / clvLines.length, 4)
+        : null,
+      paperStake,
+      paperReturn,
+      paperProfit,
+      paperRoi: paperStake > 0 ? round(paperProfit / paperStake, 4) : null,
+      paperMaxDrawdown: maxDrawdown(paperLines),
+      paperHitLines: paperLines.filter((line) => line.status === 'HIT').length,
+      paperMissLines: paperLines.filter((line) => line.status === 'MISS').length,
     },
     runs: auditedRuns,
   };
@@ -122,7 +144,7 @@ function countExclusionReasons(runs) {
   }, {});
 }
 
-function auditRun(run, race) {
+function auditRun(run, race, t3MarketByLine) {
   const recommendations = Array.isArray(run.recommendations) ? run.recommendations : [];
   if (!race || race.status === 'upcoming') {
     return {
@@ -142,7 +164,7 @@ function auditRun(run, race) {
     };
   }
 
-  const lines = recommendations.map((line) => auditLine(line, race));
+  const lines = recommendations.map((line) => auditLine(line, race, t3MarketByLine));
   const stake = round(sum(lines, (line) => line.stake));
   const returned = round(sum(lines, (line) => line.returned));
 
@@ -156,19 +178,9 @@ function auditRun(run, race) {
   };
 }
 
-function auditLine(line, race) {
+function auditLine(line, race, t3MarketByLine) {
   const stake = executableLineStake(line);
-  if (stake <= 0) {
-    return {
-      ...line,
-      status: 'PASS',
-      stake: 0,
-      returned: 0,
-      profit: 0,
-      ...(isExplicitlyNonExecutable(line) ? { auditReason: 'NON_EXECUTABLE_DECISION' } : {}),
-    };
-  }
-
+  const plannedStake = lineStake(line);
   const poolKey = poolKeyForLine(line);
   const combination = combinationForLine(line);
   const dividendPer10 = findDividendPer10({
@@ -176,13 +188,61 @@ function auditLine(line, race) {
     combination,
     dividends: race.dividends,
   });
+  if (stake <= 0) {
+    const paper = decisionStatus(line) === 'PAPER' && plannedStake > 0
+      ? paperSettlement({ stake: plannedStake, dividendPer10 })
+      : null;
+    return addPriceAudit({
+      ...line,
+      status: 'PASS',
+      stake: 0,
+      returned: 0,
+      profit: 0,
+      ...(paper ? { paper } : {}),
+      ...(isExplicitlyNonExecutable(line) ? { auditReason: 'NON_EXECUTABLE_DECISION' } : {}),
+    }, { line, poolKey, combination, dividendPer10, t3MarketByLine, raceId: race.raceId });
+  }
+
   const returned = dividendPer10 == null ? 0 : round((stake / 10) * dividendPer10);
 
-  return {
+  return addPriceAudit({
     ...line,
     status: returned > 0 ? 'HIT' : 'MISS',
     poolKey,
     combination,
+    stake,
+    dividendPer10,
+    returned,
+    profit: round(returned - stake),
+  }, { line, poolKey, combination, dividendPer10, t3MarketByLine, raceId: race.raceId });
+}
+
+function addPriceAudit(output, {
+  line, poolKey, combination, dividendPer10, t3MarketByLine, raceId,
+}) {
+  const t3Market = t3MarketByLine.get(marketLineKey(raceId, poolKey, combination));
+  const lockedDividendPer10 = positiveNumber(
+    line.marketDividendPer10
+      ?? line.decision?.marketDividendPer10
+      ?? line.decision?.market?.dividendPer10
+      ?? line.market?.dividendPer10,
+  );
+  if (!t3Market) return output;
+  const enriched = { ...output, t3Market };
+  if (lockedDividendPer10 == null) return enriched;
+  enriched.lockedMarketDividendPer10 = lockedDividendPer10;
+  enriched.indicativeClv = round((lockedDividendPer10 / t3Market.dividendPer10) - 1, 4);
+  enriched.priceSlippageToT3 = round((t3Market.dividendPer10 / lockedDividendPer10) - 1, 4);
+  if (positiveNumber(dividendPer10) != null) {
+    enriched.officialDividendChangeFromLock = round((dividendPer10 / lockedDividendPer10) - 1, 4);
+  }
+  return enriched;
+}
+
+function paperSettlement({ stake, dividendPer10 }) {
+  const returned = dividendPer10 == null ? 0 : round((stake / 10) * dividendPer10);
+  return {
+    status: returned > 0 ? 'HIT' : 'MISS',
     stake,
     dividendPer10,
     returned,
@@ -253,6 +313,68 @@ function executableLineStake(line) {
 function isExplicitlyNonExecutable(line) {
   const status = line?.decision?.status;
   return status != null && String(status).toUpperCase() !== 'PLAY';
+}
+
+function decisionStatus(line) {
+  return String(line?.decision?.status ?? '').toUpperCase();
+}
+
+function buildT3MarketIndex(marketSnapshots) {
+  const snapshots = Array.isArray(marketSnapshots)
+    ? marketSnapshots
+    : Array.isArray(marketSnapshots?.odds) ? marketSnapshots.odds : [];
+  const index = new Map();
+  for (const snapshot of snapshots) {
+    const minutesToPost = Number(snapshot.minutesToPost);
+    const oddsValue = positiveNumber(snapshot.oddsValue);
+    const sellStatus = String(snapshot.sellStatus ?? '').toUpperCase();
+    if (!Number.isFinite(minutesToPost) || minutesToPost < 1 || minutesToPost > 5) continue;
+    if (oddsValue == null || /(STOP|CLOSE|RESULT|SUSPEND)/.test(sellStatus)) continue;
+    const poolKey = poolKeyForLine({ pool: snapshot.poolKey ?? snapshot.pool });
+    const combination = combinationForLine(snapshot);
+    const key = marketLineKey(snapshot.raceId, poolKey, combination);
+    const candidate = {
+      dividendPer10: round(oddsValue * 10),
+      capturedAt: snapshot.capturedAt ?? null,
+      minutesToPost,
+      source: snapshot.source ?? null,
+    };
+    const current = index.get(key);
+    if (!current || compareT3Snapshots(candidate, current) < 0) index.set(key, candidate);
+  }
+  return index;
+}
+
+function compareT3Snapshots(left, right) {
+  return left.minutesToPost - right.minutesToPost
+    || Date.parse(right.capturedAt ?? '') - Date.parse(left.capturedAt ?? '');
+}
+
+function marketLineKey(raceId, poolKey, combination) {
+  return [raceId, poolKey, combinationKey(combination, poolKey)].join('|');
+}
+
+function compareRunsChronologically(left, right) {
+  return String(left.date ?? left.raceId ?? '').localeCompare(String(right.date ?? right.raceId ?? ''))
+    || Number(left.raceNo ?? 0) - Number(right.raceNo ?? 0)
+    || Date.parse(left.generatedAt ?? '') - Date.parse(right.generatedAt ?? '');
+}
+
+function maxDrawdown(lines) {
+  let cumulative = 0;
+  let peak = 0;
+  let drawdown = 0;
+  for (const line of lines) {
+    cumulative += Number(line.profit ?? 0);
+    peak = Math.max(peak, cumulative);
+    drawdown = Math.max(drawdown, peak - cumulative);
+  }
+  return round(drawdown);
+}
+
+function positiveNumber(value) {
+  const number = Number(value);
+  return Number.isFinite(number) && number > 0 ? number : null;
 }
 
 function sum(items, selector) {
