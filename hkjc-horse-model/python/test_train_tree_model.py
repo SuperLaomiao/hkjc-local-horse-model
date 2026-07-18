@@ -272,6 +272,49 @@ class TreeModelEarlyStoppingTest(unittest.TestCase):
 
 
 class TreeModelFinalRefitTest(unittest.TestCase):
+    def test_prediction_export_writes_versioned_runner_jsonl(self):
+        import numpy
+        import pandas
+
+        rows = TreeModelEarlyStoppingTest._rows()
+        with tempfile.TemporaryDirectory() as directory:
+            input_path = Path(directory) / "matrix.jsonl"
+            output_path = Path(directory) / "tree-model-report.json"
+            predictions_path = Path(directory) / "runner-predictions.jsonl"
+            input_path.write_text(
+                "\n".join(json.dumps(row) for row in rows) + "\n",
+                encoding="utf-8",
+            )
+            with patch(
+                "train_tree_model._require_training_dependencies",
+                return_value=(pandas, numpy, SimpleNamespace(), _FakeLightGBM),
+            ):
+                report = run_training(
+                    input_path,
+                    output_path,
+                    parameters={"n_estimators": 7},
+                    predictions_output_path=predictions_path,
+                )
+
+            predictions = [
+                json.loads(line)
+                for line in predictions_path.read_text(encoding="utf-8").splitlines()
+            ]
+
+        self.assertEqual(len(predictions), len(rows))
+        self.assertEqual(
+            list(predictions[0]),
+            [
+                "version", "modelId", "target", "raceId", "date", "split",
+                "horseId", "horseNo", "fieldSize", "probability",
+                "targetWin", "targetPlace",
+            ],
+        )
+        self.assertEqual(predictions[0]["modelId"], "lightgbm-no-market-v1")
+        self.assertEqual(predictions[0]["raceId"], rows[0]["raceId"])
+        self.assertAlmostEqual(predictions[0]["probability"], 0.5)
+        self.assertEqual(report["predictionArtifact"], str(predictions_path))
+
     def test_final_refit_fits_train_and_validation_but_not_holdout(self):
         rows = TreeModelEarlyStoppingTest._rows()
         report, model = TreeModelEarlyStoppingTest._run(

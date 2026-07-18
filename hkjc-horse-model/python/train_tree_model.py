@@ -230,8 +230,9 @@ def run_training(
     fit_splits=("train",),
     parameters=None,
     selection_report_path=None,
+    predictions_output_path=None,
 ):
-    """Train LightGBM and write report, model text, and feature manifest."""
+    """Train LightGBM and write report, model, manifest, and optional predictions."""
     dependencies = _require_training_dependencies()
     pandas_module, numpy_module, _sklearn_module, lightgbm_module = dependencies
     rows = load_matrix_rows(input_path, pandas_module)
@@ -350,6 +351,29 @@ def run_training(
     output.parent.mkdir(parents=True, exist_ok=True)
     model_path = output.with_suffix(".model.txt")
     manifest_path = output.with_suffix(".feature-manifest.json")
+    prediction_path = Path(predictions_output_path) if predictions_output_path is not None else None
+    if prediction_path is not None:
+        prediction_path.parent.mkdir(parents=True, exist_ok=True)
+        prediction_rows = []
+        for row, probability in zip(rows, probabilities):
+            prediction_rows.append({
+                "version": MODEL_ID,
+                "modelId": MODEL_ID,
+                "target": target,
+                "raceId": _python_scalar(row.get("raceId")),
+                "date": _python_scalar(row.get("date")),
+                "split": _python_scalar(row.get("split")),
+                "horseId": _python_scalar(row.get("horseId")),
+                "horseNo": _python_scalar(row.get("horseNo")),
+                "fieldSize": _python_scalar(row.get("fieldSize")),
+                "probability": _round_or_none(probability),
+                "targetWin": _label_value(row.get("targetWin")),
+                "targetPlace": _label_value(row.get("targetPlace")),
+            })
+        prediction_path.write_text(
+            "\n".join(json.dumps(row, ensure_ascii=False) for row in prediction_rows) + "\n",
+            encoding="utf-8",
+        )
     model.booster_.save_model(str(model_path))
     manifest = {
         "version": MODEL_ID,
@@ -406,6 +430,7 @@ def run_training(
         "features": feature_names,
         "featureManifest": str(manifest_path),
         "modelArtifact": str(model_path),
+        "predictionArtifact": str(prediction_path) if prediction_path is not None else None,
         "probabilityPolicy": {
             "normalization": "race-level positive model probabilities sum to one",
             "clipEpsilon": PROBABILITY_EPSILON,
@@ -659,6 +684,10 @@ def build_parser():
     parser = argparse.ArgumentParser(description="Train the local LightGBM no-market runner model.")
     parser.add_argument("--input", required=True, help="training-matrix .jsonl or .csv")
     parser.add_argument("--output", required=True, help="JSON report path; model and manifest use the same stem")
+    parser.add_argument(
+        "--predictions-output",
+        help="optional versioned per-runner prediction JSONL output path",
+    )
     parser.add_argument("--target", choices=sorted(LABEL_COLUMNS), default="targetWin")
     parser.add_argument("--mode", choices=("no-market",), default="no-market")
     parser.add_argument("--n-estimators", type=int, default=160)
@@ -714,6 +743,7 @@ def main(argv=None):
             fit_splits=("train", "validation") if args.include_validation_in_fit else ("train",),
             parameters=parameters,
             selection_report_path=args.selection_report,
+            predictions_output_path=args.predictions_output,
         )
     except (MissingDependencyError, ValueError, OSError) as error:
         raise SystemExit(str(error)) from error
@@ -725,6 +755,8 @@ def main(argv=None):
     print(f"Saved report to {args.output}")
     print(f"Saved model artifact to {report['modelArtifact']}")
     print(f"Saved feature manifest to {report['featureManifest']}")
+    if report["predictionArtifact"] is not None:
+        print(f"Saved runner predictions to {report['predictionArtifact']}")
 
 
 if __name__ == "__main__":
