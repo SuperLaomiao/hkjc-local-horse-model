@@ -44,7 +44,41 @@ describe('public site publishing boundary', () => {
       assert.deepEqual(dashboard.ledger, []);
       assert.equal(dashboard.recentEntries[0].forecast.topPick.horseName, 'Public Top Pick');
       assert.equal(dashboard.recentEntries[0].forecast.recommendation, undefined);
+      assert.equal(dashboard.publication.visibility, 'PUBLIC_FUNCTIONAL_SANITIZED');
+      assert.equal(dashboard.publication.executableRecommendationsPublished, true);
+      assert.equal(dashboard.publication.personalDataPublished, false);
+      assert.equal(dashboard.publication.rowLevelHistoryPublished, false);
       await assert.rejects(readFile(path.join(output, 'data', 'raw', 'private.json'), 'utf8'));
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  it('rejects a public dashboard that claims personal data is published', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'hkjc-functional-policy-'));
+    try {
+      await mkdir(path.join(root, 'data'), { recursive: true });
+      await writeFile(path.join(root, 'index.html'), '<main>safe</main>', 'utf8');
+      await writeFile(path.join(root, 'data', 'dashboard.json'), JSON.stringify({
+        ledger: [],
+        publication: {
+          visibility: 'PUBLIC_FUNCTIONAL_SANITIZED',
+          executableRecommendationsPublished: true,
+          personalDataPublished: true,
+          rowLevelHistoryPublished: false,
+        },
+      }), 'utf8');
+
+      const report = await scanPublicSite({
+        root,
+        allowedFiles: ['index.html', 'data/dashboard.json'],
+      });
+
+      assert.equal(report.status, 'FAIL');
+      assert.equal(
+        report.violations.some((item) => item.code === 'PUBLICATION_POLICY_MISMATCH'),
+        true,
+      );
     } finally {
       await rm(root, { recursive: true, force: true });
     }

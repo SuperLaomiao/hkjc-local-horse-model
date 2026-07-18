@@ -99,9 +99,10 @@ export function splitDashboardForPublishing(snapshot, options = {}) {
     latestUpcomingForecast: sanitizeForecast(snapshot?.latestUpcomingForecast),
     latestSettlement: sanitizeSettlement(snapshot?.latestSettlement),
     publication: {
-      visibility: 'PUBLIC_SANITIZED',
-      policyVersion: 'public-dashboard-v1',
-      executableRecommendationsPublished: false,
+      visibility: 'PUBLIC_FUNCTIONAL_SANITIZED',
+      policyVersion: 'public-dashboard-v2',
+      executableRecommendationsPublished: true,
+      personalDataPublished: false,
       rowLevelHistoryPublished: false,
     },
   };

@@ -34,6 +34,12 @@ export const PUBLIC_SITE_STATIC_FILES = Object.freeze([
 ]);
 
 const PUBLIC_DASHBOARD_PATH = 'data/dashboard.json';
+const PUBLICATION_POLICY = Object.freeze({
+  visibility: 'PUBLIC_FUNCTIONAL_SANITIZED',
+  executableRecommendationsPublished: true,
+  personalDataPublished: false,
+  rowLevelHistoryPublished: false,
+});
 const FORBIDDEN_DASHBOARD_KEYS = new Set([
   'audit',
   'database',
@@ -141,11 +147,11 @@ export async function scanPublicSite({
           'Public dashboard ledger must be present and empty.',
         ));
       }
-      if (dashboard?.publication?.visibility !== 'PUBLIC_SANITIZED') {
+      if (!matchesPublicationPolicy(dashboard?.publication)) {
         violations.push(violation(
-          'PUBLICATION_MARKER_MISSING',
+          'PUBLICATION_POLICY_MISMATCH',
           PUBLIC_DASHBOARD_PATH,
-          'Public dashboard must carry the PUBLIC_SANITIZED publication marker.',
+          'Public dashboard must carry the exact sanitized functional publication policy.',
         ));
       }
     } catch (error) {
@@ -160,6 +166,12 @@ export async function scanPublicSite({
     files,
     violations,
   };
+}
+
+function matchesPublicationPolicy(publication) {
+  if (!publication || typeof publication !== 'object') return false;
+  return Object.entries(PUBLICATION_POLICY)
+    .every(([key, expected]) => publication[key] === expected);
 }
 
 async function collectEntries(root, relativeDirectory = '') {
