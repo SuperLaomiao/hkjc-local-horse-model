@@ -11,7 +11,7 @@ describe('external source registry', () => {
   it('registers every approved data, model, and collector donor with provenance policy', () => {
     const ids = EXTERNAL_SOURCE_REGISTRY.map((source) => source.sourceId);
 
-    assert.equal(ids.length, 12);
+    assert.equal(ids.length, 13);
     assert.equal(new Set(ids).size, ids.length);
     assert.deepEqual(validateExternalSourceRegistry(EXTERNAL_SOURCE_REGISTRY), []);
     assert.equal(ids.includes('sleepingarhat-tianxi-database'), true);
@@ -26,6 +26,7 @@ describe('external source registry', () => {
     assert.equal(ids.includes('bobosky-hkjc-api'), true);
     assert.equal(ids.includes('rkwyu-sport-betting-data'), true);
     assert.equal(ids.includes('snookerlivehk-hkjc-analytics'), true);
+    assert.equal(ids.includes('j-csc-hk-horse-racing-data-scraper'), true);
   });
 
   it('fails closed for unknown or restricted licenses', () => {
@@ -65,6 +66,26 @@ describe('external source registry', () => {
     assert.deepEqual(analytics.featureGroups.map((group) => group.timing), ['unsafe', 'unsafe']);
     assert.equal(analytics.allowedUses.includes('clean-room-methodology-reimplementation'), true);
   });
+
+  it('pins j-csc to a clean-room schema audit because the public tree has no license', () => {
+    const source = EXTERNAL_SOURCE_REGISTRY.find((entry) => (
+      entry.sourceId === 'j-csc-hk-horse-racing-data-scraper'
+    ));
+
+    assert.equal(source.licenseStatus, 'unknown');
+    assert.equal(source.codeReuseAllowed, false);
+    assert.equal(source.rawPublicationAllowed, false);
+    assert.equal(source.cachePolicy, 'none');
+    assert(source.allowedUses.includes('clean-room-schema-review'));
+    assert(source.featureGroups.some((group) => (
+      group.featureGroup === 'timestamped-racecard-declarations'
+      && group.timing === 'pre-race-candidate'
+    )));
+    assert(source.featureGroups.some((group) => (
+      group.featureGroup === 'legacy-current-state-without-observed-at'
+      && group.timing === 'unsafe'
+    )));
+  });
 });
 
 describe('external source audit', () => {
@@ -76,15 +97,15 @@ describe('external source audit', () => {
 
     assert.equal(report.policyVersion, 'external-source-policy-v1');
     assert.equal(report.generatedAt, '2026-07-17T00:00:00.000Z');
-    assert.equal(report.summary.sources, 12);
-    assert.equal(report.summary.byLicenseStatus.unknown, 6);
+    assert.equal(report.summary.sources, 13);
+    assert.equal(report.summary.byLicenseStatus.unknown, 7);
     assert.equal(report.summary.byLicenseStatus.restricted, 1);
     assert.equal(report.summary.byLicenseStatus['open-data'], 1);
     assert.equal(report.summary.byLicenseStatus.licensed, 4);
     assert.equal(report.summary.localOnlySources, 3);
     assert.equal(report.summary.modelDonors, 4);
     assert.equal(report.summary.dataDonors, 5);
-    assert.equal(report.summary.collectorDonors, 3);
+    assert.equal(report.summary.collectorDonors, 4);
     assert.equal(report.summary.invalidSources, 0);
     assert.ok(report.summary.featureTiming['pre-race-candidate'] > 0);
     assert.ok(report.summary.featureTiming['post-race'] > 0);

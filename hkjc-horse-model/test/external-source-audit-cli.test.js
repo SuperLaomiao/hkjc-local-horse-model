@@ -24,7 +24,7 @@ describe('external source audit CLI', () => {
       });
 
       assert.equal(result.status, 0, result.stderr || result.stdout);
-      assert.match(result.stdout, /External source audit: 12 sources/);
+      assert.match(result.stdout, /External source audit: 13 sources/);
       assert.match(result.stdout, /3 local-only/);
       const report = JSON.parse(await readFile(outputPath, 'utf8'));
       assert.equal(report.policyVersion, 'external-source-policy-v1');

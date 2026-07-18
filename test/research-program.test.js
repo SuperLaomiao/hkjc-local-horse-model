@@ -110,6 +110,13 @@ describe('research upgrade program', () => {
       && item.status === 'implemented'
       && item.automationExecutable === false
     )));
+    assert(program.followUpActions.some((item) => (
+      item.id === 'j-csc-scraper-schema-audit'
+      && item.status === 'implemented'
+      && item.automationExecutable === false
+      && item.evidence.some((entry) => /source-coverage-audit\.js/.test(entry))
+      && item.remaining.some((entry) => /fixture|HTML|页面/i.test(entry))
+    )));
     assert(program.followUpActions.every((item) => (
       Array.isArray(item.evidence)
       && item.evidence.length > 0
@@ -128,7 +135,7 @@ describe('research upgrade program', () => {
     assert.equal(summary.nextCount > 0, true);
     assert.equal(summary.researchOnlyCount > 0, true);
     assert.equal(summary.followUpCount > 0, true);
-    assert.equal(summary.implementedActionCount, 5);
+    assert.equal(summary.implementedActionCount, 6);
     assert.equal(summary.partialActionCount, 2);
     assert.equal(summary.queuedActionCount, 0);
     assert.equal(summary.researchOnlyActionCount, 1);
