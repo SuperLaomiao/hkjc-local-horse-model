@@ -23,6 +23,44 @@ Reach a tested, leakage-safe recommendation system that combines:
 - comparison against stronger public GitHub ideas before upgrading cash-mode recommendations.
 - Research Lab follow-up action queue, mirrored from `research-program.js`, so dashboard research items and daily continuation tasks stay aligned.
 
+## Approved P0-P4 execution order — 2026-07-18
+
+This sequence overrides the older phase ordering below when the daily continuation run chooses its first unchecked task. Detailed design and implementation steps live in:
+
+- `docs/superpowers/specs/2026-07-18-value-betting-roadmap-design.md`
+- `docs/superpowers/plans/2026-07-18-value-betting-engine.md`
+
+### P0 — No-market probability stack, live collection, and core EV engine
+
+- [ ] Export versioned runner predictions from the LightGBM trainer.
+- [ ] Make LightGBM probability policy and metrics target-aware for `targetWin` and `targetPlace`.
+- [ ] Persist the strict Top-pick-to-PLACE holdout baseline: 564 bets, 304 hits, 53.90% hit rate, HK$4,908.40 return from HK$5,640 stake, -12.97% ROI.
+- [ ] Train no-market CatBoost WIN and PLACE candidates on the existing chronological matrix.
+- [ ] Select sigmoid/isotonic calibration and LightGBM/CatBoost blend weights on validation only; report untouched holdout metrics.
+- [ ] Finish low-frequency T-30/T-10/T-3 WIN/PLA collection reporting and race-day continuation behavior.
+- [ ] Build the core fair-price/required-price/conservative-EV engine with `PLAY`, `WATCH`, `PAPER`, and `NO_BET` states.
+- [ ] Route WIN/PLACE recommendations and executable audit locks through the EV engine; missing or stale prices fail closed.
+- [ ] Produce separate WIN and PLACE promotion reports. Stronger prediction metrics may promote a research champion, but executable mode remains blocked until prospective market evidence exists.
+
+### P1 — Market-aware stack and prospective price validation
+
+- [ ] When chronological T-window coverage is sufficient, train market-aware LightGBM/CatBoost candidates against the P0 no-market stack.
+- [ ] Forecast closing/final dividends from T-30/T-10/T-3 movement and measure forecast error by pool.
+- [ ] Record CLV, price slippage, settlement, drawdown, and prospective paper ROI for every locked recommendation.
+
+### P2 — Portfolio and exotic-pool expansion
+
+- [ ] Add independently calibrated QIN/QPL models and per-pool promotion gates.
+- [ ] Add single-horse exposure, correlated-loss, and bankroll caps before any multi-play executable portfolio.
+
+### P3 — Privacy separation
+
+- [ ] Split public sanitized GitHub Pages artifacts from private/local SQLite, raw data, market snapshots, model artifacts, recommendations, tickets, and personal audits using a publish allowlist and automated privacy scan.
+
+### P4 — UI redesign
+
+- [ ] Redesign the mobile-first interface after P3 around today's status, race-by-race WIN/PLA value, recommendation evidence/rejection reasons, and research/settlement history.
+
 ## Phase A — Race-day live market snapshot collection
 
 Goal: automatically accumulate the missing 2026 live market data that our ROI model needs.
