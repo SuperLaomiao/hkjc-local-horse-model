@@ -47,3 +47,13 @@ export function buildPublicPortfolioOptions(snapshot = {}) {
     remainingDailyBudget: 0,
   };
 }
+
+export function publicationBadge(policy = {}) {
+  if (policy.mode === 'PUBLIC_FUNCTIONAL') {
+    return { label: '公开功能版', tone: 'functional' };
+  }
+  if (policy.mode === 'PRIVATE_LOCAL') {
+    return { label: '本地私有版', tone: 'private' };
+  }
+  return { label: '公开研究版 · NO BET', tone: 'research' };
+}

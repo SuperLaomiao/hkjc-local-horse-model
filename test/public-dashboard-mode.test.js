@@ -4,6 +4,7 @@ import { describe, it } from 'node:test';
 import {
   buildPublicPortfolioOptions,
   dashboardExecutionPolicy,
+  publicationBadge,
 } from '../public-dashboard-mode.js';
 
 describe('public dashboard execution boundary', () => {
@@ -78,5 +79,16 @@ describe('public dashboard execution boundary', () => {
       assert.equal(portfolio.bankroll, 0);
       assert.equal(portfolio.remainingDailyBudget, 0);
     }
+  });
+
+  it('describes functional and research-only publication modes for the UI', () => {
+    assert.deepEqual(publicationBadge({ mode: 'PUBLIC_FUNCTIONAL' }), {
+      label: '公开功能版',
+      tone: 'functional',
+    });
+    assert.deepEqual(publicationBadge({ mode: 'PUBLIC_RESEARCH_ONLY' }), {
+      label: '公开研究版 · NO BET',
+      tone: 'research',
+    });
   });
 });

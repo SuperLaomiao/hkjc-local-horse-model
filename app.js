@@ -17,6 +17,7 @@ import { buildMeetingCountdown } from "./meeting-countdown.js";
 import {
   buildPublicPortfolioOptions,
   dashboardExecutionPolicy,
+  publicationBadge,
 } from "./public-dashboard-mode.js";
 import { buildResearchUpgradeProgram, summarizeResearchUpgradeProgram } from "./research-program.js";
 import {
@@ -146,6 +147,7 @@ function render() {
   const todayStatus = localRaceDayStatus(snapshot);
   const layout = getDashboardLayoutSections({ selectedToolId: uiState.selectedToolId });
   const executionPolicy = dashboardExecutionPolicy(snapshot);
+  const publication = publicationBadge(executionPolicy);
 
   if (!selectedEntry) {
     renderMissingData(new Error("No HKJC local races or race-card forecasts found in dashboard data."));
@@ -160,6 +162,7 @@ function render() {
           <p>香港本地赛马 · 赛前预测 · 赛后复盘 · Rolling ROI</p>
         </div>
         <div class="meta-strip" aria-label="dashboard metadata">
+          <span class="publication-mode-badge is-${escapeHtml(publication.tone)}">${escapeHtml(publication.label)}</span>
           <span>${escapeHtml(snapshot.scope)}</span>
           <span>${formatDateTime(snapshot.generatedAt)}</span>
           <span>${snapshot.summary.racesSettled} settled races</span>
@@ -207,7 +210,7 @@ function render() {
 
 async function ensureResearchReports() {
   if (uiState.researchReports.status !== "idle") return;
-  if (!dashboardExecutionPolicy(uiState.snapshot).allowExecutableRecommendations) {
+  if (!dashboardExecutionPolicy(uiState.snapshot).allowPrivateResearchReports) {
     uiState.researchReports = {
       status: "ready",
       loadedAt: new Date().toISOString(),

@@ -118,6 +118,28 @@ button:disabled {
   background: var(--surface-soft);
 }
 
+.meta-strip .publication-mode-badge {
+  font-weight: 900;
+}
+
+.publication-mode-badge.is-functional {
+  border-color: #86efac;
+  background: #dcfce7;
+  color: #166534;
+}
+
+.publication-mode-badge.is-research {
+  border-color: #fcd34d;
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.publication-mode-badge.is-private {
+  border-color: #93c5fd;
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
 .dashboard {
   display: grid;
   grid-template-columns: 250px minmax(0, 1fr) 390px;
