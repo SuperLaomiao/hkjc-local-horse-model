@@ -44,7 +44,7 @@ This sequence overrides the older phase ordering below when the daily continuati
 
 ### P1 — Market-aware stack and prospective price validation
 
-- [ ] When chronological T-window coverage is sufficient, train market-aware LightGBM/CatBoost candidates against the P0 no-market stack.
+- [x] When chronological T-window coverage is sufficient, train market-aware LightGBM/CatBoost candidates against the P0 no-market stack.
 - [ ] Forecast closing/final dividends from T-30/T-10/T-3 movement and measure forecast error by pool.
 - [ ] Record CLV, price slippage, settlement, drawdown, and prospective paper ROI for every locked recommendation.
 
@@ -164,7 +164,7 @@ Goal: reproduce the strongest public GitHub ideas on our own SQLite history befo
     - Does not promote the strategy unless validation and holdout both beat current baseline with acceptable drawdown.
   - Partial delivery: `hkjc:benchmark-exotics` now replays fixed top-2 and top-3-box QIN/QPL lines against official SQLite dividends, skips missing pools, and reports ROI, strike rate, drawdown, and losing runs. The current holdout strategies are negative ROI and remain `NO-BET`; profit-concentration and pre-race cold-odds sensitivity stay queued because validation/holdout currently have no verified T-30 odds coverage.
 
-- [ ] Reproduce jerrydaphantom CatBoost/LightGBM market-aware calibration benchmark. Research Lab action: `jerrydaphantom-catboost-market-aware` / P0.
+- [x] Reproduce jerrydaphantom CatBoost/LightGBM market-aware calibration benchmark. Research Lab action: `jerrydaphantom-catboost-market-aware` / P0.
   - Suggested files:
     - Create `hkjc-horse-model/python/train_market_aware_tree.py`
     - Create `hkjc-horse-model/python/calibrate_tree_model.py`
@@ -174,6 +174,7 @@ Goal: reproduce the strongest public GitHub ideas on our own SQLite history befo
     - Compares market-free and market-aware versions on log loss, Brier, top-pick win rate, winner-in-top3, and calibration buckets.
     - Separates predictive quality from betting ROI.
     - Evaluates EV threshold and probability-gap threshold grids with sample-count guardrails.
+  - Delivered by the T-10 market cohort, `market-aware-t10` LightGBM/CatBoost feature policy, validation-only probability stack, `hkjc:market-value-grid`, and `hkjc:market-aware-comparison`. The untouched 230-race holdout improves materially over the identical-cohort no-market baselines, but every historical value candidate fails at least one ROI, concentration, monthly-stability, sample, or drawdown gate; cash remains `NO_BET`.
 
 - [ ] Add SpeedPRO-style feature importer and mapper. Research Lab action: `speedpro-feature-importer` / P1.
   - Suggested files:
@@ -287,7 +288,7 @@ This queue is mirrored in `research-program.js` and surfaced in the dashboard Re
 | P0 | `benchmark-registry-refresh` | Phase B | queued, executable | Compare our baseline against stronger public ideas. |
 | P0 | `tier1-external-benchmark-registry` | Phase B | queued, executable | Surface public benchmark metrics, our gap, and promotion gates. |
 | P0 | `catowabisabi-lgb-no-odds-quinella` | Phase B | queued, executable | Reproduce no-odds LightGBM QIN/QPL edge on our SQLite data. |
-| P0 | `jerrydaphantom-catboost-market-aware` | Phase B | queued, executable | Reproduce CatBoost/LightGBM market-aware calibration and EV grids. |
+| P0 | `jerrydaphantom-catboost-market-aware` | Phase B | implemented, historical value gate NO-GO | Reproduce CatBoost/LightGBM market-aware calibration and EV grids. |
 | P1 | `speedpro-feature-importer` | Phase B | queued, executable | Add sectional/pace/fitness enrichment when available. |
 | P1 | `lightgbm-no-market-benchmark` | Phase B | implemented, local benchmark trained | Build a non-market tree-model benchmark before live odds are complete. |
 | P1 | `tianxi-feature-backfill` | Phase B | queued, executable | Audit and design local-only derived feature imports. |
@@ -298,6 +299,7 @@ This queue is mirrored in `research-program.js` and surfaced in the dashboard Re
 
 ## Latest continuation note
 
+- 2026-07-18: Completed the identical-cohort P1 T-10 model comparison on 1,460 races / 17,844 runners with 100% runner WIN+PLACE odds coverage. Market-aware CatBoost is the research probability champion for both pools on the untouched 230-race holdout: WIN log loss 0.245335 / Brier 0.068501 / Top-pick win 30.43%, improving the best no-market candidate by 0.017168 log loss and 8.70 percentage points Top-pick; PLACE log loss 0.484970 / Brier 0.159901 / Top-pick PLACE 57.39%, improving by 0.038559 and 11.74 points. Calibration/blending did not beat the strongest single model. Validation-selected T-10 EV/gap grids were settled with official dividends, one bet per race. All eight direct value candidates fail at least one ROI, sample, concentration, monthly stability, or drawdown gate. The superficially positive no-market LightGBM WIN holdout ROI +26.04% is rejected because one return contributes 32.45%, validation concentration is 34.14%, monthly results are unstable, and losing runs reach 99 validation / 54 holdout. `market-aware-comparison-v1` therefore records value `NO_GO`, prospective promotion `BLOCKED_DATA`, and cash `NO_BET`. Next P1 task: forecast T-10-to-final WIN/PLACE dividends and measure price error/CLV without using final prices as prediction features.
 - 2026-07-18: Added `market-aware-research-gate-v1` to avoid the impossible requirement that 2016–2018 external odds populate the fixed 2024–2025 validation split. The gate creates a separate date-safe market cohort and requires complete WIN/PLACE coverage in train, validation, and untouched holdout before research training. The real T-10 audit passes research-only mode with 1,460 races: 1,008 train (through 2017-12-27), 222 validation (2018-01-01 to 2018-03-25), and 230 holdout (2018-03-28 to 2018-06-27), all at 100% race-level WIN/PLACE coverage. Cash mode remains `NO_BET`; 2026 prospective locked decisions and settlements remain a separate blocked gate. Next P1 step: build the identical-cohort no-market versus market-aware model matrix and train comparison candidates.
 - 2026-07-18: Completed P0 with separate fail-closed WIN/PLACE promotion reports. The report compares LightGBM, CatBoost, and the validation-selected calibrated stack using untouched-holdout log loss/Brier, requires prediction lineage and benchmark sample/drawdown fields, and never conflates a research champion with cash authorization. Current WIN and PLACE statuses remain `NO_BET`: blind Top-pick-to-PLACE ROI is negative, WIN-specific ROI evidence is absent, and there is no prospective locked market/settlement sample. Next phase is P1 only after the prospective T-window coverage gate passes.
 - 2026-07-18: Completed pure `value-betting-v1` pricing decisions. It keeps full precision for status gates and returns rounded fair/required dividends, central and conservative EV, price edges, machine reason codes, and Chinese reasons. Missing/stale/future prices and non-selling pools fail closed to `NO_BET`; possible but insufficient edges are `WATCH`; unpromoted probabilities are `PAPER`; only fresh selling prices above the conservative safety-buffer requirement become `PLAY`. Next P0 task: remove no-market cash fallbacks and persist full value/model/market lineage in recommendation audits.
