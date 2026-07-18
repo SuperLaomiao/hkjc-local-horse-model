@@ -33,4 +33,17 @@ describe('public Pages privacy workflow', () => {
     assert.match(gitignore, /^data\/dashboard-history\.json$/m);
     assert.match(gitignore, /^data\/latest-recommendation-audit\.json$/m);
   });
+
+  it('keeps the tracked public snapshot functional and sanitized', async () => {
+    const dashboard = JSON.parse(await readFile(
+      path.join(projectRoot, 'data', 'dashboard.json'),
+      'utf8',
+    ));
+
+    assert.equal(dashboard.publication.visibility, 'PUBLIC_FUNCTIONAL_SANITIZED');
+    assert.equal(dashboard.publication.executableRecommendationsPublished, true);
+    assert.equal(dashboard.publication.personalDataPublished, false);
+    assert.equal(dashboard.publication.rowLevelHistoryPublished, false);
+    assert.deepEqual(dashboard.ledger, []);
+  });
 });

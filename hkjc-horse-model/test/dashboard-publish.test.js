@@ -86,7 +86,10 @@ describe('dashboard publishing split', () => {
     assert.equal(publicSnapshot.latestSettlement.recommendedHorseName, undefined);
     assert.equal(publicSnapshot.assumptions.stakePolicy, undefined);
     assert.equal(publicSnapshot.dataSource.database, undefined);
-    assert.equal(publicSnapshot.publication.visibility, 'PUBLIC_SANITIZED');
+    assert.equal(publicSnapshot.publication.visibility, 'PUBLIC_FUNCTIONAL_SANITIZED');
+    assert.equal(publicSnapshot.publication.executableRecommendationsPublished, true);
+    assert.equal(publicSnapshot.publication.personalDataPublished, false);
+    assert.equal(publicSnapshot.publication.rowLevelHistoryPublished, false);
 
     assert.deepEqual(historySnapshot.ledger.map((entry) => entry.raceId), [
       'race-1',
