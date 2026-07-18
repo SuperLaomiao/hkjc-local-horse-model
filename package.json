@@ -12,6 +12,7 @@
     "hkjc:training-dataset": "node hkjc-horse-model/src/cli.js training-dataset",
     "hkjc:training-matrix": "node hkjc-horse-model/src/cli.js training-matrix",
     "hkjc:train-tree-model": "${PYTHON:-python3} hkjc-horse-model/python/train_tree_model.py",
+    "hkjc:benchmark-place": "${PYTHON:-python3} hkjc-horse-model/python/benchmark_place_strategy.py",
     "hkjc:benchmark-exotics": "${PYTHON:-python3} hkjc-horse-model/python/benchmark_exotic_strategy.py",
     "hkjc:model-leaderboard": "node hkjc-horse-model/src/cli.js model-leaderboard",
     "hkjc:external-model-comparison": "node hkjc-horse-model/src/cli.js external-model-comparison",
