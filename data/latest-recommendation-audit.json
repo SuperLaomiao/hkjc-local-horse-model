@@ -1,14 +1,20 @@
 {
   "summary": {
-    "runs": 1,
-    "settledRuns": 1,
+    "runs": 0,
+    "recordedRuns": 1,
+    "eligibleRuns": 0,
+    "excludedRuns": 1,
+    "exclusionReasons": {
+      "POST_RACE": 1
+    },
+    "settledRuns": 0,
     "openRuns": 0,
-    "totalStake": 10,
+    "totalStake": 0,
     "totalReturn": 0,
-    "profit": -10,
-    "roi": -1,
+    "profit": 0,
+    "roi": null,
     "hitLines": 0,
-    "missLines": 1,
+    "missLines": 0,
     "passLines": 0
   },
   "runs": [
@@ -18,7 +24,7 @@
       "date": "2026-07-15",
       "racecourse": "HV",
       "raceNo": 9,
-      "generatedAt": "2026-07-17T03:58:36.875Z",
+      "generatedAt": "2026-07-18T03:52:31.424Z",
       "modelVersion": "hkjc-local-horse-model",
       "strategyVersion": "ev-portfolio-v1",
       "bankroll": 200,
@@ -65,7 +71,7 @@
         "raceNo": 9,
         "date": "2026-07-15",
         "racecourse": "HV",
-        "generatedAt": "2026-07-17T03:58:36.875Z",
+        "generatedAt": "2026-07-18T03:52:31.424Z",
         "modelVersion": "hkjc-local-horse-model",
         "strategyVersion": "ev-portfolio-v1",
         "bankroll": 200,
@@ -108,10 +114,12 @@
           "upcomingEntries": 0
         }
       },
-      "status": "SETTLED",
-      "stake": 10,
+      "auditDecision": "EXCLUDED",
+      "exclusionReason": "POST_RACE",
+      "status": "EXCLUDED",
+      "stake": 0,
       "returned": 0,
-      "profit": -10,
+      "profit": 0,
       "lines": [
         {
           "mode": "execute",
@@ -140,15 +148,10 @@
             "马匹退出、骑师/场地出现重大变化，或赔率跌穿最低线，直接 PASS。",
             "最终 15 分钟内页面没有刷新成功，直接 PASS。"
           ],
-          "status": "MISS",
-          "poolKey": "win",
-          "combination": [
-            1
-          ],
-          "stake": 10,
-          "dividendPer10": null,
+          "status": "EXCLUDED",
+          "stake": 0,
           "returned": 0,
-          "profit": -10
+          "profit": 0
         }
       ]
     }
