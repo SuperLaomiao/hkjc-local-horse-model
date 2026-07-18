@@ -16,6 +16,7 @@
     "hkjc:probability-stack": "${PYTHON:-python3} hkjc-horse-model/python/build_probability_stack.py",
     "hkjc:benchmark-place": "${PYTHON:-python3} hkjc-horse-model/python/benchmark_place_strategy.py",
     "hkjc:value-model-report": "${PYTHON:-python3} hkjc-horse-model/python/build_value_model_report.py",
+    "hkjc:market-aware-gate": "${PYTHON:-python3} hkjc-horse-model/python/train_market_aware_stack.py",
     "hkjc:benchmark-exotics": "${PYTHON:-python3} hkjc-horse-model/python/benchmark_exotic_strategy.py",
     "hkjc:model-leaderboard": "node hkjc-horse-model/src/cli.js model-leaderboard",
     "hkjc:external-model-comparison": "node hkjc-horse-model/src/cli.js external-model-comparison",
