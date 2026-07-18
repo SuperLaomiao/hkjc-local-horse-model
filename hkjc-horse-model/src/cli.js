@@ -70,6 +70,7 @@ const projectRoot = path.resolve(dirname, '..');
 const rawDataDir = path.join(projectRoot, 'data', 'raw');
 const upcomingDataDir = path.join(projectRoot, 'data', 'upcoming');
 const processedDataDir = path.join(projectRoot, 'data', 'processed');
+const privateDataDir = path.join(projectRoot, 'data', 'private');
 const sqliteDbPath = path.join(projectRoot, 'data', 'hkjc.sqlite');
 
 async function main(argv) {
@@ -261,7 +262,7 @@ async function autoRunCommand(args) {
 
   await recommendationAuditCommand({
     ...args,
-    output: args.auditOutput ?? path.join(path.dirname(path.resolve(dashboardOutput)), 'latest-recommendation-audit.json'),
+    output: args.auditOutput ?? path.join(privateDataDir, 'latest-recommendation-audit.json'),
   });
 
   console.log('Auto run complete');
@@ -295,10 +296,11 @@ async function dashboardDbCommand(args) {
   });
 
   const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'dashboard.json'));
-  const historyOutputPath = path.resolve(args.historyOutput ?? path.join(path.dirname(outputPath), 'dashboard-history.json'));
+  const historyOutputPath = path.resolve(
+    args.privateHistoryOutput ?? args.historyOutput ?? path.join(privateDataDir, 'dashboard-history.json'),
+  );
   const { publicSnapshot, historySnapshot } = splitDashboardForPublishing(snapshot, {
-    embeddedLedgerLimit: args.embeddedLedgerLimit,
-    historyUrl: path.basename(historyOutputPath),
+    embeddedPerformanceMeetingLimit: args.embeddedPerformanceMeetingLimit,
   });
 
   await mkdir(path.dirname(outputPath), { recursive: true });
@@ -1255,9 +1257,9 @@ Commands:
   fetch      --date 2026-01-04 --course ST --races 1-11
   fetch-racecard --date 2026-06-13 --course ST --races 1-11
   refresh    --historyDays 14 --futureDays 21 --bankroll 200 --minEdge 0 --minProbability 0.15
-  auto-run   --input hkjc-horse-model/data/raw --db hkjc-horse-model/data/hkjc.sqlite --output data/dashboard.json --auditOutput data/latest-recommendation-audit.json
+  auto-run   --input hkjc-horse-model/data/raw --db hkjc-horse-model/data/hkjc.sqlite --output data/dashboard.json --auditOutput hkjc-horse-model/data/private/latest-recommendation-audit.json
   sync-db    --input hkjc-horse-model/data/raw --upcoming hkjc-horse-model/data/upcoming --db hkjc-horse-model/data/hkjc.sqlite
-  dashboard-db --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/dashboard.json --historyOutput hkjc-horse-model/data/processed/dashboard-history.json
+  dashboard-db --db hkjc-horse-model/data/hkjc.sqlite --output data/dashboard.json --privateHistoryOutput hkjc-horse-model/data/private/dashboard-history.json
   training-dataset --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/training-dataset.json --tianxiRoot /path/to/tianxi-database
   training-matrix --input hkjc-horse-model/data/processed/training-dataset.json --output hkjc-horse-model/data/processed/training-matrix.jsonl [--format jsonl|csv]
   model-leaderboard --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/model-leaderboard.json

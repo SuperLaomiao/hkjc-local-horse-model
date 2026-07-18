@@ -1,4 +1,4 @@
-const CACHE_NAME = "hkjc-model-v11";
+const CACHE_NAME = "hkjc-model-v12-public-boundary";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -9,6 +9,8 @@ const APP_SHELL = [
   "./adaptive-staking.js",
   "./meeting-countdown.js",
   "./multi-play-portfolio.js",
+  "./public-dashboard-mode.js",
+  "./hkjc-horse-model/src/value-betting-engine.js",
   "./research-program.js",
   "./bet-strategy.js",
   "./betting-products.js",

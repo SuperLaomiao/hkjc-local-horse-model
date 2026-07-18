@@ -165,6 +165,8 @@ describe('local SQLite race store', () => {
         dashboardPath,
         '--bankroll',
         '200',
+        '--privateHistoryOutput',
+        dashboardHistoryPath,
       ], {
         cwd: path.resolve(import.meta.dirname, '..', '..'),
         encoding: 'utf8',
@@ -175,17 +177,20 @@ describe('local SQLite race store', () => {
       const dashboard = JSON.parse(await readFile(dashboardPath, 'utf8'));
       assert.equal(dashboard.summary.racesSettled, 1);
       assert.equal(dashboard.scope, 'HKJC local races only');
-      assert.equal(dashboard.dataSource.source, 'sqlite');
-      assert.equal(dashboard.dataSource.database, 'hkjc.sqlite');
-      assert.equal(dashboard.dataSource.database.includes(tempDir), false);
-      assert.equal(dashboard.history.ledgerUrl, 'dashboard-history.json');
+      assert.equal(dashboard.dataSource.source, 'sanitized-public');
+      assert.equal(dashboard.dataSource.database, undefined);
+      assert.equal(dashboard.history.ledgerUrl, undefined);
       assert.equal(dashboard.history.totalLedgerEntries, 1);
-      assert.equal(dashboard.history.embeddedLedgerEntries, 1);
-      assert.equal(dashboard.history.isLedgerTruncated, false);
+      assert.equal(dashboard.history.embeddedLedgerEntries, 0);
+      assert.equal(dashboard.history.isLedgerTruncated, true);
+      assert.equal(dashboard.ledger.length, 0);
+      assert.equal(dashboard.latestForecast.recommendation, undefined);
+      assert.equal(dashboard.latestForecast.finalBetPlan, undefined);
       const dashboardHistory = JSON.parse(await readFile(dashboardHistoryPath, 'utf8'));
       assert.equal(dashboardHistory.summary.racesSettled, 1);
       assert.equal(dashboardHistory.dataSource.database, 'hkjc.sqlite');
       assert.equal(dashboardHistory.ledger.length, 1);
+      assert.equal(dashboardHistory.publication.visibility, 'PRIVATE_LOCAL');
       assert.equal(getDatabaseStats(dbPath).recommendationRuns, 1);
       const runs = sqliteStore.loadRecommendationRuns({ dbPath });
       assert.equal(runs[0].raceId, dashboard.latestForecast.raceId);
@@ -1103,6 +1108,8 @@ describe('local SQLite race store', () => {
       const rawDir = path.join(tempDir, 'raw');
       const dbPath = path.join(tempDir, 'hkjc.sqlite');
       const dashboardPath = path.join(tempDir, 'dashboard.json');
+      const auditPath = path.join(tempDir, 'private', 'latest-recommendation-audit.json');
+      const historyPath = path.join(tempDir, 'private', 'dashboard-history.json');
       await mkdir(rawDir, { recursive: true });
       await writeFile(path.join(rawDir, '2026-07-04-ST.json'), JSON.stringify([settledRace()], null, 2), 'utf8');
 
@@ -1115,6 +1122,10 @@ describe('local SQLite race store', () => {
         dbPath,
         '--output',
         dashboardPath,
+        '--auditOutput',
+        auditPath,
+        '--privateHistoryOutput',
+        historyPath,
         '--skipUpcoming',
         '--bankroll',
         '200',
@@ -1129,7 +1140,10 @@ describe('local SQLite race store', () => {
       assert.equal(getDatabaseStats(dbPath).races, 1);
       const dashboard = JSON.parse(await readFile(dashboardPath, 'utf8'));
       assert.equal(dashboard.summary.racesSettled, 1);
-      assert.equal(dashboard.dataSource.source, 'sqlite');
+      assert.equal(dashboard.dataSource.source, 'sanitized-public');
+      assert.equal(dashboard.latestForecast.recommendation, undefined);
+      assert.equal(JSON.parse(await readFile(auditPath, 'utf8')).summary.recordedRuns, 1);
+      assert.equal(JSON.parse(await readFile(historyPath, 'utf8')).publication.visibility, 'PRIVATE_LOCAL');
     } finally {
       await rm(tempDir, { recursive: true, force: true });
     }
