@@ -314,6 +314,23 @@ const FOLLOW_UP_ACTIONS = [
     evidence: ['Research Lab registry 已记录 late-money drift 与 final-dividend bias 风险。'],
     remaining: ['补研究笔记与小样本模拟；在数据和 promotion gate 完成前保持 research-only。'],
   },
+  {
+    id: 'j-csc-scraper-schema-audit',
+    priority: 'P1',
+    status: 'implemented',
+    automationPhase: 'Phase B',
+    title: '审计 j-csc HKJC 爬虫字段与页面覆盖',
+    sourceRefs: ['j-csc/HK-Horse-Racing-Data-Scraper', 'official HKJC racecard and veterinary pages'],
+    action: '区分代码证实与 README 声称的页面覆盖，按赛前、赛后、不安全和不可用分类字段，并设计独立 parser fixtures。',
+    expectedOutcome: '后续官方解析器补字段时有可测试的覆盖清单，不复制无许可证代码，也不把赛后字段泄漏进训练。',
+    automationExecutable: false,
+    evidence: [
+      'hkjc-horse-model/src/source-coverage-audit.js + source-coverage-audit tests',
+      'docs/research/j-csc-scraper-schema-audit.md：固定 commit、许可证边界、字段分类和 synthetic fixture 清单',
+      'external-source-registry 将 j-csc 固定为 unknown-license clean-room schema reference，禁止代码和原始数据复用',
+    ],
+    remaining: ['后续只用自建最小 HTML fixture 实现 racecard/veterinary parser；真实页面需保留 observed_at、checksum、meeting identity 和 post-time guard。'],
+  },
 ];
 
 const EXTERNAL_BENCHMARK_REGISTRY = [

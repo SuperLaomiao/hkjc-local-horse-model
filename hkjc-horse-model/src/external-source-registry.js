@@ -159,6 +159,22 @@ export const EXTERNAL_SOURCE_REGISTRY = Object.freeze([
       feature('repository-current-speedpro-captures', 'unsafe', 'Do not import: no historical data is shipped and current responses are not bound safely to a requested meeting.'),
     ],
   }),
+  source({
+    sourceId: 'j-csc-hk-horse-racing-data-scraper',
+    label: 'j-csc HKJC scraper schema reference',
+    canonicalUrl: 'https://github.com/j-csc/HK-Horse-Racing-Data-Scraper',
+    role: 'collector',
+    licenseStatus: 'unknown',
+    license: null,
+    allowedUses: ['collector-pattern-review', 'clean-room-schema-review'],
+    cachePolicy: 'none',
+    featureGroups: [
+      feature('timestamped-racecard-declarations', 'pre-race-candidate', 'Reimplement independently and require observed_at before the target race cutoff.'),
+      feature('timestamped-prior-veterinary-and-track-readings', 'pre-race-candidate', 'Use only records actually published or observed before the target race cutoff.'),
+      feature('legacy-result-page-fields', 'post-race', 'Same-race placing, running position, finish time and undated public odds are labels only.'),
+      feature('legacy-current-state-without-observed-at', 'unsafe', 'Current ratings, cumulative stakes and veterinary dates cannot backfill old races without an as-of timestamp.'),
+    ],
+  }),
 ]);
 
 export function validateExternalSourceRegistry(registry = EXTERNAL_SOURCE_REGISTRY) {
