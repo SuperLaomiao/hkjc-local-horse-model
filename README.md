@@ -115,6 +115,15 @@ excludes target-race/future rows:
 npm run hkjc:training-dataset -- --db hkjc-horse-model/data/hkjc.sqlite --tianxiRoot /path/to/tianxi-database --output hkjc-horse-model/data/processed/training-dataset.json
 ```
 
+To add local-only SpeedPRO energy, fitness, prior pace, sectional, incident, and
+health aggregates, add `--speedproRoot`. The importer requires a source capture
+timestamp before post time, joins by HKJC horse code, excludes current/future
+form rows, and never exports raw comments:
+
+```bash
+npm run hkjc:training-dataset -- --db hkjc-horse-model/data/hkjc.sqlite --speedproRoot /path/to/tianxi-database --output hkjc-horse-model/data/processed/training-dataset.json
+```
+
 The generated training matrix remains local and ignored by Git. Only compact
 coverage metadata is suitable for publication.
 

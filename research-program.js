@@ -145,9 +145,9 @@ const ALGORITHM_BORROWINGS = [
   },
   {
     concept: 'SpeedPRO sectional / pace / fitness 特征',
-    status: 'next',
+    status: 'active',
     userImpact: '模型能解释步速、末段、健康记录和事件评论，而不是只靠历史名次和骑练统计。',
-    nextStep: '用 neigh/SpeedPRO JSON 设计无泄漏的 runner prior-run 特征导入器。',
+    nextStep: '本地 optional importer 已覆盖当前 5 个 meeting；继续回补有可信赛前时间戳的历史快照，再做同 cohort holdout 对比。',
   },
   {
     concept: 'NO-BET default + Closing Line Value 守门',
@@ -227,15 +227,19 @@ const FOLLOW_UP_ACTIONS = [
   {
     id: 'speedpro-feature-importer',
     priority: 'P1',
-    status: 'queued',
+    status: 'partial',
     automationPhase: 'Phase B',
     title: '设计 SpeedPRO sectional/pace/fitness 特征导入',
-    sourceRefs: ['neigh'],
+    sourceRefs: ['neigh', 'tianxi-database'],
     action: '先做 schema 和无泄漏规则，再导入当前 meeting SpeedPRO，历史回补另列任务。',
     expectedOutcome: '基础模型能学习步速、末段、fitness、incident/comments 的滞后信号。',
     automationExecutable: true,
-    evidence: ['docs/research/tianxi-speedpro-local-import-plan.md 已定义 schema、时点和无泄漏边界。'],
-    remaining: ['实现 optional importer、覆盖率报告和有/无 SpeedPRO 的同 cohort holdout 对比。'],
+    evidence: [
+      'hkjc-horse-model/src/speedpro-feature-importer.js + CLI optional --speedproRoot wiring',
+      '真实本地缓存抽样：2026-07-01 至 2026-07-15 共 5 个 meeting、637/637 runner rows 可用',
+      'fixture tests 覆盖赛前快照、当前场排除、派生 pace/sectional/fitness/incident/health 特征',
+    ],
+    remaining: ['回补有可信赛前时间戳的 historical SpeedPRO 快照，并完成有/无 SpeedPRO 的同 cohort holdout 对比。'],
   },
   {
     id: 'no-bet-clv-gate',

@@ -341,6 +341,60 @@ describe('local SQLite race store', () => {
     }
   });
 
+  it('exports leakage-safe SpeedPRO features from an explicitly configured local cache', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-sqlite-'));
+    try {
+      const rawDir = path.join(tempDir, 'raw');
+      const dbPath = path.join(tempDir, 'hkjc.sqlite');
+      const outputPath = path.join(tempDir, 'training-dataset.json');
+      const speedproRoot = path.join(tempDir, 'tianxi-database');
+      const speedproDir = path.join(speedproRoot, 'speedpro', 'data');
+      await mkdir(rawDir, { recursive: true });
+      await mkdir(speedproDir, { recursive: true });
+      await writeFile(path.join(rawDir, '2026-07-04-ST.json'), JSON.stringify([settledRace()], null, 2), 'utf8');
+      await writeFile(
+        path.join(speedproDir, '2026-07-04_ST.json'),
+        JSON.stringify(speedproMeetingFixture(), null, 2),
+        'utf8',
+      );
+      syncRaceFilesToDatabase({ dbPath, inputPath: rawDir, sourceKind: 'raw' });
+
+      const result = spawnSync(process.execPath, [
+        'hkjc-horse-model/src/cli.js',
+        'training-dataset',
+        '--db',
+        dbPath,
+        '--speedproRoot',
+        speedproRoot,
+        '--output',
+        outputPath,
+      ], {
+        cwd: path.resolve(import.meta.dirname, '..', '..'),
+        encoding: 'utf8',
+      });
+
+      assert.equal(result.status, 0, result.stderr || result.stdout);
+      assert.match(result.stdout, /SpeedPRO coverage: 1\/3 runner rows/);
+      const payload = JSON.parse(await readFile(outputPath, 'utf8'));
+      const winnerRow = payload.rows.find((row) => row.horseNo === 2);
+      assert.equal(winnerRow.features.speedproAvailable, 1);
+      assert.equal(winnerRow.features.speedproFitnessRating, 3);
+      assert.equal(winnerRow.features.speedproProjectedEnergy, 91);
+      assert.equal(winnerRow.features.speedproPriorRunCount, 2);
+      assert.equal(winnerRow.features.speedproRecentEnergyAverage3, 84);
+      assert.equal(winnerRow.features.speedproRecentFastPaceRate3, 0.5);
+      assert.equal(winnerRow.features.speedproPriorIncidentRate5, 0.5);
+      assert.equal(winnerRow.features.speedproPriorHealthIssueRate5, 0.5);
+      assert.equal(winnerRow.features.speedproRecentFinalSectionalAverage3, 23.75);
+      assert.equal(payload.externalFeatures.speedpro.availableFeatureRows, 1);
+      assert.equal(payload.externalFeatures.speedpro.excludedCurrentOrFutureFormRows, 1);
+      assert.equal(JSON.stringify(payload.externalFeatures).includes(tempDir), false);
+      assert.equal(JSON.stringify(winnerRow.features).includes('current-race result must not leak'), false);
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
   it('exports a model leaderboard from settled SQLite races', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-sqlite-'));
     try {
@@ -1274,6 +1328,71 @@ function upcomingRace() {
       runner({ placing: null, horseNo: 2, horseId: 'HK_2025_M002', horseName: 'SECOND START', winOdds: null }),
     ],
     source: { url: 'https://racing.hkjc.com/example/racecard' },
+  };
+}
+
+function speedproMeetingFixture() {
+  return {
+    racedate: '2026-07-04',
+    venue: 'ST',
+    source: 'hkjc-speedpro',
+    scraped_at: '2026-07-04T07:00:00.000Z',
+    lastupdatetime: '2026-07-04 02:55 PM',
+    races: [{
+      raceno: 1,
+      raceinfo_eng: {
+        Date: '04/07/2026',
+        RaceNo: 1,
+        Racecourse: 'Sha Tin',
+        Distance: '1200m',
+        PostTime: '4:00 PM',
+      },
+      energy: [{
+        energyrequired: '93',
+        fitnessrating: '3',
+        speedproenergy: '91',
+        speedproenergydifference: '-2',
+        runnernumber: '2',
+        brandno: 'L245',
+        lastrun: { energy: '86', distance: '1200', racecourse: 'ST' },
+        bestlast12months: { energy: '94', distance: '1200', racecourse: 'ST' },
+        bestatdistance: { energy: '92', distance: '1200', racecourse: 'ST' },
+      }],
+      formguide: [{
+        runnerno: '2',
+        brandno: 'L245',
+        comments_eng: 'current-race result must not leak',
+        runnerrecords: [
+          {
+            racedate: '01/07/2026',
+            energy: '88',
+            pace_eng: 'Fast;',
+            incident_eng: 'Bumped at the start.',
+            healthissue_eng: '',
+            dist: '1200',
+            sectional_times: [{ Key: '24.00' }, { Key: '23.50' }],
+          },
+          {
+            racedate: '20/06/2026',
+            energy: '80',
+            pace_eng: 'Slow;',
+            incident_eng: '',
+            healthissue_eng: 'Irregular heart rhythm.',
+            dist: '1400',
+            sectional_times: [{ Key: '24.50' }, { Key: '24.00' }],
+          },
+          {
+            racedate: '04/07/2026',
+            energy: '99',
+            pace_eng: 'Very fast;',
+            incident_eng: 'current-race result must not leak',
+            healthissue_eng: 'current-race result must not leak',
+            dist: '1200',
+            sectional_times: [{ Key: '20.00' }],
+          },
+        ],
+      }],
+    }],
   };
 }
 

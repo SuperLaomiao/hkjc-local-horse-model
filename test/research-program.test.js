@@ -77,7 +77,13 @@ describe('research upgrade program', () => {
       item.id === 'benchmark-registry-refresh'
       && item.status === 'implemented'
     )));
-    assert(program.followUpActions.some((item) => item.id === 'speedpro-feature-importer' && item.status === 'queued'));
+    assert(program.followUpActions.some((item) => (
+      item.id === 'speedpro-feature-importer'
+      && item.status === 'partial'
+      && item.sourceRefs.includes('tianxi-database')
+      && item.evidence.some((entry) => /speedpro-feature-importer\.js/.test(entry))
+      && item.remaining.some((entry) => /historical|历史|cohort|回补/i.test(entry))
+    )));
     assert(program.followUpActions.some((item) => (
       item.id === 'no-bet-clv-gate'
       && item.status === 'partial'
@@ -107,8 +113,8 @@ describe('research upgrade program', () => {
     assert.equal(summary.researchOnlyCount > 0, true);
     assert.equal(summary.followUpCount > 0, true);
     assert.equal(summary.implementedActionCount, 4);
-    assert.equal(summary.partialActionCount, 1);
-    assert.equal(summary.queuedActionCount, 2);
+    assert.equal(summary.partialActionCount, 2);
+    assert.equal(summary.queuedActionCount, 1);
     assert.equal(summary.researchOnlyActionCount, 1);
     assert.equal(summary.automationReadyCount > 0, true);
     assert.equal(summary.externalBenchmarkCount >= 7, true);
