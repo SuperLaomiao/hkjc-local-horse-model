@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Train leakage-safe no-market CatBoost WIN or PLACE runner models."""
+"""Train leakage-safe CatBoost WIN or PLACE runner models."""
 
 import argparse
 import importlib
@@ -14,6 +14,7 @@ from train_tree_model import (
     METADATA_COLUMNS,
     PROBABILITY_EPSILON,
     SPLITS,
+    SUPPORTED_MODES,
     _as_float,
     _is_missing,
     _label_value,
@@ -80,7 +81,10 @@ def run_training(
     parameters=None,
     predictions_output_path=None,
 ):
-    """Fit CatBoost without market fields and write versioned local artifacts."""
+    """Fit CatBoost under a decision-time feature policy and write artifacts."""
+    if mode not in SUPPORTED_MODES:
+        raise ValueError(f"Unsupported mode: {mode}; choose from {', '.join(SUPPORTED_MODES)}")
+    model_id = f"catboost-{mode}-v1"
     pandas_module, numpy_module, _sklearn_module, catboost_module = _require_catboost_dependencies()
     rows = load_matrix_rows(input_path, pandas_module)
     _validate_rows(rows, target)
@@ -186,8 +190,8 @@ def run_training(
     model.save_model(str(model_path))
 
     manifest = {
-        "version": MODEL_ID,
-        "modelId": MODEL_ID,
+        "version": model_id,
+        "modelId": model_id,
         "mode": mode,
         "target": target,
         "metadataColumns": list(METADATA_COLUMNS),
@@ -204,8 +208,8 @@ def run_training(
         prediction_path.parent.mkdir(parents=True, exist_ok=True)
         prediction_rows = [
             {
-                "version": MODEL_ID,
-                "modelId": MODEL_ID,
+                "version": model_id,
+                "modelId": model_id,
                 "target": target,
                 "raceId": _python_scalar(row.get("raceId")),
                 "date": _python_scalar(row.get("date")),
@@ -225,8 +229,8 @@ def run_training(
         )
 
     report = {
-        "version": MODEL_ID,
-        "modelId": MODEL_ID,
+        "version": model_id,
+        "modelId": model_id,
         "generatedAt": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "input": {
             "name": Path(input_path).name,
@@ -311,12 +315,12 @@ def _dependency_versions():
 
 
 def build_parser():
-    parser = argparse.ArgumentParser(description="Train the local CatBoost no-market runner model.")
+    parser = argparse.ArgumentParser(description="Train a leakage-safe local CatBoost runner model.")
     parser.add_argument("--input", required=True, help="training-matrix .jsonl or .csv")
     parser.add_argument("--output", required=True, help="JSON report path")
     parser.add_argument("--predictions-output", help="versioned per-runner prediction JSONL")
     parser.add_argument("--target", choices=sorted(LABEL_COLUMNS), default="targetWin")
-    parser.add_argument("--mode", choices=("no-market",), default="no-market")
+    parser.add_argument("--mode", choices=SUPPORTED_MODES, default="no-market")
     parser.add_argument("--iterations", type=int, default=500)
     parser.add_argument("--learning-rate", type=float, default=0.05)
     parser.add_argument("--depth", type=int, default=6)
@@ -353,7 +357,7 @@ def main(argv=None):
         raise SystemExit(str(error)) from error
     holdout = report["metrics"]["bySplit"]["holdout"]
     print(
-        f"Trained {MODEL_ID}: {report['input']['rows']} rows, "
+        f"Trained {report['modelId']}: {report['input']['rows']} rows, "
         f"holdout races {holdout['races']}, holdout logLoss {holdout['logLoss']}"
     )
     print(f"Saved report to {args.output}")

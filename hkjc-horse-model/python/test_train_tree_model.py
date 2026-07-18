@@ -86,6 +86,38 @@ class TreeModelHelpersTest(unittest.TestCase):
             ],
         )
 
+    def test_market_aware_t10_mode_allows_only_decision_time_market_features(self):
+        columns = [
+            "raceId", "date", "split", "horseId", "horseNo", "racecourse",
+            "raceNo", "fieldSize", "targetWin", "targetPlace", "distance",
+            "marketWinOddsT60", "marketPlaceOddsT30", "marketWinOddsT10",
+            "marketWinOddsPctChangeT60ToT30", "marketPlaceOddsT3",
+            "marketFinalOdds", "poolWinInvestmentT10", "dividendAmount",
+            "tianxiRecentAverageWinOdds5",
+        ]
+
+        selected, excluded = select_feature_columns(
+            columns,
+            mode="market-aware-t10",
+            target="targetWin",
+        )
+
+        self.assertEqual(
+            selected,
+            [
+                "distance", "marketWinOddsT60", "marketPlaceOddsT30",
+                "marketWinOddsT10", "marketWinOddsPctChangeT60ToT30",
+                "tianxiRecentAverageWinOdds5",
+            ],
+        )
+        self.assertEqual(
+            excluded,
+            [
+                "marketPlaceOddsT3", "marketFinalOdds",
+                "poolWinInvestmentT10", "dividendAmount",
+            ],
+        )
+
     def test_category_mapping_is_fit_on_train_and_unseen_values_become_minus_one(self):
         rows = [
             {"split": "train", "surface": "TURF", "going": "GOOD", "draw": 1},
@@ -213,7 +245,13 @@ class TreeModelEarlyStoppingTest(unittest.TestCase):
         return rows
 
     @staticmethod
-    def _run(rows, parameters, fit_splits=("train",), selection_report_path=None):
+    def _run(
+        rows,
+        parameters,
+        fit_splits=("train",),
+        selection_report_path=None,
+        mode="no-market",
+    ):
         import numpy
         import pandas
 
@@ -231,11 +269,33 @@ class TreeModelEarlyStoppingTest(unittest.TestCase):
                 report = run_training(
                     input_path,
                     output_path,
+                    mode=mode,
                     fit_splits=fit_splits,
                     parameters=parameters,
                     selection_report_path=selection_report_path,
                 )
             return report, _RecordingClassifier.last_instance
+
+    def test_market_aware_mode_uses_versioned_id_and_never_reads_t3(self):
+        rows = self._rows()
+        for row in rows:
+            row.update({
+                "marketWinOddsT10": 4.0,
+                "marketPlaceOddsT10": 1.8,
+                "marketWinOddsT3": 3.8,
+            })
+
+        report, model = self._run(
+            rows,
+            {"n_estimators": 7, "early_stopping_rounds": 0},
+            mode="market-aware-t10",
+        )
+
+        self.assertEqual(report["modelId"], "lightgbm-market-aware-t10-v1")
+        self.assertIn("marketWinOddsT10", report["features"])
+        self.assertNotIn("marketWinOddsT3", report["features"])
+        self.assertIn("marketWinOddsT10", model.prediction_frame.columns)
+        self.assertNotIn("marketWinOddsT3", model.prediction_frame.columns)
 
     def test_early_stopping_passes_validation_only_as_eval_set(self):
         report, model = self._run(

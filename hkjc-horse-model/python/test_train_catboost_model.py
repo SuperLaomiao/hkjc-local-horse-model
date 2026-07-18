@@ -69,10 +69,13 @@ class CatBoostTrainerTest(unittest.TestCase):
                     "targetPlace": label,
                     "distance": 1200 + horse_number,
                     "surface": {"train": "TURF", "validation": "AWT", "holdout": "DIRT"}[split],
+                    "marketWinOddsT10": 4.0,
+                    "marketPlaceOddsT10": 1.8,
+                    "marketWinOddsT3": 3.8,
                 })
         return rows
 
-    def _run(self, *, fit_splits=("train",), target="targetWin"):
+    def _run(self, *, fit_splits=("train",), target="targetWin", mode="no-market"):
         import numpy
         import pandas
 
@@ -92,6 +95,7 @@ class CatBoostTrainerTest(unittest.TestCase):
                     input_path,
                     output_path,
                     target=target,
+                    mode=mode,
                     fit_splits=fit_splits,
                     predictions_output_path=predictions_path,
                     parameters={
@@ -120,6 +124,14 @@ class CatBoostTrainerTest(unittest.TestCase):
         self.assertNotIn("holdout", report["fitSplits"])
         self.assertEqual(report["target"], "targetWin")
         self.assertEqual(predictions[0]["modelId"], "catboost-no-market-v1")
+
+    def test_market_aware_mode_uses_t10_features_and_versioned_id(self):
+        report, _model, predictions = self._run(mode="market-aware-t10")
+
+        self.assertEqual(report["modelId"], "catboost-market-aware-t10-v1")
+        self.assertEqual(predictions[0]["modelId"], "catboost-market-aware-t10-v1")
+        self.assertIn("marketWinOddsT10", report["features"])
+        self.assertNotIn("marketWinOddsT3", report["features"])
 
     def test_final_refit_includes_validation_but_never_holdout(self):
         report, model, _predictions = self._run(fit_splits=("train", "validation"), target="targetPlace")

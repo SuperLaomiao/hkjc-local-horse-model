@@ -4,6 +4,8 @@
 import argparse
 import json
 import math
+import os
+import re
 import sqlite3
 from collections import defaultdict
 from datetime import datetime, timezone
@@ -20,6 +22,7 @@ WINDOWS = {
 }
 ACTIVE_SELL_STATUSES = {"SELLING", "OPEN", "SALE_OPEN"}
 MISSING_STATUS_SOURCES = {"eprochasson/horserace_data"}
+SPLITS = ("train", "validation", "holdout")
 
 
 def build_market_research_gate(
@@ -168,6 +171,99 @@ def load_market_snapshot_books(db_path):
     ]
 
 
+def write_market_cohort_matrix(
+    input_path,
+    output_path,
+    gate_report,
+    *,
+    min_both_odds_coverage=0.90,
+):
+    """Filter a JSONL matrix to the gate cohort and remap its chronological splits."""
+    if gate_report.get("status") != "READY_RESEARCH" or not gate_report.get("trainingAllowed"):
+        raise ValueError(f"market research gate is {gate_report.get('status', 'BLOCKED_DATA')}")
+    decision_window = gate_report.get("decisionWindow")
+    if decision_window not in WINDOWS:
+        raise ValueError("gate report has an invalid decisionWindow")
+    coverage_threshold = _bounded_ratio(min_both_odds_coverage, "min_both_odds_coverage")
+    assignments = gate_report.get("raceAssignments")
+    if not isinstance(assignments, dict) or not assignments:
+        raise ValueError("READY_RESEARCH gate requires raceAssignments")
+
+    input_path = Path(input_path)
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    temp_path = output_path.with_name(f".{output_path.name}.{os.getpid()}.tmp")
+    rows = 0
+    rows_by_split = {split: 0 for split in SPLITS}
+    both_odds_rows = 0
+    decision_suffix = decision_window.replace("-", "")
+
+    try:
+        with input_path.open("r", encoding="utf-8") as source, temp_path.open("w", encoding="utf-8") as target:
+            for line_number, line in enumerate(source, start=1):
+                if not line.strip():
+                    continue
+                try:
+                    row = json.loads(line)
+                except json.JSONDecodeError as error:
+                    raise ValueError(f"invalid matrix JSON on line {line_number}") from error
+                if not isinstance(row, dict):
+                    raise ValueError(f"matrix line {line_number} must be an object")
+                race_id = _clean_text(row.get("raceId"))
+                split = assignments.get(race_id)
+                if split not in SPLITS:
+                    continue
+                filtered = {
+                    key: value
+                    for key, value in row.items()
+                    if _feature_available_at_window(key, decision_window)
+                }
+                filtered["split"] = split
+                target.write(json.dumps(filtered, ensure_ascii=False, separators=(",", ":")) + "\n")
+                rows += 1
+                rows_by_split[split] += 1
+                if (
+                    _positive_market_value(filtered.get(f"marketWinOdds{decision_suffix}"))
+                    and _positive_market_value(filtered.get(f"marketPlaceOdds{decision_suffix}"))
+                ):
+                    both_odds_rows += 1
+
+        both_odds_coverage = both_odds_rows / rows if rows else 0.0
+        missing_splits = [split for split, count in rows_by_split.items() if count <= 0]
+        reasons = []
+        if rows <= 0:
+            reasons.append("no matrix rows match the market cohort")
+        if missing_splits:
+            reasons.append(f"matrix has no rows for splits: {', '.join(missing_splits)}")
+        if both_odds_coverage < coverage_threshold:
+            reasons.append(
+                f"runner WIN/PLACE odds coverage {both_odds_coverage:.4f} is below {coverage_threshold:.4f}"
+            )
+        status = "READY_RESEARCH" if not reasons else "BLOCKED_DATA"
+        if status == "READY_RESEARCH":
+            os.replace(temp_path, output_path)
+        elif temp_path.exists():
+            temp_path.unlink()
+        return {
+            "version": "market-cohort-matrix-v1",
+            "status": status,
+            "trainingAllowed": status == "READY_RESEARCH",
+            "cashMode": "NO_BET",
+            "decisionWindow": decision_window,
+            "rows": rows,
+            "rowsBySplit": rows_by_split,
+            "rowsWithBothOdds": both_odds_rows,
+            "bothOddsCoverage": round(both_odds_coverage, 6),
+            "minBothOddsCoverage": coverage_threshold,
+            "output": str(output_path) if status == "READY_RESEARCH" else None,
+            "reasons": reasons,
+        }
+    except Exception:
+        if temp_path.exists():
+            temp_path.unlink()
+        raise
+
+
 def _normalize_snapshot(row, decision_window):
     if not isinstance(row, dict):
         return None, "rejectedPostOrUnknown"
@@ -261,6 +357,25 @@ def _window_for_minutes(minutes):
     return None
 
 
+def _feature_available_at_window(name, decision_window):
+    normalized = str(name)
+    lower = normalized.lower()
+    if "pool" in lower or "money" in lower or "investment" in lower:
+        return False
+    if not lower.startswith("market"):
+        return True
+    time_tokens = [int(value) for value in re.findall(r"T(\d+)", normalized)]
+    if not time_tokens:
+        return False
+    decision_minutes = int(decision_window.split("-")[1])
+    return all(minutes >= decision_minutes for minutes in time_tokens)
+
+
+def _positive_market_value(value):
+    number = _finite_number(value)
+    return number is not None and number > 0
+
+
 def _normalize_pool(value):
     normalized = _clean_text(value).upper() if value is not None else ""
     return {"W": "WIN", "PLA": "PLACE"}.get(normalized, normalized)
@@ -300,8 +415,13 @@ def main():
     parser.add_argument("--window", default="T-10", choices=tuple(WINDOWS))
     parser.add_argument("--min-races-per-split", type=int, default=100)
     parser.add_argument("--min-complete-coverage", type=float, default=0.95)
+    parser.add_argument("--input-matrix")
+    parser.add_argument("--matrix-output")
+    parser.add_argument("--min-both-odds-coverage", type=float, default=0.90)
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
+    if bool(args.input_matrix) != bool(args.matrix_output):
+        parser.error("--input-matrix and --matrix-output must be provided together")
 
     report = build_market_research_gate(
         load_market_snapshot_books(args.db),
@@ -309,6 +429,13 @@ def main():
         min_races_per_split=args.min_races_per_split,
         min_complete_coverage=args.min_complete_coverage,
     )
+    if args.input_matrix:
+        report["matrix"] = write_market_cohort_matrix(
+            args.input_matrix,
+            args.matrix_output,
+            report,
+            min_both_odds_coverage=args.min_both_odds_coverage,
+        )
     output_path = Path(args.output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -320,6 +447,12 @@ def main():
         print(
             f"{split}: {summary['completePoolRaces']}/{summary['candidateRaces']} complete "
             f"WIN/PLACE races"
+        )
+    if report.get("matrix"):
+        matrix = report["matrix"]
+        print(
+            f"Matrix: {matrix['status']} | {matrix['rows']} rows | "
+            f"both-odds coverage {matrix['bothOddsCoverage']:.4f}"
         )
     print(f"Saved market-aware research gate to {output_path}")
 

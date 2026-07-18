@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Train the local LightGBM no-market runner benchmark.
+"""Train leakage-safe local LightGBM runner benchmarks.
 
 The input is the flattened JSONL/CSV emitted by ``hkjc:training-matrix``.
 Only the existing chronological ``train``/``validation``/``holdout`` labels
@@ -19,6 +19,7 @@ from pathlib import Path
 
 
 MODEL_ID = "lightgbm-no-market-v1"
+SUPPORTED_MODES = ("no-market", "market-aware-t10")
 SPLITS = ("train", "validation", "holdout")
 METADATA_COLUMNS = (
     "raceId", "date", "split", "horseId", "horseNo",
@@ -38,26 +39,45 @@ class MissingDependencyError(RuntimeError):
 
 
 def select_feature_columns(columns, mode="no-market", target="targetWin"):
-    """Return usable feature names and names excluded by the no-market policy."""
-    if mode != "no-market":
-        raise ValueError(f"Unsupported mode: {mode}; only no-market is implemented")
+    """Return usable feature names under the requested decision-time policy."""
+    if mode not in SUPPORTED_MODES:
+        raise ValueError(f"Unsupported mode: {mode}; choose from {', '.join(SUPPORTED_MODES)}")
+    if target not in LABEL_COLUMNS:
+        raise ValueError(f"Unsupported target: {target}")
     selected = []
     excluded = []
     for column in columns:
         if column in METADATA_COLUMNS or column in LABEL_COLUMNS or _is_metadata_or_identifier(column):
             continue
-        if _is_market_feature(column):
+        if _is_market_feature(column) and (
+            mode == "no-market" or not _market_feature_available_at_t10(column)
+        ):
             excluded.append(column)
         else:
             selected.append(column)
-    if target not in LABEL_COLUMNS:
-        raise ValueError(f"Unsupported target: {target}")
     return selected, excluded
 
 
 def _is_market_feature(feature_name):
     normalized = str(feature_name).lower()
     return any(token in normalized for token in MARKET_TOKENS)
+
+
+def _market_feature_available_at_t10(feature_name):
+    normalized = str(feature_name).lower()
+    if any(token in normalized for token in ("pool", "money", "investment", "dividend", "payout", "final")):
+        return False
+    if not normalized.startswith("market"):
+        # Historical runner odds summaries are known before the current race.
+        return True
+    windows = [int(value) for value in re.findall(r"t(\d+)", normalized)]
+    return bool(windows) and all(minutes >= 10 for minutes in windows)
+
+
+def _model_id(mode):
+    if mode not in SUPPORTED_MODES:
+        raise ValueError(f"Unsupported mode: {mode}; choose from {', '.join(SUPPORTED_MODES)}")
+    return f"lightgbm-{mode}-v1"
 
 
 def _is_metadata_or_identifier(feature_name):
@@ -260,6 +280,7 @@ def run_training(
     predictions_output_path=None,
 ):
     """Train LightGBM and write report, model, manifest, and optional predictions."""
+    model_id = _model_id(mode)
     dependencies = _require_training_dependencies()
     pandas_module, numpy_module, _sklearn_module, lightgbm_module = dependencies
     rows = load_matrix_rows(input_path, pandas_module)
@@ -384,8 +405,8 @@ def run_training(
         prediction_rows = []
         for row, probability in zip(rows, probabilities):
             prediction_rows.append({
-                "version": MODEL_ID,
-                "modelId": MODEL_ID,
+                "version": model_id,
+                "modelId": model_id,
                 "target": target,
                 "raceId": _python_scalar(row.get("raceId")),
                 "date": _python_scalar(row.get("date")),
@@ -403,8 +424,8 @@ def run_training(
         )
     model.booster_.save_model(str(model_path))
     manifest = {
-        "version": MODEL_ID,
-        "modelId": MODEL_ID,
+        "version": model_id,
+        "modelId": model_id,
         "mode": mode,
         "target": target,
         "metadataColumns": list(METADATA_COLUMNS),
@@ -419,8 +440,8 @@ def run_training(
     manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     report = {
-        "version": MODEL_ID,
-        "modelId": MODEL_ID,
+        "version": model_id,
+        "modelId": model_id,
         "generatedAt": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "input": {
             "name": Path(input_path).name,
@@ -712,7 +733,7 @@ def _round_or_none(value):
 
 
 def build_parser():
-    parser = argparse.ArgumentParser(description="Train the local LightGBM no-market runner model.")
+    parser = argparse.ArgumentParser(description="Train a leakage-safe local LightGBM runner model.")
     parser.add_argument("--input", required=True, help="training-matrix .jsonl or .csv")
     parser.add_argument("--output", required=True, help="JSON report path; model and manifest use the same stem")
     parser.add_argument(
@@ -720,7 +741,7 @@ def build_parser():
         help="optional versioned per-runner prediction JSONL output path",
     )
     parser.add_argument("--target", choices=sorted(LABEL_COLUMNS), default="targetWin")
-    parser.add_argument("--mode", choices=("no-market",), default="no-market")
+    parser.add_argument("--mode", choices=SUPPORTED_MODES, default="no-market")
     parser.add_argument("--n-estimators", type=int, default=160)
     parser.add_argument("--learning-rate", type=float, default=0.05)
     parser.add_argument("--num-leaves", type=int, default=31)
@@ -780,7 +801,7 @@ def main(argv=None):
         raise SystemExit(str(error)) from error
     holdout = report["metrics"]["bySplit"]["holdout"]
     print(
-        f"Trained {MODEL_ID}: {report['input']['rows']} rows, "
+        f"Trained {report['modelId']}: {report['input']['rows']} rows, "
         f"holdout races {holdout['races']}, holdout logLoss {holdout['logLoss']}"
     )
     print(f"Saved report to {args.output}")
