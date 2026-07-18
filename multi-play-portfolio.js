@@ -4,6 +4,9 @@ import { evaluateValueCandidate, VALUE_RULE_VERSION } from "./hkjc-horse-model/s
 const DEFAULT_OPTIONS = {
   minUnit: 10,
   maxBudget: 100,
+  bankroll: 1000,
+  maxRaceBankrollShare: 0.1,
+  remainingDailyBudget: Infinity,
   edgeBuffer: 0.08,
   minTopProbability: 0.12,
   minPlaceProbability: 0.28,
@@ -11,6 +14,10 @@ const DEFAULT_OPTIONS = {
   minQplProbability: 0.12,
   minQuinellaProbability: 0.055,
   maxCoreExposureShare: 0.6,
+  maxHorseExposureShare: 0.6,
+  maxPairExposureShare: 0.3,
+  maxExoticExposureShare: 0.4,
+  maxPoolExposureShare: 0.6,
   probabilityHaircut: 0.05,
   probabilityStatus: "RESEARCH_ONLY",
   maxPriceAgeMinutes: 15,
@@ -141,6 +148,9 @@ export function buildMultiPlayProbabilityBoard(entry, options = {}) {
 
 export function buildStructuredBetPortfolio(entry, options = {}) {
   const config = { ...DEFAULT_OPTIONS, ...options };
+  if (options.maxHorseExposureShare == null && options.maxCoreExposureShare != null) {
+    config.maxHorseExposureShare = options.maxCoreExposureShare;
+  }
   const board = buildMultiPlayProbabilityBoard(entry, config);
   const top = board.candidates.find((candidate) => candidate.type === "WIN")?.selections?.[0] ?? null;
 
@@ -159,7 +169,8 @@ export function buildStructuredBetPortfolio(entry, options = {}) {
   }
 
   const cashCandidates = board.candidates.filter((candidate) => candidate.role === "cash");
-  const cashLines = buildCashLines(cashCandidates, config);
+  const allocation = buildCashLines(cashCandidates, config);
+  const cashLines = allocation.lines;
   const totalStake = cashLines.reduce((sum, line) => sum + line.stake, 0);
   const watchLines = cashCandidates.filter((candidate) => !cashLines.some((line) => line.candidateKey === candidate.key));
   const paperLines = board.candidates.filter((candidate) => candidate.role === "paper");
@@ -169,6 +180,8 @@ export function buildStructuredBetPortfolio(entry, options = {}) {
     label: cashLines.length ? "多玩法组合 / 条件执行" : "WATCH / 等派彩",
     totalStake,
     cashLines,
+    riskRejectedLines: allocation.rejected,
+    risk: allocation.risk,
     watchLines,
     paperLines,
     board,
@@ -201,7 +214,103 @@ function buildCashLines(candidates, config) {
   maybePush(lines, lineFromCandidate(quinella, quinellaStake(quinella, config), "极小"));
 
   const evRankedLines = lines.sort(compareLinesByExpectedRoi);
-  return limitCoreExposure(capLines(evRankedLines, config.maxBudget), topHorseId, config.maxCoreExposureShare);
+  return applyPortfolioRiskCaps(evRankedLines, config);
+}
+
+export function applyPortfolioRiskCaps(lines, options = {}) {
+  const config = { ...DEFAULT_OPTIONS, ...options };
+  const minUnit = positiveAmount(config.minUnit, 10);
+  const raceBudget = positiveAmount(config.maxBudget, 100);
+  const bankroll = nonnegativeAmount(config.bankroll, Infinity);
+  const bankrollShare = boundedShare(config.maxRaceBankrollShare, 1);
+  const bankrollBudget = Number.isFinite(bankroll) ? bankroll * bankrollShare : Infinity;
+  const dailyBudget = nonnegativeAmount(config.remainingDailyBudget, Infinity);
+  const rawBudget = Math.min(raceBudget, bankrollBudget, dailyBudget);
+  const effectiveBudget = Number.isFinite(rawBudget)
+    ? Math.max(0, Math.floor(rawBudget / minUnit) * minUnit)
+    : raceBudget;
+  const horseCap = exposureCap(effectiveBudget, boundedShare(
+    config.maxHorseExposureShare ?? config.maxCoreExposureShare,
+    0.6,
+  ), minUnit);
+  const pairCap = exposureCap(
+    effectiveBudget, boundedShare(config.maxPairExposureShare, 0.3), minUnit,
+  );
+  const exoticCap = exposureCap(
+    effectiveBudget, boundedShare(config.maxExoticExposureShare, 0.4), minUnit,
+  );
+  const poolCap = exposureCap(
+    effectiveBudget, boundedShare(config.maxPoolExposureShare, 0.6), minUnit,
+  );
+  const horseExposure = {};
+  const pairExposure = {};
+  const poolExposure = {};
+  const kept = [];
+  const rejected = [];
+  let totalStake = 0;
+  let exoticExposure = 0;
+
+  for (const line of [...(lines ?? [])].sort(compareLinesByExpectedRoi)) {
+    const stake = Number(line?.stake);
+    if (!Number.isFinite(stake) || stake <= 0 || Math.abs(stake / minUnit - Math.round(stake / minUnit)) > 1e-9) {
+      rejected.push(riskRejection(line, "INVALID_STAKE_UNIT", "注码不是有效的最小投注单位。"));
+      continue;
+    }
+    if (totalStake + stake > effectiveBudget + 1e-9) {
+      rejected.push(riskRejection(line, "RACE_BUDGET_CAP", "超过单场、资金或当日剩余额度。"));
+      continue;
+    }
+    const horseIds = lineHorseIds(line);
+    if (horseIds.some((horseId) => (horseExposure[horseId] ?? 0) + stake > horseCap + 1e-9)) {
+      rejected.push(riskRejection(line, "HORSE_EXPOSURE_CAP", "同一匹马关联注码超过上限。"));
+      continue;
+    }
+    const pairKey = correlatedPairKey(line);
+    if (pairKey && (pairExposure[pairKey] ?? 0) + stake > pairCap + 1e-9) {
+      rejected.push(riskRejection(line, "PAIR_CORRELATION_CAP", "同一马对的相关注码超过上限。"));
+      continue;
+    }
+    const exotic = isPairPool(line?.type);
+    if (exotic && exoticExposure + stake > exoticCap + 1e-9) {
+      rejected.push(riskRejection(line, "EXOTIC_EXPOSURE_CAP", "QIN/QPL 合计风险超过上限。"));
+      continue;
+    }
+    const pool = String(line?.type ?? "UNKNOWN");
+    if ((poolExposure[pool] ?? 0) + stake > poolCap + 1e-9) {
+      rejected.push(riskRejection(line, "POOL_EXPOSURE_CAP", "单一玩法注码超过上限。"));
+      continue;
+    }
+
+    kept.push(line);
+    totalStake += stake;
+    poolExposure[pool] = (poolExposure[pool] ?? 0) + stake;
+    for (const horseId of horseIds) {
+      horseExposure[horseId] = (horseExposure[horseId] ?? 0) + stake;
+    }
+    if (pairKey) pairExposure[pairKey] = (pairExposure[pairKey] ?? 0) + stake;
+    if (exotic) exoticExposure += stake;
+  }
+
+  return {
+    lines: kept,
+    rejected,
+    risk: {
+      effectiveBudget: roundMoney(effectiveBudget),
+      totalStake: roundMoney(totalStake),
+      remainingBudget: roundMoney(Math.max(0, effectiveBudget - totalStake)),
+      caps: {
+        horse: roundMoney(horseCap),
+        pair: roundMoney(pairCap),
+        exotic: roundMoney(exoticCap),
+        pool: roundMoney(poolCap),
+      },
+      horseExposure: roundExposure(horseExposure),
+      pairExposure: roundExposure(pairExposure),
+      poolExposure: roundExposure(poolExposure),
+      exoticExposure: roundMoney(exoticExposure),
+      rejectedLines: rejected.length,
+    },
+  };
 }
 
 function placeStake(candidate, config) {
@@ -264,17 +373,6 @@ function lineFromCandidate(candidate, stake, lane) {
 
 function maybePush(lines, line) {
   if (line) lines.push(line);
-}
-
-function capLines(lines, maxBudget) {
-  const kept = [];
-  let total = 0;
-  for (const line of lines) {
-    if (total + line.stake > maxBudget) continue;
-    kept.push(line);
-    total += line.stake;
-  }
-  return kept;
 }
 
 function enrichCandidate(candidate, config, entry) {
@@ -575,43 +673,56 @@ function lineExpectedRoiRank(line) {
   return -1 + Number(line?.estimatedProbability ?? 0) / 10;
 }
 
-function exposureShare(lines, horseId) {
-  const total = lines.reduce((sum, line) => sum + line.stake, 0);
-  if (!total || !horseId) return 0;
-  const exposed = lines
-    .filter((line) => containsHorse(line, horseId))
-    .reduce((sum, line) => sum + line.stake, 0);
-  return exposed / total;
+function lineHorseIds(line) {
+  return [...new Set((line?.selections ?? []).map((selection) => (
+    selection?.horseId
+      ?? (selection?.horseNo != null ? `horse-${selection.horseNo}` : null)
+      ?? (selection?.horseName ? `name-${selection.horseName}` : null)
+  )).filter(Boolean).map(String))];
 }
 
-function limitCoreExposure(lines, topHorseId, maxShare) {
-  const kept = [...lines];
-  const removablePriority = ["WIN", "QUINELLA", "QUINELLA_PLACE"];
-
-  while (exposureShare(kept, topHorseId) > maxShare) {
-    const removableIndex = findCoreExposureTrimIndex(kept, topHorseId, removablePriority);
-    if (removableIndex === -1) break;
-    kept.splice(removableIndex, 1);
-  }
-
-  return kept;
+function correlatedPairKey(line) {
+  if (!isPairPool(line?.type)) return null;
+  const horseIds = lineHorseIds(line).sort();
+  return horseIds.length === 2 ? horseIds.join("+") : null;
 }
 
-function findCoreExposureTrimIndex(lines, topHorseId, removablePriority) {
-  for (const type of removablePriority) {
-    let index = -1;
-    let lowestExpectedRoi = Infinity;
-    lines.forEach((line, lineIndex) => {
-      if (line.type !== type || !containsHorse(line, topHorseId)) return;
-      const expectedRoi = Number.isFinite(line.expectedRoi) ? line.expectedRoi : -1;
-      if (expectedRoi < lowestExpectedRoi) {
-        index = lineIndex;
-        lowestExpectedRoi = expectedRoi;
-      }
-    });
-    if (index !== -1) return index;
-  }
-  return -1;
+function isPairPool(type) {
+  return ["QUINELLA", "QUINELLA_PLACE"].includes(String(type ?? ""));
+}
+
+function riskRejection(line, reasonCode, reasonZh) {
+  return { ...line, reasonCode, reasonZh };
+}
+
+function roundExposure(exposure) {
+  return Object.fromEntries(
+    Object.entries(exposure).map(([key, value]) => [key, roundMoney(value)]),
+  );
+}
+
+function positiveAmount(value, fallback) {
+  const number = Number(value);
+  return Number.isFinite(number) && number > 0 ? number : fallback;
+}
+
+function nonnegativeAmount(value, fallback) {
+  const number = Number(value);
+  return Number.isFinite(number) && number >= 0 ? number : fallback;
+}
+
+function boundedShare(value, fallback) {
+  const number = Number(value);
+  return Number.isFinite(number) ? Math.max(0, Math.min(1, number)) : fallback;
+}
+
+function exposureCap(budget, share, minUnit) {
+  if (budget <= 0 || share <= 0) return 0;
+  return Math.min(budget, Math.max(minUnit, budget * share));
+}
+
+function roundMoney(value) {
+  return Math.round(Number(value) * 100) / 100;
 }
 
 function positiveNumber(value) {
