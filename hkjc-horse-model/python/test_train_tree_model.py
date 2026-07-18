@@ -15,6 +15,7 @@ if str(PYTHON_DIR) not in sys.path:
     sys.path.insert(0, str(PYTHON_DIR))
 
 from train_tree_model import (  # noqa: E402
+    apply_target_probability_policy,
     compute_split_metrics,
     fit_feature_encoder,
     normalize_race_probabilities,
@@ -140,6 +141,29 @@ class TreeModelHelpersTest(unittest.TestCase):
         self.assertAlmostEqual(sum(probabilities[3:]), 1.0)
         self.assertGreaterEqual(min(probabilities), 0.0)
         self.assertLessEqual(max(probabilities), 1.0)
+
+    def test_place_probabilities_stay_runner_level_and_metrics_are_target_aware(self):
+        rows = [
+            {"raceId": "R1", "targetPlace": 1},
+            {"raceId": "R1", "targetPlace": 0},
+            {"raceId": "R1", "targetPlace": 1},
+        ]
+
+        probabilities = apply_target_probability_policy(
+            rows,
+            [0.7, 0.5, 0.2],
+            target="targetPlace",
+        )
+        metrics = compute_split_metrics(rows, probabilities, target="targetPlace")
+
+        self.assertEqual(probabilities, [0.7, 0.5, 0.2])
+        self.assertAlmostEqual(sum(probabilities), 1.4)
+        self.assertEqual(metrics["topPickHits"], 1)
+        self.assertEqual(metrics["topPickHitRate"], 1.0)
+        self.assertEqual(metrics["positiveInTop3"], 1)
+        self.assertEqual(metrics["positiveInTop3Rate"], 1.0)
+        self.assertNotIn("topPickWins", metrics)
+        self.assertNotIn("winnerInTop3", metrics)
 
     def test_metrics_include_runner_and_race_quality_measures(self):
         rows = [

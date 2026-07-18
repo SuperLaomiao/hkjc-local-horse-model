@@ -33,7 +33,7 @@ This sequence overrides the older phase ordering below when the daily continuati
 ### P0 — No-market probability stack, live collection, and core EV engine
 
 - [x] Export versioned runner predictions from the LightGBM trainer.
-- [ ] Make LightGBM probability policy and metrics target-aware for `targetWin` and `targetPlace`.
+- [x] Make LightGBM probability policy and metrics target-aware for `targetWin` and `targetPlace`.
 - [ ] Persist the strict Top-pick-to-PLACE holdout baseline: 564 bets, 304 hits, 53.90% hit rate, HK$4,908.40 return from HK$5,640 stake, -12.97% ROI.
 - [ ] Train no-market CatBoost WIN and PLACE candidates on the existing chronological matrix.
 - [ ] Select sigmoid/isotonic calibration and LightGBM/CatBoost blend weights on validation only; report untouched holdout metrics.
@@ -298,6 +298,7 @@ This queue is mirrored in `research-program.js` and surfaced in the dashboard Re
 
 ## Latest continuation note
 
+- 2026-07-18: Completed target-aware LightGBM probability and metric contracts. WIN remains race-normalized; PLACE now preserves bounded runner-level probabilities and reports generic hit metrics without misleading WIN aliases. The first PLACE selection model stopped at iteration 136; untouched holdout has log loss 0.493505, Brier 0.161672, and 311/564 Top-pick PLACE hits (55.14%). Artifacts stay local under `/Users/shi/Library/Caches/hkjc-local-horse-model/models/2026-07-18/`. Next P0 task: settle versioned predictions against official PLACE dividends with the strict benchmark.
 - 2026-07-18: Completed versioned per-runner prediction export for `lightgbm-no-market-v1`. `--predictions-output path.jsonl` now writes ordered runner rows with model/target lineage, race and horse identifiers, chronological split, probability, and both WIN/PLACE labels; the model report records the artifact path. Focused test: `python -m unittest -v test_train_tree_model.TreeModelFinalRefitTest.test_prediction_export_writes_versioned_runner_jsonl`. Next P0 task: make probability policy and evaluation metrics target-aware for `targetWin` versus `targetPlace`.
 - 2026-07-18: Completed the leakage-safe `training-matrix` exporter. `npm run hkjc:training-matrix -- --input ...training-dataset.json --output ...training-matrix.jsonl` writes deterministic JSONL (or CSV via `--format csv`/`.csv`) with approved metadata first and sorted flattened feature columns. It preserves categorical, odds, Tianxi, and pool features, emits null/empty missing values, rejects malformed payloads and explicit leakage keys, and ignores generated matrices. Focused test: `node --test hkjc-horse-model/test/training-matrix.test.js`.
 - 2026-07-18: Completed `lightgbm-no-market-v1`: `PYTHON=/path/to/python npm run hkjc:train-tree-model -- --input ...training-matrix.jsonl --output ...tree-model-report.json` accepts JSONL/CSV, excludes market features, preserves train-only category mappings and matrix chronological splits, and writes report/model/manifest artifacts. Run `python3 -m unittest -v hkjc-horse-model/python/test_train_tree_model.py` for the focused test.

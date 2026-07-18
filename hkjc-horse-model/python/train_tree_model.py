@@ -150,6 +150,23 @@ def normalize_race_probabilities(rows, raw_probabilities, epsilon=PROBABILITY_EP
     return normalized
 
 
+def apply_target_probability_policy(rows, raw_probabilities, target):
+    """Apply the probability contract appropriate for the requested label."""
+    if len(rows) != len(raw_probabilities):
+        raise ValueError("rows and probabilities must have the same length")
+    if target == "targetWin":
+        return normalize_race_probabilities(rows, raw_probabilities)
+    if target == "targetPlace":
+        return [
+            max(
+                PROBABILITY_EPSILON,
+                min(1.0 - PROBABILITY_EPSILON, _finite_float(value, 0.0)),
+            )
+            for value in raw_probabilities
+        ]
+    raise ValueError(f"Unsupported target: {target}")
+
+
 def compute_split_metrics(rows, probabilities, target="targetWin"):
     """Compute row metrics plus race-level top-pick and top-three metrics."""
     if len(rows) != len(probabilities):
@@ -157,15 +174,15 @@ def compute_split_metrics(rows, probabilities, target="targetWin"):
     race_rows = defaultdict(list)
     for index, row in enumerate(rows):
         race_rows[row.get("raceId")].append((index, row))
-    top_pick_wins = 0
-    winners_in_top3 = 0
+    top_pick_hits = 0
+    positives_in_top3 = 0
     for entries in race_rows.values():
         ranked = sorted(entries, key=lambda item: (-float(probabilities[item[0]]), item[0]))
         if ranked and _label_value(ranked[0][1].get(target)) == 1:
-            top_pick_wins += 1
+            top_pick_hits += 1
         top_three = ranked[:3]
         if any(_label_value(row.get(target)) == 1 for _index, row in top_three):
-            winners_in_top3 += 1
+            positives_in_top3 += 1
 
     log_loss_total = 0.0
     brier_total = 0.0
@@ -176,16 +193,26 @@ def compute_split_metrics(rows, probabilities, target="targetWin"):
         brier_total += (clipped - outcome) ** 2
     count = len(rows)
     race_count = len(race_rows)
-    return {
+    metrics = {
         "rows": count,
         "races": race_count,
         "logLoss": _round_or_none(log_loss_total / count if count else None),
         "brierScore": _round_or_none(brier_total / count if count else None),
-        "topPickWins": top_pick_wins,
-        "topPickWinRate": _round_or_none(top_pick_wins / race_count if race_count else None),
-        "winnerInTop3": winners_in_top3,
-        "winnerInTop3Rate": _round_or_none(winners_in_top3 / race_count if race_count else None),
+        "topPickHits": top_pick_hits,
+        "topPickHitRate": _round_or_none(top_pick_hits / race_count if race_count else None),
+        "positiveInTop3": positives_in_top3,
+        "positiveInTop3Rate": _round_or_none(
+            positives_in_top3 / race_count if race_count else None
+        ),
     }
+    if target == "targetWin":
+        metrics.update({
+            "topPickWins": top_pick_hits,
+            "topPickWinRate": metrics["topPickHitRate"],
+            "winnerInTop3": positives_in_top3,
+            "winnerInTop3Rate": metrics["positiveInTop3Rate"],
+        })
+    return metrics
 
 
 def load_matrix_rows(input_path, pandas_module=None):
@@ -332,7 +359,7 @@ def run_training(
     )
     effective_iterations = best_iteration or int(params["n_estimators"])
     raw_probabilities = model.predict_proba(x)[:, 1]
-    probabilities = normalize_race_probabilities(rows, raw_probabilities.tolist())
+    probabilities = apply_target_probability_policy(rows, raw_probabilities.tolist(), target)
 
     metrics_by_split = {}
     for split in SPLITS:
@@ -432,7 +459,11 @@ def run_training(
         "modelArtifact": str(model_path),
         "predictionArtifact": str(prediction_path) if prediction_path is not None else None,
         "probabilityPolicy": {
-            "normalization": "race-level positive model probabilities sum to one",
+            "normalization": (
+                "race-level positive model probabilities sum to one"
+                if target == "targetWin"
+                else "runner-level bounded binary probabilities; no race-sum normalization"
+            ),
             "clipEpsilon": PROBABILITY_EPSILON,
             "numericMissing": "NaN passed to LightGBM",
             "categoryUnknown": -1,
