@@ -1,4 +1,5 @@
 import { createRankingProbabilityModel } from "./ranking-probabilities.js";
+import { evaluateValueCandidate, VALUE_RULE_VERSION } from "./hkjc-horse-model/src/value-betting-engine.js";
 
 const DEFAULT_OPTIONS = {
   minUnit: 10,
@@ -10,6 +11,9 @@ const DEFAULT_OPTIONS = {
   minQplProbability: 0.12,
   minQuinellaProbability: 0.055,
   maxCoreExposureShare: 0.6,
+  probabilityHaircut: 0.05,
+  probabilityStatus: "RESEARCH_ONLY",
+  maxPriceAgeMinutes: 15,
 };
 
 const POOL_META = {
@@ -43,7 +47,9 @@ export function buildMultiPlayProbabilityBoard(entry, options = {}) {
   });
   const placeProbabilities = new Map(runners.map((runner) => [
     runner.horseId,
-    rankingModel.placeProbability(runner.horseId, placeCutoff),
+    Number.isFinite(Number(runner.placeProbability))
+      ? Number(runner.placeProbability)
+      : rankingModel.placeProbability(runner.horseId, placeCutoff),
   ]));
   const candidates = [top, second, third].filter(Boolean).map((runner, index) => candidate("PLACE", [runner], placeProbabilities.get(runner.horseId) ?? 0, {
     marketDividendPer10: marketDividendForPool({ type: "PLACE", runners: [runner], entry, config }),
@@ -118,7 +124,7 @@ export function buildMultiPlayProbabilityBoard(entry, options = {}) {
   }
 
   const enriched = candidates
-    .map((item) => enrichCandidate(item, config))
+    .map((item) => enrichCandidate(item, config, entry))
     .sort((a, b) => POOL_META[a.type].priority - POOL_META[b.type].priority || b.estimatedProbability - a.estimatedProbability);
 
   return {
@@ -200,29 +206,25 @@ function buildCashLines(candidates, config) {
 
 function placeStake(candidate, config) {
   if (!candidate || candidate.estimatedProbability < config.minPlaceProbability) return 0;
-  if (!hasUsableMarket(candidate)) return candidate.estimatedProbability >= 0.36 ? 20 : 10;
-  if (!clearsTargetExpectedRoi(candidate, config)) return 0;
+  if (candidate.decision?.status !== "PLAY") return 0;
   return candidate.estimatedProbability >= 0.45 ? 30 : 20;
 }
 
 function winStake(candidate, config) {
   if (!candidate || candidate.estimatedProbability < config.minWinProbability) return 0;
-  if (!hasUsableMarket(candidate)) return 0;
-  if (!clearsTargetExpectedRoi(candidate, config)) return 0;
+  if (candidate.decision?.status !== "PLAY") return 0;
   return 10;
 }
 
 function qplStake(candidate, config) {
   if (!candidate || candidate.estimatedProbability < config.minQplProbability) return 0;
-  if (!hasUsableMarket(candidate)) return 10;
-  if (!clearsTargetExpectedRoi(candidate, config)) return 0;
+  if (candidate.decision?.status !== "PLAY") return 0;
   return 10;
 }
 
 function quinellaStake(candidate, config) {
   if (!candidate || candidate.estimatedProbability < config.minQuinellaProbability) return 0;
-  if (!hasUsableMarket(candidate)) return 0;
-  if (!clearsTargetExpectedRoi(candidate, config)) return 0;
+  if (candidate.decision?.status !== "PLAY") return 0;
   return 10;
 }
 
@@ -241,9 +243,21 @@ function lineFromCandidate(candidate, stake, lane) {
     marketDividendPer10: candidate.marketDividendPer10,
     edge: candidate.edge,
     expectedRoi: candidate.expectedRoi,
+    conservativeExpectedRoi: candidate.conservativeExpectedRoi,
     targetRoi: candidate.targetRoi,
     meetsEntryPrice: candidate.meetsEntryPrice,
     status: candidate.status,
+    decision: candidate.decision,
+    probabilityArtifactId: candidate.probabilityArtifactId,
+    modelId: candidate.modelId,
+    calibrationMethod: candidate.calibrationMethod,
+    conservativeProbability: candidate.conservativeProbability,
+    fairDividendPer10: candidate.fairDividendPer10,
+    marketCapturedAt: candidate.marketCapturedAt,
+    marketWindow: candidate.marketWindow,
+    marketSellStatus: candidate.marketSellStatus,
+    marketSource: candidate.marketSource,
+    ruleVersion: candidate.ruleVersion,
     rationale: candidate.rationale,
   };
 }
@@ -263,31 +277,120 @@ function capLines(lines, maxBudget) {
   return kept;
 }
 
-function enrichCandidate(candidate, config) {
-  const requiredDividendPer10 = requiredDividend(candidate.estimatedProbability, config.edgeBuffer);
-  const expectedRoi = candidate.marketDividendPer10
-    ? (candidate.estimatedProbability * candidate.marketDividendPer10 / 10) - 1
-    : null;
+function enrichCandidate(candidate, config, entry) {
+  const conservativeProbability = conservativeProbabilityFor(candidate, config);
+  const market = marketContextForCandidate(candidate, entry, config);
   const role = candidate.cashEligible ? "cash" : "paper";
-  const meetsEntryPrice = expectedRoi == null ? null : expectedRoi >= config.edgeBuffer;
+  const probabilityStatus = probabilityStatusFor(candidate, config);
+  const decision = candidate.cashEligible
+    ? evaluateValueCandidate({
+      pool: candidate.type,
+      probability: candidate.estimatedProbability,
+      conservativeProbability,
+      dividendPer10: candidate.marketDividendPer10,
+      capturedAt: market.capturedAt,
+      evaluatedAt: market.evaluatedAt,
+      sellStatus: market.sellStatus,
+      safetyBuffer: config.edgeBuffer,
+      maxAgeMinutes: config.maxPriceAgeMinutes,
+      probabilityStatus,
+    })
+    : paperDecision(candidate, conservativeProbability, config.edgeBuffer);
   return {
     ...candidate,
     key: candidateKey(candidate),
     role,
     label: POOL_META[candidate.type].label,
-    requiredDividendPer10,
-    edge: expectedRoi,
-    expectedRoi,
+    probabilityStatus,
+    conservativeProbability,
+    fairDividendPer10: decision.fairDividendPer10 ?? requiredDividend(candidate.estimatedProbability, 0),
+    requiredDividendPer10: decision.requiredDividendPer10 ?? requiredDividend(conservativeProbability, config.edgeBuffer),
+    edge: decision.expectedRoi ?? null,
+    expectedRoi: decision.expectedRoi ?? null,
+    conservativeExpectedRoi: decision.conservativeExpectedRoi ?? null,
     targetRoi: config.edgeBuffer,
-    meetsEntryPrice,
-    status: statusFor(candidate.cashEligible, expectedRoi, candidate.marketDividendPer10, config.edgeBuffer),
+    meetsEntryPrice: decision.status === "PLAY",
+    status: decision.status,
+    decision,
+    probabilityArtifactId: config.probabilityArtifactId ?? entry?.forecast?.probabilityArtifactId ?? null,
+    modelId: config.modelId ?? entry?.forecast?.modelId ?? null,
+    calibrationMethod: config.calibrationMethod ?? entry?.forecast?.calibrationMethod ?? null,
+    marketCapturedAt: market.capturedAt,
+    marketWindow: market.window,
+    marketSellStatus: market.sellStatus,
+    marketSource: market.source,
+    ruleVersion: decision.ruleVersion ?? VALUE_RULE_VERSION,
   };
 }
 
-function statusFor(cashEligible, expectedRoi, marketDividendPer10, edgeBuffer) {
-  if (!cashEligible) return "PAPER";
-  if (!marketDividendPer10) return "CONDITIONAL";
-  return expectedRoi >= edgeBuffer ? "PLAY" : "WATCH";
+function conservativeProbabilityFor(candidate, config) {
+  const key = candidateKey(candidate);
+  const explicit = Number(config.conservativeProbabilities?.[key] ?? candidate.conservativeProbability);
+  if (Number.isFinite(explicit) && explicit > 0 && explicit <= candidate.estimatedProbability) {
+    return explicit;
+  }
+  const haircut = clamp(config.probabilityHaircut, 0, 0.5);
+  return Math.max(0.000001, candidate.estimatedProbability * (1 - haircut));
+}
+
+function probabilityStatusFor(candidate, config) {
+  const explicit = config.poolProbabilityStatus?.[candidate.type];
+  if (explicit) return explicit;
+  if (["WIN", "PLACE"].includes(candidate.type)) return config.probabilityStatus;
+  return "RESEARCH_ONLY";
+}
+
+function marketContextForCandidate(candidate, entry, config) {
+  const configured = config.marketSnapshots?.[candidate.type]
+    ?? entry?.marketSnapshots?.[candidate.type]
+    ?? {};
+  const first = candidate.selections?.[0] ?? {};
+  const typePrefix = candidate.type === "WIN" ? "win" : candidate.type === "PLACE" ? "place" : null;
+  return {
+    capturedAt: configured.capturedAt
+      ?? (typePrefix ? first[`${typePrefix}MarketCapturedAt`] : null)
+      ?? first.marketCapturedAt
+      ?? config.marketCapturedAt
+      ?? entry?.marketCapturedAt
+      ?? null,
+    evaluatedAt: config.evaluatedAt
+      ?? entry?.evaluatedAt
+      ?? entry?.forecast?.generatedAt
+      ?? null,
+    sellStatus: configured.sellStatus
+      ?? (typePrefix ? first[`${typePrefix}SellStatus`] : null)
+      ?? first.sellStatus
+      ?? config.sellStatus
+      ?? entry?.sellStatus
+      ?? null,
+    window: configured.window
+      ?? (typePrefix ? first[`${typePrefix}MarketWindow`] : null)
+      ?? first.marketWindow
+      ?? config.marketWindow
+      ?? entry?.marketWindow
+      ?? null,
+    source: configured.source
+      ?? first.marketSource
+      ?? config.marketSource
+      ?? entry?.marketSource
+      ?? null,
+  };
+}
+
+function paperDecision(candidate, conservativeProbability, edgeBuffer) {
+  return {
+    ruleVersion: VALUE_RULE_VERSION,
+    pool: candidate.type,
+    probability: candidate.estimatedProbability,
+    conservativeProbability,
+    fairDividendPer10: requiredDividend(candidate.estimatedProbability, 0),
+    requiredDividendPer10: requiredDividend(conservativeProbability, edgeBuffer),
+    expectedRoi: null,
+    conservativeExpectedRoi: null,
+    status: "PAPER",
+    reasonCode: "PROBABILITY_NOT_PROMOTED",
+    reasonZh: "该玩法概率尚未通过独立校准和晋级门槛，仅作纸上跟踪。",
+  };
 }
 
 function candidate(type, selections, estimatedProbability, extra) {
@@ -309,6 +412,17 @@ function selection(runner) {
     horseNo: runner.horseNo ?? null,
     horseName: runner.horseName ?? null,
     probability: Number.isFinite(Number(runner.probability)) ? Number(runner.probability) : null,
+    placeProbability: Number.isFinite(Number(runner.placeProbability)) ? Number(runner.placeProbability) : null,
+    marketCapturedAt: runner.marketCapturedAt ?? null,
+    marketWindow: runner.marketWindow ?? null,
+    marketSource: runner.marketSource ?? null,
+    sellStatus: runner.sellStatus ?? null,
+    winMarketCapturedAt: runner.winMarketCapturedAt ?? null,
+    winMarketWindow: runner.winMarketWindow ?? null,
+    winSellStatus: runner.winSellStatus ?? null,
+    placeMarketCapturedAt: runner.placeMarketCapturedAt ?? null,
+    placeMarketWindow: runner.placeMarketWindow ?? null,
+    placeSellStatus: runner.placeSellStatus ?? null,
   };
 }
 
@@ -396,7 +510,7 @@ function marketDividendForPool({ type, runners, entry, config }) {
     if (directMarket) return directMarket;
   }
 
-  return officialDividendPer10(type, runners, entry?.settlement?.dividends);
+  return null;
 }
 
 function optionDividendPer10(type, config) {
@@ -442,20 +556,12 @@ function dividendCombinationKey(type, combination) {
   return numbers.join(",");
 }
 
-function hasUsableMarket(candidate) {
-  return positiveNumber(candidate.marketDividendPer10);
-}
-
 function firstHorseId(candidate) {
   return candidate?.selections?.[0]?.horseId ?? null;
 }
 
 function containsHorse(candidate, horseId) {
   return Boolean(horseId) && candidate?.selections?.some((selection) => selection.horseId === horseId);
-}
-
-function clearsTargetExpectedRoi(candidate, config) {
-  return Number.isFinite(candidate?.expectedRoi) && candidate.expectedRoi >= config.edgeBuffer;
 }
 
 function compareLinesByExpectedRoi(a, b) {

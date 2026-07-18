@@ -39,7 +39,7 @@ This sequence overrides the older phase ordering below when the daily continuati
 - [x] Select sigmoid/isotonic calibration and LightGBM/CatBoost blend weights on validation only; report untouched holdout metrics.
 - [x] Finish low-frequency T-30/T-10/T-3 WIN/PLA collection reporting and race-day continuation behavior.
 - [x] Build the core fair-price/required-price/conservative-EV engine with `PLAY`, `WATCH`, `PAPER`, and `NO_BET` states.
-- [ ] Route WIN/PLACE recommendations and executable audit locks through the EV engine; missing or stale prices fail closed.
+- [x] Route WIN/PLACE recommendations and executable audit locks through the EV engine; missing or stale prices fail closed. Cash recommendations now require a fresh, selling market snapshot, calibrated probability lineage, and a conservative EV decision of `PLAY`; non-executable decisions are forced to zero stake in the audit trail.
 - [ ] Produce separate WIN and PLACE promotion reports. Stronger prediction metrics may promote a research champion, but executable mode remains blocked until prospective market evidence exists.
 
 ### P1 — Market-aware stack and prospective price validation
