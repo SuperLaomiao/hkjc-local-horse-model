@@ -191,6 +191,10 @@ Goal: reproduce the strongest public GitHub ideas on our own SQLite history befo
     - Maps sectional/pace/fitness/comment fields into normalized pre-race features when locally available.
     - Keeps these features optional and leakage-safe.
     - Records source coverage by race date so model reports can separate rows with/without SpeedPRO enrichment.
+  - Partial delivery (2026-07-18):
+    - Added `speedpro-feature-importer.js` and optional `training-dataset --speedproRoot` integration.
+    - Current Tianxi SpeedPRO cache covers 5 meetings from 2026-07-01 through 2026-07-15 and 637/637 requested runner rows.
+    - Cash/model promotion remains blocked because this current-season-only cohort cannot train and evaluate the same feature policy across chronological train/validation/holdout splits; historical timestamped snapshots and same-cohort comparison remain required.
 
 - [ ] Reproduce the catowabisabi top-2 Quinella experiment on our data.
   - Suggested files:
@@ -292,7 +296,7 @@ This queue is mirrored in `research-program.js` and surfaced in the dashboard Re
 | P0 | `tier1-external-benchmark-registry` | Phase B | implemented and visible in Research Lab | Surface public benchmark metrics, our gap, and promotion gates. |
 | P0 | `catowabisabi-lgb-no-odds-quinella` | Phase B | partial, blocked on verified T-30 cold-odds coverage; current replay NO-BET | Reproduce no-odds LightGBM QIN/QPL edge on our SQLite data. |
 | P0 | `jerrydaphantom-catboost-market-aware` | Phase B | implemented, historical value gate NO-GO | Reproduce CatBoost/LightGBM market-aware calibration and EV grids. |
-| P1 | `speedpro-feature-importer` | Phase B | queued, executable | Add sectional/pace/fitness enrichment when available. |
+| P1 | `speedpro-feature-importer` | Phase B | partial, executable | Current 5-meeting importer is live; backfill timestamped history and run same-cohort holdout comparison. |
 | P1 | `lightgbm-no-market-benchmark` | Phase B | implemented, local benchmark trained | Build a non-market tree-model benchmark before live odds are complete. |
 | P1 | `tianxi-feature-backfill` | Phase B | implemented audit and optional prior-form enrichment | Audit and design local-only derived feature imports. |
 | P1 | `j-csc-scraper-schema-audit` | Phase B | queued, executable | Audit HKJC scraper field coverage, veterinary/racecard pages, and parser fixtures. |

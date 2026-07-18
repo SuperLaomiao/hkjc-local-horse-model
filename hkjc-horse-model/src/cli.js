@@ -44,6 +44,10 @@ import {
   tianxiRunnerFeatureKey,
 } from './tianxi-form-feature-loader.js';
 import {
+  loadSpeedproFeatureIndex,
+  speedproRunnerFeatureKey,
+} from './speedpro-feature-importer.js';
+import {
   fetchFixtureMeetings,
   fetchMeetingRaceCards,
   fetchMeetingResults,
@@ -326,6 +330,12 @@ async function trainingDatasetCommand(args) {
       availabilityLagDays: args.tianxiLagDays == null ? 1 : Number(args.tianxiLagDays),
     })
     : null;
+  const speedproFeatures = args.speedproRoot
+    ? await loadSpeedproFeatureIndex({
+      rootPath: path.resolve(args.speedproRoot),
+      races: settledRaces,
+    })
+    : null;
   const rows = buildAsOfTrainingRows(settledRaces, {
     marketFeaturesForRunner: ({ race, runner }) => (
       {
@@ -333,8 +343,11 @@ async function trainingDatasetCommand(args) {
         ...(poolMoneyFeatures.featuresByRunner.get(`${race.raceId}|${runner.horseNo}`) ?? {}),
       }
     ),
-    externalFeaturesForRunner: tianxiFeatures
-      ? ({ race, runner }) => tianxiFeatures.featuresByRunner.get(tianxiRunnerFeatureKey(race, runner)) ?? {}
+    externalFeaturesForRunner: tianxiFeatures || speedproFeatures
+      ? ({ race, runner }) => ({
+        ...(tianxiFeatures?.featuresByRunner.get(tianxiRunnerFeatureKey(race, runner)) ?? {}),
+        ...(speedproFeatures?.featuresByRunner.get(speedproRunnerFeatureKey(race, runner)) ?? {}),
+      })
       : undefined,
   });
   const summary = summarizeTrainingRows(rows);
@@ -350,7 +363,12 @@ async function trainingDatasetCommand(args) {
     },
     marketFeatures: marketFeatures.summary,
     poolMoneyFeatures: poolMoneyFeatures.summary,
-    ...(tianxiFeatures ? { externalFeatures: { tianxi: tianxiFeatures.summary } } : {}),
+    ...(tianxiFeatures || speedproFeatures ? {
+      externalFeatures: {
+        ...(tianxiFeatures ? { tianxi: tianxiFeatures.summary } : {}),
+        ...(speedproFeatures ? { speedpro: speedproFeatures.summary } : {}),
+      },
+    } : {}),
     summary,
     rows,
   });
@@ -359,6 +377,9 @@ async function trainingDatasetCommand(args) {
   console.log(`Pool money coverage: ${poolMoneyFeatures.summary.racesWithAnyPoolMoney}/${poolMoneyFeatures.summary.races} races`);
   if (tianxiFeatures) {
     console.log(`Tianxi form coverage: ${tianxiFeatures.summary.availableFeatureRows}/${tianxiFeatures.summary.requestedRunnerRows} runner rows`);
+  }
+  if (speedproFeatures) {
+    console.log(`SpeedPRO coverage: ${speedproFeatures.summary.availableFeatureRows}/${speedproFeatures.summary.requestedRunnerRows} runner rows`);
   }
   console.log(`Saved training dataset to ${outputPath}`);
 }
@@ -1260,7 +1281,7 @@ Commands:
   auto-run   --input hkjc-horse-model/data/raw --db hkjc-horse-model/data/hkjc.sqlite --output data/dashboard.json --auditOutput hkjc-horse-model/data/private/latest-recommendation-audit.json
   sync-db    --input hkjc-horse-model/data/raw --upcoming hkjc-horse-model/data/upcoming --db hkjc-horse-model/data/hkjc.sqlite
   dashboard-db --db hkjc-horse-model/data/hkjc.sqlite --output data/dashboard.json --privateHistoryOutput hkjc-horse-model/data/private/dashboard-history.json
-  training-dataset --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/training-dataset.json --tianxiRoot /path/to/tianxi-database
+  training-dataset --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/training-dataset.json --tianxiRoot /path/to/tianxi-database --speedproRoot /path/to/tianxi-database
   training-matrix --input hkjc-horse-model/data/processed/training-dataset.json --output hkjc-horse-model/data/processed/training-matrix.jsonl [--format jsonl|csv]
   model-leaderboard --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/model-leaderboard.json
   external-model-comparison --date 2026-07-08 --venue HV --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/external-model-comparison-2026-07-08-HV.json
