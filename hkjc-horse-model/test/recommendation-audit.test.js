@@ -134,6 +134,56 @@ describe('recommendation audit', () => {
     assert.equal(audit.runs[0].lines[1].marketCapturedAt, '2026-07-04T07:45:00.000Z');
     assert.equal(audit.runs[0].lines[1].ruleVersion, 'value-betting-v1');
   });
+
+  it('records T-3 indicative CLV, official slippage, cash drawdown, and paper ROI separately', () => {
+    const audit = auditRecommendationRuns({
+      races: [settledRace()],
+      marketSnapshots: [
+        {
+          raceId: '2026-07-04-ST-1', poolKey: 'place', combination: [1],
+          oddsValue: 1.8, minutesToPost: 3,
+          capturedAt: '2026-07-04T07:57:00.000Z', sellStatus: 'SELLING',
+        },
+      ],
+      runs: [{
+        runId: 'rec_clv_paper',
+        raceId: '2026-07-04-ST-1',
+        generatedAt: '2026-07-04T07:50:00.000Z',
+        summary: { mode: 'execute' },
+        recommendations: [
+          {
+            pool: 'PLACE', combination: [1], stake: 10,
+            marketDividendPer10: 20,
+            marketCapturedAt: '2026-07-04T07:50:00.000Z',
+            marketWindow: 'T-10',
+            decision: { status: 'PLAY', reasonCode: 'EDGE_CLEARS_BUFFER' },
+          },
+          {
+            pool: 'PLACE', combination: [2], stake: 10,
+            decision: { status: 'PAPER', reasonCode: 'MODEL_NOT_PROMOTED' },
+          },
+        ],
+      }],
+    });
+
+    const [cashLine, paperLine] = audit.runs[0].lines;
+    assert.equal(cashLine.t3Market.dividendPer10, 18);
+    assert.equal(cashLine.t3Market.minutesToPost, 3);
+    assert.equal(cashLine.indicativeClv, 0.1111);
+    assert.equal(cashLine.priceSlippageToT3, -0.1);
+    assert.equal(cashLine.officialDividendChangeFromLock, -0.495);
+    assert.equal(paperLine.status, 'PASS');
+    assert.deepEqual(paperLine.paper, {
+      status: 'HIT', stake: 10, dividendPer10: 15, returned: 15, profit: 5,
+    });
+    assert.equal(audit.summary.clvLines, 1);
+    assert.equal(audit.summary.averageIndicativeClv, 0.1111);
+    assert.equal(audit.summary.paperStake, 10);
+    assert.equal(audit.summary.paperReturn, 15);
+    assert.equal(audit.summary.paperRoi, 0.5);
+    assert.equal(audit.summary.maxDrawdown, 0);
+    assert.equal(audit.summary.paperMaxDrawdown, 0);
+  });
 });
 
 function settledRace() {

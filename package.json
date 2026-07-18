@@ -19,6 +19,7 @@
     "hkjc:market-aware-gate": "${PYTHON:-python3} hkjc-horse-model/python/train_market_aware_stack.py",
     "hkjc:market-value-grid": "${PYTHON:-python3} hkjc-horse-model/python/evaluate_market_value.py",
     "hkjc:market-aware-comparison": "${PYTHON:-python3} hkjc-horse-model/python/build_market_aware_comparison.py",
+    "hkjc:closing-price-forecast": "${PYTHON:-python3} hkjc-horse-model/python/forecast_closing_price.py",
     "hkjc:benchmark-exotics": "${PYTHON:-python3} hkjc-horse-model/python/benchmark_exotic_strategy.py",
     "hkjc:model-leaderboard": "node hkjc-horse-model/src/cli.js model-leaderboard",
     "hkjc:external-model-comparison": "node hkjc-horse-model/src/cli.js external-model-comparison",
