@@ -175,6 +175,22 @@ export const EXTERNAL_SOURCE_REGISTRY = Object.freeze([
       feature('legacy-current-state-without-observed-at', 'unsafe', 'Current ratings, cumulative stakes and veterinary dates cannot backfill old races without an as-of timestamp.'),
     ],
   }),
+  source({
+    sourceId: 'jonzielo-hkjc-project',
+    label: 'JonzieLo parimutuel/copula methodology reference',
+    canonicalUrl: 'https://github.com/JonzieLo/hkjc-project',
+    role: 'model',
+    licenseStatus: 'unknown',
+    license: null,
+    allowedUses: ['clean-room-methodology-reimplementation'],
+    cachePolicy: 'none',
+    featureGroups: [
+      feature('timestamped-stop-sell-prices', 'pre-race-candidate', 'Require actual phase-tagged observations before sales close; never substitute final dividends.'),
+      feature('official-results-and-dividends', 'post-race', 'Settlement and labels only.'),
+      feature('synthetic-missing-combination-prices', 'unsafe', 'Model-generated prices cannot establish historical executable ROI or replace missing market combinations.'),
+      feature('final-dividend-trained-market-anchor', 'unsafe', 'Do not use final odds as a feature or base margin for a pre-race recommendation.'),
+    ],
+  }),
 ]);
 
 export function validateExternalSourceRegistry(registry = EXTERNAL_SOURCE_REGISTRY) {
