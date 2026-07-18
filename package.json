@@ -13,6 +13,7 @@
     "hkjc:training-matrix": "node hkjc-horse-model/src/cli.js training-matrix",
     "hkjc:train-tree-model": "${PYTHON:-python3} hkjc-horse-model/python/train_tree_model.py",
     "hkjc:train-catboost-model": "${PYTHON:-python3} hkjc-horse-model/python/train_catboost_model.py",
+    "hkjc:probability-stack": "${PYTHON:-python3} hkjc-horse-model/python/build_probability_stack.py",
     "hkjc:benchmark-place": "${PYTHON:-python3} hkjc-horse-model/python/benchmark_place_strategy.py",
     "hkjc:benchmark-exotics": "${PYTHON:-python3} hkjc-horse-model/python/benchmark_exotic_strategy.py",
     "hkjc:model-leaderboard": "node hkjc-horse-model/src/cli.js model-leaderboard",
