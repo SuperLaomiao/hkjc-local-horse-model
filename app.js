@@ -14,6 +14,10 @@ import {
 } from "./external-model-summary.js?v=20260708-external-models";
 import { buildStructuredBetPortfolio } from "./multi-play-portfolio.js";
 import { buildMeetingCountdown } from "./meeting-countdown.js";
+import {
+  buildPublicPortfolioOptions,
+  dashboardExecutionPolicy,
+} from "./public-dashboard-mode.js";
 import { buildResearchUpgradeProgram, summarizeResearchUpgradeProgram } from "./research-program.js";
 import {
   buildPoolGuideRecommendation,
@@ -141,6 +145,7 @@ function render() {
   const selectedEntry = entries.find((entry) => entry.raceId === uiState.selectedRaceId) ?? entries[0];
   const todayStatus = localRaceDayStatus(snapshot);
   const layout = getDashboardLayoutSections({ selectedToolId: uiState.selectedToolId });
+  const executionPolicy = dashboardExecutionPolicy(snapshot);
 
   if (!selectedEntry) {
     renderMissingData(new Error("No HKJC local races or race-card forecasts found in dashboard data."));
@@ -182,7 +187,7 @@ function render() {
         <main class="main-stack">
           ${renderScoreStrip(snapshot.summary)}
           ${renderFinalBetPlanPanel(selectedEntry, snapshot, todayStatus)}
-          ${renderStakingStrategyPanel(selectedEntry)}
+          ${executionPolicy.allowPersonalStaking ? renderStakingStrategyPanel(selectedEntry) : ""}
           ${renderPredictionPanel(selectedEntry)}
         </main>
 
@@ -202,6 +207,19 @@ function render() {
 
 async function ensureResearchReports() {
   if (uiState.researchReports.status !== "idle") return;
+  if (!dashboardExecutionPolicy(uiState.snapshot).allowExecutableRecommendations) {
+    uiState.researchReports = {
+      status: "ready",
+      loadedAt: new Date().toISOString(),
+      error: "逐项模型、策略风险和推荐审计报告只保存在私有研究环境；公开版仅显示已清洗的聚合 Research Lab 摘要。",
+      leaderboard: null,
+      training: null,
+      strategyRisk: null,
+      externalComparison: null,
+    };
+    render();
+    return;
+  }
   uiState.researchReports = {
     ...uiState.researchReports,
     status: "loading",
@@ -411,6 +429,11 @@ function renderToolDrawerPanel(entry, entries, snapshot, layout) {
 }
 
 function renderToolDrawerContent(toolId, entry, entries, snapshot) {
+  const executionPolicy = dashboardExecutionPolicy(snapshot);
+  if (!executionPolicy.allowPersonalStaking && ["pool-guide", "adaptive-route"].includes(toolId)) {
+    return renderPublicExecutionBoundaryPanel(entry, executionPolicy);
+  }
+
   if (toolId === "pool-guide") {
     return renderBetTypeGuidePanel(entry);
   }
@@ -446,10 +469,14 @@ function renderToolDrawerContent(toolId, entry, entries, snapshot) {
     return renderNotesPanel(snapshot.assumptions, snapshot);
   }
 
-  return renderMultiPlayPortfolioPanel(entry);
+  return renderMultiPlayPortfolioPanel(entry, snapshot);
 }
 
 function renderFinalBetPlanPanel(entry, snapshot, todayStatus) {
+  const executionPolicy = dashboardExecutionPolicy(snapshot);
+  if (!executionPolicy.allowExecutableRecommendations) {
+    return renderPublicExecutionBoundaryPanel(entry, executionPolicy);
+  }
   if (todayStatus.noLocalRaceToday) {
     return renderNoLocalRacePlanPanel(snapshot, todayStatus);
   }
@@ -525,6 +552,26 @@ function renderFinalBetPlanPanel(entry, snapshot, todayStatus) {
             ${(resolvedPlan.stopRules ?? []).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
           </ul>
         </div>
+      </div>
+    </section>
+  `;
+}
+
+function renderPublicExecutionBoundaryPanel(entry, policy) {
+  return `
+    <section class="panel bet-plan-panel public-research-panel">
+      <div class="panel-header">
+        <div>
+          <h3>公开研究版</h3>
+          <p>${escapeHtml(formatRaceContext(entry))} · 只展示模型预测和聚合验证结果。</p>
+        </div>
+        <span class="strategy-budget is-pass">NO BET</span>
+      </div>
+      <div class="bet-plan-body">
+        <span class="plan-badge is-pass">PRIVATE EXECUTION</span>
+        <h2 class="plan-title">个性化下注方案已隐藏</h2>
+        <p class="plan-headline">${escapeHtml(policy.reason)}</p>
+        <p class="fine-print">公开页面不会发布注码、票据、逐笔账本或个人审计；完整执行数据只保存在本地私有 SQLite。</p>
       </div>
     </section>
   `;
@@ -622,6 +669,18 @@ function renderLockForecastButton(entry) {
 }
 
 function renderMobileActionBar(entry, todayStatus) {
+  const executionPolicy = dashboardExecutionPolicy(uiState.snapshot);
+  if (!executionPolicy.allowExecutableRecommendations) {
+    return `
+      <div class="mobile-action-bar" aria-label="mobile final action">
+        <div>
+          <span>公开研究版</span>
+          <strong>个性化下注已隐藏</strong>
+        </div>
+        ${renderRefreshButton("刷新", "mobile")}
+      </div>
+    `;
+  }
   if (todayStatus.noLocalRaceToday) {
     const nextMeeting = todayStatus.nextMeeting ? formatMeeting(todayStatus.nextMeeting) : "待官方更新";
     return `
@@ -718,8 +777,9 @@ function renderStakeBetLine(entry, bet) {
   `;
 }
 
-function renderMultiPlayPortfolioPanel(entry) {
-  const portfolio = buildStructuredBetPortfolio(entry);
+function renderMultiPlayPortfolioPanel(entry, snapshot = uiState.snapshot) {
+  const executionPolicy = dashboardExecutionPolicy(snapshot);
+  const portfolio = buildStructuredBetPortfolio(entry, buildPublicPortfolioOptions(snapshot));
   return `
     <section class="panel multi-play-panel">
       <div class="panel-header">
@@ -731,6 +791,7 @@ function renderMultiPlayPortfolioPanel(entry) {
       </div>
       <div class="multi-play-body">
         <span class="race-context-pill">${escapeHtml(formatRaceContext(entry))}</span>
+        ${executionPolicy.allowExecutableRecommendations ? "" : '<span class="plan-badge is-pass">PUBLIC RESEARCH · NO BET</span>'}
         <span class="strategy-mode ${portfolio.mode === "PASS" ? "is-pass" : ""}">${escapeHtml(portfolio.label)}</span>
         <p class="strategy-rationale">${escapeHtml(portfolio.summary)}</p>
         ${portfolio.cashLines.length ? `

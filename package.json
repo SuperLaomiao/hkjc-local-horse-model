@@ -25,6 +25,8 @@
     "hkjc:train-exotic-pair": "${PYTHON:-python3} hkjc-horse-model/python/train_exotic_pair_model.py",
     "hkjc:evaluate-exotic-pair": "${PYTHON:-python3} hkjc-horse-model/python/evaluate_exotic_pair_strategy.py",
     "hkjc:exotic-promotion": "${PYTHON:-python3} hkjc-horse-model/python/build_exotic_pool_promotion.py",
+    "hkjc:build-public-site": "node hkjc-horse-model/src/public-site-cli.js build --output .public-site",
+    "hkjc:privacy-scan": "node hkjc-horse-model/src/public-site-cli.js scan --root .public-site",
     "hkjc:model-leaderboard": "node hkjc-horse-model/src/cli.js model-leaderboard",
     "hkjc:external-model-comparison": "node hkjc-horse-model/src/cli.js external-model-comparison",
     "hkjc:external-source-audit": "node hkjc-horse-model/src/cli.js external-source-audit",

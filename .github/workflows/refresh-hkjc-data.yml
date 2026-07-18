@@ -1,7 +1,9 @@
-name: Refresh HKJC data
+name: Refresh and deploy sanitized HKJC dashboard
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
   schedule:
     # Baseline refresh around 09:00 Hong Kong time.
     - cron: "0 1 * * *"
@@ -9,13 +11,22 @@ on:
     - cron: "45 15 * * 0,3,6"
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
 
 jobs:
-  refresh:
+  refresh-and-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout private source
         uses: actions/checkout@v4
 
       - name: Setup Node
@@ -23,19 +34,25 @@ jobs:
         with:
           node-version: "25"
 
-      - name: Refresh HKJC local model data
+      - name: Refresh local model data in the ephemeral runner
         run: |
           npm run hkjc:refresh -- --historyDays 14 --futureDays 21 --bankroll 200 --minEdge 0 --minProbability 0.15 --maxStakePct 0.05 --finalEdgeBuffer 0.08
           npm run hkjc:auto-run -- --bankroll 200 --minEdge 0 --minProbability 0.15 --maxStakePct 0.05 --finalEdgeBuffer 0.08
 
-      - name: Commit refreshed data
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/dashboard.json data/latest-recommendation-audit.json hkjc-horse-model/data/raw hkjc-horse-model/data/upcoming hkjc-horse-model/data/processed/dashboard.json hkjc-horse-model/data/processed/latest-recommendation-audit.json
-          if git diff --cached --quiet; then
-            echo "No HKJC data changes to commit."
-          else
-            git commit -m "Refresh HKJC dashboard data"
-            git push
-          fi
+      - name: Build public allowlist artifact
+        run: npm run hkjc:build-public-site
+
+      - name: Verify public artifact privacy
+        run: npm run hkjc:privacy-scan
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload sanitized Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .public-site
+
+      - name: Deploy sanitized Pages artifact
+        id: deployment
+        uses: actions/deploy-pages@v4

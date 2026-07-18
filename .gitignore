@@ -3,6 +3,12 @@ node_modules/
 .venv/
 **/__pycache__/
 .worktrees/
+.public-site/
+.playwright-cli/
+hkjc-horse-model/data/private/
+hkjc-horse-model/data/processed/
+data/dashboard-history.json
+data/latest-recommendation-audit.json
 hkjc-horse-model/data/*.sqlite
 hkjc-horse-model/data/*.sqlite-*
 hkjc-horse-model/data/processed/training-dataset.json
