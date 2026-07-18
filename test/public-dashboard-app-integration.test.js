@@ -15,4 +15,17 @@ describe('public dashboard app integration', () => {
     );
     assert.match(styles, /\.publication-mode-badge\.is-functional/);
   });
+
+  it('shows truthful Research Lab action progress, evidence, and remaining work', async () => {
+    const appSource = await readFile(new URL('../app.js', import.meta.url), 'utf8');
+
+    assert.match(appSource, /implementedActionCount/);
+    assert.match(appSource, /partialActionCount/);
+    assert.match(appSource, /queuedActionCount/);
+    assert.match(appSource, /action\.evidence/);
+    assert.match(appSource, /action\.remaining/);
+    assert.match(appSource, /已完成/);
+    assert.match(appSource, /部分完成/);
+    assert.match(appSource, /待执行/);
+  });
 });

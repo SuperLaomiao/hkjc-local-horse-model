@@ -55,7 +55,7 @@ This sequence overrides the older phase ordering below when the daily continuati
 
 ### P3 — Privacy separation
 
-- [ ] Split public sanitized GitHub Pages artifacts from private/local SQLite, raw data, market snapshots, model artifacts, recommendations, tickets, and personal audits using a publish allowlist and automated privacy scan.
+- [x] Split public sanitized GitHub Pages artifacts from private/local SQLite, raw data, market snapshots, model artifacts, recommendations, tickets, and personal audits using a publish allowlist and automated privacy scan.
   - Implementation delivered: allowlisted `.public-site/` artifact, fail-closed privacy scan, public dashboard field allowlists, private history/audit defaults, zero-budget public execution policy, and an artifact-only Pages workflow.
   - Pages activation completed on 2026-07-18: production now deploys the scanned Actions artifact instead of legacy `main /`. Remaining decision: keep the source public, make it private under an eligible plan, or split private source from a separate public Pages repository. Existing public Git history is not rewritten automatically.
   - Product decision on 2026-07-18: keep the repository and Pages public on the free tier, expose the complete browser product through `PUBLIC_FUNCTIONAL_SANITIZED`, and continue excluding SQLite, raw snapshots, full ledgers, audits, tickets, and personal records from the Pages artifact. Private hosting and account-level data separation are deferred until product maturity.
@@ -123,7 +123,7 @@ Goal: reproduce the strongest public GitHub ideas on our own SQLite history befo
     - Registry includes `catowabisabi-lgb-quinella`, `jerrydaphantom-catboost-calibration`, `neigh-speedpro-features`, `hkjc-pool-tracker-features`, `hkjc-edge-lab-clv`, and `current-baseline`.
     - Each entry records required data, leakage risks, metrics, and promotion gates.
 
-- [ ] Add Tier1 Acceleration Lab dashboard registry. Research Lab action: `tier1-external-benchmark-registry` / P0.
+- [x] Add Tier1 Acceleration Lab dashboard registry. Research Lab action: `tier1-external-benchmark-registry` / P0.
   - Suggested files:
     - Modify `research-program.js`
     - Modify `test/research-program.test.js`
@@ -286,22 +286,23 @@ This queue is mirrored in `research-program.js` and surfaced in the dashboard Re
 
 | Priority | Action id | Phase | Automation status | Purpose |
 | --- | --- | --- | --- | --- |
-| P0 | `live-snapshot-planner` | Phase A | queued, executable | Capture T-30/T-10/T-3 live odds/pool windows. |
+| P0 | `live-snapshot-planner` | Phase A | implemented; race-day capture remains operational | Capture T-30/T-10/T-3 live odds/pool windows. |
 | P0 | `pool-money-features` | Phase A/B | implemented, awaiting T-window coverage | Turn pool money and crowding into leakage-safe features. |
-| P0 | `benchmark-registry-refresh` | Phase B | queued, executable | Compare our baseline against stronger public ideas. |
-| P0 | `tier1-external-benchmark-registry` | Phase B | queued, executable | Surface public benchmark metrics, our gap, and promotion gates. |
-| P0 | `catowabisabi-lgb-no-odds-quinella` | Phase B | queued, executable | Reproduce no-odds LightGBM QIN/QPL edge on our SQLite data. |
+| P0 | `benchmark-registry-refresh` | Phase B | implemented | Compare our baseline against stronger public ideas. |
+| P0 | `tier1-external-benchmark-registry` | Phase B | implemented and visible in Research Lab | Surface public benchmark metrics, our gap, and promotion gates. |
+| P0 | `catowabisabi-lgb-no-odds-quinella` | Phase B | partial, blocked on verified T-30 cold-odds coverage; current replay NO-BET | Reproduce no-odds LightGBM QIN/QPL edge on our SQLite data. |
 | P0 | `jerrydaphantom-catboost-market-aware` | Phase B | implemented, historical value gate NO-GO | Reproduce CatBoost/LightGBM market-aware calibration and EV grids. |
 | P1 | `speedpro-feature-importer` | Phase B | queued, executable | Add sectional/pace/fitness enrichment when available. |
 | P1 | `lightgbm-no-market-benchmark` | Phase B | implemented, local benchmark trained | Build a non-market tree-model benchmark before live odds are complete. |
-| P1 | `tianxi-feature-backfill` | Phase B | queued, executable | Audit and design local-only derived feature imports. |
+| P1 | `tianxi-feature-backfill` | Phase B | implemented audit and optional prior-form enrichment | Audit and design local-only derived feature imports. |
 | P1 | `j-csc-scraper-schema-audit` | Phase B | queued, executable | Audit HKJC scraper field coverage, veterinary/racecard pages, and parser fixtures. |
-| P1 | `no-bet-clv-gate` | Phase C | implemented, awaiting prospective locks | Reject lines without live edge and track closing-line value. |
+| P1 | `no-bet-clv-gate` | Phase C | partial: fail-closed gate and CLV/slippage audit implemented; bootstrap/placebo and prospective locks remain | Reject lines without live edge and track closing-line value. |
 | P1 | `bayesian-tripwire` | Phase C | queued, executable | Reduce stake or paper-mode when uncertainty is too high. |
 | P2 | `parimutuel-stacker-copula-study` | Phase B/C | research-only | Document exotic-pool modeling before any implementation. |
 
 ## Latest continuation note
 
+- 2026-07-18: Calibrated Research Lab against code, tests, and artifacts instead of stale queue labels. Follow-up actions now report 4 implemented, 1 partial, 2 queued, and 1 research-only item, each with public-safe delivery evidence and explicit remaining work. The catowabisabi QIN/QPL reproduction is marked partial/blocked-data because our fixed-line replay is negative and lacks verified T-30 cold-odds coverage; the jerrydaphantom market-aware reproduction is marked probability-improving but cash `NO_BET`. The deployed public-functional boundary remains separate from these model promotion decisions.
 - 2026-07-18: Approved the public functional Pages mode. The exact `PUBLIC_FUNCTIONAL_SANITIZED` contract enables prediction, EV, staking, pool-guide, adaptive-route, and review tools on phone and desktop while keeping personal state in browser-local storage. Unknown, legacy, or unsafe publication markers fail closed to research-only zero-budget mode. Private processed Research Lab reports remain inaccessible and are no longer fetched merely because recommendation tools are enabled. The artifact allowlist and privacy scan continue to block raw data, SQLite, row-level ledgers, audits, tickets, secrets, and local paths.
 - 2026-07-18: Activated the P3 production boundary after merge. GitHub Pages now reports `build_type: workflow`; Actions run `29635062900` completed refresh, allowlist build, privacy scan, artifact upload, and deployment successfully. The deployed dashboard reports `PUBLIC_SANITIZED`, publishes zero ledger rows, and the former full-history, recommendation-audit, and processed-report URLs return 404. The source repository remains public, so prior Git history is still accessible until the repository visibility or split-repository decision is made.
 - 2026-07-18: Implemented the P3 privacy boundary without claiming that repository history is already private. The public builder now copies exactly 20 allowlisted runtime files, writes a `PUBLIC_SANITIZED` dashboard, and fails closed on extra paths, symlinks, local paths, secret patterns, forbidden recommendation/stake/ticket/audit fields, or row-level ledgers. Public JSON keeps model predictions and aggregate research metrics but removes executable recommendations, personal staking, detailed settlements, SQLite labels, and full-history links. The UI honors that marker: it shows `公开研究版 / NO BET`, hides personalized staking panels, and forces the multi-play tool to zero executable budget. Full history, recommendation audits, and processed research reports are untracked and ignored locally. The scheduled workflow no longer commits raw/audit changes; it uploads only the scanned Pages artifact. Browser verification loaded the sanitized site with all runtime modules and no current 404s. At implementation time, Pages activation and the source visibility/public-site repository choice were still pending; the next note records the completed Pages activation. Existing public Git history is not rewritten automatically.
