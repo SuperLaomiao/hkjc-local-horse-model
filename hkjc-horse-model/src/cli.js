@@ -761,6 +761,7 @@ async function liveMarketDueSnapshotsCommand(args) {
   });
   console.log(`Due live market snapshots: ${report.summary.due} due, ${report.summary.captured} captured, ${report.summary.skippedDuplicates} duplicate windows skipped`);
   console.log(`Imported: ${report.summary.oddsSnapshots} odds, ${report.summary.poolSnapshots} pools`);
+  console.log(report.summaryZh);
   console.log(`Saved due snapshot report to ${outputPath}`);
 }
 

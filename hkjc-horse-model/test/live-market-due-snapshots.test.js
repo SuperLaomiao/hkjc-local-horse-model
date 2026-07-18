@@ -12,6 +12,7 @@ const dueRace = {
   date: '2026-07-18',
   racecourse: 'ST',
   raceNo: 1,
+  postTime: '2026-07-18T18:30:00+08:00',
   minutesToPost: 30,
   window: 'T-30',
 };
@@ -41,10 +42,15 @@ describe('due live market snapshot runner', () => {
       dbPath: '/tmp/hkjc.sqlite',
       pools: ['WIN', 'PLA', 'QIN', 'QPL'],
       loadPlan: () => [
-        dueRace,
+        {
+          ...dueRace,
+          postTime: '2026-07-18T10:03:00.000Z',
+          minutesToPost: 3,
+          window: 'T-3',
+        },
         { ...dueRace, raceId: '2026-07-18-ST-2', raceNo: 2 },
       ],
-      loadCapturedWindows: () => new Set(['2026-07-18-ST-1|T-30']),
+      loadCapturedWindows: () => new Set(['2026-07-18-ST-1|T-3']),
       capture: async (options) => {
         calls.push(options);
         return { oddsSnapshots: 12, poolSnapshots: 4 };
@@ -65,6 +71,13 @@ describe('due live market snapshot runner', () => {
     assert.equal(report.summary.skippedDuplicates, 1);
     assert.equal(report.summary.oddsSnapshots, 12);
     assert.equal(report.summary.poolSnapshots, 4);
+    assert.deepEqual(report.nextDue, {
+      raceId: '2026-07-18-ST-2',
+      window: 'T-10',
+      dueAt: '2026-07-18T10:20:00.000Z',
+    });
+    assert.match(report.summaryZh, /捕获 1 场/);
+    assert.match(report.summaryZh, /赔率 12 行/);
   });
 
   it('exposes a dry-run CLI that writes a no-due report without fetching', async () => {
