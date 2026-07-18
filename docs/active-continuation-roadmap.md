@@ -23,6 +23,44 @@ Reach a tested, leakage-safe recommendation system that combines:
 - comparison against stronger public GitHub ideas before upgrading cash-mode recommendations.
 - Research Lab follow-up action queue, mirrored from `research-program.js`, so dashboard research items and daily continuation tasks stay aligned.
 
+## Approved P0-P4 execution order — 2026-07-18
+
+This sequence overrides the older phase ordering below when the daily continuation run chooses its first unchecked task. Detailed design and implementation steps live in:
+
+- `docs/superpowers/specs/2026-07-18-value-betting-roadmap-design.md`
+- `docs/superpowers/plans/2026-07-18-value-betting-engine.md`
+
+### P0 — No-market probability stack, live collection, and core EV engine
+
+- [x] Export versioned runner predictions from the LightGBM trainer.
+- [x] Make LightGBM probability policy and metrics target-aware for `targetWin` and `targetPlace`.
+- [x] Persist the strict Top-pick-to-PLACE holdout baseline: 564 bets, 304 hits, 53.90% hit rate, HK$4,908.40 return from HK$5,640 stake, -12.97% ROI.
+- [x] Train no-market CatBoost WIN and PLACE candidates on the existing chronological matrix.
+- [x] Select sigmoid/isotonic calibration and LightGBM/CatBoost blend weights on validation only; report untouched holdout metrics.
+- [x] Finish low-frequency T-30/T-10/T-3 WIN/PLA collection reporting and race-day continuation behavior.
+- [x] Build the core fair-price/required-price/conservative-EV engine with `PLAY`, `WATCH`, `PAPER`, and `NO_BET` states.
+- [x] Route WIN/PLACE recommendations and executable audit locks through the EV engine; missing or stale prices fail closed. Cash recommendations now require a fresh, selling market snapshot, calibrated probability lineage, and a conservative EV decision of `PLAY`; non-executable decisions are forced to zero stake in the audit trail.
+- [x] Produce separate WIN and PLACE promotion reports. Stronger prediction metrics may promote a research champion, but executable mode remains blocked until prospective market evidence exists. The report validates untouched holdout metrics, sample counts, calibration, prediction lineage, drawdown, and pool-specific prospective evidence; both pools fail closed to `NO_BET`.
+
+### P1 — Market-aware stack and prospective price validation
+
+- [ ] When chronological T-window coverage is sufficient, train market-aware LightGBM/CatBoost candidates against the P0 no-market stack.
+- [ ] Forecast closing/final dividends from T-30/T-10/T-3 movement and measure forecast error by pool.
+- [ ] Record CLV, price slippage, settlement, drawdown, and prospective paper ROI for every locked recommendation.
+
+### P2 — Portfolio and exotic-pool expansion
+
+- [ ] Add independently calibrated QIN/QPL models and per-pool promotion gates.
+- [ ] Add single-horse exposure, correlated-loss, and bankroll caps before any multi-play executable portfolio.
+
+### P3 — Privacy separation
+
+- [ ] Split public sanitized GitHub Pages artifacts from private/local SQLite, raw data, market snapshots, model artifacts, recommendations, tickets, and personal audits using a publish allowlist and automated privacy scan.
+
+### P4 — UI redesign
+
+- [ ] Redesign the mobile-first interface after P3 around today's status, race-by-race WIN/PLA value, recommendation evidence/rejection reasons, and research/settlement history.
+
 ## Phase A — Race-day live market snapshot collection
 
 Goal: automatically accumulate the missing 2026 live market data that our ROI model needs.
@@ -73,7 +111,7 @@ Goal: automatically accumulate the missing 2026 live market data that our ROI mo
 
 Goal: reproduce the strongest public GitHub ideas on our own SQLite history before trusting them.
 
-- [ ] Add a benchmark registry for external ideas. Research Lab action: `benchmark-registry-refresh` / P0.
+- [x] Add a benchmark registry for external ideas. Research Lab action: `benchmark-registry-refresh` / P0.
   - Suggested files:
     - Create `hkjc-horse-model/src/model-benchmark-registry.js`
     - Create `hkjc-horse-model/test/model-benchmark-registry.test.js`
@@ -93,7 +131,7 @@ Goal: reproduce the strongest public GitHub ideas on our own SQLite history befo
     - Each card states public metric, our gap, leverage path, required local data, promotion gate, access policy, and local adoption status.
     - Summary clearly says the current model is still behind tier1, identifies the next benchmark to reproduce, and separately identifies the next data-leverage action.
 
-- [ ] Export a leakage-safe Python training matrix for tree models.
+- [x] Export a leakage-safe Python training matrix for tree models.
   - Suggested files:
     - Modify `hkjc-horse-model/src/training-dataset.js`
     - Modify `hkjc-horse-model/src/cli.js`
@@ -101,8 +139,9 @@ Goal: reproduce the strongest public GitHub ideas on our own SQLite history befo
   - Acceptance:
     - Output includes chronological split, race id, runner id, label, odds features when available, and no future/post-race fields.
     - Export works as JSONL or CSV without adding large generated files to git.
+  - Delivered by `training-matrix`: accepts generated `training-dataset` JSON, flattens only approved metadata plus nested pre-race features, sorts feature columns, and rejects malformed rows plus explicit result/target/dividend/payout/post-race keys.
 
-- [ ] Implement `lightgbm-no-market-v1` or the closest available local tree-model fallback.
+- [x] Implement `lightgbm-no-market-v1` local tree-model trainer.
   Research Lab action: `lightgbm-no-market-benchmark` / P1.
   - Suggested files:
     - Create `hkjc-horse-model/python/train_tree_model.py`
@@ -110,7 +149,8 @@ Goal: reproduce the strongest public GitHub ideas on our own SQLite history befo
     - Modify `package.json` scripts
   - Acceptance:
     - If LightGBM is unavailable, the command exits with a clear installation note and does not break `npm test`.
-    - If available, it writes model metrics including log loss, Brier score, top-pick win rate, and split metrics.
+    - If available, it writes a LightGBM model artifact, feature manifest, and JSON report with log loss, Brier score, race-normalized top-pick win rate, winner-in-top3, and split metrics.
+  - Delivered by `hkjc:train-tree-model`: accepts the existing JSONL/CSV matrix, uses only chronological matrix splits, treats categories explicitly in LightGBM, excludes market/odds/pool/money/investment/dividend/payout features, supports validation-only early stopping, and records selection-report lineage for the final train+validation refit.
 
 - [ ] Reproduce catowabisabi LightGBM no-odds Quinella/QPL benchmark. Research Lab action: `catowabisabi-lgb-no-odds-quinella` / P0.
   - Suggested files:
@@ -122,6 +162,7 @@ Goal: reproduce the strongest public GitHub ideas on our own SQLite history befo
     - Replays model top-2 QIN and QPL on validation and holdout using official dividends.
     - Reports bets, wins, strike rate, ROI, max drawdown, profit concentration, and cold-quinella filter sensitivity.
     - Does not promote the strategy unless validation and holdout both beat current baseline with acceptable drawdown.
+  - Partial delivery: `hkjc:benchmark-exotics` now replays fixed top-2 and top-3-box QIN/QPL lines against official SQLite dividends, skips missing pools, and reports ROI, strike rate, drawdown, and losing runs. The current holdout strategies are negative ROI and remain `NO-BET`; profit-concentration and pre-race cold-odds sensitivity stay queued because validation/holdout currently have no verified T-30 odds coverage.
 
 - [ ] Reproduce jerrydaphantom CatBoost/LightGBM market-aware calibration benchmark. Research Lab action: `jerrydaphantom-catboost-market-aware` / P0.
   - Suggested files:
@@ -248,7 +289,7 @@ This queue is mirrored in `research-program.js` and surfaced in the dashboard Re
 | P0 | `catowabisabi-lgb-no-odds-quinella` | Phase B | queued, executable | Reproduce no-odds LightGBM QIN/QPL edge on our SQLite data. |
 | P0 | `jerrydaphantom-catboost-market-aware` | Phase B | queued, executable | Reproduce CatBoost/LightGBM market-aware calibration and EV grids. |
 | P1 | `speedpro-feature-importer` | Phase B | queued, executable | Add sectional/pace/fitness enrichment when available. |
-| P1 | `lightgbm-no-market-benchmark` | Phase B | queued, executable | Build a non-market tree-model benchmark before live odds are complete. |
+| P1 | `lightgbm-no-market-benchmark` | Phase B | implemented, local benchmark trained | Build a non-market tree-model benchmark before live odds are complete. |
 | P1 | `tianxi-feature-backfill` | Phase B | queued, executable | Audit and design local-only derived feature imports. |
 | P1 | `j-csc-scraper-schema-audit` | Phase B | queued, executable | Audit HKJC scraper field coverage, veterinary/racecard pages, and parser fixtures. |
 | P1 | `no-bet-clv-gate` | Phase C | queued, executable | Reject lines without live edge and track closing-line value. |
@@ -257,6 +298,18 @@ This queue is mirrored in `research-program.js` and surfaced in the dashboard Re
 
 ## Latest continuation note
 
+- 2026-07-18: Completed P0 with separate fail-closed WIN/PLACE promotion reports. The report compares LightGBM, CatBoost, and the validation-selected calibrated stack using untouched-holdout log loss/Brier, requires prediction lineage and benchmark sample/drawdown fields, and never conflates a research champion with cash authorization. Current WIN and PLACE statuses remain `NO_BET`: blind Top-pick-to-PLACE ROI is negative, WIN-specific ROI evidence is absent, and there is no prospective locked market/settlement sample. Next phase is P1 only after the prospective T-window coverage gate passes.
+- 2026-07-18: Completed pure `value-betting-v1` pricing decisions. It keeps full precision for status gates and returns rounded fair/required dividends, central and conservative EV, price edges, machine reason codes, and Chinese reasons. Missing/stale/future prices and non-selling pools fail closed to `NO_BET`; possible but insufficient edges are `WATCH`; unpromoted probabilities are `PAPER`; only fresh selling prices above the conservative safety-buffer requirement become `PLAY`. Next P0 task: remove no-market cash fallbacks and persist full value/model/market lineage in recommendation audits.
+- 2026-07-18: Completed the low-frequency due-snapshot reporting contract without adding a polling loop. Each invocation still captures only currently due, uncaptured T-30/T-10/T-3 windows; the report now includes the closest computable next window plus a compact Chinese summary of due/captured/duplicate races and imported odds/pool rows, and the CLI prints it. Focused snapshot suites pass. The separate app-level scheduling policy remains independent, so GitHub Actions is not made to fabricate local live-market persistence. Next P0 task: build the pure fair-price, required-price, conservative-EV, and NO-BET engine.
+- 2026-07-18: Completed `runner-probability-stack-v1`. Sigmoid/isotonic calibration and fixed LightGBM/CatBoost weights are fit/selected on validation only and applied unchanged to untouched holdout; automatic promotion is explicitly disabled. Isotonic ties now use a separately exported uncalibrated blend ranking score, preventing row-order inflation. Selected WIN is isotonic 75% LightGBM / 25% CatBoost with holdout log loss 0.252596 and Brier 0.069303 (log loss slightly worse than CatBoost alone, so no promotion). Selected PLACE is isotonic 25% LightGBM / 75% CatBoost with holdout log loss 0.491670 and Brier 0.161095, improving both best single-model probability metrics; its tie-safe Top-pick PLACE rate is 54.79%, not the artificial 57.62% produced by isotonic row-order ties. Local stack artifacts contain 175,574 runner rows. Next P0 task: finish low-frequency T-30/T-10/T-3 collection reporting.
+- 2026-07-18: Completed deterministic no-market CatBoost WIN/PLACE trainers with native categorical handling, train-only selection fit, validation-only early stopping, untouched holdout reporting, and the shared versioned runner-prediction contract. CatBoost 1.2.10 is pinned. WIN stopped at 279 iterations and reports holdout log loss 0.252522 / Brier 0.069325 / Top-pick 23.58%; PLACE stopped at 365 and reports holdout log loss 0.492435 / Brier 0.161261 / Top-pick PLACE 54.79%. Blind CatBoost PLACE staking remains negative at -13.17% ROI, so it is a blend candidate only. Artifacts remain local. Next P0 task: validation-only calibration and LightGBM/CatBoost blend selection.
+- 2026-07-18: Completed strict Top-pick-to-PLACE settlement with official PLACE dividends, Wilson interval, monthly results, drawdown, and losing-run reporting; missing hit dividends fail closed. The frozen WIN Top-pick holdout reproduces exactly: 564 bets, 304 hits, HK$5,640 stake, HK$4,908.40 return, -HK$731.60 profit, -12.97% ROI. The first dedicated PLACE selection model improves hits to 311/564 (55.14%) but blind-flat ROI is worse at -13.48%, proving that hit-rate improvement alone does not create value. Reports remain local under `/Users/shi/Library/Caches/hkjc-local-horse-model/models/2026-07-18/`. Next P0 task: add no-market CatBoost WIN/PLACE candidates.
+- 2026-07-18: Completed target-aware LightGBM probability and metric contracts. WIN remains race-normalized; PLACE now preserves bounded runner-level probabilities and reports generic hit metrics without misleading WIN aliases. The first PLACE selection model stopped at iteration 136; untouched holdout has log loss 0.493505, Brier 0.161672, and 311/564 Top-pick PLACE hits (55.14%). Artifacts stay local under `/Users/shi/Library/Caches/hkjc-local-horse-model/models/2026-07-18/`. Next P0 task: settle versioned predictions against official PLACE dividends with the strict benchmark.
+- 2026-07-18: Completed versioned per-runner prediction export for `lightgbm-no-market-v1`. `--predictions-output path.jsonl` now writes ordered runner rows with model/target lineage, race and horse identifiers, chronological split, probability, and both WIN/PLACE labels; the model report records the artifact path. Focused test: `python -m unittest -v test_train_tree_model.TreeModelFinalRefitTest.test_prediction_export_writes_versioned_runner_jsonl`. Next P0 task: make probability policy and evaluation metrics target-aware for `targetWin` versus `targetPlace`.
+- 2026-07-18: Completed the leakage-safe `training-matrix` exporter. `npm run hkjc:training-matrix -- --input ...training-dataset.json --output ...training-matrix.jsonl` writes deterministic JSONL (or CSV via `--format csv`/`.csv`) with approved metadata first and sorted flattened feature columns. It preserves categorical, odds, Tianxi, and pool features, emits null/empty missing values, rejects malformed payloads and explicit leakage keys, and ignores generated matrices. Focused test: `node --test hkjc-horse-model/test/training-matrix.test.js`.
+- 2026-07-18: Completed `lightgbm-no-market-v1`: `PYTHON=/path/to/python npm run hkjc:train-tree-model -- --input ...training-matrix.jsonl --output ...tree-model-report.json` accepts JSONL/CSV, excludes market features, preserves train-only category mappings and matrix chronological splits, and writes report/model/manifest artifacts. Run `python3 -m unittest -v hkjc-horse-model/python/test_train_tree_model.py` for the focused test.
+- 2026-07-18: Follow-up optimization remains queued: `training-matrix` still reads the monolithic JSON input with `JSON.parse(await readFile(...))`; the observed approximately 230 MB input / 175,574 rows reached approximately 329 MB peak memory. Do not treat this as a blocker for the leakage and prepared-writer safeguards; revisit with a streaming JSON approach later without adding a third-party parser or redesigning SQLite in this round.
+- 2026-07-17: Completed the model benchmark registry with the current baseline plus catowabisabi LightGBM/QIN, jerrydaphantom CatBoost calibration, neigh SpeedPRO, HKJC pool-tracker, and HKJC Edge Lab CLV ideas. Every entry now records required data, leakage risks, metrics, local adoption status, and explicit promotion gates; deterministic summary/snapshot helpers are ready for later Research Lab wiring without loading race data. Focused test: `node --test hkjc-horse-model/test/model-benchmark-registry.test.js`. Next Phase B task: connect the registry snapshot to the separate Tier1 Acceleration Lab dashboard registry.
 - 2026-07-17: Completed leakage-safe WIN/PLACE/QIN/QPL pool-money features with coherent timestamped books, strict T3 post-time/sell-status guards, valid-arity filtering, book-participant crowding baselines, normalized market/involvement shares, estimated money, HHI, overround, imbalance, availability flags, and pool movement. SQLite now restricts reads to requested races with usable pool investment, indexes snapshots by race/pool, and emits sparse features, avoiding a 6.38M-row materialization and full-history OOM. Real export succeeded for 175,574 runners / 14,250 races; the database has 36 pool snapshots but all are 1,144-1,404 minutes pre-race, so usable T60/T30/T10/T3 coverage is 0 and no model/ROI gain can yet be estimated. Next task: add the low-frequency race-day due-snapshot automation step.
 - 2026-07-17: Tianxi prior-form as-of enrichment is implemented and optional in `training-dataset --tianxiRoot`. Real replay enriched 112,603/175,574 runner rows (64.1%) and filtered 2,479,721 not-yet-available row evaluations. On identical splits, holdout log loss improved from 0.267120 to 0.265832, Brier from 0.071932 to 0.071738, and top-pick win rate from 21.45% to 22.16% (121 to 125 wins over 564 races). This is probability evidence only; ROI/drawdown are not yet evaluated and cash mode remains blocked. Next task: build pool-money features, then reproduce a tree-model baseline on the enriched matrix.
 - 2026-07-17: Completed `live-market-due-snapshots` with dry-run reporting, planner-backed T-window capture, race/window duplicate skipping, focused SQLite queries, and the `hkjc:live-market-due-snapshots` npm script. Focused tests: `node --test hkjc-horse-model/test/live-market-due-snapshots.test.js hkjc-horse-model/test/live-snapshot-planner.test.js hkjc-horse-model/test/live-market-snapshot.test.js`. Next task: create `hkjc-horse-model/test/pool-money-features.test.js` and add leakage-safe WIN / PLACE / QIN / QPL pool-money feature expectations.

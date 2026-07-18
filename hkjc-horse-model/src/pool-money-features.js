@@ -281,7 +281,9 @@ function selectPoolSnapshot({ snapshots, race, poolKey, window, preferredCapture
 function isLeakageSafeSnapshot(snapshot, race) {
   const minutesToPost = numericOrNull(snapshot.minutesToPost);
   if (minutesToPost == null || minutesToPost < 0) return false;
-  const sellStatus = String(snapshot.sellStatus ?? snapshot.raw?.sellStatus ?? '').toUpperCase();
+  const sellStatus = String(
+    snapshot.sellStatus ?? snapshot.raw?.sellStatus ?? snapshot.raw?.status ?? '',
+  ).toUpperCase();
   if (/(STOP|CLOSE|RESULT|SUSPEND)/.test(sellStatus)) return false;
   if (minutesToPost > 0) return true;
 

@@ -134,9 +134,10 @@ function auditRun(run, race) {
       lines: recommendations.map((line) => ({
         ...line,
         status: 'OPEN',
-        stake: lineStake(line),
+        stake: executableLineStake(line),
         returned: 0,
         profit: 0,
+        ...(isExplicitlyNonExecutable(line) ? { auditReason: 'NON_EXECUTABLE_DECISION' } : {}),
       })),
     };
   }
@@ -156,7 +157,7 @@ function auditRun(run, race) {
 }
 
 function auditLine(line, race) {
-  const stake = lineStake(line);
+  const stake = executableLineStake(line);
   if (stake <= 0) {
     return {
       ...line,
@@ -164,6 +165,7 @@ function auditLine(line, race) {
       stake: 0,
       returned: 0,
       profit: 0,
+      ...(isExplicitlyNonExecutable(line) ? { auditReason: 'NON_EXECUTABLE_DECISION' } : {}),
     };
   }
 
@@ -242,6 +244,15 @@ function combinationKey(combination, poolKey) {
 function lineStake(line) {
   const stake = Number(line.stake ?? line.amount ?? line.plannedStake ?? 0);
   return Number.isFinite(stake) ? stake : 0;
+}
+
+function executableLineStake(line) {
+  return isExplicitlyNonExecutable(line) ? 0 : lineStake(line);
+}
+
+function isExplicitlyNonExecutable(line) {
+  const status = line?.decision?.status;
+  return status != null && String(status).toUpperCase() !== 'PLAY';
 }
 
 function sum(items, selector) {

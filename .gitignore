@@ -1,8 +1,13 @@
 .DS_Store
 node_modules/
+.venv/
+**/__pycache__/
 .worktrees/
 hkjc-horse-model/data/*.sqlite
 hkjc-horse-model/data/*.sqlite-*
 hkjc-horse-model/data/processed/training-dataset.json
+hkjc-horse-model/data/processed/training-matrix.*
+hkjc-horse-model/data/processed/*tree-model*
+hkjc-horse-model/data/processed/lightgbm-no-market-*
 hkjc-horse-model/data/processed/live-market-source-report.json
 hkjc-horse-model/data/external/raw-local/

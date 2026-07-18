@@ -10,8 +10,11 @@ import { splitDashboardForPublishing } from './dashboard-publish.js';
 import { auditRecommendationRuns } from './recommendation-audit.js';
 import {
   buildAsOfTrainingRows,
+  prepareTrainingMatrix,
   summarizeTrainingRows,
+  trainingMatrixFormatFor,
 } from './training-dataset.js';
+import { writeTrainingMatrixAtomically } from './training-matrix-writer.js';
 import {
   buildModelLeaderboard,
   predictionRowsFromLedger,
@@ -115,6 +118,11 @@ async function main(argv) {
 
   if (command === 'training-dataset') {
     await trainingDatasetCommand(args);
+    return;
+  }
+
+  if (command === 'training-matrix') {
+    await trainingMatrixCommand(args);
     return;
   }
 
@@ -353,6 +361,19 @@ async function trainingDatasetCommand(args) {
   console.log(`Saved training dataset to ${outputPath}`);
 }
 
+async function trainingMatrixCommand(args) {
+  const inputPath = path.resolve(args.input ?? path.join(processedDataDir, 'training-dataset.json'));
+  const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'training-matrix.jsonl'));
+  const format = trainingMatrixFormatFor({ format: args.format, output: outputPath });
+  const payload = JSON.parse(await readFile(inputPath, 'utf8'));
+  const matrix = prepareTrainingMatrix(payload);
+
+  await writeTrainingMatrixAtomically({ outputPath, format, matrix });
+
+  console.log(`Training matrix: ${matrix.sourceRows.length} runner rows, ${matrix.columns.length} columns (${format})`);
+  console.log(`Saved training matrix to ${outputPath}`);
+}
+
 async function modelLeaderboardCommand(args) {
   const dbPath = path.resolve(args.db ?? sqliteDbPath);
   const settledRaces = loadRacesFromDatabase({ dbPath, status: 'settled' });
@@ -468,7 +489,8 @@ async function trainModelCommand(args) {
   const inputPath = path.resolve(args.input ?? path.join(processedDataDir, 'training-dataset.json'));
   const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'model-training-report.json'));
   const scriptPath = path.join(projectRoot, 'python', 'train_logit_model.py');
-  const result = spawnSync('python3', [
+  const python = process.env.PYTHON ?? 'python3';
+  const result = spawnSync(python, [
     scriptPath,
     '--input',
     inputPath,
@@ -739,6 +761,7 @@ async function liveMarketDueSnapshotsCommand(args) {
   });
   console.log(`Due live market snapshots: ${report.summary.due} due, ${report.summary.captured} captured, ${report.summary.skippedDuplicates} duplicate windows skipped`);
   console.log(`Imported: ${report.summary.oddsSnapshots} odds, ${report.summary.poolSnapshots} pools`);
+  console.log(report.summaryZh);
   console.log(`Saved due snapshot report to ${outputPath}`);
 }
 
@@ -1231,6 +1254,7 @@ Commands:
   sync-db    --input hkjc-horse-model/data/raw --upcoming hkjc-horse-model/data/upcoming --db hkjc-horse-model/data/hkjc.sqlite
   dashboard-db --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/dashboard.json --historyOutput hkjc-horse-model/data/processed/dashboard-history.json
   training-dataset --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/training-dataset.json --tianxiRoot /path/to/tianxi-database
+  training-matrix --input hkjc-horse-model/data/processed/training-dataset.json --output hkjc-horse-model/data/processed/training-matrix.jsonl [--format jsonl|csv]
   model-leaderboard --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/model-leaderboard.json
   external-model-comparison --date 2026-07-08 --venue HV --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/external-model-comparison-2026-07-08-HV.json
   external-source-audit --output hkjc-horse-model/data/processed/external-source-audit.json

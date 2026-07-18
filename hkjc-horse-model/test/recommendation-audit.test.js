@@ -93,6 +93,47 @@ describe('recommendation audit', () => {
     assert.equal(audit.summary.eligibleRuns, 0);
     assert.equal(audit.runs[0].exclusionReason, 'POST_RACE');
   });
+
+  it('zeros non-play stakes and preserves executable value lineage', () => {
+    const audit = auditRecommendationRuns({
+      races: [settledRace()],
+      runs: [{
+        runId: 'rec_value_lineage',
+        raceId: '2026-07-04-ST-1',
+        generatedAt: '2026-07-04T07:50:00.000Z',
+        strategyVersion: 'value-betting-v1',
+        summary: { mode: 'execute' },
+        recommendations: [
+          {
+            pool: 'PLACE', combination: [2], stake: 10,
+            decision: { status: 'NO_BET', reasonCode: 'MISSING_PRICE' },
+          },
+          {
+            pool: 'PLACE', combination: [1], stake: 10,
+            decision: { status: 'PLAY', reasonCode: 'EDGE_CLEARS_BUFFER' },
+            probabilityArtifactId: 'runner-probability-stack-v1',
+            modelId: 'runner-probability-stack-v1',
+            calibrationMethod: 'isotonic',
+            marketCapturedAt: '2026-07-04T07:45:00.000Z',
+            marketWindow: 'T-10',
+            ruleVersion: 'value-betting-v1',
+            conservativeProbability: 0.52,
+            fairDividendPer10: 18.18,
+            requiredDividendPer10: 20.77,
+            conservativeExpectedRoi: 0.092,
+          },
+        ],
+      }],
+    });
+
+    assert.equal(audit.summary.totalStake, 10);
+    assert.equal(audit.runs[0].lines[0].status, 'PASS');
+    assert.equal(audit.runs[0].lines[0].stake, 0);
+    assert.equal(audit.runs[0].lines[0].auditReason, 'NON_EXECUTABLE_DECISION');
+    assert.equal(audit.runs[0].lines[1].probabilityArtifactId, 'runner-probability-stack-v1');
+    assert.equal(audit.runs[0].lines[1].marketCapturedAt, '2026-07-04T07:45:00.000Z');
+    assert.equal(audit.runs[0].lines[1].ruleVersion, 'value-betting-v1');
+  });
 });
 
 function settledRace() {

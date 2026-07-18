@@ -3,6 +3,7 @@ import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { DatabaseSync } from 'node:sqlite';
 import { describe, it } from 'node:test';
 
 import * as sqliteStore from '../src/sqlite-store.js';
@@ -386,6 +387,7 @@ describe('local SQLite race store', () => {
           combination: [8],
           oddsValue: 7.2,
           source: 'official-graphql',
+          sellStatus: 'START_SELLING',
           raw: { combString: '8', oddsValue: '7.2' },
         },
       });
@@ -418,6 +420,7 @@ describe('local SQLite race store', () => {
       assert.equal(latest.odds[0].pool, 'WIN');
       assert.deepEqual(latest.odds[0].combination, [8]);
       assert.equal(latest.odds[0].oddsValue, 7.2);
+      assert.equal(latest.odds[0].sellStatus, 'START_SELLING');
       assert.equal(latest.pools.length, 1);
       assert.equal(latest.pools[0].investment, 123456);
     } finally {
@@ -463,6 +466,105 @@ describe('local SQLite race store', () => {
       const snapshots = sqliteStore.loadMarketSnapshots({ dbPath });
       assert.equal(snapshots.odds.length, 2);
       assert.deepEqual(snapshots.odds.map((snapshot) => snapshot.poolKey), ['place', 'win']);
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('rejects top-level stopped market statuses when raw JSON has no status', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-sqlite-'));
+    try {
+      const rawDir = path.join(tempDir, 'raw');
+      const dbPath = path.join(tempDir, 'hkjc.sqlite');
+      await mkdir(rawDir, { recursive: true });
+      await writeFile(path.join(rawDir, '2026-07-04-ST.json'), JSON.stringify([settledRace()], null, 2), 'utf8');
+      syncRaceFilesToDatabase({ dbPath, inputPath: rawDir, sourceKind: 'raw' });
+
+      sqliteStore.recordOddsSnapshots({
+        dbPath,
+        snapshots: ['RESULT', 'STOP', 'CLOSE', 'SUSPEND'].map((sellStatus, index) => oddsSnapshot(
+          '2026-07-04-ST-1',
+          [1, 2, 9, 1][index],
+          index === 3 ? 'PLACE' : 'WIN',
+          index + 2,
+          0,
+          `2026-07-04T07:59:0${index}.000Z`,
+          { sellStatus, raw: { combString: String([1, 2, 9, 1][index]) } },
+        )),
+      });
+
+      const { featuresByRunner, summary } = sqliteStore.loadRunnerMarketFeatures({ dbPath });
+
+      assert.equal(featuresByRunner.size, 0);
+      assert.equal(summary.marketOddsRowsRejected, 4);
+      assert.equal(summary.marketOddsRejectionReasons.SELL_STATUS, 4);
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('migrates an old odds schema and keeps legacy and new snapshots readable', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-sqlite-'));
+    try {
+      const rawDir = path.join(tempDir, 'raw');
+      const dbPath = path.join(tempDir, 'hkjc.sqlite');
+      await mkdir(rawDir, { recursive: true });
+      await writeFile(path.join(rawDir, '2026-07-04-ST.json'), JSON.stringify([settledRace()], null, 2), 'utf8');
+      const db = new DatabaseSync(dbPath);
+      db.exec(`
+        CREATE TABLE odds_snapshots (
+          race_id TEXT NOT NULL,
+          date TEXT,
+          racecourse TEXT,
+          race_no INTEGER,
+          captured_at TEXT NOT NULL,
+          minutes_to_post INTEGER,
+          pool_key TEXT NOT NULL,
+          pool TEXT NOT NULL,
+          combination_key TEXT NOT NULL,
+          combination_json TEXT NOT NULL,
+          odds_value REAL,
+          source TEXT,
+          raw_json TEXT NOT NULL,
+          PRIMARY KEY (race_id, captured_at, pool_key, combination_key)
+        );
+        INSERT INTO odds_snapshots (
+          race_id, date, racecourse, race_no, captured_at, minutes_to_post,
+          pool_key, pool, combination_key, combination_json, odds_value, source, raw_json
+        ) VALUES (
+          '2026-07-04-ST-1', '2026-07-04', 'ST', 1, '2026-07-04T07:59:00.000Z', 0,
+          'win', 'WIN', '1', '[1]', 2.5, 'legacy', '{"status":"RESULT"}'
+        );
+      `);
+      db.close();
+
+      sqliteStore.recordOddsSnapshot({
+        dbPath,
+        snapshot: oddsSnapshot(
+          '2026-07-04-ST-1',
+          2,
+          'WIN',
+          3.5,
+          30,
+          '2026-07-04T07:30:00.000Z',
+          { sellStatus: 'START_SELLING', raw: { combString: '2' } },
+        ),
+      });
+
+      const migratedDb = new DatabaseSync(dbPath);
+      const columns = migratedDb.prepare('PRAGMA table_info(odds_snapshots)').all();
+      migratedDb.close();
+      assert.equal(columns.filter((column) => column.name === 'sell_status').length, 1);
+
+      syncRaceFilesToDatabase({ dbPath, inputPath: rawDir, sourceKind: 'raw' });
+      const features = sqliteStore.loadRunnerMarketFeatures({ dbPath });
+      assert.equal(features.summary.marketOddsRowsRejected, 1);
+      assert.equal(features.summary.marketOddsRejectionReasons.SELL_STATUS, 1);
+
+      const snapshots = sqliteStore.loadMarketSnapshots({ dbPath });
+      assert.equal(snapshots.odds.length, 2);
+      assert.equal(snapshots.odds.find((snapshot) => snapshot.source === 'legacy').sellStatus, null);
+      assert.equal(snapshots.odds.find((snapshot) => snapshot.source === 'test-market-feature').sellStatus, 'START_SELLING');
     } finally {
       await rm(tempDir, { recursive: true, force: true });
     }
@@ -566,6 +668,134 @@ describe('local SQLite race store', () => {
       assert.equal(horseTwo.marketWinRankT30, 1);
       assert.equal(horseTwo.marketPlaceOddsT30, 1.4);
       assert.equal(horseTwo.marketWinOddsPctChangeT60ToT30, -0.25);
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('rejects a T3 result snapshot captured at or after the scheduled post time', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-sqlite-'));
+    try {
+      const rawDir = path.join(tempDir, 'raw');
+      const dbPath = path.join(tempDir, 'hkjc.sqlite');
+      await mkdir(rawDir, { recursive: true });
+      await writeFile(path.join(rawDir, '2026-07-04-ST.json'), JSON.stringify([settledRace()], null, 2), 'utf8');
+      syncRaceFilesToDatabase({ dbPath, inputPath: rawDir, sourceKind: 'raw' });
+
+      sqliteStore.recordOddsSnapshot({
+        dbPath,
+        snapshot: oddsSnapshot(
+          '2026-07-04-ST-1',
+          1,
+          'WIN',
+          2,
+          0,
+          '2026-07-04T08:00:00.000Z',
+          { raw: { sellStatus: 'RESULT' } },
+        ),
+      });
+
+      const { featuresByRunner, summary } = sqliteStore.loadRunnerMarketFeatures({ dbPath });
+
+      assert.equal(featuresByRunner.get('2026-07-04-ST-1|1')?.marketWinOddsT3, undefined);
+      assert.equal(summary.marketOddsRowsRejected, 1);
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('rejects official stopped market statuses from T3 features', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-sqlite-'));
+    try {
+      const rawDir = path.join(tempDir, 'raw');
+      const dbPath = path.join(tempDir, 'hkjc.sqlite');
+      await mkdir(rawDir, { recursive: true });
+      await writeFile(path.join(rawDir, '2026-07-04-ST.json'), JSON.stringify([settledRace()], null, 2), 'utf8');
+      syncRaceFilesToDatabase({ dbPath, inputPath: rawDir, sourceKind: 'raw' });
+
+      sqliteStore.recordOddsSnapshots({
+        dbPath,
+        snapshots: ['STOP', 'CLOSE', 'SUSPEND'].map((sellStatus, index) => oddsSnapshot(
+          '2026-07-04-ST-1',
+          index + 1,
+          'WIN',
+          index + 2,
+          0,
+          `2026-07-04T07:59:0${index}.000Z`,
+          { raw: { sellStatus } },
+        )),
+      });
+
+      const { featuresByRunner, summary } = sqliteStore.loadRunnerMarketFeatures({ dbPath });
+
+      assert.equal(featuresByRunner.size, 0);
+      assert.equal(summary.marketOddsRowsRejected, 3);
+      assert.equal(summary.marketOddsRejectionReasons.SELL_STATUS, 3);
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('keeps verifiable pre-post T3 and positive-minute external odds snapshots', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-sqlite-'));
+    try {
+      const rawDir = path.join(tempDir, 'raw');
+      const dbPath = path.join(tempDir, 'hkjc.sqlite');
+      await mkdir(rawDir, { recursive: true });
+      await writeFile(path.join(rawDir, '2026-07-04-ST.json'), JSON.stringify([settledRace()], null, 2), 'utf8');
+      syncRaceFilesToDatabase({ dbPath, inputPath: rawDir, sourceKind: 'raw' });
+
+      sqliteStore.recordOddsSnapshots({
+        dbPath,
+        snapshots: [
+          oddsSnapshot('2026-07-04-ST-1', 1, 'WIN', 6, 0, '2026-07-04T07:59:30.000Z', {
+            raw: { sellStatus: 'START_SELLING' },
+          }),
+          oddsSnapshot('2026-07-04-ST-1', 2, 'WIN', 4, 30, '2026-07-04T07:30:00.000Z'),
+        ],
+      });
+
+      const { featuresByRunner, summary } = sqliteStore.loadRunnerMarketFeatures({ dbPath });
+
+      assert.equal(featuresByRunner.get('2026-07-04-ST-1|1')?.marketWinOddsT3, 6);
+      assert.equal(featuresByRunner.get('2026-07-04-ST-1|2')?.marketWinOddsT30, 4);
+      assert.equal(summary.marketOddsRowsRejected, 0);
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('fails closed for T3 snapshots when race start time is unavailable', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-sqlite-'));
+    try {
+      const rawDir = path.join(tempDir, 'raw');
+      const dbPath = path.join(tempDir, 'hkjc.sqlite');
+      await mkdir(rawDir, { recursive: true });
+      await writeFile(
+        path.join(rawDir, '2026-07-04-ST.json'),
+        JSON.stringify([{ ...settledRace(), startTime: null }], null, 2),
+        'utf8',
+      );
+      syncRaceFilesToDatabase({ dbPath, inputPath: rawDir, sourceKind: 'raw' });
+
+      sqliteStore.recordOddsSnapshot({
+        dbPath,
+        snapshot: oddsSnapshot(
+          '2026-07-04-ST-1',
+          1,
+          'WIN',
+          2,
+          0,
+          '2026-07-04T07:59:00.000Z',
+          { raw: { sellStatus: 'START_SELLING' } },
+        ),
+      });
+
+      const { featuresByRunner, summary } = sqliteStore.loadRunnerMarketFeatures({ dbPath });
+
+      assert.equal(featuresByRunner.size, 0);
+      assert.equal(summary.marketOddsRowsRejected, 1);
+      assert.equal(summary.marketOddsRejectionReasons.UNVERIFIED_POST_TIME, 1);
     } finally {
       await rm(tempDir, { recursive: true, force: true });
     }
@@ -1033,7 +1263,7 @@ function upcomingRace() {
   };
 }
 
-function oddsSnapshot(raceId, horseNo, pool, oddsValue, minutesToPost, capturedAt) {
+function oddsSnapshot(raceId, horseNo, pool, oddsValue, minutesToPost, capturedAt, options = {}) {
   const [, date, racecourse, raceNo] = raceId.match(/^(\d{4}-\d{2}-\d{2})-([A-Z]+)-(\d+)$/);
   return {
     raceId,
@@ -1046,6 +1276,8 @@ function oddsSnapshot(raceId, horseNo, pool, oddsValue, minutesToPost, capturedA
     combination: [horseNo],
     oddsValue,
     source: 'test-market-feature',
+    ...(options.sellStatus === undefined ? {} : { sellStatus: options.sellStatus }),
+    ...(options.raw === undefined ? {} : { raw: options.raw }),
   };
 }
 

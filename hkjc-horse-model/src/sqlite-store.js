@@ -166,9 +166,9 @@ function insertOddsSnapshotStatement(db) {
   return db.prepare(`
     INSERT INTO odds_snapshots (
       race_id, date, racecourse, race_no, captured_at, minutes_to_post,
-      pool_key, pool, combination_key, combination_json, odds_value, source, raw_json
+      pool_key, pool, combination_key, combination_json, odds_value, sell_status, source, raw_json
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ON CONFLICT(race_id, captured_at, pool_key, combination_key) DO UPDATE SET
       date = excluded.date,
       racecourse = excluded.racecourse,
@@ -177,6 +177,7 @@ function insertOddsSnapshotStatement(db) {
       pool = excluded.pool,
       combination_json = excluded.combination_json,
       odds_value = excluded.odds_value,
+      sell_status = excluded.sell_status,
       source = excluded.source,
       raw_json = excluded.raw_json
   `);
@@ -186,6 +187,7 @@ function upsertOddsSnapshot(db, statement, snapshot) {
   const capturedAt = nullableText(snapshot.capturedAt) ?? new Date().toISOString();
   const poolKey = normalizePoolKey(snapshot.pool);
   const combination = normalizeCombination(snapshot.combination ?? snapshot.combString);
+  const sellStatus = nullableText(snapshot.sellStatus ?? snapshot.raw?.sellStatus ?? snapshot.raw?.status);
   statement.run(
     snapshot.raceId,
     nullableText(snapshot.date),
@@ -198,6 +200,7 @@ function upsertOddsSnapshot(db, statement, snapshot) {
     combinationKey(combination, poolKey),
     JSON.stringify(combination),
     nullableNumber(snapshot.oddsValue),
+    sellStatus,
     nullableText(snapshot.source),
     JSON.stringify(snapshot.raw ?? snapshot),
   );
@@ -354,29 +357,39 @@ export function loadRunnerMarketFeatures({ dbPath } = {}) {
   try {
     const featuresByRunner = new Map();
     let marketOddsRows = 0;
+    let marketOddsRowsRejected = 0;
+    const marketOddsRejectionReasons = {};
 
     for (const window of MARKET_FEATURE_WINDOWS) {
-      const rows = db.prepare(`
-        SELECT race_id, pool_key, combination_key, odds_value, minutes_to_post, captured_at
-        FROM (
-          SELECT
-            race_id,
-            pool_key,
-            combination_key,
-            odds_value,
-            minutes_to_post,
-            captured_at,
-            ROW_NUMBER() OVER (
-              PARTITION BY race_id, pool_key, combination_key
-              ORDER BY ABS(minutes_to_post - ?) ASC, captured_at DESC
-            ) AS rank_in_window
-          FROM odds_snapshots
-          WHERE pool_key IN ('win', 'place')
-            AND minutes_to_post BETWEEN ? AND ?
-            AND odds_value IS NOT NULL
-        )
-        WHERE rank_in_window = 1
-      `).all(window.target, window.min, window.max);
+      const candidates = db.prepare(`
+        SELECT
+          odds.race_id,
+          odds.pool_key,
+          odds.combination_key,
+          odds.odds_value,
+          odds.sell_status,
+          odds.minutes_to_post,
+          odds.captured_at,
+          odds.raw_json,
+          races.date AS race_date,
+          races.raw_json AS race_raw_json
+        FROM odds_snapshots AS odds
+        LEFT JOIN races ON races.race_id = odds.race_id
+        WHERE odds.pool_key IN ('win', 'place')
+          AND odds.minutes_to_post BETWEEN ? AND ?
+          AND odds.odds_value IS NOT NULL
+      `).all(window.min, window.max);
+      const safeCandidates = [];
+      for (const candidate of candidates) {
+        const safety = marketOddsSnapshotSafety(candidate);
+        if (!safety.safe) {
+          marketOddsRowsRejected += 1;
+          marketOddsRejectionReasons[safety.reason] = (marketOddsRejectionReasons[safety.reason] ?? 0) + 1;
+          continue;
+        }
+        safeCandidates.push(candidate);
+      }
+      const rows = selectNearestMarketFeatureRows(safeCandidates, window);
       marketOddsRows += rows.length;
       assignMarketFeatureWindow(featuresByRunner, rows, window);
     }
@@ -388,6 +401,8 @@ export function loadRunnerMarketFeatures({ dbPath } = {}) {
       summary: {
         runnerFeatureRows: featuresByRunner.size,
         marketOddsRows,
+        marketOddsRowsRejected,
+        marketOddsRejectionReasons,
         windows: MARKET_FEATURE_WINDOWS.map((window) => window.featureLabel),
         pools: ['WIN', 'PLACE'],
       },
@@ -671,6 +686,7 @@ function openDatabase(dbPath) {
       combination_key TEXT NOT NULL,
       combination_json TEXT NOT NULL,
       odds_value REAL,
+      sell_status TEXT,
       source TEXT,
       raw_json TEXT NOT NULL,
       PRIMARY KEY (race_id, captured_at, pool_key, combination_key)
@@ -709,6 +725,10 @@ function openDatabase(dbPath) {
     );
     CREATE INDEX IF NOT EXISTS idx_recommendation_runs_race ON recommendation_runs(race_id, generated_at);
   `);
+  const oddsColumns = db.prepare('PRAGMA table_info(odds_snapshots)').all();
+  if (!oddsColumns.some((column) => column.name === 'sell_status')) {
+    db.exec('ALTER TABLE odds_snapshots ADD COLUMN sell_status TEXT');
+  }
   return db;
 }
 
@@ -863,6 +883,67 @@ const MARKET_POOL_FEATURE_LABELS = {
   win: 'Win',
   place: 'Place',
 };
+
+function marketOddsSnapshotSafety(row) {
+  const minutesToPost = Number(row.minutes_to_post);
+  if (!Number.isFinite(minutesToPost) || minutesToPost < 0) {
+    return { safe: false, reason: 'INVALID_MINUTES_TO_POST' };
+  }
+
+  const raw = parseJsonObject(row.raw_json);
+  const storedSellStatus = row.sell_status == null || row.sell_status === ''
+    ? raw?.sellStatus ?? raw?.status
+    : row.sell_status;
+  const sellStatus = String(storedSellStatus ?? '').toUpperCase();
+  if (/(STOP|CLOSE|RESULT|SUSPEND)/.test(sellStatus)) {
+    return { safe: false, reason: 'SELL_STATUS' };
+  }
+  if (minutesToPost > 0) return { safe: true };
+
+  const raceRaw = parseJsonObject(row.race_raw_json);
+  const postTime = scheduledPostTime({
+    date: row.race_date,
+    startTime: raceRaw?.startTime,
+  });
+  const capturedAt = Date.parse(row.captured_at ?? '');
+  if (Number.isFinite(postTime) && Number.isFinite(capturedAt) && capturedAt < postTime) {
+    return { safe: true };
+  }
+  return { safe: false, reason: 'UNVERIFIED_POST_TIME' };
+}
+
+function selectNearestMarketFeatureRows(rows, window) {
+  const selected = new Map();
+  for (const row of rows) {
+    const key = `${row.race_id}|${row.pool_key}|${row.combination_key}`;
+    const current = selected.get(key);
+    if (!current || (
+      Math.abs(row.minutes_to_post - window.target) < Math.abs(current.minutes_to_post - window.target)
+      || (
+        Math.abs(row.minutes_to_post - window.target) === Math.abs(current.minutes_to_post - window.target)
+        && String(row.captured_at).localeCompare(String(current.captured_at)) > 0
+      )
+    )) {
+      selected.set(key, row);
+    }
+  }
+  return [...selected.values()];
+}
+
+function parseJsonObject(value) {
+  try {
+    const parsed = JSON.parse(value ?? 'null');
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function scheduledPostTime(race) {
+  if (!race?.date || !/^\d{1,2}:\d{2}(?::\d{2})?$/.test(String(race.startTime ?? ''))) return NaN;
+  const time = String(race.startTime).length === 5 ? `${race.startTime}:00` : race.startTime;
+  return Date.parse(`${race.date}T${time}+08:00`);
+}
 
 function distinctSnapshotRaceCount(db) {
   return Number(db.prepare(`
@@ -1090,6 +1171,7 @@ function oddsSnapshotFromRow(row) {
     pool: row.pool,
     combination: JSON.parse(row.combination_json),
     oddsValue: row.odds_value,
+    sellStatus: row.sell_status,
     source: row.source,
     raw: JSON.parse(row.raw_json),
   };

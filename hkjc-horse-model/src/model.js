@@ -1,4 +1,5 @@
 import { buildPerformanceSnapshot } from './performance.js';
+import { evaluateValueCandidate } from './value-betting-engine.js';
 import {
   buildResearchUpgradeProgram,
   summarizeResearchUpgradeProgram,
@@ -315,23 +316,65 @@ export function buildFinalBetPlan(race, predictions, recommendation, options = {
     : predictions[0];
   const probability = recommendation.modelProbability ?? selected?.probability ?? null;
   const fairOdds = recommendation.fairOdds ?? selected?.fairOdds ?? null;
-  const minimumOdds = Number.isFinite(probability) && probability > 0
-    ? roundOdds((1 + targetEdge) / probability)
-    : null;
   const currentOdds = recommendation.winOdds ?? selected?.winOdds ?? null;
-  const hasMarketOdds = Number.isFinite(currentOdds);
-  const currentMeetsFinalPrice = hasMarketOdds && Number.isFinite(minimumOdds) && currentOdds >= minimumOdds;
-  const plannedStake = recommendation.action === 'pass'
-    ? 0
-    : roundMoney(Math.min(recommendation.suggestedStake ?? 0, bankroll * maxStakePct));
+  const probabilityHaircut = Number.isFinite(options.probabilityHaircut)
+    ? Math.min(Math.max(options.probabilityHaircut, 0), 0.5)
+    : 0.05;
+  const conservativeProbability = Number.isFinite(options.conservativeProbability)
+    ? options.conservativeProbability
+    : Number.isFinite(probability)
+      ? probability * (1 - probabilityHaircut)
+      : null;
+  const marketCapturedAt = options.marketCapturedAt ?? options.market?.capturedAt ?? null;
+  const evaluatedAt = options.evaluatedAt ?? options.market?.evaluatedAt ?? null;
+  const sellStatus = options.sellStatus ?? options.market?.sellStatus ?? null;
+  const decision = recommendation.action === 'pass'
+    ? null
+    : evaluateValueCandidate({
+        pool: 'WIN',
+        probability,
+        conservativeProbability,
+        dividendPer10: Number.isFinite(currentOdds) ? currentOdds * 10 : null,
+        capturedAt: marketCapturedAt,
+        evaluatedAt,
+        sellStatus,
+        safetyBuffer: targetEdge,
+        maxAgeMinutes: options.maxPriceAgeMinutes ?? 15,
+        probabilityStatus: options.probabilityStatus ?? 'RESEARCH_ONLY',
+      });
+  const minimumOdds = Number.isFinite(decision?.requiredDividendPer10)
+    ? roundOdds(decision.requiredDividendPer10 / 10)
+    : Number.isFinite(probability) && probability > 0
+      ? roundOdds((1 + targetEdge) / probability)
+      : null;
+  const executable = recommendation.action === 'value' && decision?.status === 'PLAY';
+  const plannedStake = executable
+    ? roundMoney(Math.min(recommendation.suggestedStake ?? 0, bankroll * maxStakePct))
+    : 0;
+  const valueLineage = {
+    pool: 'WIN',
+    combination: Number.isFinite(Number(recommendation.horseNo)) ? [Number(recommendation.horseNo)] : [],
+    decision,
+    probabilityArtifactId: options.probabilityArtifactId ?? null,
+    modelId: options.modelId ?? null,
+    calibrationMethod: options.calibrationMethod ?? null,
+    conservativeProbability: decision?.conservativeProbability ?? conservativeProbability,
+    marketDividendPer10: decision?.market?.dividendPer10 ?? null,
+    marketCapturedAt,
+    marketWindow: options.marketWindow ?? null,
+    marketSellStatus: sellStatus,
+    marketSource: options.marketSource ?? null,
+    ruleVersion: decision?.ruleVersion ?? null,
+    expectedRoi: decision?.expectedRoi ?? null,
+    conservativeExpectedRoi: decision?.conservativeExpectedRoi ?? null,
+  };
 
   if (recommendation.action === 'value') {
+    const presentation = finalPlanPresentation(decision);
     return {
-      mode: currentMeetsFinalPrice ? 'execute' : 'conditional',
-      label: currentMeetsFinalPrice ? 'FINAL BUY / 可买' : 'WAIT / 等赔率',
-      headline: currentMeetsFinalPrice
-        ? '只在最终入场窗口执行，不提前追价。'
-        : '只列入候选，等临场赔率重新站上最低入场线。',
+      mode: presentation.mode,
+      label: presentation.label,
+      headline: presentation.headline,
       betType: 'WIN',
       horseId: recommendation.horseId,
       horseName: recommendation.horseName,
@@ -346,6 +389,7 @@ export function buildFinalBetPlan(race, predictions, recommendation, options = {
       entryWindow: '开跑前 10-5 分钟',
       reviewWindow: '开跑前 15 分钟复核',
       cutoffWindow: '开跑前 3 分钟后不新增下注',
+      ...valueLineage,
       checklist: [
         'T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。',
         '只有实时独赢赔率仍高于最低赔率线，才执行下注。',
@@ -377,6 +421,7 @@ export function buildFinalBetPlan(race, predictions, recommendation, options = {
       entryWindow: '开跑前 10-5 分钟',
       reviewWindow: '开跑前 15 分钟复核',
       cutoffWindow: 'T-5 仍无实时赔率就不下注',
+      ...valueLineage,
       checklist: [
         'T-15 刷新官方马表、退出马、场地状态和实时独赢赔率。',
         '只有实时独赢赔率高于最低赔率线，才从纸上候选转成真实下注。',
@@ -415,6 +460,42 @@ export function buildFinalBetPlan(race, predictions, recommendation, options = {
       '没有 edge，就不下注。',
       '不要为了有动作，把 PASS 换成低质量选择。',
     ],
+  };
+}
+
+function finalPlanPresentation(decision) {
+  if (decision?.status === 'PLAY') {
+    return {
+      mode: 'execute',
+      label: 'FINAL BUY / 可买',
+      headline: '校准概率、临场价格和彩池状态均已通过保守 EV 门槛。',
+    };
+  }
+  if (decision?.status === 'PAPER') {
+    return {
+      mode: 'paper',
+      label: 'PAPER / 纸上验证',
+      headline: decision.reasonZh,
+    };
+  }
+  if (decision?.status === 'WATCH') {
+    return {
+      mode: 'watch',
+      label: 'WAIT / 等赔率',
+      headline: decision.reasonZh,
+    };
+  }
+  if (['MISSING_PRICE', 'MISSING_CAPTURE_TIME'].includes(decision?.reasonCode)) {
+    return {
+      mode: 'prepare',
+      label: 'PREP / 待临场数据',
+      headline: decision.reasonZh,
+    };
+  }
+  return {
+    mode: 'pass',
+    label: 'NO BET / 不买',
+    headline: decision?.reasonZh ?? '没有通过保守 EV 门槛。',
   };
 }
 

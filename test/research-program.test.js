@@ -62,7 +62,15 @@ describe('research upgrade program', () => {
     assert.equal(program.followUpActions[0].id, 'live-snapshot-planner');
     assert(program.followUpActions.some((item) => item.id === 'pool-money-features' && item.automationPhase === 'Phase A/B'));
     assert(program.followUpActions.some((item) => item.id === 'speedpro-feature-importer' && item.status === 'queued'));
-    assert(program.followUpActions.every((item) => item.automationExecutable === true || item.status === 'research-only'));
+    assert(program.followUpActions.some((item) => (
+      item.id === 'lightgbm-no-market-benchmark'
+      && item.status === 'implemented'
+      && item.automationExecutable === false
+    )));
+    assert(program.followUpActions.every((item) => (
+      item.automationExecutable === true
+      || ['research-only', 'implemented'].includes(item.status)
+    )));
   });
 
   it('summarizes active, next, and research-only items for the dashboard', () => {

@@ -72,18 +72,18 @@ describe('multi-play portfolio optimizer', () => {
       runner('E', 'Fifth', 0.09, 16, 4.6),
       runner('F', 'Sixth', 0.08, 18, 5.1),
       runner('G', 'Seventh', 0.07, 22, 5.8),
-    ]), {
+    ]), liveOptions({
       qplDividendPer10: 58,
       quinellaDividendPer10: 130,
       maxBudget: 100,
-    });
+    }));
 
     assert(portfolio.totalStake <= 100);
     assert(portfolio.cashLines.length >= 3);
     assert(portfolio.cashLines.some((line) => line.type === 'PLACE' && line.selections[0].horseId === 'A'));
     assert(portfolio.cashLines.some((line) => line.type === 'PLACE' && line.selections[0].horseId === 'B'));
-    assert(portfolio.cashLines.some((line) => line.type === 'QUINELLA_PLACE'));
-    assert(portfolio.cashLines.some((line) => line.type === 'QUINELLA'));
+    assert(portfolio.cashLines.every((line) => ['WIN', 'PLACE'].includes(line.type)));
+    assert(portfolio.watchLines.some((line) => line.type === 'QUINELLA_PLACE' && line.decision.status === 'PAPER'));
     assert.equal(portfolio.paperLines.some((line) => line.type === 'TIERCE'), true);
     assert.match(portfolio.summary, /多玩法组合/);
   });
@@ -94,17 +94,16 @@ describe('multi-play portfolio optimizer', () => {
       runner('B', 'Support One', 0.16, 8.5, 2.8),
       runner('C', 'Support Two', 0.15, 11, 3.3),
       runner('D', 'Fourth', 0.1, 14, 4.2),
-    ]), {
+    ]), liveOptions({
       qplDividendPer10: 72,
       maxBudget: 100,
-    });
+    }));
 
     const totalTopExposure = portfolio.cashLines
       .filter((line) => line.selections.some((horse) => horse.horseId === 'A'))
       .reduce((sum, line) => sum + line.stake, 0);
 
     assert(portfolio.cashLines.some((line) => line.type === 'PLACE' && line.selections[0].horseId === 'B'));
-    assert(portfolio.cashLines.some((line) => line.type === 'QUINELLA_PLACE' && line.selections.every((horse) => ['B', 'C'].includes(horse.horseId))));
     assert(totalTopExposure / portfolio.totalStake <= 0.6);
   });
 
@@ -114,11 +113,11 @@ describe('multi-play portfolio optimizer', () => {
       runner('B', 'Positive EV Support', 0.15, 8.5, 2.8),
       runner('C', 'Third', 0.12, 11, 3.3),
       runner('D', 'Fourth', 0.1, 14, 4.2),
-    ]), {
+    ]), liveOptions({
       edgeBuffer: 0.5,
       qplDividendPer10: 50,
       maxBudget: 100,
-    });
+    }));
 
     const underTargetPlace = portfolio.watchLines.find((line) => (
       line.type === 'PLACE' && line.selections[0].horseId === 'A'
@@ -138,11 +137,11 @@ describe('multi-play portfolio optimizer', () => {
       runner('B', 'Second', 0.15, 8.5, 2.8),
       runner('C', 'Third', 0.12, 11, 3.3),
       runner('D', 'Fourth', 0.1, 14, 4.2),
-    ]), {
+    ]), liveOptions({
       qplDividendPer10: 72,
       quinellaDividendPer10: 220,
       maxBudget: 100,
-    });
+    }));
 
     const expectedRois = portfolio.cashLines
       .map((line) => line.expectedRoi)
@@ -152,7 +151,7 @@ describe('multi-play portfolio optimizer', () => {
     assert.deepEqual(expectedRois, [...expectedRois].sort((a, b) => b - a));
   });
 
-  it('uses official dividends from settled entries as market prices for EV replay', () => {
+  it('does not use settled dividends as pre-race executable market prices', () => {
     const portfolio = buildStructuredBetPortfolio(entry([
       runner('A', 'Standout', 0.24, 7.2, null),
       runner('B', 'Second', 0.15, 8.5, null),
@@ -183,10 +182,42 @@ describe('multi-play portfolio optimizer', () => {
       && candidate.selections.map((horse) => horse.horseId).join('+') === 'A+B'
     ));
 
-    assert.equal(topPlace.marketDividendPer10, 31);
-    assert.equal(topQpl.marketDividendPer10, 86);
-    assert(Number.isFinite(topPlace.expectedRoi));
-    assert(Number.isFinite(topQpl.expectedRoi));
+    assert.equal(topPlace.marketDividendPer10, null);
+    assert.equal(topQpl.marketDividendPer10, null);
+    assert.equal(topPlace.expectedRoi, null);
+    assert.equal(topQpl.expectedRoi, null);
+    assert.equal(topPlace.decision.reasonCode, 'MISSING_PRICE');
+    assert.equal(portfolio.totalStake, 0);
+  });
+
+  it('fails closed when no verifiable pre-race market price exists', () => {
+    const portfolio = buildStructuredBetPortfolio(entry([
+      runner('A', 'No Market Top', 0.4, null, null),
+      runner('B', 'No Market Support', 0.3, null, null),
+      runner('C', 'No Market Third', 0.2, null, null),
+      runner('D', 'No Market Fourth', 0.1, null, null),
+    ]), liveOptions());
+
+    assert.equal(portfolio.totalStake, 0);
+    assert.equal(portfolio.cashLines.length, 0);
+    assert.equal(portfolio.watchLines[0].decision.status, 'NO_BET');
+    assert.equal(portfolio.watchLines[0].decision.reasonCode, 'MISSING_PRICE');
+  });
+
+  it('creates executable lines only from calibrated probability and fresh selling prices', () => {
+    const portfolio = buildStructuredBetPortfolio(entry([
+      runner('A', 'Executable Top', 0.4, 7.2, 2.6),
+      runner('B', 'Executable Support', 0.3, 8.5, 2.8),
+      runner('C', 'Third', 0.2, 11, 3.3),
+      runner('D', 'Fourth', 0.1, 14, 4.2),
+    ]), liveOptions());
+
+    assert(portfolio.totalStake > 0);
+    assert(portfolio.cashLines.length > 0);
+    assert(portfolio.cashLines.every((line) => line.decision.status === 'PLAY'));
+    assert(portfolio.cashLines.every((line) => line.probabilityArtifactId === 'runner-probability-stack-v1'));
+    assert(portfolio.cashLines.every((line) => line.marketCapturedAt === '2026-07-18T10:00:00.000Z'));
+    assert(portfolio.cashLines.every((line) => line.ruleVersion === 'value-betting-v1'));
   });
 
   it('does not force a cash bet when the race has no usable signal', () => {
@@ -207,7 +238,7 @@ describe('multi-play portfolio optimizer', () => {
       runner('B', 'Second', 0.14, 9, 3.1),
       runner('C', 'Third', 0.11, 13, 3.8),
       runner('D', 'Fourth', 0.1, 15, 4.2),
-    ]));
+    ]), liveOptions());
 
     assert.equal(portfolio.cashLines.some((line) => line.type === 'WIN'), false);
     assert.equal(portfolio.cashLines.some((line) => line.type === 'PLACE'), true);
@@ -244,4 +275,18 @@ function runner(horseId, horseName, probability, winOdds, placeOdds) {
 
 function round(value) {
   return Math.round(value * 1_000_000) / 1_000_000;
+}
+
+function liveOptions(overrides = {}) {
+  return {
+    probabilityStatus: 'CALIBRATED',
+    probabilityArtifactId: 'runner-probability-stack-v1',
+    modelId: 'runner-probability-stack-v1',
+    calibrationMethod: 'isotonic',
+    marketCapturedAt: '2026-07-18T10:00:00.000Z',
+    evaluatedAt: '2026-07-18T10:05:00.000Z',
+    marketWindow: 'T-10',
+    sellStatus: 'SELLING',
+    ...overrides,
+  };
 }
