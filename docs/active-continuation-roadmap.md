@@ -62,7 +62,8 @@ This sequence overrides the older phase ordering below when the daily continuati
 
 ### P4 — UI redesign
 
-- [ ] Redesign the mobile-first interface after P3 around today's status, race-by-race WIN/PLA value, recommendation evidence/rejection reasons, and research/settlement history.
+- [x] Redesign the mobile-first interface after P3 around today's status, race-by-race WIN/PLA value, recommendation evidence/rejection reasons, and research/settlement history.
+  - Delivered a four-destination race-day cockpit (`Today`, `Review`, `Research`, `More`) with explicit race/pool/selection context, fail-closed `PLAY/WATCH/BLOCK/NO BET` states, public retry handling, mobile bottom navigation, and verified no-meeting behavior. The redesign changes presentation only; model probabilities, EV gates, and staking calculations remain unchanged.
 
 ## Phase A — Race-day live market snapshot collection
 
@@ -279,7 +280,7 @@ Goal: make progress visible and resumable.
     - It attempts at least one safe unchecked task per day.
     - It updates "Latest continuation note" even when blocked.
 
-- [ ] Add a dashboard/research panel showing model benchmark progress.
+- [x] Add a dashboard/research panel showing model benchmark progress.
   - Acceptance:
     - Dashboard can display current baseline, latest tree-model candidate, and whether cash mode is allowed.
     - It shows "not ready" when ROI gates are not met.
@@ -306,6 +307,7 @@ This queue is mirrored in `research-program.js` and surfaced in the dashboard Re
 
 ## Latest continuation note
 
+- 2026-07-19: Completed P4 as a mobile-first race-day cockpit without changing model, EV, or staking outputs. The public interface now has four durable destinations—Today, Review, Research, and More—while keeping every legacy tool reachable. The Today screen prioritizes verified availability, next-race timing, exact race/pool/selection/amount context, and rejection evidence; unknown race context, stale refreshes, unsafe publication policy, and initial load failures all fail closed to zero stake. A verified no-meeting day overrides historical race cards and displays `今天不可下注`. Browser QA passed at 390, 430, and 1280 px with no horizontal overflow, all four destinations working, and zero console warnings/errors. Full suite: 240 tests passed; public artifact privacy scan: 22 files, 0 violations. Remaining unchecked work is data/research dependent: race-day due-snapshot automation, catowabisabi QIN/QPL reproduction, SpeedPRO historical backfill, and the duplicate top-2 Quinella experiment.
 - 2026-07-18: Completed the research-only parimutuel stacker/copula design without promoting exotic cash bets. The audit treats `JonzieLo/hkjc-project` +6.63% overall / +35.99% TRI ROI as unverified because the public tree has no dataset, ledger, tests or LICENSE; README monthly-window claims conflict with 6MS code, dependencies are incomplete, a backtester imports a nonexistent simulator class, and the simulated `TRI` sorts the top three into unordered TRIO semantics. The clean-room benchmark ladder is now Harville/Plackett-Luce, independent Henery/Stern order statistics, residual-dependence diagnostics, and only then a shrunk copula/stacker. Official 2026 HKJC pool semantics, T-window data contracts, marginal reconciliation, race-cluster uncertainty, prospective CLV/ROI and joint exposure gates are documented. Exact-order pools remain research-only `NO_BET`; the binding dependency is genuine same-combination T-30/T-10/T-3/STOP_SELL/CLOSED coverage.
 - 2026-07-18: Completed the clean-room j-csc scraper schema audit at public commit `063a889`. Only the legacy results collector, horse-profile collector and notebook result schema are code-verifiable; the README-declared racecard, racecard-info, veterinary, penetrometer and roarer modules are absent from the public tree. The new executable manifest classifies every candidate field as pre-race usable, post-race only, unsafe or unavailable, and rejects pre-race fields missing actual `observedAt` plus target post time. Synthetic fixture designs cover declaration amendments, scratches, veterinary rowspans/publication lag, multiple track readings, identity mismatch and post-time rejection. The unknown-license source is now registry-pinned to clean-room schema review with no code/raw-data reuse. Research Lab reports 6 implemented, 2 partial, 0 queued and 1 research-only follow-up actions; no model/ROI or cash gate changed.
 - 2026-07-18: Implemented the P1 uncertainty trip-wire across the final WIN plan and multi-play cash portfolio. It computes model-disagreement and calibration-drift signals, consumes a leakage-safe 90-day baseline built only from earlier settled forecasts, fails closed when no fresh selling market exists, halves moderate-risk stakes to valid HKJC units, and converts severe risk to `PAPER` with zero stake. Desktop/mobile UI exposes the exact Chinese reason, while the legacy heuristic budget card is labeled paper-only. Research Lab now reports 5 implemented, 2 partial, 0 queued, and 1 research-only follow-up actions; prospective threshold tuning remains ongoing and does not change current cash promotion gates.
