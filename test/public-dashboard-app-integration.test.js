@@ -41,4 +41,21 @@ describe('public dashboard app integration', () => {
     assert.match(appSource, /tripwire\.summaryZh/);
     assert.match(styles, /\.tripwire-status/);
   });
+
+  it('renders the four-destination cockpit and keeps every legacy tool reachable', async () => {
+    const appSource = await readFile(new URL('../app.js', import.meta.url), 'utf8');
+    const serviceWorker = await readFile(new URL('../sw.js', import.meta.url), 'utf8');
+    const publisher = await readFile(new URL('../hkjc-horse-model/src/public-site-publish.js', import.meta.url), 'utf8');
+
+    assert.match(appSource, /dashboard-cockpit\.js/);
+    assert.match(appSource, /selectedDestination/);
+    assert.match(appSource, /window\.location\.hash/);
+    assert.match(appSource, /renderTodayDestination/);
+    assert.match(appSource, /renderReviewDestination/);
+    assert.match(appSource, /renderResearchDestination/);
+    assert.match(appSource, /renderMoreDestination/);
+    assert.match(appSource, /renderNoMeetingCockpit/);
+    assert.match(serviceWorker, /dashboard-cockpit\.js/);
+    assert.match(publisher, /dashboard-cockpit\.js/);
+  });
 });
