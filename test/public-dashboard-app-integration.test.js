@@ -58,4 +58,15 @@ describe('public dashboard app integration', () => {
     assert.match(serviceWorker, /dashboard-cockpit\.js/);
     assert.match(publisher, /dashboard-cockpit\.js/);
   });
+
+  it('ships the approved cockpit tokens and accessible mobile navigation', async () => {
+    const styles = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
+
+    assert.match(styles, /--cockpit-green:\s*#0c5c53/i);
+    assert.match(styles, /--cockpit-gold:\s*#e6a83e/i);
+    assert.match(styles, /\.cockpit-status\.is-block/);
+    assert.match(styles, /\.cockpit-bottom-nav/);
+    assert.match(styles, /min-height:\s*44px/);
+    assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
+  });
 });
