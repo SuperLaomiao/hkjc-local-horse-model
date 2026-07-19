@@ -1,10 +1,11 @@
-const CACHE_NAME = "hkjc-model-v13-public-functional";
+const CACHE_NAME = "hkjc-model-v14-mobile-cockpit";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=20260708-external-models",
-  "./app.js?v=20260708-external-models",
-  "./dashboard-layout.js?v=20260708-external-models",
+  "./styles.css?v=20260719-mobile-cockpit",
+  "./app.js?v=20260719-mobile-cockpit",
+  "./dashboard-cockpit.js?v=20260719-mobile-cockpit",
+  "./dashboard-layout.js?v=20260719-mobile-cockpit",
   "./external-model-summary.js?v=20260708-external-models",
   "./adaptive-staking.js",
   "./meeting-countdown.js",

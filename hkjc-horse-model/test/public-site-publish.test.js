@@ -19,6 +19,7 @@ describe('public site publishing boundary', () => {
       await mkdir(path.join(source, 'data', 'raw'), { recursive: true });
       await writeFile(path.join(source, 'index.html'), '<main>safe</main>', 'utf8');
       await writeFile(path.join(source, 'app.js'), 'console.log("safe")', 'utf8');
+      await writeFile(path.join(source, 'dashboard-cockpit.js'), 'export const safe = true;', 'utf8');
       await writeFile(path.join(source, 'data', 'raw', 'private.json'), '{"raw":true}', 'utf8');
       await writeFile(path.join(source, 'data', 'dashboard.json'), JSON.stringify({
         generatedAt: '2026-07-18T00:00:00.000Z',
@@ -35,12 +36,17 @@ describe('public site publishing boundary', () => {
       const report = await buildPublicSite({
         projectRoot: source,
         outputRoot: output,
-        staticFiles: ['index.html', 'app.js'],
+        staticFiles: ['index.html', 'app.js', 'dashboard-cockpit.js'],
       });
       const dashboard = JSON.parse(await readFile(path.join(output, 'data', 'dashboard.json'), 'utf8'));
 
       assert.equal(report.status, 'PASS');
-      assert.deepEqual(report.files, ['app.js', 'data/dashboard.json', 'index.html']);
+      assert.deepEqual(report.files, [
+        'app.js',
+        'dashboard-cockpit.js',
+        'data/dashboard.json',
+        'index.html',
+      ]);
       assert.deepEqual(dashboard.ledger, []);
       assert.equal(dashboard.recentEntries[0].forecast.topPick.horseName, 'Public Top Pick');
       assert.equal(dashboard.recentEntries[0].forecast.recommendation, undefined);

@@ -41,4 +41,49 @@ describe('public dashboard app integration', () => {
     assert.match(appSource, /tripwire\.summaryZh/);
     assert.match(styles, /\.tripwire-status/);
   });
+
+  it('renders the four-destination cockpit and keeps every legacy tool reachable', async () => {
+    const appSource = await readFile(new URL('../app.js', import.meta.url), 'utf8');
+    const serviceWorker = await readFile(new URL('../sw.js', import.meta.url), 'utf8');
+    const publisher = await readFile(new URL('../hkjc-horse-model/src/public-site-publish.js', import.meta.url), 'utf8');
+
+    assert.match(appSource, /dashboard-cockpit\.js/);
+    assert.match(appSource, /selectedDestination/);
+    assert.match(appSource, /window\.location\.hash/);
+    assert.match(appSource, /renderTodayDestination/);
+    assert.match(appSource, /renderReviewDestination/);
+    assert.match(appSource, /renderResearchDestination/);
+    assert.match(appSource, /renderMoreDestination/);
+    assert.match(appSource, /renderNoMeetingCockpit/);
+    assert.match(serviceWorker, /dashboard-cockpit\.js/);
+    assert.match(publisher, /dashboard-cockpit\.js/);
+  });
+
+  it('ships the approved cockpit tokens and accessible mobile navigation', async () => {
+    const styles = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
+
+    assert.match(styles, /--cockpit-green:\s*#0c5c53/i);
+    assert.match(styles, /--cockpit-gold:\s*#e6a83e/i);
+    assert.match(styles, /\.cockpit-status\.is-block/);
+    assert.match(styles, /\.cockpit-bottom-nav/);
+    assert.match(styles, /min-height:\s*44px/);
+    assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
+  });
+
+  it('offers a public retry while an initial load failure remains NO BET', async () => {
+    const appSource = await readFile(new URL('../app.js', import.meta.url), 'utf8');
+
+    assert.match(appSource, /data-retry-dashboard/);
+    assert.match(appSource, /BLOCK · NO BET/);
+    assert.match(appSource, /没有可验证的新数据/);
+    assert.match(appSource, /aria-live="polite"/);
+    assert.doesNotMatch(appSource, /Run: <code>npm run hkjc:refresh/);
+  });
+
+  it('shows the verified no-meeting cockpit even when historical races remain in the snapshot', async () => {
+    const appSource = await readFile(new URL('../app.js', import.meta.url), 'utf8');
+
+    assert.match(appSource, /!selectedEntry \|\| todayStatus\.noLocalRaceToday/);
+    assert.match(appSource, /香港今天没有开放赛事/);
+  });
 });

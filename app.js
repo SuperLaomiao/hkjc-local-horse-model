@@ -7,7 +7,17 @@ import {
 } from "./self-test.js";
 import { buildStakingStrategy } from "./bet-strategy.js";
 import { buildAdaptiveRacePlan } from "./adaptive-staking.js";
-import { buildBettingAvailability, formatRaceContext, getDashboardLayoutSections } from "./dashboard-layout.js?v=20260708-external-models";
+import {
+  COCKPIT_DESTINATIONS,
+  buildCockpitViewModel,
+  normalizeCockpitDestination,
+} from "./dashboard-cockpit.js?v=20260719-mobile-cockpit";
+import {
+  buildBettingAvailability,
+  formatRaceContext,
+  getDestinationForTool,
+  getToolsForDestination,
+} from "./dashboard-layout.js?v=20260719-mobile-cockpit";
 import {
   buildExternalComparisonSummary,
   externalModelBenchmarkCards,
@@ -52,6 +62,7 @@ const uiState = {
   lockedForecasts: [],
   selectedPoolType: "PLACE",
   selectedToolId: "multi-play-portfolio",
+  selectedDestination: normalizeCockpitDestination(window.location.hash),
   researchReports: {
     status: "idle",
     loadedAt: null,
@@ -67,8 +78,15 @@ init();
 
 async function init() {
   loadLocalRecords();
+  bindHashNavigation();
   await refreshDashboardData({ initial: true });
   registerServiceWorker();
+}
+
+function bindHashNavigation() {
+  window.addEventListener("hashchange", () => {
+    selectDestination(normalizeCockpitDestination(window.location.hash), { updateHash: false });
+  });
 }
 
 function loadLocalRecords() {
@@ -143,69 +161,339 @@ function resolveSelectedRaceId(snapshot, preferredRaceId) {
 function render() {
   const snapshot = uiState.snapshot;
   const entries = getAllEntries(snapshot);
-  const selectedEntry = entries.find((entry) => entry.raceId === uiState.selectedRaceId) ?? entries[0];
+  const selectedEntry = entries.find((entry) => entry.raceId === uiState.selectedRaceId) ?? entries[0] ?? null;
   const todayStatus = localRaceDayStatus(snapshot);
-  const layout = getDashboardLayoutSections({ selectedToolId: uiState.selectedToolId });
   const executionPolicy = dashboardExecutionPolicy(snapshot);
   const publication = publicationBadge(executionPolicy);
-
-  if (!selectedEntry) {
-    renderMissingData(new Error("No HKJC local races or race-card forecasts found in dashboard data."));
-    return;
-  }
+  const availability = selectedEntry
+    ? buildBettingAvailability({ entry: selectedEntry, today: todayStatus.today })
+    : { canBetNow: false, detail: "还没有确认今日香港本地赛程。" };
+  const portfolio = selectedEntry
+    ? buildStructuredBetPortfolio(selectedEntry, buildPublicPortfolioOptions(snapshot, selectedEntry))
+    : null;
+  const cockpit = buildCockpitViewModel({
+    snapshot,
+    entry: selectedEntry,
+    entries,
+    availability,
+    portfolio,
+    executionPolicy,
+    refreshStatus: uiState.refreshStatus,
+  });
 
   appRoot.innerHTML = `
-    <div class="terminal">
-      <header class="topbar">
-        <div class="brand">
-          <h1>HK Local Horse Model</h1>
-          <p>香港本地赛马 · 赛前预测 · 赛后复盘 · Rolling ROI</p>
-        </div>
-        <div class="meta-strip" aria-label="dashboard metadata">
-          <span class="publication-mode-badge is-${escapeHtml(publication.tone)}">${escapeHtml(publication.label)}</span>
-          <span>${escapeHtml(snapshot.scope)}</span>
-          <span>${formatDateTime(snapshot.generatedAt)}</span>
-          <span>${snapshot.summary.racesSettled} settled races</span>
-          <span>${snapshot.upcomingEntries?.length ?? 0} upcoming forecasts</span>
-          <span>${escapeHtml(nextMeetingLabel(snapshot))}</span>
-        </div>
-      </header>
-
-      ${renderBettingAvailabilityBanner(selectedEntry, todayStatus)}
-      ${renderMeetingForecastPanel(snapshot, todayStatus)}
-
-      <section class="dashboard simplified-dashboard">
-        <aside class="panel side-panel">
-          <div class="panel-header">
-            <div>
-              <h2>赛事列表</h2>
-              <p>点一场切换；右侧工具只显示当前打开的模块。</p>
-            </div>
-          </div>
-          <div class="race-list">
-            ${entries.map((entry) => renderRaceButton(entry, selectedEntry.raceId)).join("")}
-          </div>
-        </aside>
-
-        <main class="main-stack">
-          ${renderScoreStrip(snapshot.summary)}
-          ${renderFinalBetPlanPanel(selectedEntry, snapshot, todayStatus)}
-          ${executionPolicy.allowPersonalStaking ? renderStakingStrategyPanel(selectedEntry) : ""}
-          ${renderPredictionPanel(selectedEntry)}
-        </main>
-
-        <aside class="right-stack">
-          ${renderToolDrawerPanel(selectedEntry, entries, snapshot, layout)}
-        </aside>
-      </section>
-      ${renderMobileActionBar(selectedEntry, todayStatus)}
+    <div class="terminal cockpit-shell">
+      ${renderCockpitHeader(snapshot, cockpit, publication)}
+      <main class="cockpit-main" id="main-content">
+        ${renderDestination(uiState.selectedDestination, {
+          snapshot,
+          entries,
+          selectedEntry,
+          todayStatus,
+          executionPolicy,
+          cockpit,
+        })}
+      </main>
+      ${renderCockpitNavigation(uiState.selectedDestination)}
     </div>
   `;
 
   bindEvents();
-  if (uiState.selectedToolId === "performance") {
+  if (uiState.selectedDestination === "review") {
     void ensureResearchReports();
   }
+}
+
+function renderCockpitHeader(snapshot, cockpit, publication) {
+  return `
+    <header class="cockpit-header">
+      <div class="cockpit-brand">
+        <span>HK LOCAL MODEL</span>
+        <h1>今日赛马</h1>
+      </div>
+      <div class="cockpit-header-meta">
+        <span class="publication-mode-badge is-${escapeHtml(publication.tone)}">${escapeHtml(publication.label)}</span>
+        <span>${escapeHtml(cockpit.generatedAt ? formatDateTime(cockpit.generatedAt) : "尚未更新")}</span>
+        ${renderRefreshButton("刷新", "header")}
+      </div>
+      <p class="cockpit-refresh-message ${uiState.refreshStatus === "error" ? "is-error" : ""}" aria-live="polite">
+        ${escapeHtml(refreshStatusText(snapshot))}
+      </p>
+    </header>
+  `;
+}
+
+function renderCockpitNavigation(activeDestination) {
+  return `
+    <nav class="cockpit-page-nav cockpit-bottom-nav" aria-label="主要页面">
+      ${COCKPIT_DESTINATIONS.map((destination) => `
+        <button
+          class="cockpit-nav-item ${destination.id === activeDestination ? "is-active" : ""}"
+          data-destination-id="${escapeHtml(destination.id)}"
+          aria-current="${destination.id === activeDestination ? "page" : "false"}"
+        >
+          <span aria-hidden="true">${escapeHtml(destination.symbol)}</span>
+          <strong>${escapeHtml(destination.label)}</strong>
+        </button>
+      `).join("")}
+    </nav>
+  `;
+}
+
+function renderDestination(destinationId, context) {
+  if (destinationId === "review") return renderReviewDestination(context);
+  if (destinationId === "research") return renderResearchDestination(context);
+  if (destinationId === "more") return renderMoreDestination(context);
+  return renderTodayDestination(context);
+}
+
+function renderTodayDestination(context) {
+  const { snapshot, entries, selectedEntry, todayStatus, executionPolicy, cockpit } = context;
+  if (!selectedEntry || todayStatus.noLocalRaceToday) {
+    return renderNoMeetingCockpit(snapshot, cockpit, todayStatus);
+  }
+
+  return `
+    <section class="cockpit-page is-today" aria-label="今日赛马驾驶舱">
+      ${renderCockpitStatusCard(snapshot, selectedEntry, todayStatus, cockpit)}
+      ${renderCockpitRaceChips(entries, selectedEntry)}
+      <div class="cockpit-content-grid">
+        <div class="cockpit-primary-stack">
+          ${renderCockpitPlanCard(cockpit)}
+          <details class="cockpit-evidence">
+            <summary>为什么这样建议？查看 EV、赔率与风险闸</summary>
+            <div class="cockpit-evidence-body">
+              ${renderFinalBetPlanPanel(selectedEntry, snapshot, todayStatus)}
+              ${renderMultiPlayPortfolioPanel(selectedEntry, snapshot)}
+              ${executionPolicy.allowPersonalStaking ? renderStakingStrategyPanel(selectedEntry) : ""}
+            </div>
+          </details>
+        </div>
+        <aside class="cockpit-secondary-stack">
+          ${renderCockpitModelSummary(snapshot, selectedEntry)}
+        </aside>
+      </div>
+    </section>
+  `;
+}
+
+function renderReviewDestination({ snapshot, entries, selectedEntry }) {
+  return `
+    <section class="cockpit-page is-review" aria-label="赛后复盘">
+      ${renderDestinationHeader("复盘", "赛果、纸上记录、模型成绩与资金曲线集中在这里。")}
+      ${selectedEntry ? renderCockpitRaceChips(entries, selectedEntry) : ""}
+      <div class="cockpit-detail-stack">
+        ${selectedEntry ? renderSettlementPanel(selectedEntry) : '<section class="panel"><p class="guardrail">暂时没有可复盘场次。</p></section>'}
+        ${selectedEntry ? renderSelfTestPanel(selectedEntry, entries) : ""}
+        ${renderComparisonPanel(snapshot.ledger)}
+        ${renderPerformancePanel(snapshot)}
+        ${renderChartPanel(snapshot.ledger)}
+      </div>
+    </section>
+  `;
+}
+
+function renderResearchDestination({ snapshot }) {
+  return `
+    <section class="cockpit-page is-research" aria-label="研究中心">
+      ${renderDestinationHeader("研究", "模型成绩、外部 benchmark、数据缺口和下一步升级。")}
+      <div class="cockpit-detail-stack">
+        ${renderScoreStrip(snapshot.summary)}
+        ${renderResearchUpgradePanel(snapshot)}
+      </div>
+    </section>
+  `;
+}
+
+function renderMoreDestination({ snapshot, entries, selectedEntry }) {
+  const tools = getToolsForDestination("more");
+  const activeTool = tools.some((tool) => tool.id === uiState.selectedToolId)
+    ? uiState.selectedToolId
+    : tools[0]?.id;
+
+  return `
+    <section class="cockpit-page is-more" aria-label="更多工具">
+      ${renderDestinationHeader("更多", "玩法说明、动态路线、预测明细和风险纪律。")}
+      ${selectedEntry ? `
+        ${renderCockpitRaceChips(entries, selectedEntry)}
+        <div class="cockpit-subnav" role="tablist" aria-label="更多工具切换">
+          ${tools.map((tool) => `
+            <button
+              class="tool-tab ${tool.id === activeTool ? "is-active" : ""}"
+              data-tool-tab-id="${escapeHtml(tool.id)}"
+              role="tab"
+              aria-selected="${tool.id === activeTool ? "true" : "false"}"
+            >
+              <span>${escapeHtml(tool.eyebrow)}</span>
+              <strong>${escapeHtml(tool.label)}</strong>
+            </button>
+          `).join("")}
+        </div>
+        <div class="cockpit-detail-stack">
+          ${renderToolDrawerContent(activeTool, selectedEntry, entries, snapshot)}
+          ${renderPredictionPanel(selectedEntry)}
+        </div>
+      ` : `
+        <section class="panel"><p class="guardrail">赛程发布后会显示玩法和完整预测；风险纪律仍可在研究页查看。</p></section>
+        ${renderNotesPanel(snapshot.assumptions, snapshot)}
+      `}
+    </section>
+  `;
+}
+
+function renderDestinationHeader(title, detail) {
+  return `
+    <header class="cockpit-section-header">
+      <h2>${escapeHtml(title)}</h2>
+      <p>${escapeHtml(detail)}</p>
+    </header>
+  `;
+}
+
+function renderNoMeetingCockpit(snapshot, cockpit, todayStatus) {
+  const nextMeeting = todayStatus.nextMeeting ? formatMeeting(todayStatus.nextMeeting) : "等待官方排位表";
+  return `
+    <section class="cockpit-page is-today" aria-label="今日无香港本地赛事">
+      <section class="cockpit-status is-no-meeting" aria-live="polite">
+        <span>投注状态 · NO BET</span>
+        <h2>今天不可下注</h2>
+        <p>香港今天没有开放赛事。系统会在下个赛马日重新检查排位表与市场数据。</p>
+        <div class="cockpit-status-meta">
+          <span>下一次香港赛事</span>
+          <strong>${escapeHtml(nextMeeting)}</strong>
+        </div>
+      </section>
+      ${renderMeetingForecastPanel(snapshot, todayStatus)}
+      <section class="cockpit-empty-action">
+        ${renderRefreshButton("检查最新赛程", "panel")}
+      </section>
+      ${renderScoreStrip(snapshot.summary)}
+    </section>
+  `;
+}
+
+function renderCockpitStatusCard(snapshot, selectedEntry, todayStatus, cockpit) {
+  const meetingEntries = (snapshot.upcomingEntries ?? []).filter((entry) => (
+    entry.date === selectedEntry.date && entry.racecourse === selectedEntry.racecourse
+  ));
+  const countdown = buildMeetingCountdown({
+    meeting: {
+      date: selectedEntry.date,
+      racecourse: selectedEntry.racecourse,
+      raceCount: meetingEntries.length,
+    },
+    upcomingEntries: meetingEntries,
+  });
+  const stateLabel = cockpitStateLabel(cockpit.state);
+  const selectedTime = selectedEntry.forecast?.startTime
+    ? `R${selectedEntry.raceNo} · ${selectedEntry.forecast.startTime}`
+    : `R${selectedEntry.raceNo} · 开跑时间待确认`;
+
+  return `
+    <section class="cockpit-status is-${escapeHtml(cockpit.state.toLowerCase().replaceAll("_", "-"))}" aria-live="polite">
+      <div class="cockpit-status-heading">
+        <span>投注状态 · ${escapeHtml(stateLabel)}</span>
+        <strong>${escapeHtml(selectedTime)}</strong>
+      </div>
+      <h2>${escapeHtml(cockpit.headline)}</h2>
+      <p>${escapeHtml(cockpit.reason)}</p>
+      <div class="cockpit-status-grid">
+        <div><span>下一跑</span><strong>${escapeHtml(countdown.nextRaceText)}</strong></div>
+        <div><span>T-30</span><strong>${escapeHtml(countdown.t30Text)}</strong></div>
+        <div><span>距离现在</span><strong>${escapeHtml(countdown.distanceText)}</strong></div>
+        <div><span>赛马日</span><strong>${todayStatus.meetingToday ? "今天" : escapeHtml(selectedEntry.date)}</strong></div>
+      </div>
+    </section>
+  `;
+}
+
+function renderCockpitRaceChips(entries, selectedEntry) {
+  const meetingEntries = entries.filter((entry) => (
+    entry.date === selectedEntry.date && entry.racecourse === selectedEntry.racecourse
+  ));
+  return `
+    <nav class="cockpit-race-chips" aria-label="场次切换">
+      ${meetingEntries.map((entry) => `
+        <button
+          class="cockpit-race-chip ${entry.raceId === selectedEntry.raceId ? "is-active" : ""} ${entry.settlement ? "is-settled" : ""}"
+          data-race-select-id="${escapeHtml(entry.raceId)}"
+          aria-current="${entry.raceId === selectedEntry.raceId ? "true" : "false"}"
+        >
+          <strong>R${escapeHtml(entry.raceNo)}</strong>
+          <span>${escapeHtml(entry.forecast?.startTime ?? "待定")}</span>
+        </button>
+      `).join("")}
+    </nav>
+  `;
+}
+
+function renderCockpitPlanCard(cockpit) {
+  return `
+    <section class="cockpit-plan panel">
+      <div class="cockpit-plan-heading">
+        <div>
+          <span class="cockpit-state-label is-${escapeHtml(cockpit.state.toLowerCase().replaceAll("_", "-"))}">${escapeHtml(cockpitStateLabel(cockpit.state))}</span>
+          <h2>${escapeHtml(cockpit.headline)}</h2>
+        </div>
+        <strong class="cockpit-total-stake">${formatHkd(cockpit.totalStake)}</strong>
+      </div>
+      ${cockpit.lines.length ? `
+        <div class="cockpit-plan-lines">
+          ${cockpit.lines.map((line) => `
+            <div class="cockpit-plan-line">
+              <div><strong>${escapeHtml(line.context)}</strong><span>${escapeHtml(line.rationale || "按现有 EV 与风险闸结果")}</span></div>
+              <em>${formatHkd(line.amount)}</em>
+            </div>
+          `).join("")}
+        </div>
+      ` : '<p class="guardrail">本场没有通过全部门槛的下注线，保留资金。</p>'}
+      ${renderRefreshButton("刷新赔率并重算方案", "panel")}
+    </section>
+  `;
+}
+
+function renderCockpitModelSummary(snapshot, entry) {
+  const predictions = (entry.forecast?.predictions ?? []).slice(0, 3);
+  return `
+    <section class="panel cockpit-model-summary">
+      <div class="panel-header">
+        <div><h3>模型依据</h3><p>先看行动，模型成绩放在第三层。</p></div>
+      </div>
+      <div class="cockpit-top-runners">
+        ${predictions.map((runner, index) => `
+          <div><span>#${index + 1} · ${escapeHtml(runner.horseNo ?? "-")}号</span><strong>${escapeHtml(runner.horseName ?? runner.horseId ?? "-")}</strong><em>${formatPercent(runner.probability)}</em></div>
+        `).join("") || '<p class="guardrail">当前场次没有可显示的预测排名。</p>'}
+      </div>
+      <div class="cockpit-model-link-row">
+        <button data-destination-id="review">成绩与 ROI</button>
+        <button data-destination-id="research">Research Lab</button>
+      </div>
+      <p class="fine-print">${escapeHtml(snapshot.summary?.modelNote ?? "预测不代表保证；赔率未越过期望值时保持 NO BET。")}</p>
+    </section>
+  `;
+}
+
+function cockpitStateLabel(state) {
+  if (state === "PLAY") return "PLAY · 可执行";
+  if (state === "WATCH") return "WATCH · 观察";
+  if (state === "BLOCK") return "BLOCK · 风险阻断";
+  if (state === "SETTLED") return "SETTLED · 已结算";
+  if (state === "WAIT") return "WAIT · 等赛马日";
+  return "NO BET · 不下注";
+}
+
+function selectDestination(destinationId, { updateHash = true } = {}) {
+  const nextDestination = normalizeCockpitDestination(destinationId);
+  uiState.selectedDestination = nextDestination;
+  const tools = getToolsForDestination(nextDestination);
+  if (tools.length && !tools.some((tool) => tool.id === uiState.selectedToolId)) {
+    uiState.selectedToolId = tools[0].id;
+  }
+  if (updateHash && window.location.hash !== `#${nextDestination}`) {
+    window.location.hash = nextDestination;
+    return;
+  }
+  if (uiState.snapshot) render();
 }
 
 async function ensureResearchReports() {
@@ -2168,6 +2456,12 @@ function clearUserRecords() {
 }
 
 function bindEvents() {
+  document.querySelectorAll("[data-destination-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      selectDestination(button.dataset.destinationId);
+    });
+  });
+
   document.querySelectorAll("[data-race-select-id]").forEach((button) => {
     button.addEventListener("click", () => {
       uiState.selectedRaceId = button.dataset.raceSelectId;
@@ -2218,20 +2512,24 @@ function bindEvents() {
   document.querySelectorAll("[data-tool-tab-id]").forEach((button) => {
     button.addEventListener("click", () => {
       uiState.selectedToolId = button.dataset.toolTabId;
-      render();
+      selectDestination(getDestinationForTool(uiState.selectedToolId));
     });
   });
 }
 
 function renderMissingData(error) {
   appRoot.innerHTML = `
-    <main class="empty-panel">
-      <h1>HK Local Horse Model</h1>
-      <p>Dashboard data is not ready yet.</p>
+    <main class="empty-panel cockpit-load-error" aria-live="polite">
+      <span class="cockpit-state-label is-block">BLOCK · NO BET</span>
+      <h1>暂时无法载入赛程</h1>
+      <p>没有可验证的新数据，系统不会显示下注金额。</p>
       <p class="fine-print">${escapeHtml(error.message)}</p>
-      <p class="fine-print">Run: <code>npm run hkjc:refresh -- --bankroll 200 --minEdge 0 --minProbability 0.15</code></p>
+      <button class="refresh-plan-button" data-retry-dashboard>重新载入</button>
     </main>
   `;
+  document.querySelector("[data-retry-dashboard]")?.addEventListener("click", () => {
+    void refreshDashboardData({ initial: true });
+  });
 }
 
 function formatPercent(value) {

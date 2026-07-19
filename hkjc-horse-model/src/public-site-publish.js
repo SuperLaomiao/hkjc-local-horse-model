@@ -17,6 +17,7 @@ export const PUBLIC_SITE_STATIC_FILES = Object.freeze([
   'app.js',
   'bet-strategy.js',
   'betting-products.js',
+  'dashboard-cockpit.js',
   'dashboard-layout.js',
   'external-model-summary.js',
   'hkjc-horse-model/src/uncertainty-tripwire.js',
