@@ -3035,6 +3035,28 @@ body:has(.cockpit-shell) {
   }
 }
 
+.cockpit-load-error {
+  width: min(560px, calc(100% - 32px));
+  margin: 12vh auto 0;
+  text-align: center;
+}
+
+.cockpit-load-error .cockpit-state-label {
+  display: inline-flex;
+  margin-bottom: 8px;
+  color: #fff;
+  background: var(--cockpit-red);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.cockpit-load-error .refresh-plan-button {
+  min-height: 44px;
+  margin-top: 10px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

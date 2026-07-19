@@ -249,7 +249,9 @@ function renderDestination(destinationId, context) {
 
 function renderTodayDestination(context) {
   const { snapshot, entries, selectedEntry, todayStatus, executionPolicy, cockpit } = context;
-  if (!selectedEntry) return renderNoMeetingCockpit(snapshot, cockpit, todayStatus);
+  if (!selectedEntry || todayStatus.noLocalRaceToday) {
+    return renderNoMeetingCockpit(snapshot, cockpit, todayStatus);
+  }
 
   return `
     <section class="cockpit-page is-today" aria-label="今日赛马驾驶舱">
@@ -354,8 +356,8 @@ function renderNoMeetingCockpit(snapshot, cockpit, todayStatus) {
     <section class="cockpit-page is-today" aria-label="今日无香港本地赛事">
       <section class="cockpit-status is-no-meeting" aria-live="polite">
         <span>投注状态 · NO BET</span>
-        <h2>${escapeHtml(cockpit.headline)}</h2>
-        <p>${escapeHtml(cockpit.reason)}</p>
+        <h2>今天不可下注</h2>
+        <p>香港今天没有开放赛事。系统会在下个赛马日重新检查排位表与市场数据。</p>
         <div class="cockpit-status-meta">
           <span>下一次香港赛事</span>
           <strong>${escapeHtml(nextMeeting)}</strong>
@@ -2517,13 +2519,17 @@ function bindEvents() {
 
 function renderMissingData(error) {
   appRoot.innerHTML = `
-    <main class="empty-panel">
-      <h1>HK Local Horse Model</h1>
-      <p>Dashboard data is not ready yet.</p>
+    <main class="empty-panel cockpit-load-error" aria-live="polite">
+      <span class="cockpit-state-label is-block">BLOCK · NO BET</span>
+      <h1>暂时无法载入赛程</h1>
+      <p>没有可验证的新数据，系统不会显示下注金额。</p>
       <p class="fine-print">${escapeHtml(error.message)}</p>
-      <p class="fine-print">Run: <code>npm run hkjc:refresh -- --bankroll 200 --minEdge 0 --minProbability 0.15</code></p>
+      <button class="refresh-plan-button" data-retry-dashboard>重新载入</button>
     </main>
   `;
+  document.querySelector("[data-retry-dashboard]")?.addEventListener("click", () => {
+    void refreshDashboardData({ initial: true });
+  });
 }
 
 function formatPercent(value) {

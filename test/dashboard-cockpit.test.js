@@ -122,4 +122,24 @@ describe('race-day cockpit', () => {
       'R3 · QPL · 2+8',
     ]);
   });
+
+  it('never executes a cash line whose race context is unknown', () => {
+    const view = buildCockpitViewModel({
+      entry: { raceId: 'unknown', forecast: {} },
+      entries: [],
+      availability: { canBetNow: true },
+      executionPolicy: { allowExecutableRecommendations: true },
+      portfolio: {
+        cashLines: [{ type: 'PLACE', selections: ['8'], stake: 10 }],
+        watchLines: [],
+      },
+    });
+
+    assert.equal(view.state, 'BLOCK');
+    assert.equal(view.canExecute, false);
+    assert.equal(view.totalStake, 0);
+    assert.equal(view.lines[0].context, 'R- · PLACE · 8');
+    assert.equal(view.lines[0].amount, 0);
+    assert.match(view.headline, /场次信息不完整/);
+  });
 });

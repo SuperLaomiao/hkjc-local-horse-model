@@ -60,7 +60,9 @@ export function buildCockpitViewModel(options = {}) {
       startTime: item.forecast?.startTime ?? null,
       settled: Boolean(item.settlement),
     })),
-    headline: headlineForState(state),
+    headline: state === 'BLOCK' && entry && !raceContext
+      ? '场次信息不完整'
+      : headlineForState(state),
     reason: reasonForState({
       state,
       entry,

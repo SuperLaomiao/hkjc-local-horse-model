@@ -69,4 +69,21 @@ describe('public dashboard app integration', () => {
     assert.match(styles, /min-height:\s*44px/);
     assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
   });
+
+  it('offers a public retry while an initial load failure remains NO BET', async () => {
+    const appSource = await readFile(new URL('../app.js', import.meta.url), 'utf8');
+
+    assert.match(appSource, /data-retry-dashboard/);
+    assert.match(appSource, /BLOCK · NO BET/);
+    assert.match(appSource, /没有可验证的新数据/);
+    assert.match(appSource, /aria-live="polite"/);
+    assert.doesNotMatch(appSource, /Run: <code>npm run hkjc:refresh/);
+  });
+
+  it('shows the verified no-meeting cockpit even when historical races remain in the snapshot', async () => {
+    const appSource = await readFile(new URL('../app.js', import.meta.url), 'utf8');
+
+    assert.match(appSource, /!selectedEntry \|\| todayStatus\.noLocalRaceToday/);
+    assert.match(appSource, /香港今天没有开放赛事/);
+  });
 });
