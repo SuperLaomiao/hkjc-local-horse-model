@@ -52,8 +52,25 @@ export const TOOL_TABS = [
 
 export const TOOL_TAB_IDS = TOOL_TABS.map((tab) => tab.id);
 
+export const DESTINATION_TOOL_IDS = Object.freeze({
+  today: Object.freeze(['multi-play-portfolio']),
+  review: Object.freeze(['review', 'performance']),
+  research: Object.freeze(['research-lab']),
+  more: Object.freeze(['pool-guide', 'adaptive-route', 'discipline']),
+});
+
 export function getToolTab(toolId) {
   return TOOL_TABS.find((tab) => tab.id === toolId) ?? TOOL_TABS[0];
+}
+
+export function getDestinationForTool(toolId) {
+  return Object.entries(DESTINATION_TOOL_IDS)
+    .find(([, ids]) => ids.includes(toolId))?.[0] ?? 'today';
+}
+
+export function getToolsForDestination(destinationId) {
+  const ids = DESTINATION_TOOL_IDS[destinationId] ?? [];
+  return ids.map((id) => getToolTab(id));
 }
 
 export function getDashboardLayoutSections(options = {}) {

@@ -2,10 +2,13 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import {
+  DESTINATION_TOOL_IDS,
   buildBettingAvailability,
   formatRaceContext,
   getDashboardLayoutSections,
+  getDestinationForTool,
   getToolTab,
+  getToolsForDestination,
   TOOL_TAB_IDS,
 } from '../dashboard-layout.js';
 
@@ -42,6 +45,24 @@ describe('dashboard layout sections', () => {
     assert.equal(researchTab.label, '研究升级');
     assert.equal(researchTab.eyebrow, 'Research');
     assert.match(researchTab.description, /GitHub|论文|算法/);
+  });
+
+  it('maps every legacy tool to exactly one cockpit destination', () => {
+    const mapped = Object.values(DESTINATION_TOOL_IDS).flat();
+
+    assert.deepEqual(new Set(mapped), new Set(TOOL_TAB_IDS));
+    assert.equal(mapped.length, TOOL_TAB_IDS.length);
+    assert.equal(getDestinationForTool('multi-play-portfolio'), 'today');
+    assert.equal(getDestinationForTool('review'), 'review');
+    assert.equal(getDestinationForTool('performance'), 'review');
+    assert.equal(getDestinationForTool('research-lab'), 'research');
+    assert.equal(getDestinationForTool('pool-guide'), 'more');
+  });
+
+  it('returns configured tools while an unknown destination stays empty', () => {
+    assert.deepEqual(getToolsForDestination('research').map((item) => item.id), ['research-lab']);
+    assert(getToolsForDestination('more').some((item) => item.id === 'discipline'));
+    assert.deepEqual(getToolsForDestination('unknown'), []);
   });
 
   it('formats betting advice with an explicit race context', () => {
