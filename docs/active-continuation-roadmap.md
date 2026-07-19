@@ -65,6 +65,59 @@ This sequence overrides the older phase ordering below when the daily continuati
 - [x] Redesign the mobile-first interface after P3 around today's status, race-by-race WIN/PLA value, recommendation evidence/rejection reasons, and research/settlement history.
   - Delivered a four-destination race-day cockpit (`Today`, `Review`, `Research`, `More`) with explicit race/pool/selection context, fail-closed `PLAY/WATCH/BLOCK/NO BET` states, public retry handling, mobile bottom navigation, and verified no-meeting behavior. The redesign changes presentation only; model probabilities, EV gates, and staking calculations remain unchanged.
 
+## Approved P5-P8 prospective execution order — 2026-07-19
+
+This sequence supersedes the older Phase A-D queue below. The older queue remains as research history and dependency evidence; daily continuation must start here and select the first unchecked item whose dependencies are ready. Detailed implementation steps live in:
+
+- `docs/superpowers/plans/2026-07-19-prospective-production-research.md`
+
+### P5 — Shadow production and immutable recommendation lineage
+
+- [ ] Connect the validation-selected market-aware CatBoost WIN/PLACE champion to upcoming-race scoring in `SHADOW` mode.
+  - Dependency: signed local model report, artifact, feature manifest, calibration metadata, and training cutoff all agree.
+  - Acceptance: the same upcoming race exposes heuristic, no-market, market-aware, and market probabilities side by side; output records model/artifact/calibration lineage; stake is always zero and cash remains `NO_BET`.
+- [ ] Add immutable T-30/T-10/T-3 prospective recommendation locks.
+  - Acceptance: a lock records race, pool, combination, raw/conservative probability, fair/required/current price, reason codes, market timestamp/window, model lineage, and paper stake; identical race/window/model inputs are idempotent and an existing lock cannot be silently rewritten.
+- [ ] Auto-settle prospective locks from official results/dividends.
+  - Acceptance: paper and cash ledgers stay separate; OPEN/SETTLED/VOID states are explicit; CLV, slippage, return, profit, drawdown, and losing run are recomputed from immutable locks only.
+
+### P6 — Durable local prospective collection
+
+- [ ] Add a safe local race-day runner for due T-30/T-10/T-3 snapshots and shadow locks.
+  - Acceptance: local wake-ups may check the planner, but network capture occurs only inside an uncaptured configured window; retries are bounded; post-time requests fail closed; SQLite writes remain idempotent; the runner prints a short Chinese summary.
+- [ ] Add a dry-run-only macOS LaunchAgent installer and operating guide.
+  - Acceptance: tests render the plist without installing it; installation is an explicit local command; uninstallation is documented; GitHub Actions and GitHub Pages never receive private SQLite or market snapshots.
+- [ ] Add prospective coverage, freshness, and backup-health reporting.
+  - Acceptance: report coverage by meeting/window/pool, duplicate/retry counts, latest successful backup, and missing-window reasons; public output is aggregate-only.
+- [ ] Pass the declared prospective-data gate for model comparison.
+  - Dependency: enough fresh locked races exist after the candidate freeze date.
+  - Acceptance: the gate declares its minimum race/line counts before reading ROI and reports `BLOCKED_DATA` without preventing the daily run from advancing another ready task.
+
+### P7 — Fresh forward validation and pool-specific promotion
+
+- [ ] Freeze candidate versions, feature policy, calibration, and EV thresholds before evaluating the new cohort.
+- [ ] Compare heuristic, no-market stack, market-aware CatBoost, and market baseline on identical prospective races.
+  - Acceptance: report log loss, Brier, calibration error, Top-pick WIN/PLACE, CLV, paper ROI, drawdown, losing run, monthly/meeting stability, and missing-data exclusions.
+- [ ] Add meeting-block bootstrap intervals, placebo checks, and profit-concentration tests.
+- [ ] Build pool-specific WIN/PLACE/QIN/QPL promotion reports and an explicit state transition.
+  - Acceptance: only a fresh, sufficiently large, positive and stable prospective cohort may move a pool from `NO_BET` to a reviewed candidate state; no automation can authorize cash `PLAY` by itself.
+- [ ] Surface gate progress and exact failure reasons in Research Lab using aggregate, privacy-safe fields only.
+
+### P8 — Feature and portfolio lift after prospective gates
+
+- [ ] Backfill timestamped historical SpeedPRO-style features and run same-cohort ablations.
+- [ ] Measure incremental lift from pool money, crowding, and odds movement after controlling for the market baseline.
+- [ ] Re-run QIN/QPL dependence and cold-odds experiments only when verified combination-book coverage exists; exact-order pools stay paper-only.
+- [ ] Sweep fixed stake, fractional Kelly, and exposure caps only for pools with positive prospective evidence; retain zero-stake `NO_BET` everywhere else.
+
+### Daily continuation selection rule
+
+1. Complete one TDD-sized slice of the first ready unchecked P5-P8 item; continue to another slice when time allows.
+2. If the first item is blocked only by future data, record the measurable gate and continue to the next ready engineering/research item in the same run.
+3. Never mark a data-dependent gate complete from historical or reused holdout results.
+4. Never log in, place a bet, change cash mode, publish private data, or overwrite local SQLite/raw snapshots.
+5. Finish with focused tests, `npm test`, a local commit, and an exact next-step note. Push, merge, deployment, and account actions remain manual review boundaries.
+
 ## Phase A — Race-day live market snapshot collection
 
 Goal: automatically accumulate the missing 2026 live market data that our ROI model needs.
