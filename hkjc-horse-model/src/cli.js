@@ -1,7 +1,8 @@
 #!/usr/bin/env node
-import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -25,6 +26,7 @@ import { buildExternalSourceCoverage } from './external-source-coverage.js';
 import { buildStrategyRiskReport } from './strategy-risk-report.js';
 import { buildMarketSnapshotCoverageReport } from './market-snapshot-coverage.js';
 import { buildMarketWindowResearchReport } from './market-window-research.js';
+import { validateProbabilityArtifact } from './probability-artifact.js';
 import {
   DEFAULT_EPROCHASSON_LIVE_ODDS_URL,
   DEFAULT_EPROCHASSON_RACES_URL,
@@ -188,6 +190,11 @@ async function main(argv) {
 
   if (command === 'market-window-research') {
     await marketWindowResearchCommand(args);
+    return;
+  }
+
+  if (command === 'shadow-score') {
+    await shadowScoreCommand(args);
     return;
   }
 
@@ -574,6 +581,69 @@ async function strategyRiskReportCommand(args) {
   console.log(`Strategy risk report from SQLite: ${report.summary.activeRaces}/${report.summary.races} active races`);
   console.log(`Known strategy profit ${formatSigned(report.summary.knownProfit)}, ROI ${percent(report.summary.knownRoi)}, max drawdown ${money(report.summary.maxDrawdown)}`);
   console.log(`Saved strategy risk report to ${outputPath}`);
+}
+
+async function shadowScoreCommand(args) {
+  const inputPath = path.resolve(requiredArg(args.input, 'input'));
+  const modelPath = path.resolve(requiredArg(args.model, 'model'));
+  const reportPath = path.resolve(requiredArg(args.report, 'report'));
+  const featureManifestPath = path.resolve(
+    requiredArg(args.featureManifest ?? args['feature-manifest'], 'featureManifest'),
+  );
+  const generatedAt = requiredArg(args.generatedAt ?? args['generated-at'], 'generatedAt');
+  const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'shadow-score.json'));
+  const inputRows = await loadShadowScoreRows(inputPath);
+  const raceIds = [...new Set(inputRows.map((row) => row.raceId))];
+  if (raceIds.length !== 1) {
+    throw new Error('shadow-score input must contain exactly one raceId');
+  }
+  const postTimes = [...new Set(inputRows.map((row) => row.postAt))];
+  if (postTimes.length !== 1) {
+    throw new Error('shadow-score input must contain exactly one postAt');
+  }
+
+  const python = process.env.PYTHON ?? 'python3';
+  const scriptPath = path.join(projectRoot, 'python', 'score_market_aware_candidate.py');
+  const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-shadow-score-'));
+  const rawOutputPath = path.join(tempDir, 'raw-shadow-score.json');
+
+  try {
+    const result = spawnSync(python, [
+      scriptPath,
+      '--input',
+      inputPath,
+      '--model',
+      modelPath,
+      '--report',
+      reportPath,
+      '--feature-manifest',
+      featureManifestPath,
+      '--generated-at',
+      generatedAt,
+      '--output',
+      rawOutputPath,
+    ], {
+      encoding: 'utf8',
+    });
+    if (result.stdout) process.stdout.write(result.stdout);
+    if (result.stderr) process.stderr.write(result.stderr);
+    if (result.error) throw result.error;
+    if (result.status !== 0) {
+      throw new Error(`shadow-score failed with exit code ${result.status}`);
+    }
+
+    const rawBundle = JSON.parse(await readFile(rawOutputPath, 'utf8'));
+    const bundle = validateProbabilityArtifact(rawBundle, {
+      raceId: raceIds[0],
+      postAt: postTimes[0],
+    });
+    await mkdir(path.dirname(outputPath), { recursive: true });
+    await writeJson(outputPath, bundle);
+    console.log(`Shadow score bundle: ${bundle.predictions.length} runners`);
+    console.log(`Saved shadow score bundle to ${outputPath}`);
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
 }
 
 function recordDashboardRecommendationRun({ dbPath, snapshot, args }) {
@@ -1190,6 +1260,47 @@ function parseStringList(value) {
     .split(',')
     .map((item) => item.trim())
     .filter(Boolean);
+}
+
+function requiredArg(value, name) {
+  if (typeof value !== 'string' || value.trim() === '') {
+    throw new Error(`--${name} is required`);
+  }
+  return value.trim();
+}
+
+async function loadShadowScoreRows(inputPath) {
+  const content = await readFile(inputPath, 'utf8');
+  const rows = content
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line, index) => {
+      try {
+        return JSON.parse(line);
+      } catch (error) {
+        throw new Error(`shadow-score input line ${index + 1} is not valid JSON`);
+      }
+    });
+  if (rows.length === 0) {
+    throw new Error('shadow-score input must not be empty');
+  }
+  return rows.map((row, index) => {
+    if (!row || typeof row !== 'object' || Array.isArray(row)) {
+      throw new Error(`shadow-score input line ${index + 1} must be a JSON object`);
+    }
+    if (typeof row.raceId !== 'string' || row.raceId.trim() === '') {
+      throw new Error(`shadow-score input line ${index + 1} is missing raceId`);
+    }
+    if (typeof row.postAt !== 'string' || row.postAt.trim() === '') {
+      throw new Error(`shadow-score input line ${index + 1} is missing postAt`);
+    }
+    return {
+      ...row,
+      raceId: row.raceId.trim(),
+      postAt: row.postAt.trim(),
+    };
+  });
 }
 
 async function loadFixtureWindow(from, to) {

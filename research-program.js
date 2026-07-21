@@ -269,6 +269,23 @@ const FOLLOW_UP_ACTIONS = [
     remaining: ['积累 prospective recommendation locks，并补 bootstrap CI 与 placebo 稳健性检验。'],
   },
   {
+    id: 'market-aware-shadow-bridge',
+    priority: 'P5',
+    status: 'partial',
+    automationPhase: 'Phase D',
+    title: '接通 market-aware SHADOW scoring bridge',
+    sourceRefs: ['jerrydaphantom-catboost-market-aware', 'HKJC Edge Lab'],
+    action: '读取冻结的 CatBoost artifact/report/manifest，输出带 artifact hash、feature policy、training cutoff 的 upcoming-runner SHADOW 概率，并在 Node 侧强制归一化为 PAPER_ONLY。',
+    expectedOutcome: '同一场 upcoming race 可安全叠加 market-aware shadow 概率，但现金状态继续保持 NO_BET。',
+    automationExecutable: true,
+    evidence: [
+      'hkjc-horse-model/python/score_market_aware_candidate.py：frozen bundle hash、feature-manifest/report contract、post-time guard 与 JSONL CLI',
+      'hkjc-horse-model/src/probability-artifact.js：缺 lineage、重复 runnerId、越界概率、post-time generation 与 promoted flag 全部 fail closed',
+      'hkjc-horse-model/src/cli.js shadow-score + hkjc-horse-model/test/shadow-score-cli.test.js：Python scorer 输出先经 validator，再写成 SHADOW / PAPER_ONLY / RESEARCH_ONLY bundle',
+    ],
+    remaining: ['把 shadow bundle 接到 upcoming race side-by-side 展示，并继续实现 prospective locks / settlement，当前还未完成整条 P5 链路。'],
+  },
+  {
     id: 'bayesian-tripwire',
     priority: 'P1',
     status: 'implemented',
