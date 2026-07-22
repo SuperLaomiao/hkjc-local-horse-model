@@ -462,12 +462,14 @@ async function externalModelComparisonCommand(args) {
     trainingReport = JSON.parse(await readFile(trainingReportPath, 'utf8'));
   }
   const marketOddsByRunner = loadLatestWinOddsByRunner({ dbPath, races: upcomingRaces });
+  const marketAwareBundlesByRace = await loadShadowBundlesByRace(args);
 
   const report = buildExternalModelComparison({
     settledRaces,
     upcomingRaces,
     trainingReport,
     marketOddsByRunner,
+    marketAwareBundlesByRace,
     options: {
       minEdge: args.minEdge == null ? 0 : Number(args.minEdge),
       minProbability: args.minProbability == null ? 0.15 : Number(args.minProbability),
@@ -493,6 +495,21 @@ async function externalModelComparisonCommand(args) {
   console.log(`External model comparison: ${report.summary.upcomingRaces} upcoming races, ${report.summary.modelCount} model views`);
   console.log(`Market-aware ready races: ${report.summary.marketAwareReadyRaces}/${report.summary.upcomingRaces}`);
   console.log(`Saved external model comparison to ${outputPath}`);
+}
+
+async function loadShadowBundlesByRace(args) {
+  const bundlePathArg = args.marketAwareBundle ?? args.shadowBundle;
+  if (!bundlePathArg) {
+    return new Map();
+  }
+
+  const bundlePath = path.resolve(bundlePathArg);
+  const bundle = JSON.parse(await readFile(bundlePath, 'utf8'));
+  const raceIds = [...new Set((bundle.predictions ?? []).map((prediction) => prediction?.raceId).filter(Boolean))];
+  if (raceIds.length !== 1) {
+    throw new Error('marketAwareBundle must contain predictions for exactly one raceId');
+  }
+  return new Map([[raceIds[0], bundle]]);
 }
 
 function loadLatestWinOddsByRunner({ dbPath, races }) {

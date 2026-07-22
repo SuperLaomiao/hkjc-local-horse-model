@@ -6,10 +6,12 @@ export function buildExternalComparisonSummary(report = {}) {
       const currentTopPick = normalizePick(comparison.currentTopPick);
       const catTopPick = normalizePick(comparison.catowabisabi?.topPick);
       const marketAwareTopPick = normalizePick(comparison.jerrydaphantomMarketAware?.topPick);
+      const marketBaselineTopPick = normalizePick(comparison.marketBaseline?.topPick);
       const topQuinellaBox = Array.isArray(comparison.catowabisabi?.topQuinellaBox)
         ? comparison.catowabisabi.topQuinellaBox.filter((horseNo) => horseNo !== null && horseNo !== undefined)
         : [];
       const marketAwareStatus = comparison.jerrydaphantomMarketAware?.status ?? "unavailable";
+      const marketBaselineStatus = comparison.marketBaseline?.status ?? "unavailable";
 
       return {
         raceId: race?.raceId ?? null,
@@ -27,10 +29,18 @@ export function buildExternalComparisonSummary(report = {}) {
           status: marketAwareStatus,
           ready: marketAwareStatus === "available",
         },
+        marketBaseline: {
+          ...marketBaselineTopPick,
+          status: marketBaselineStatus,
+          ready: marketBaselineStatus === "available",
+        },
         agreement: {
           currentVsCat: sameHorse(currentTopPick, catTopPick),
           currentVsMarketAware: sameHorse(currentTopPick, marketAwareTopPick),
-          allSame: sameHorse(currentTopPick, catTopPick) && sameHorse(currentTopPick, marketAwareTopPick),
+          currentVsBaseline: sameHorse(currentTopPick, marketBaselineTopPick),
+          allSame: sameHorse(currentTopPick, catTopPick)
+            && sameHorse(currentTopPick, marketAwareTopPick)
+            && sameHorse(currentTopPick, marketBaselineTopPick),
         },
         agreementSummary: comparison.agreementSummary ?? "",
       };
@@ -45,8 +55,17 @@ export function buildExternalComparisonSummary(report = {}) {
       report.summary?.marketAwareReadyRaces,
       rows.filter((row) => row.jerrydaphantomMarketAware.ready).length,
     ),
+    marketAwareShadowRaces: numberOrDefault(
+      report.summary?.marketAwareShadowRaces,
+      rows.filter((row) => row.jerrydaphantomMarketAware.ready && row.jerrydaphantomMarketAware.status === "available").length,
+    ),
+    marketBaselineReadyRaces: numberOrDefault(
+      report.summary?.marketBaselineReadyRaces,
+      rows.filter((row) => row.marketBaseline.ready).length,
+    ),
     currentVsCatSame: rows.filter((row) => row.agreement.currentVsCat).length,
     currentVsMarketSame: rows.filter((row) => row.agreement.currentVsMarketAware).length,
+    currentVsBaselineSame: rows.filter((row) => row.agreement.currentVsBaseline).length,
     allSame: rows.filter((row) => row.agreement.allSame).length,
     rows,
   };

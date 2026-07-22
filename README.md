@@ -137,14 +137,18 @@ Compare the current model with external GitHub-inspired model views for an
 upcoming meeting:
 
 ```bash
-npm run hkjc:external-model-comparison -- --date 2026-07-08 --venue HV --db hkjc-horse-model/data/hkjc.sqlite --trainingReport hkjc-horse-model/data/processed/model-training-report.json --output hkjc-horse-model/data/processed/external-model-comparison-2026-07-08-HV.json
+npm run hkjc:external-model-comparison -- --date 2026-07-08 --venue HV --db hkjc-horse-model/data/hkjc.sqlite --trainingReport hkjc-horse-model/data/processed/model-training-report.json --marketAwareBundle hkjc-horse-model/data/processed/shadow-score.json --output hkjc-horse-model/data/processed/external-model-comparison-2026-07-08-HV.json
 ```
 
 The comparison report includes the current local heuristic, a
 catowabisabi-inspired no-odds fundamental/Quinella proxy, a
-jerrydaphantom-inspired market-free calibrated proxy, and a market-aware proxy
-when live WIN odds have been imported. The external project views are research
-proxies unless they are separately validated on our own holdout history.
+jerrydaphantom-inspired market-free calibrated proxy, a normalized live-market
+baseline, and a market-aware view. When `--marketAwareBundle` points at a
+validated `shadow-score` artifact, the same upcoming race also carries
+artifact/calibration/training-cutoff lineage while remaining
+`SHADOW` / `PAPER_ONLY` / `RESEARCH_ONLY`. Without that bundle, the market-aware
+column falls back to the older live-odds proxy. The external project views are
+research proxies unless they are separately validated on our own holdout history.
 
 Train the first offline Python baseline:
 

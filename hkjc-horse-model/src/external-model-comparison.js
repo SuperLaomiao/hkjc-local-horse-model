@@ -42,6 +42,13 @@ const MODEL_DEFINITIONS = [
       detail: 'Public market-aware CatBoost benchmark; local validation requires our own live odds and pool snapshots.',
     },
   },
+  {
+    modelId: 'hkjc-live-market-baseline',
+    label: 'HKJC live market baseline',
+    status: 'pending-live-market',
+    source: 'HKJC live WIN odds',
+    note: 'Normalized public WIN odds baseline for comparing model vs market probabilities on the same upcoming race.',
+  },
 ];
 
 export function buildExternalModelComparison({
@@ -49,6 +56,7 @@ export function buildExternalModelComparison({
   upcomingRaces = [],
   trainingReport = null,
   marketOddsByRunner = new Map(),
+  marketAwareBundlesByRace = new Map(),
   generatedAt = new Date().toISOString(),
   options = {},
 } = {}) {
@@ -83,9 +91,12 @@ export function buildExternalModelComparison({
         { input: 'sigmoid-normalized-logit' },
       )
       : [];
+    const marketBaselinePredictions = buildMarketBaselinePredictions({ rows: asOfRows });
     const marketAwarePredictions = buildMarketAwarePredictions({
+      race,
       rows: asOfRows,
       basePredictions: jerryMarketFreePredictions.length ? jerryMarketFreePredictions : catowabisabiPredictions,
+      marketAwareBundle: marketAwareBundlesByRace.get(race.raceId) ?? null,
     });
 
     const currentTopPick = currentPredictions[0] ?? null;
@@ -93,6 +104,9 @@ export function buildExternalModelComparison({
     const jerryTopPick = jerryMarketFreePredictions[0] ?? null;
     const marketAwareTopPick = marketAwarePredictions.status === 'available'
       ? marketAwarePredictions.predictions[0] ?? null
+      : null;
+    const marketBaselineTopPick = marketBaselinePredictions.status === 'available'
+      ? marketBaselinePredictions.predictions[0] ?? null
       : null;
 
     return {
@@ -117,11 +131,24 @@ export function buildExternalModelComparison({
         },
         modelRaceResult('jerrydaphantom-market-free-calibrated-proxy', jerryMarketFreePredictions),
         {
-          modelId: 'jerrydaphantom-catboost-market-aware',
+          ...modelRaceResult('jerrydaphantom-catboost-market-aware', marketAwarePredictions.predictions),
           status: marketAwarePredictions.status,
-          predictions: marketAwarePredictions.predictions,
           topPick: marketAwareTopPick,
           note: marketAwarePredictions.note,
+          researchMode: marketAwarePredictions.researchMode ?? null,
+          executionStatus: marketAwarePredictions.executionStatus ?? null,
+          probabilityStatus: marketAwarePredictions.probabilityStatus ?? null,
+          artifactId: marketAwarePredictions.artifactId ?? null,
+          featurePolicyId: marketAwarePredictions.featurePolicyId ?? null,
+          calibrationMethod: marketAwarePredictions.calibrationMethod ?? null,
+          trainingCutoff: marketAwarePredictions.trainingCutoff ?? null,
+          lineage: marketAwarePredictions.lineage ?? null,
+        },
+        {
+          ...modelRaceResult('hkjc-live-market-baseline', marketBaselinePredictions.predictions),
+          status: marketBaselinePredictions.status,
+          topPick: marketBaselineTopPick,
+          note: marketBaselinePredictions.note,
         },
       ],
       comparison: {
@@ -141,12 +168,20 @@ export function buildExternalModelComparison({
           sameTopPickAsCurrent: sameHorse(currentTopPick, marketAwareTopPick),
           note: marketAwarePredictions.note,
         },
+        marketBaseline: {
+          status: marketBaselinePredictions.status,
+          topPick: marketBaselineTopPick,
+          sameTopPickAsCurrent: sameHorse(currentTopPick, marketBaselineTopPick),
+          note: marketBaselinePredictions.note,
+        },
         agreementSummary: summarizeAgreement({
           currentTopPick,
           catTopPick,
           jerryTopPick,
           marketAwareTopPick,
           marketAwareStatus: marketAwarePredictions.status,
+          marketBaselineTopPick,
+          marketBaselineStatus: marketBaselinePredictions.status,
         }),
       },
     };
@@ -161,6 +196,16 @@ export function buildExternalModelComparison({
       modelCount: MODEL_DEFINITIONS.length,
       marketAwareReadyRaces: races.filter((race) => (
         race.comparison.jerrydaphantomMarketAware.status === 'available'
+      )).length,
+      marketBaselineReadyRaces: races.filter((race) => (
+        race.comparison.marketBaseline.status === 'available'
+      )).length,
+      marketAwareShadowRaces: races.filter((race) => (
+        race.models.some((model) => (
+          model.modelId === 'jerrydaphantom-catboost-market-aware'
+          && model.status === 'available'
+          && model.researchMode === 'SHADOW'
+        ))
       )).length,
     },
     models: MODEL_DEFINITIONS,
@@ -288,7 +333,14 @@ function logitScore(row, report) {
   return sigmoid(z);
 }
 
-function buildMarketAwarePredictions({ rows, basePredictions }) {
+function buildMarketAwarePredictions({ race, rows, basePredictions, marketAwareBundle = null }) {
+  if (marketAwareBundle) {
+    return buildShadowMarketAwarePredictions({
+      race,
+      rows,
+      bundle: marketAwareBundle,
+    });
+  }
   if (!rows.some((row) => Number.isFinite(row.winOdds) && row.winOdds > 1)) {
     return {
       status: 'pending-live-market',
@@ -329,6 +381,88 @@ function buildMarketAwarePredictions({ rows, basePredictions }) {
   };
 }
 
+function buildShadowMarketAwarePredictions({ race, rows, bundle }) {
+  if (!bundle || typeof bundle !== 'object' || Array.isArray(bundle)) {
+    return {
+      status: 'bundle-invalid',
+      predictions: [],
+      note: 'The supplied shadow bundle is not a valid object.',
+    };
+  }
+
+  const raceId = race?.raceId ?? rows[0]?.raceId ?? null;
+  const runnerLookup = new Map(rows.map((row) => [stableId(row.runnerId ?? row.horseId), row]));
+  const predictions = [];
+  for (const prediction of bundle.predictions ?? []) {
+    const key = stableId(prediction.runnerId);
+    const row = runnerLookup.get(key);
+    if (!row || prediction.raceId !== raceId) {
+      return {
+        status: 'bundle-runner-mismatch',
+        predictions: [],
+        note: 'The supplied shadow bundle does not match the upcoming race runners.',
+      };
+    }
+    predictions.push({
+      modelId: 'jerrydaphantom-catboost-market-aware',
+      horseId: row.horseId,
+      horseNo: row.horseNo,
+      horseName: row.horseName,
+      probability: round(Number(prediction.probability), 6),
+      fairOdds: Number(prediction.probability) > 0 ? round(1 / Number(prediction.probability), 3) : null,
+      winOdds: row.winOdds ?? null,
+      input: 'frozen-shadow-score-bundle',
+    });
+  }
+
+  predictions.sort(comparePredictions);
+  return {
+    status: 'available',
+    predictions,
+    note: 'Using the frozen CatBoost shadow bundle for this upcoming race.',
+    researchMode: bundle.researchMode ?? 'SHADOW',
+    executionStatus: bundle.executionStatus ?? 'PAPER_ONLY',
+    probabilityStatus: bundle.probabilityStatus ?? 'RESEARCH_ONLY',
+    artifactId: bundle.artifactId ?? null,
+    featurePolicyId: bundle.featurePolicyId ?? null,
+    calibrationMethod: bundle.calibrationMethod ?? null,
+    trainingCutoff: bundle.trainingCutoff ?? null,
+    lineage: bundle.lineage ?? null,
+  };
+}
+
+function buildMarketBaselinePredictions({ rows }) {
+  if (!rows.some((row) => Number.isFinite(row.winOdds) && row.winOdds > 1)) {
+    return {
+      status: 'pending-live-market',
+      predictions: [],
+      note: 'No usable live WIN odds in the race card/database yet, so the market baseline is not available.',
+    };
+  }
+
+  const implied = rows.map((row) => (Number.isFinite(row.winOdds) && row.winOdds > 1 ? 1 / row.winOdds : 0));
+  const impliedTotal = implied.reduce((sum, item) => sum + item, 0) || 1;
+  return {
+    status: 'available',
+    predictions: rows
+      .map((row, index) => {
+        const probability = implied[index] / impliedTotal;
+        return {
+          modelId: 'hkjc-live-market-baseline',
+          horseId: row.horseId,
+          horseNo: row.horseNo,
+          horseName: row.horseName,
+          probability: round(probability, 6),
+          fairOdds: probability > 0 ? round(1 / probability, 3) : null,
+          winOdds: row.winOdds,
+          input: 'normalized-live-win-odds',
+        };
+      })
+      .sort(comparePredictions),
+    note: 'Normalized live WIN odds baseline for side-by-side market comparison.',
+  };
+}
+
 function sanitizePredictions(predictions) {
   return (predictions ?? [])
     .map((prediction) => ({
@@ -360,6 +494,8 @@ function summarizeAgreement({
   jerryTopPick,
   marketAwareTopPick,
   marketAwareStatus,
+  marketBaselineTopPick,
+  marketBaselineStatus,
 }) {
   const parts = [];
   parts.push(`current vs catowabisabi: ${sameHorse(currentTopPick, catTopPick) ? 'same' : 'different'}`);
@@ -368,6 +504,11 @@ function summarizeAgreement({
     parts.push(`current vs jerrydaphantom-market: ${sameHorse(currentTopPick, marketAwareTopPick) ? 'same' : 'different'}`);
   } else {
     parts.push('jerrydaphantom-market: pending live odds');
+  }
+  if (marketBaselineStatus === 'available') {
+    parts.push(`current vs live-market: ${sameHorse(currentTopPick, marketBaselineTopPick) ? 'same' : 'different'}`);
+  } else {
+    parts.push('live-market: pending live odds');
   }
   return parts.join('; ');
 }

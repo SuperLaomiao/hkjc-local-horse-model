@@ -109,11 +109,12 @@ describe('research upgrade program', () => {
     )));
     assert(program.followUpActions.some((item) => (
       item.id === 'market-aware-shadow-bridge'
-      && item.status === 'partial'
+      && item.status === 'implemented'
       && item.automationExecutable === true
       && item.evidence.some((entry) => /score_market_aware_candidate\.py/.test(entry))
       && item.evidence.some((entry) => /probability-artifact\.js/.test(entry))
-      && item.remaining.some((entry) => /upcoming race|prospective locks/i.test(entry))
+      && item.evidence.some((entry) => /external-model-comparison\.js|app\.js/.test(entry))
+      && item.remaining.some((entry) => /prospective locks|settlement|race-day cycle/i.test(entry))
     )));
     assert(program.followUpActions.some((item) => (
       item.id === 'bayesian-tripwire'
@@ -158,8 +159,8 @@ describe('research upgrade program', () => {
     assert.equal(summary.nextCount > 0, true);
     assert.equal(summary.researchOnlyCount > 0, true);
     assert.equal(summary.followUpCount > 0, true);
-    assert.equal(summary.implementedActionCount, 6);
-    assert.equal(summary.partialActionCount, 3);
+    assert.equal(summary.implementedActionCount, 7);
+    assert.equal(summary.partialActionCount, 2);
     assert.equal(summary.queuedActionCount, 0);
     assert.equal(summary.researchOnlyActionCount, 1);
     assert.equal(summary.automationReadyCount > 0, true);
