@@ -120,6 +120,17 @@ describe('research upgrade program', () => {
       && item.evidence.some((entry) => /external-model-comparison\.js|app\.js/.test(entry))
       && item.remaining.some((entry) => /prospective locks|settlement|race-day cycle/i.test(entry))
     )));
+    const marketAwareBridge = program.followUpActions.find(
+      (item) => item.id === 'market-aware-shadow-bridge',
+    );
+    assert(marketAwareBridge);
+    assert.equal(
+      marketAwareBridge.remaining.some((entry) => /继续实现.*race-day cycle/i.test(entry)),
+      false,
+    );
+    assert(marketAwareBridge.remaining.some(
+      (entry) => /已完成.*(?:fresh|upcoming|新赛季)/i.test(entry),
+    ));
     assert(program.followUpActions.some((item) => (
       item.id === 'prospective-lock-ledger'
       && item.status === 'implemented'

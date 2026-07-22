@@ -305,7 +305,7 @@ const FOLLOW_UP_ACTIONS = [
       'hkjc-horse-model/src/cli.js shadow-score + hkjc-horse-model/test/shadow-score-cli.test.js：Python scorer 输出先经 validator，再写成 SHADOW / PAPER_ONLY / RESEARCH_ONLY bundle',
       'hkjc-horse-model/src/external-model-comparison.js + app.js：同一场 upcoming race 现已并列展示 heuristic、no-market、live-market baseline 与带 artifact/calibration/training-cutoff lineage 的 shadow market-aware 概率',
     ],
-    remaining: ['继续实现 one-cycle race-day cycle，把 due snapshot、shadow score 与已完成的锁单 CLI 串成一次幂等本地周期。'],
+    remaining: ['one-cycle race-day cycle 已完成；等待新赛季 upcoming race card 与 fresh T-window snapshots 验证真实 shadow score、锁单与结算覆盖。'],
   },
   {
     id: 'prospective-lock-ledger',
