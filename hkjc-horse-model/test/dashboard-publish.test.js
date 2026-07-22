@@ -57,6 +57,43 @@ describe('dashboard publishing split', () => {
         database: '/Users/example/private/hkjc.sqlite',
         settledRaces: 6,
       },
+      prospectiveCoverage: {
+        version: 'prospective-coverage-v1',
+        generatedAt: '2026-07-07T10:00:00.000Z',
+        freezeDate: '2026-07-01',
+        summary: {
+          meetings: 2,
+          races: 8,
+          dueCells: 48,
+          usableCells: 20,
+          missingCells: 28,
+          locks: 4,
+          settledLocks: 2,
+          lockCoverage: 0.2,
+          settlementCoverage: 0.5,
+          reasonCounts: { missedWindow: 12, offline: 4 },
+        },
+        byMeeting: [{ meeting: '2026-07-07-HV', raceIds: ['private-race-id'] }],
+        byPool: [{ pool: 'WIN', dueCells: 12, usableCells: 8, missingCells: 4 }],
+        byWindow: [{ window: 'T-30', dueCells: 16, usableCells: 10, missingCells: 6 }],
+        byPoolWindow: [{ pool: 'WIN', window: 'T-30', dueCells: 4, usableCells: 3, missingCells: 1 }],
+        cells: [{ raceId: 'private-race-id', lockId: 'private-lock-id' }],
+        backup: {
+          status: 'OK',
+          latestSuccessfulAt: '2026-07-07T09:00:00.000Z',
+          ageHours: 1,
+          checksumPresent: true,
+          path: '/Users/example/private/backup.sqlite',
+        },
+        gate: {
+          version: 'prospective-data-gate-v1',
+          status: 'BLOCKED_DATA',
+          cashMode: 'NO_BET',
+          declaredMinimums: { races: 100 },
+          deficits: [{ metric: 'races', required: 100, actual: 8 }],
+          privateRows: ['lock-1'],
+        },
+      },
     };
 
     const { publicSnapshot, historySnapshot } = splitDashboardForPublishing(snapshot, {
@@ -86,6 +123,14 @@ describe('dashboard publishing split', () => {
     assert.equal(publicSnapshot.latestSettlement.recommendedHorseName, undefined);
     assert.equal(publicSnapshot.assumptions.stakePolicy, undefined);
     assert.equal(publicSnapshot.dataSource.database, undefined);
+    assert.equal(publicSnapshot.prospectiveCoverage.summary.races, 8);
+    assert.equal(publicSnapshot.prospectiveCoverage.gate.status, 'BLOCKED_DATA');
+    assert.equal(publicSnapshot.prospectiveCoverage.byPool[0].pool, 'WIN');
+    assert.equal(publicSnapshot.prospectiveCoverage.byMeeting, undefined);
+    assert.equal(publicSnapshot.prospectiveCoverage.cells, undefined);
+    assert.equal(publicSnapshot.prospectiveCoverage.backup.path, undefined);
+    assert.equal(publicSnapshot.prospectiveCoverage.gate.privateRows, undefined);
+    assert.equal(JSON.stringify(publicSnapshot.prospectiveCoverage).includes('/Users/'), false);
     assert.equal(publicSnapshot.publication.visibility, 'PUBLIC_FUNCTIONAL_SANITIZED');
     assert.equal(publicSnapshot.publication.executableRecommendationsPublished, true);
     assert.equal(publicSnapshot.publication.personalDataPublished, false);
@@ -109,6 +154,7 @@ describe('dashboard publishing split', () => {
     assert.equal(historySnapshot.summary.racesSettled, 6);
     assert.equal(historySnapshot.dataSource.source, 'sqlite');
     assert.equal(historySnapshot.dataSource.database, '/Users/example/private/hkjc.sqlite');
+    assert.equal(historySnapshot.prospectiveCoverage.cells[0].lockId, 'private-lock-id');
     assert.equal(historySnapshot.recentEntries[0].forecast.finalBetPlan.plannedStake, 50);
     assert.equal(historySnapshot.publication.visibility, 'PRIVATE_LOCAL');
   });

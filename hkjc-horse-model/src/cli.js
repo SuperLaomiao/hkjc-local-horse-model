@@ -51,6 +51,10 @@ import { DEFAULT_SNAPSHOT_WINDOWS } from './live-snapshot-planner.js';
 import { runRaceDayCycle } from './race-day-cycle.js';
 import { LOCAL_SCHEDULER_LABEL, renderLaunchAgent } from './local-scheduler.js';
 import {
+  buildProspectiveCoverage,
+  evaluateProspectiveDataGate,
+} from './prospective-coverage.js';
+import {
   loadTianxiFormFeatureIndex,
   tianxiRunnerFeatureKey,
 } from './tianxi-form-feature-loader.js';
@@ -72,6 +76,7 @@ import {
   loadLatestMarketSnapshots,
   loadMarketSnapshots,
   loadPoolMoneyFeatures,
+  loadProspectiveCoverageInputs,
   loadProspectiveLocks,
   loadRunnerMarketFeatures,
   loadRecommendationRuns,
@@ -200,6 +205,11 @@ async function main(argv) {
 
   if (command === 'local-scheduler') {
     await localSchedulerCommand(args);
+    return;
+  }
+
+  if (command === 'prospective-coverage') {
+    await prospectiveCoverageCommand(args);
     return;
   }
 
@@ -1077,6 +1087,50 @@ async function localSchedulerCommand(args) {
   console.log('安装文件仍为禁用状态；启用、卸载和日志操作请按运维文档人工执行。');
 }
 
+async function prospectiveCoverageCommand(args) {
+  const dbPath = path.resolve(args.db ?? sqliteDbPath);
+  const inputs = loadProspectiveCoverageInputs({ dbPath });
+  const collectionEvidence = args.events
+    ? normalizeCoverageEvents(JSON.parse(await readFile(path.resolve(args.events), 'utf8')))
+    : { events: [] };
+  const backupManifest = args.backupManifest
+    ? JSON.parse(await readFile(path.resolve(args.backupManifest), 'utf8'))
+    : null;
+  const report = buildProspectiveCoverage({
+    ...inputs,
+    snapshots: { ...inputs.snapshots, ...collectionEvidence },
+    backupManifest,
+    freeze: requiredArg(args.freezeDate ?? args.freeze, 'freezeDate'),
+    generatedAt: args.generatedAt ?? new Date().toISOString(),
+  });
+  report.gate = evaluateProspectiveDataGate({
+    coverage: report,
+    minimums: {
+      races: optionalNumber(args.minimumRaces),
+      usableCells: optionalNumber(args.minimumUsableCells),
+      locks: optionalNumber(args.minimumLocks),
+      settledLocks: optionalNumber(args.minimumSettledLocks),
+      settlementCoverage: optionalNumber(args.minimumSettlementCoverage),
+      perPoolWindowUsableCells: optionalNumber(args.minimumPerPoolWindow),
+      requiredPools: args.requiredPools ? parseStringList(args.requiredPools) : undefined,
+      requiredWindows: args.requiredWindows ? parseStringList(args.requiredWindows) : undefined,
+      requireBackup: args.requireBackup == null ? undefined : args.requireBackup !== 'false',
+      requireBackupChecksum: args.requireBackupChecksum == null
+        ? undefined
+        : args.requireBackupChecksum !== 'false',
+      backupMaxAgeHours: optionalNumber(args.backupMaxAgeHours),
+    },
+  });
+  const outputPath = path.resolve(
+    args.output ?? path.join(processedDataDir, 'prospective-coverage.json'),
+  );
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeJson(outputPath, report);
+  console.log(`Prospective data gate: ${report.gate.status}`);
+  console.log(`Coverage: ${report.summary.races} races, ${report.summary.usableCells}/${report.summary.dueCells} usable cells, ${report.summary.locks} locks`);
+  console.log(`Saved prospective coverage report to ${outputPath}`);
+}
+
 async function marketCoverageReportCommand(args) {
   const dbPath = path.resolve(args.db ?? sqliteDbPath);
   const report = loadMarketSnapshotCoverageSummary({ dbPath });
@@ -1495,6 +1549,20 @@ function requiredArg(value, name) {
   return value.trim();
 }
 
+function optionalNumber(value) {
+  if (value == null || value === '') return undefined;
+  const number = Number(value);
+  if (!Number.isFinite(number)) throw new Error(`invalid numeric argument: ${value}`);
+  return number;
+}
+
+function normalizeCoverageEvents(payload) {
+  if (Array.isArray(payload)) return { events: payload };
+  if (Array.isArray(payload?.events)) return { events: payload.events, summary: payload.summary };
+  if (Array.isArray(payload?.due)) return { events: payload.due, summary: payload.summary };
+  throw new Error('coverage events input must contain an events or due array');
+}
+
 async function loadShadowScoreRows(inputPath) {
   const content = await readFile(inputPath, 'utf8');
   const rows = content
@@ -1648,6 +1716,7 @@ Commands:
   live-market-due-snapshots --db hkjc-horse-model/data/hkjc.sqlite --windows T-30,T-10,T-3 --pools WIN,PLA,QIN,QPL --output hkjc-horse-model/data/processed/live-market-source-report.json --dryRun
   race-day-cycle --db hkjc-horse-model/data/hkjc.sqlite --windows T-30,T-10,T-3 --pools WIN,PLA,QIN,QPL --output hkjc-horse-model/data/private/latest-race-day-cycle.json --dryRun
   local-scheduler --projectPath /absolute/path/to/project --intervalMinutes 10 --output hkjc-horse-model/data/private/com.superlaomiao.hkjc-race-day-cycle.plist --dryRun
+  prospective-coverage --db hkjc-horse-model/data/hkjc.sqlite --freezeDate 2026-07-01 --backupManifest hkjc-horse-model/data/private/backup-manifest.json --output hkjc-horse-model/data/processed/prospective-coverage.json
   market-coverage-report --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/market-snapshot-coverage.json
   market-window-research --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/market-window-research.json
   shadow-score --input upcoming.jsonl --model model.cbm --report report.json --featureManifest manifest.json --generatedAt 2026-07-22T10:20:00Z --output hkjc-horse-model/data/processed/shadow-score.json

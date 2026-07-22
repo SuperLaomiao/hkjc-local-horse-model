@@ -637,6 +637,15 @@ export function loadProspectiveLocks({ dbPath, raceId = null, status = null } = 
   }
 }
 
+export function loadProspectiveCoverageInputs({ dbPath } = {}) {
+  if (!dbPath) throw new Error('loadProspectiveCoverageInputs requires dbPath');
+  return {
+    races: loadRacesFromDatabase({ dbPath }),
+    snapshots: loadMarketSnapshots({ dbPath }),
+    locks: loadProspectiveLocks({ dbPath }),
+  };
+}
+
 export function settleProspectiveLock({ dbPath, lockId, settlement }) {
   if (!dbPath) throw new Error('settleProspectiveLock requires dbPath');
   if (!lockId) throw new Error('settleProspectiveLock requires lockId');

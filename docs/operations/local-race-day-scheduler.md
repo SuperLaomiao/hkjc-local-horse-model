@@ -80,3 +80,17 @@ rm "$HOME/Library/LaunchAgents/com.superlaomiao.hkjc-race-day-cycle.plist"
 ```
 
 GitHub Actions 和 GitHub Pages 不运行这个本地调度器，也不上传 SQLite、市场快照、模型产物、锁单或日志。
+
+## 生成覆盖率和备份健康报告
+
+锁定候选模型的 freeze date 后，可以在本地执行：
+
+```bash
+npm run hkjc:prospective-coverage -- \
+  --db hkjc-horse-model/data/hkjc.sqlite \
+  --freezeDate 2026-07-22 \
+  --backupManifest hkjc-horse-model/data/private/backup-manifest.json \
+  --output hkjc-horse-model/data/processed/prospective-coverage.json
+```
+
+可选的 `--events` 可读取 race-day cycle 的 `events` 或 `due` 数组，用于区分 offline、collector error、duplicate 和 not-selling。报告不包含本地数据库标签、备份路径、逐场锁单或模型产物。未达到事先声明的数据门槛时，输出必须是 `BLOCKED_DATA / NO_BET`。

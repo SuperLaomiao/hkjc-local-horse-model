@@ -133,6 +133,13 @@ describe('research upgrade program', () => {
       && item.remaining.some((entry) => /prospective coverage|missed|offline/i.test(entry))
     )));
     assert(program.followUpActions.some((item) => (
+      item.id === 'prospective-coverage-gate'
+      && item.status === 'implemented'
+      && item.automationExecutable === true
+      && item.evidence.some((entry) => /prospective-coverage\.js/.test(entry))
+      && item.remaining.some((entry) => /BLOCKED_DATA|freeze date|window/i.test(entry))
+    )));
+    assert(program.followUpActions.some((item) => (
       item.id === 'bayesian-tripwire'
       && item.status === 'implemented'
       && item.evidence.some((entry) => /uncertainty-tripwire\.js/.test(entry))
@@ -175,7 +182,7 @@ describe('research upgrade program', () => {
     assert.equal(summary.nextCount > 0, true);
     assert.equal(summary.researchOnlyCount > 0, true);
     assert.equal(summary.followUpCount > 0, true);
-    assert.equal(summary.implementedActionCount, 9);
+    assert.equal(summary.implementedActionCount, 10);
     assert.equal(summary.partialActionCount, 2);
     assert.equal(summary.queuedActionCount, 0);
     assert.equal(summary.researchOnlyActionCount, 1);
