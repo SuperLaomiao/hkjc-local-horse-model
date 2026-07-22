@@ -162,7 +162,7 @@ const ALGORITHM_BORROWINGS = [
     concept: 'NO-BET default + Closing Line Value 守门',
     status: 'active',
     userImpact: '模型没证明能赢 closing line 时，前端主动显示“不下注/只纸上观察”，防止为了下注而下注。',
-    nextStep: '不可变 prospective locks、CLV、slippage、drawdown 和连败已进入三账本审计；下一步补 bootstrap CI 和 placebo 检查。',
+    nextStep: '不可变 prospective locks、CLV、slippage、drawdown、meeting-block bootstrap 和 placebo 已进入审计；继续积累 fresh forward cohort。',
   },
   {
     concept: 'LightGBM / LambdaRank / 条件 logit 模型族',
@@ -338,6 +338,26 @@ const FOLLOW_UP_ACTIONS = [
       'dashboard-publish.js：公开端只保留 counts/ratios/dates/reason counts 和闸门差额',
     ],
     remaining: ['工程闸门已完成，但真实数据状态仍是 BLOCKED_DATA；需持续积累 freeze date 之后的全玩法、全窗口锁单和结算。'],
+  },
+  {
+    id: 'prospective-promotion-state-machine',
+    priority: 'P7',
+    status: 'implemented',
+    automationPhase: 'Phase D',
+    title: '建立同 cohort 前瞻评估与玩法级晋级状态机',
+    sourceRefs: ['HKJC Edge Lab', 'Ganyan', 'jerrydaphantom-catboost-market-aware'],
+    action: '只在相同已结算 race-pool cells 上比较候选模型，再按样本、ROI 下界、CLV、校准、回撤、稳定性、收益集中度、placebo 和 lineage 逐项守门。',
+    expectedOutcome: 'Research Lab 能解释模型为何 BLOCKED_DATA / NO_GO / REVIEW_REQUIRED；自动化永远不能把候选直接切到现金 PLAY。',
+    automationExecutable: true,
+    evidence: [
+      'hkjc-horse-model/src/prospective-evaluation.js：同 cohort 排除、log loss/Brier/ECE、Top-pick、CLV/ROI、回撤/连败、月度/meeting 稳定性、meeting-block bootstrap 与双 placebo',
+      'hkjc-horse-model/src/prospective-promotion.js：WIN/PLACE/QIN/QPL 独立门槛、冻结阈值/血缘和显式 BLOCKED_DATA→NO_GO/RESEARCH_CHAMPION→REVIEW_REQUIRED 状态转换',
+      'model-leaderboard.js：只附加相同前瞻 cohort 指标，cashMode 始终为 NO_BET',
+    ],
+    remaining: [
+      '当前真实 forward cohort 仍受 prospective coverage gate 的 BLOCKED_DATA 约束；继续积累 freeze date 后足量已结算锁单。',
+      '任何玩法即使通过自动门槛也只到 REVIEW_REQUIRED；人工复核后仍保持 NO_BET，cash PLAY 不在自动状态机内。',
+    ],
   },
   {
     id: 'bayesian-tripwire',

@@ -23,6 +23,25 @@ export function buildModelLeaderboard(models, options = {}) {
   };
 }
 
+export function attachProspectiveEvaluation(leaderboard, evaluation) {
+  const base = leaderboard && typeof leaderboard === 'object' ? structuredClone(leaderboard) : {};
+  const prospectiveModels = new Map((Array.isArray(evaluation?.models) ? evaluation.models : [])
+    .map((model) => [model.modelId, model]));
+  base.models = (Array.isArray(base.models) ? base.models : []).map((model) => ({
+    ...model,
+    prospective: prospectiveModels.has(model.modelId)
+      ? structuredClone(prospectiveModels.get(model.modelId))
+      : null,
+  }));
+  base.prospective = {
+    policy: 'IDENTICAL_RACE_POOL_CELLS',
+    commonCohortRaces: Number(evaluation?.cohort?.summary?.races ?? 0),
+    exclusions: structuredClone(evaluation?.cohort?.exclusions ?? {}),
+  };
+  base.cashMode = 'NO_BET';
+  return base;
+}
+
 export function scoreProbabilityRows(rows) {
   const items = (rows ?? []).filter((row) => Number.isFinite(Number(row.probability)));
   return {

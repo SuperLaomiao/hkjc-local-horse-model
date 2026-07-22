@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import {
+  attachProspectiveEvaluation,
   buildModelLeaderboard,
   scoreProbabilityRows,
 } from '../src/model-leaderboard.js';
@@ -50,6 +51,22 @@ describe('model leaderboard', () => {
     assert.equal(leaderboard.models[0].modelId, 'strong');
     assert.equal(leaderboard.models[0].status, 'candidate');
     assert.equal(leaderboard.models[1].status, 'baseline');
+  });
+
+  it('attaches common-cohort prospective metrics without promoting cash mode', () => {
+    const leaderboard = buildModelLeaderboard([{
+      modelId: 'model-a',
+      label: 'Model A',
+      rows: [prediction('r1', 'holdout', 0.7, 1)],
+    }]);
+    const result = attachProspectiveEvaluation(leaderboard, {
+      cohort: { summary: { races: 20 }, exclusions: { nonCommonLines: 2 } },
+      models: [{ modelId: 'model-a', metrics: { roi: 0.04 } }],
+    });
+
+    assert.equal(result.models[0].prospective.metrics.roi, 0.04);
+    assert.equal(result.prospective.commonCohortRaces, 20);
+    assert.equal(result.cashMode, 'NO_BET');
   });
 });
 
