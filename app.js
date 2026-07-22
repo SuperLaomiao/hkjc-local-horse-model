@@ -2198,6 +2198,8 @@ function renderExternalModelComparisonPanel(externalComparison) {
       <div class="external-agreement-grid">
         ${renderExternalAgreementStat("赛前场次", `${summary.upcomingRaces} 场`, "已生成可比预测")}
         ${renderExternalAgreementStat("Market-aware 可用", `${summary.marketAwareReadyRaces}/${summary.upcomingRaces}`, "依赖临场 WIN odds")}
+        ${renderExternalAgreementStat("Shadow bundle", `${summary.marketAwareShadowRaces}/${summary.upcomingRaces}`, "已接入冻结 lineage")}
+        ${renderExternalAgreementStat("市场基线可用", `${summary.marketBaselineReadyRaces}/${summary.upcomingRaces}`, "归一化 WIN odds")}
         ${renderExternalAgreementStat("当前 = catowabisabi", `${summary.currentVsCatSame}/${summary.upcomingRaces}`, "Top Pick 一致")}
         ${renderExternalAgreementStat("当前 = market-aware", `${summary.currentVsMarketSame}/${summary.upcomingRaces}`, "Top Pick 一致")}
       </div>
@@ -2206,6 +2208,7 @@ function renderExternalModelComparisonPanel(externalComparison) {
           <span>场次</span>
           <span>当前模型</span>
           <span>catowabisabi</span>
+          <span>市场基线</span>
           <span>Q 位/连赢盒</span>
           <span>jerrydaphantom</span>
         </div>
@@ -2232,6 +2235,7 @@ function renderExternalRaceRow(row) {
       <span>R${escapeHtml(row.raceNo ?? "-")}</span>
       <span>${renderExternalPick(row.currentTopPick)}</span>
       <span>${renderExternalPick(row.catowabisabi)}</span>
+      <span>${renderExternalPick(row.marketBaseline, row.marketBaseline.status)}</span>
       <span>${escapeHtml(row.catowabisabi.topQuinellaBoxLabel)}</span>
       <span>${renderExternalPick(row.jerrydaphantomMarketAware, row.jerrydaphantomMarketAware.status)}</span>
     </div>

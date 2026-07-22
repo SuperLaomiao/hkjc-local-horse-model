@@ -12,12 +12,16 @@ describe('external model summary helpers', () => {
 
     assert.equal(summary.upcomingRaces, 2);
     assert.equal(summary.marketAwareReadyRaces, 2);
+    assert.equal(summary.marketAwareShadowRaces, 1);
+    assert.equal(summary.marketBaselineReadyRaces, 1);
     assert.equal(summary.currentVsCatSame, 1);
     assert.equal(summary.currentVsMarketSame, 1);
+    assert.equal(summary.currentVsBaselineSame, 2);
     assert.deepEqual(summary.rows.map((row) => row.raceNo), [1, 2]);
     assert.equal(summary.rows[0].currentTopPick.label, '#1 A');
     assert.equal(summary.rows[0].catowabisabi.topQuinellaBoxLabel, '1 + 2');
     assert.equal(summary.rows[1].jerrydaphantomMarketAware.label, '#4 D');
+    assert.equal(summary.rows[0].marketBaseline.label, '#1 A');
   });
 
   it('extracts public benchmark cards without treating them as local validation', () => {
@@ -38,6 +42,7 @@ function reportFixture() {
     summary: {
       upcomingRaces: 2,
       marketAwareReadyRaces: 2,
+      marketAwareShadowRaces: 1,
     },
     models: [
       {
@@ -57,13 +62,13 @@ function reportFixture() {
       },
     ],
     races: [
-      race(1, pick(1, 'A'), pick(1, 'A'), [1, 2], pick(3, 'C')),
-      race(2, pick(4, 'D'), pick(6, 'F'), [6, 7], pick(4, 'D')),
+      race(1, pick(1, 'A'), pick(1, 'A'), [1, 2], pick(3, 'C'), pick(1, 'A'), 'available'),
+      race(2, pick(4, 'D'), pick(6, 'F'), [6, 7], pick(4, 'D'), pick(4, 'D'), 'pending-live-market'),
     ],
   };
 }
 
-function race(raceNo, current, cat, quinella, market) {
+function race(raceNo, current, cat, quinella, marketAware, marketBaseline, marketBaselineStatus) {
   return {
     raceId: `2026-07-08-HV-${raceNo}`,
     raceNo,
@@ -75,7 +80,11 @@ function race(raceNo, current, cat, quinella, market) {
       },
       jerrydaphantomMarketAware: {
         status: 'available',
-        topPick: market,
+        topPick: marketAware,
+      },
+      marketBaseline: {
+        status: marketBaselineStatus,
+        topPick: marketBaseline,
       },
       agreementSummary: 'fixture',
     },
