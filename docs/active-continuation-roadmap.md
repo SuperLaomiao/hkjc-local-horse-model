@@ -86,10 +86,12 @@ This sequence supersedes the older Phase A-D queue below. The older queue remain
 
 ### P6 — Durable local prospective collection
 
-- [ ] Add a safe local race-day runner for due T-30/T-10/T-3 snapshots and shadow locks.
+- [x] Add a safe local race-day runner for due T-30/T-10/T-3 snapshots and shadow locks.
   - Acceptance: local wake-ups may check the planner, but network capture occurs only inside an uncaptured configured window; retries are bounded; post-time requests fail closed; SQLite writes remain idempotent; the runner prints a short Chinese summary.
-- [ ] Add a dry-run-only macOS LaunchAgent installer and operating guide.
+  - Completed 2026-07-22: `runRaceDayCycle` composes the due-window collector, strict probability validator and append-only lock writer as one finite cycle. It retries at most three times, ignores duplicate windows, blocks post-time scoring and returns Chinese due/capture/score/lock/next-window counts. The default CLI remains fail-closed and capture-only when no frozen scorer adapter is configured.
+- [x] Add a dry-run-only macOS LaunchAgent installer and operating guide.
   - Acceptance: tests render the plist without installing it; installation is an explicit local command; uninstallation is documented; GitHub Actions and GitHub Pages never receive private SQLite or market snapshots.
+  - Completed 2026-07-22: `local-scheduler` renders a secret-free, disabled-by-default plist with a five-minute safety floor and private logs. Tests and routine use stay in `--dryRun`; explicit install, manual enable/bootstrap, backup, status, sleep/offline limits and uninstall are documented in `docs/operations/local-race-day-scheduler.md`.
 - [ ] Add prospective coverage, freshness, and backup-health reporting.
   - Acceptance: report coverage by meeting/window/pool, duplicate/retry counts, latest successful backup, and missing-window reasons; public output is aggregate-only.
 - [ ] Pass the declared prospective-data gate for model comparison.
@@ -161,11 +163,12 @@ Goal: automatically accumulate the missing 2026 live market data that our ROI mo
     - Missing pool snapshots keep the row valid but mark feature availability as false.
     - No post-race dividends or results leak into pre-race features.
 
-- [ ] Add a low-frequency race-day automation prompt or workflow step for due snapshots.
+- [x] Add a low-frequency race-day automation prompt or workflow step for due snapshots.
   - Acceptance:
     - It does not poll every few minutes.
     - It only captures when a race is inside a configured T-window.
     - It produces a short Chinese report with due races, imported odds rows, imported pool rows, and next due window.
+  - Delivered by the finite `hkjc:race-day-cycle` command and optional disabled-by-default local LaunchAgent renderer. No GitHub workflow receives private live data.
 
 ## Phase B — External benchmark reproduction
 
@@ -357,12 +360,14 @@ This queue is mirrored in `research-program.js` and surfaced in the dashboard Re
 | P1 | `lightgbm-no-market-benchmark` | Phase B | implemented, local benchmark trained | Build a non-market tree-model benchmark before live odds are complete. |
 | P1 | `tianxi-feature-backfill` | Phase B | implemented audit and optional prior-form enrichment | Audit and design local-only derived feature imports. |
 | P1 | `j-csc-scraper-schema-audit` | Phase B | implemented, clean-room metadata only | Audited HKJC page/field coverage and designed veterinary/racecard parser fixtures without copying unlicensed code/data. |
-| P1 | `no-bet-clv-gate` | Phase C | partial: fail-closed gate and CLV/slippage audit implemented; bootstrap/placebo and prospective locks remain | Reject lines without live edge and track closing-line value. |
+| P1 | `no-bet-clv-gate` | Phase C | partial: fail-closed gate, prospective locks and CLV/slippage audit implemented; bootstrap/placebo remain | Reject lines without live edge and track closing-line value. |
 | P1 | `bayesian-tripwire` | Phase C | implemented | Reduce stake or paper-mode when uncertainty is too high. |
 | P2 | `parimutuel-stacker-copula-study` | Phase B/C | research design complete; implementation blocked on real T-window combination books | Benchmark simple order models before dependence/copula work; exact-order pools remain NO_BET. |
+| P6 | `race-day-cycle` | Phase A/D | implemented; optional scheduler remains disabled until manual review | Run one bounded due-window capture/score/lock cycle and keep all live evidence local. |
 
 ## Latest continuation note
 
+- 2026-07-22: Completed P6 Task 3 with a finite `race-day-cycle` and a disabled-by-default macOS LaunchAgent renderer. The cycle only captures uncaptured T-30/T-10/T-3 windows, retries at most three times, fails closed after post time, resumes scoring from an already captured duplicate window, and writes only zero-cash immutable shadow locks when a frozen scorer adapter is configured. `local-scheduler --dryRun` creates a secret-free review plist and private log paths; installation and `launchctl` enablement remain separate explicit manual steps documented in `docs/operations/local-race-day-scheduler.md`. Full Node suite: 270/270; Python scorer: 5/5; public privacy scan: 22 files, 0 violations. Exact next task: P6 Task 4, start with `hkjc-horse-model/test/prospective-coverage.test.js`.
 - 2026-07-22: Completed P5 Task 2 in TDD slices and merged the preceding P5 foundation through PR #16. The local SQLite pipeline now supports validated `prospective-lock` creation and `prospective-settle` official settlement for WIN/PLACE/QIN/QPL, explicit VOID/refund, T-3 CLV/slippage, paper ROI, max drawdown and longest losing run. `recommendation-audit` reports immutable shadow, paper and cash ledgers independently, and `auto-run` settles matching OPEN locks after result sync. Real HKJC `START_SELL` is recognized as an open market; every lock remains `PAPER_ONLY`, and cash remains `NO_BET`. Exact next task: P6 Task 3, `hkjc-horse-model/src/race-day-cycle.js`.
 - 2026-07-22: Completed two more TDD slices for P5 Task 2 without changing cash mode. `recommendation-audit.js` now exports a pure official-dividend settlement helper, and `prospective-locks.js` reuses the same pool semantics to settle in-memory prospective lock lines against official race dividends. Focused tests: `node --test hkjc-horse-model/test/recommendation-audit.test.js hkjc-horse-model/test/prospective-locks.test.js`. Exact next command: `sed -n '1,260p' hkjc-horse-model/src/cli.js`
 - 2026-07-22: Completed two TDD slices for P5 Task 2 without changing cash mode. New code adds `hkjc-horse-model/src/prospective-locks.js` plus append-only SQLite support for `prospective_locks`: canonical SHA-256 lock ids ignore payload ordering, identical lock replays are idempotent, changed immutable content throws `PROSPECTIVE_LOCK_CONFLICT`, and an `OPEN` lock may transition exactly once to `SETTLED` or `VOID`. Focused tests: `node --test hkjc-horse-model/test/prospective-locks.test.js hkjc-horse-model/test/sqlite-store.test.js`. Exact next command: `sed -n '1,260p' hkjc-horse-model/src/recommendation-audit.js`

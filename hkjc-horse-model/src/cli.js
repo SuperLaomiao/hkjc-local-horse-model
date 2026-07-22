@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import os from 'node:os';
@@ -48,6 +48,8 @@ import {
 } from './live-market-snapshot.js';
 import { runDueLiveMarketSnapshots } from './live-market-due-snapshots.js';
 import { DEFAULT_SNAPSHOT_WINDOWS } from './live-snapshot-planner.js';
+import { runRaceDayCycle } from './race-day-cycle.js';
+import { LOCAL_SCHEDULER_LABEL, renderLaunchAgent } from './local-scheduler.js';
 import {
   loadTianxiFormFeatureIndex,
   tianxiRunnerFeatureKey,
@@ -188,6 +190,16 @@ async function main(argv) {
 
   if (command === 'live-market-due-snapshots') {
     await liveMarketDueSnapshotsCommand(args);
+    return;
+  }
+
+  if (command === 'race-day-cycle') {
+    await raceDayCycleCommand(args);
+    return;
+  }
+
+  if (command === 'local-scheduler') {
+    await localSchedulerCommand(args);
     return;
   }
 
@@ -1000,6 +1012,71 @@ async function liveMarketDueSnapshotsCommand(args) {
   console.log(`Saved due snapshot report to ${outputPath}`);
 }
 
+async function raceDayCycleCommand(args) {
+  const dbPath = path.resolve(args.db ?? sqliteDbPath);
+  const requestedLabels = new Set(parseStringList(args.windows ?? 'T-30,T-10,T-3'));
+  const windows = DEFAULT_SNAPSHOT_WINDOWS.filter((window) => requestedLabels.has(window.label));
+  if (windows.length === 0) throw new Error('race-day-cycle requires at least one valid --windows label');
+  const pools = parseStringList(args.pools ?? DEFAULT_LIVE_MARKET_ODDS_TYPES.join(','));
+  const report = await runRaceDayCycle({
+    dbPath,
+    windows,
+    pools,
+    dryRun: Boolean(args.dryRun),
+    maxRetries: args.maxRetries == null ? 2 : Number(args.maxRetries),
+    now: args.now ?? new Date(),
+  });
+  const outputPath = path.resolve(
+    args.output ?? path.join(privateDataDir, 'latest-race-day-cycle.json'),
+  );
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeJson(outputPath, {
+    ...report,
+    dataSource: { source: 'sqlite', database: publicDatabaseLabel(dbPath) },
+    windows: windows.map((window) => window.label),
+    pools,
+  });
+  console.log(report.summaryZh);
+  console.log(`Saved race-day cycle report to ${outputPath}`);
+}
+
+async function localSchedulerCommand(args) {
+  if (args.install && args.dryRun) {
+    throw new Error('local-scheduler accepts either --dryRun or --install, not both');
+  }
+  const projectPath = path.resolve(args.projectPath ?? process.cwd());
+  const dbPath = path.resolve(args.db ?? sqliteDbPath);
+  const logDirectory = path.resolve(
+    args.logDirectory ?? path.join(privateDataDir, 'logs'),
+  );
+  const outputPath = path.resolve(
+    args.output ?? path.join(privateDataDir, `${LOCAL_SCHEDULER_LABEL}.plist`),
+  );
+  const plist = renderLaunchAgent({
+    projectPath,
+    dbPath,
+    logDirectory,
+    intervalMinutes: args.intervalMinutes == null ? 10 : Number(args.intervalMinutes),
+    label: args.label ?? LOCAL_SCHEDULER_LABEL,
+  });
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await mkdir(logDirectory, { recursive: true });
+  await writeFile(outputPath, plist, 'utf8');
+
+  if (!args.install) {
+    console.log(`LaunchAgent review file saved: ${outputPath}`);
+    console.log('状态：未安装、未启用；请先检查 plist，需要时再显式执行 --install。');
+    return;
+  }
+
+  const launchAgentsDirectory = path.join(os.homedir(), 'Library', 'LaunchAgents');
+  const installPath = path.join(launchAgentsDirectory, `${args.label ?? LOCAL_SCHEDULER_LABEL}.plist`);
+  await mkdir(launchAgentsDirectory, { recursive: true });
+  if (outputPath !== installPath) await copyFile(outputPath, installPath);
+  console.log(`LaunchAgent installed but remains disabled: ${installPath}`);
+  console.log('安装文件仍为禁用状态；启用、卸载和日志操作请按运维文档人工执行。');
+}
+
 async function marketCoverageReportCommand(args) {
   const dbPath = path.resolve(args.db ?? sqliteDbPath);
   const report = loadMarketSnapshotCoverageSummary({ dbPath });
@@ -1569,6 +1646,8 @@ Commands:
   external-live-odds --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/external-live-odds-import.json
   live-market-snapshot --date 2026-07-08 --venue HV --race 1 --pools WIN,PLA,QIN,QPL --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/live-market-source-report.json
   live-market-due-snapshots --db hkjc-horse-model/data/hkjc.sqlite --windows T-30,T-10,T-3 --pools WIN,PLA,QIN,QPL --output hkjc-horse-model/data/processed/live-market-source-report.json --dryRun
+  race-day-cycle --db hkjc-horse-model/data/hkjc.sqlite --windows T-30,T-10,T-3 --pools WIN,PLA,QIN,QPL --output hkjc-horse-model/data/private/latest-race-day-cycle.json --dryRun
+  local-scheduler --projectPath /absolute/path/to/project --intervalMinutes 10 --output hkjc-horse-model/data/private/com.superlaomiao.hkjc-race-day-cycle.plist --dryRun
   market-coverage-report --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/market-snapshot-coverage.json
   market-window-research --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/market-window-research.json
   shadow-score --input upcoming.jsonl --model model.cbm --report report.json --featureManifest manifest.json --generatedAt 2026-07-22T10:20:00Z --output hkjc-horse-model/data/processed/shadow-score.json
