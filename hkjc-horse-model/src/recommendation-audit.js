@@ -183,11 +183,13 @@ function auditLine(line, race, t3MarketByLine) {
   const plannedStake = lineStake(line);
   const poolKey = poolKeyForLine(line);
   const combination = combinationForLine(line);
-  const dividendPer10 = findDividendPer10({
-    poolKey,
+  const settlement = settleLineFromOfficialDividends({
+    pool: line.pool ?? line.poolKey,
     combination,
+    stake,
     dividends: race.dividends,
   });
+  const dividendPer10 = settlement.dividendPer10;
   if (stake <= 0) {
     const paper = decisionStatus(line) === 'PAPER' && plannedStake > 0
       ? paperSettlement({ stake: plannedStake, dividendPer10 })
@@ -203,17 +205,15 @@ function auditLine(line, race, t3MarketByLine) {
     }, { line, poolKey, combination, dividendPer10, t3MarketByLine, raceId: race.raceId });
   }
 
-  const returned = dividendPer10 == null ? 0 : round((stake / 10) * dividendPer10);
-
   return addPriceAudit({
     ...line,
-    status: returned > 0 ? 'HIT' : 'MISS',
+    status: settlement.status,
     poolKey,
     combination,
     stake,
     dividendPer10,
-    returned,
-    profit: round(returned - stake),
+    returned: settlement.returned,
+    profit: settlement.profit,
   }, { line, poolKey, combination, dividendPer10, t3MarketByLine, raceId: race.raceId });
 }
 
@@ -247,6 +247,26 @@ function paperSettlement({ stake, dividendPer10 }) {
     dividendPer10,
     returned,
     profit: round(returned - stake),
+  };
+}
+
+export function settleLineFromOfficialDividends({ pool, combination, stake, dividends }) {
+  const poolKey = poolKeyForLine({ pool });
+  const normalizedCombination = normalizeCombinationForPool(combinationForLine({ combination }), poolKey);
+  const normalizedStake = lineStake({ stake });
+  const dividendPer10 = findDividendPer10({
+    poolKey,
+    combination: normalizedCombination,
+    dividends,
+  });
+  const returned = dividendPer10 == null ? 0 : round((normalizedStake / 10) * dividendPer10);
+  return {
+    poolKey,
+    combination: normalizedCombination,
+    dividendPer10,
+    returned,
+    profit: round(returned - normalizedStake),
+    status: returned > 0 ? 'HIT' : 'MISS',
   };
 }
 
@@ -294,11 +314,15 @@ function combinationForLine(line) {
 }
 
 function combinationKey(combination, poolKey) {
+  return normalizeCombinationForPool(combination, poolKey).join(',');
+}
+
+function normalizeCombinationForPool(combination, poolKey) {
   const numbers = [...(combination ?? [])].map(Number).filter(Number.isFinite);
   if (['quinella', 'quinellaPlace', 'trio', 'first4', 'quartet'].includes(poolKey)) {
     numbers.sort((a, b) => a - b);
   }
-  return numbers.join(',');
+  return numbers;
 }
 
 function lineStake(line) {

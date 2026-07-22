@@ -7,6 +7,7 @@ import { describe, it } from 'node:test';
 import {
   buildProspectiveLockId,
   recordProspectiveLock,
+  settleProspectiveLocks,
   settleProspectiveLock,
 } from '../src/prospective-locks.js';
 import { loadProspectiveLocks } from '../src/sqlite-store.js';
@@ -116,6 +117,33 @@ describe('prospective locks', () => {
       await rm(tempDir, { recursive: true, force: true });
     }
   });
+
+  it('settles prospective locks from official race dividends with shared pool semantics', () => {
+    const summary = settleProspectiveLocks({
+      locks: [
+        prospectiveLock(),
+        {
+          ...prospectiveLock(),
+          pool: 'QUINELLA PLACE',
+          combination: [1, 2],
+          decision: {
+            ...prospectiveLock().decision,
+            currentDividendPer10: 14,
+          },
+        },
+      ],
+      race: settledRace(),
+    });
+
+    assert.equal(summary.status, 'SETTLED');
+    assert.equal(summary.lines.length, 2);
+    assert.equal(summary.lines[0].status, 'HIT');
+    assert.equal(summary.lines[0].dividendPer10, 15);
+    assert.equal(summary.lines[0].returned, 15);
+    assert.equal(summary.lines[1].status, 'HIT');
+    assert.equal(summary.lines[1].dividendPer10, 13.5);
+    assert.equal(summary.lines[1].returned, 13.5);
+  });
 });
 
 function prospectiveLock() {
@@ -146,6 +174,23 @@ function prospectiveLock() {
       featurePolicyId: 'market-aware-t10-v1',
       calibrationMethod: 'sigmoid',
       trainingCutoff: '2026-06-30',
+    },
+  };
+}
+
+function settledRace() {
+  return {
+    raceId: '2026-07-22-HV-R1',
+    date: '2026-07-22',
+    startTime: '18:30',
+    status: 'settled',
+    dividends: {
+      place: [
+        { pool: 'PLACE', combination: [2], dividendPer10: 15 },
+      ],
+      quinellaPlace: [
+        { pool: 'QUINELLA PLACE', combination: [1, 2], dividendPer10: 13.5 },
+      ],
     },
   };
 }

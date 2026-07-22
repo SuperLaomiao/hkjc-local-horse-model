@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { auditRecommendationRuns } from '../src/recommendation-audit.js';
+import {
+  auditRecommendationRuns,
+  settleLineFromOfficialDividends,
+} from '../src/recommendation-audit.js';
 
 describe('recommendation audit', () => {
   it('settles recorded recommendation lines against official dividends', () => {
@@ -183,6 +186,38 @@ describe('recommendation audit', () => {
     assert.equal(audit.summary.paperRoi, 0.5);
     assert.equal(audit.summary.maxDrawdown, 0);
     assert.equal(audit.summary.paperMaxDrawdown, 0);
+  });
+
+  it('exports a pure official-dividend settlement helper for shared prospective use', () => {
+    const hit = settleLineFromOfficialDividends({
+      pool: 'QUINELLA PLACE',
+      combination: [2, 1],
+      stake: 10,
+      dividends: settledRace().dividends,
+    });
+    const miss = settleLineFromOfficialDividends({
+      pool: 'WIN',
+      combination: [8],
+      stake: 10,
+      dividends: settledRace().dividends,
+    });
+
+    assert.deepEqual(hit, {
+      poolKey: 'quinellaPlace',
+      combination: [1, 2],
+      dividendPer10: 13.5,
+      returned: 13.5,
+      profit: 3.5,
+      status: 'HIT',
+    });
+    assert.deepEqual(miss, {
+      poolKey: 'win',
+      combination: [8],
+      dividendPer10: null,
+      returned: 0,
+      profit: -10,
+      status: 'MISS',
+    });
   });
 });
 

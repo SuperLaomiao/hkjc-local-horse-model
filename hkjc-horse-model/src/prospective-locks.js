@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 
+import { settleLineFromOfficialDividends } from './recommendation-audit.js';
 import {
   recordProspectiveLock as storeRecordProspectiveLock,
   settleProspectiveLock as storeSettleProspectiveLock,
@@ -21,6 +22,39 @@ export function settleProspectiveLock({ dbPath, lockId, settlement }) {
     lockId: requiredText(lockId, 'lockId'),
     settlement: normalizeSettlement(settlement),
   });
+}
+
+export function settleProspectiveLocks({ locks, race }) {
+  const normalizedLocks = Array.isArray(locks) ? locks : [];
+  if (!race || typeof race !== 'object' || Array.isArray(race)) {
+    throw new Error('race must be an object');
+  }
+
+  const lines = normalizedLocks.map((lock) => {
+    const normalized = normalizeProspectiveLock(lock);
+    const settlement = settleLineFromOfficialDividends({
+      pool: normalized.pool,
+      combination: normalized.combination,
+      stake: normalized.decision.stake,
+      dividends: race.dividends,
+    });
+    return {
+      lockId: normalized.lockId,
+      raceId: normalized.raceId,
+      poolKey: settlement.poolKey,
+      combination: settlement.combination,
+      stake: normalized.decision.stake,
+      dividendPer10: settlement.dividendPer10,
+      returned: settlement.returned,
+      profit: settlement.profit,
+      status: settlement.status,
+    };
+  });
+
+  return {
+    status: 'SETTLED',
+    lines,
+  };
 }
 
 export function normalizeProspectiveLock(lock) {
