@@ -117,6 +117,14 @@ describe('research upgrade program', () => {
       && item.remaining.some((entry) => /prospective locks|settlement|race-day cycle/i.test(entry))
     )));
     assert(program.followUpActions.some((item) => (
+      item.id === 'prospective-lock-ledger'
+      && item.status === 'implemented'
+      && item.automationExecutable === true
+      && item.evidence.some((entry) => /prospective-locks\.js/.test(entry))
+      && item.evidence.some((entry) => /OPEN.*SETTLED\/VOID|三账本/i.test(entry))
+      && item.remaining.some((entry) => /race-day cycle|forward cohort|2026/i.test(entry))
+    )));
+    assert(program.followUpActions.some((item) => (
       item.id === 'bayesian-tripwire'
       && item.status === 'implemented'
       && item.evidence.some((entry) => /uncertainty-tripwire\.js/.test(entry))
@@ -159,7 +167,7 @@ describe('research upgrade program', () => {
     assert.equal(summary.nextCount > 0, true);
     assert.equal(summary.researchOnlyCount > 0, true);
     assert.equal(summary.followUpCount > 0, true);
-    assert.equal(summary.implementedActionCount, 7);
+    assert.equal(summary.implementedActionCount, 8);
     assert.equal(summary.partialActionCount, 2);
     assert.equal(summary.queuedActionCount, 0);
     assert.equal(summary.researchOnlyActionCount, 1);

@@ -73,6 +73,13 @@ describe('value betting engine', () => {
     assert.equal(decision.reasonCode, 'PROBABILITY_NOT_PROMOTED');
   });
 
+  it('recognizes the official HKJC START_SELL status as an open market', () => {
+    const decision = evaluateValueCandidate({ ...base, sellStatus: 'START_SELL' });
+
+    assert.equal(decision.status, 'PLAY');
+    assert.equal(decision.reasonCode, 'EDGE_CLEARS_BUFFER');
+  });
+
   it('exposes full precision pricing and deterministic freshness helpers', () => {
     assert.equal(fairDividendPer10(0.55), 10 / 0.55);
     assert.equal(requiredDividendPer10(0.52, 0.08), 10 * 1.08 / 0.52);

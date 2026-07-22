@@ -162,7 +162,7 @@ const ALGORITHM_BORROWINGS = [
     concept: 'NO-BET default + Closing Line Value 守门',
     status: 'active',
     userImpact: '模型没证明能赢 closing line 时，前端主动显示“不下注/只纸上观察”，防止为了下注而下注。',
-    nextStep: 'NO-BET、CLV、slippage 和 drawdown 已进入审计；仍需 prospective locks、bootstrap CI 和 placebo 检查。',
+    nextStep: '不可变 prospective locks、CLV、slippage、drawdown 和连败已进入三账本审计；下一步补 bootstrap CI 和 placebo 检查。',
   },
   {
     concept: 'LightGBM / LambdaRank / 条件 logit 模型族',
@@ -265,8 +265,9 @@ const FOLLOW_UP_ACTIONS = [
     evidence: [
       'value-betting-engine.js 的 PLAY/WATCH/PAPER/NO_BET fail-closed gate',
       'recommendation-audit tests覆盖 CLV、slippage、cash drawdown 与 paper ROI 分离',
+      'prospective-locks.js + prospective-lock/prospective-settle CLI：T-30/T-10/T-3 不可变锁单、官方派彩结算、VOID、T-3 CLV、回撤与连败均从 SQLite 锁单重算',
     ],
-    remaining: ['积累 prospective recommendation locks，并补 bootstrap CI 与 placebo 稳健性检验。'],
+    remaining: ['积累足量 prospective recommendation locks，并补 bootstrap CI 与 placebo 稳健性检验。'],
   },
   {
     id: 'market-aware-shadow-bridge',
@@ -284,7 +285,25 @@ const FOLLOW_UP_ACTIONS = [
       'hkjc-horse-model/src/cli.js shadow-score + hkjc-horse-model/test/shadow-score-cli.test.js：Python scorer 输出先经 validator，再写成 SHADOW / PAPER_ONLY / RESEARCH_ONLY bundle',
       'hkjc-horse-model/src/external-model-comparison.js + app.js：同一场 upcoming race 现已并列展示 heuristic、no-market、live-market baseline 与带 artifact/calibration/training-cutoff lineage 的 shadow market-aware 概率',
     ],
-    remaining: ['继续实现 prospective recommendation locks / settlement 与 race-day cycle；当前只完成了 P5 的 shadow scoring 展示，不含锁单链路。'],
+    remaining: ['继续实现 one-cycle race-day cycle，把 due snapshot、shadow score 与已完成的锁单 CLI 串成一次幂等本地周期。'],
+  },
+  {
+    id: 'prospective-lock-ledger',
+    priority: 'P5',
+    status: 'implemented',
+    automationPhase: 'Phase D',
+    title: '建立不可变 prospective lock 与三账本结算',
+    sourceRefs: ['HKJC Edge Lab', 'Ganyan', 'HKJC Horse-Racing ML Research Platform'],
+    action: '在 T-30/T-10/T-3 把模型、价格、组合、原因码和 paper stake 锁进本地 SQLite，赛后按官方派彩自动结算。',
+    expectedOutcome: '所有 forward ROI、CLV、slippage、drawdown 与 losing run 只从不可变锁单重算，shadow/paper/cash 不混账。',
+    automationExecutable: true,
+    evidence: [
+      'hkjc-horse-model/src/prospective-locks.js：canonical SHA-256、PAPER_ONLY、pre-post/window guard、WIN/PLACE/QIN/QPL、VOID、CLV、drawdown 与 losing run',
+      'hkjc-horse-model/src/sqlite-store.js：append-only prospective_locks，幂等重放与 OPEN 到 SETTLED/VOID 的单次原子转换',
+      'hkjc-horse-model/src/cli.js prospective-lock / prospective-settle：本地锁单、官方赛果结算并接入 auto-run',
+      'recommendation-audit.js：cash、paper、shadow 独立账本，shadow 锁单永不进入 cash stake',
+    ],
+    remaining: ['下一步由 race-day cycle 自动生成 due-window 锁单；继续积累真实 2026 forward cohort，现金仍为 NO_BET。'],
   },
   {
     id: 'bayesian-tripwire',

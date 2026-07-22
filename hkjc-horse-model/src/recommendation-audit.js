@@ -1,4 +1,9 @@
-export function auditRecommendationRuns({ runs = [], races = [], marketSnapshots = [] } = {}) {
+export function auditRecommendationRuns({
+  runs = [],
+  races = [],
+  marketSnapshots = [],
+  prospectiveLedgers = null,
+} = {}) {
   const raceById = new Map(races.map((race) => [race.raceId, race]));
   const t3MarketByLine = buildT3MarketIndex(marketSnapshots);
   const classifiedRuns = selectRecommendationRunsForAudit({ runs, raceById });
@@ -20,6 +25,34 @@ export function auditRecommendationRuns({ runs = [], races = [], marketSnapshots
   const paperStake = round(sum(paperLines, (line) => line.stake));
   const paperReturn = round(sum(paperLines, (line) => line.returned));
   const paperProfit = round(paperReturn - paperStake);
+
+  const cashLedger = {
+    lines: allSettledLines.length,
+    stake: totalStake,
+    returned: totalReturn,
+    profit,
+    roi: totalStake > 0 ? round(profit / totalStake, 4) : null,
+    maxDrawdown: maxDrawdown(allSettledLines),
+    longestLosingRun: longestLosingRun(allSettledLines),
+    hits: allSettledLines.filter((line) => line.status === 'HIT').length,
+    misses: allSettledLines.filter((line) => line.status === 'MISS').length,
+    executionStatus: totalStake > 0 ? 'RECORDED' : 'NO_BET',
+    source: 'FINAL_EXECUTABLE_RECOMMENDATION_RUNS',
+  };
+  const legacyPaperLedger = {
+    lines: paperLines.length,
+    stake: paperStake,
+    returned: paperReturn,
+    profit: paperProfit,
+    roi: paperStake > 0 ? round(paperProfit / paperStake, 4) : null,
+    maxDrawdown: maxDrawdown(paperLines),
+    longestLosingRun: longestLosingRun(paperLines),
+    hits: paperLines.filter((line) => line.status === 'HIT').length,
+    misses: paperLines.filter((line) => line.status === 'MISS').length,
+    executionStatus: 'PAPER_ONLY',
+    source: 'LEGACY_RECOMMENDATION_RUN_PAPER_LINES',
+  };
+  const hasProspectiveLocks = Number(prospectiveLedgers?.shadow?.locks ?? 0) > 0;
 
   return {
     summary: {
@@ -52,6 +85,27 @@ export function auditRecommendationRuns({ runs = [], races = [], marketSnapshots
       paperMaxDrawdown: maxDrawdown(paperLines),
       paperHitLines: paperLines.filter((line) => line.status === 'HIT').length,
       paperMissLines: paperLines.filter((line) => line.status === 'MISS').length,
+    },
+    ledgers: {
+      cash: cashLedger,
+      paper: hasProspectiveLocks
+        ? { ...prospectiveLedgers.paper, source: 'IMMUTABLE_PROSPECTIVE_LOCKS' }
+        : legacyPaperLedger,
+      shadow: hasProspectiveLocks
+        ? { ...prospectiveLedgers.shadow, source: 'IMMUTABLE_PROSPECTIVE_LOCKS' }
+        : {
+          locks: 0,
+          open: 0,
+          settled: 0,
+          hits: 0,
+          misses: 0,
+          voids: 0,
+          hitRate: null,
+          clvLines: 0,
+          averageIndicativeClv: null,
+          executionStatus: 'SHADOW',
+          source: 'IMMUTABLE_PROSPECTIVE_LOCKS',
+        },
     },
     runs: auditedRuns,
   };
@@ -394,6 +448,20 @@ function maxDrawdown(lines) {
     drawdown = Math.max(drawdown, peak - cumulative);
   }
   return round(drawdown);
+}
+
+function longestLosingRun(lines) {
+  let current = 0;
+  let longest = 0;
+  for (const line of lines) {
+    if (String(line.status ?? '').toUpperCase() === 'MISS' && Number(line.stake ?? 0) > 0) {
+      current += 1;
+      longest = Math.max(longest, current);
+    } else if (String(line.status ?? '').toUpperCase() !== 'VOID') {
+      current = 0;
+    }
+  }
+  return longest;
 }
 
 function positiveNumber(value) {

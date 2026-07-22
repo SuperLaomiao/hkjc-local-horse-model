@@ -28,6 +28,13 @@ import { buildMarketSnapshotCoverageReport } from './market-snapshot-coverage.js
 import { buildMarketWindowResearchReport } from './market-window-research.js';
 import { validateProbabilityArtifact } from './probability-artifact.js';
 import {
+  buildProspectiveLocks,
+  recordProspectiveLock,
+  settleProspectiveLocks,
+  settleProspectiveLock,
+  summarizeProspectiveLocks,
+} from './prospective-locks.js';
+import {
   DEFAULT_EPROCHASSON_LIVE_ODDS_URL,
   DEFAULT_EPROCHASSON_RACES_URL,
   importExternalLiveOddsToDatabase,
@@ -63,6 +70,7 @@ import {
   loadLatestMarketSnapshots,
   loadMarketSnapshots,
   loadPoolMoneyFeatures,
+  loadProspectiveLocks,
   loadRunnerMarketFeatures,
   loadRecommendationRuns,
   recordOddsSnapshot,
@@ -198,6 +206,16 @@ async function main(argv) {
     return;
   }
 
+  if (command === 'prospective-lock') {
+    await prospectiveLockCommand(args);
+    return;
+  }
+
+  if (command === 'prospective-settle') {
+    await prospectiveSettleCommand(args);
+    return;
+  }
+
   if (command === 'recommendation-audit') {
     await recommendationAuditCommand(args);
     return;
@@ -269,6 +287,13 @@ async function autoRunCommand(args) {
   await dashboardDbCommand({
     ...args,
     output: dashboardOutput,
+  });
+
+  await prospectiveSettleCommand({
+    ...args,
+    input: args.prospectiveSettlementInput,
+    output: args.prospectiveOutput ?? path.join(privateDataDir, 'latest-prospective-audit.json'),
+    allowNoLocks: true,
   });
 
   await recommendationAuditCommand({
@@ -663,6 +688,106 @@ async function shadowScoreCommand(args) {
   }
 }
 
+async function prospectiveLockCommand(args) {
+  const inputPath = path.resolve(requiredArg(args.input, 'input'));
+  const dbPath = path.resolve(args.db ?? sqliteDbPath);
+  const outputPath = path.resolve(
+    args.output ?? path.join(privateDataDir, 'latest-prospective-lock.json'),
+  );
+  const payload = JSON.parse(await readFile(inputPath, 'utf8'));
+  const locks = buildProspectiveLocks({
+    race: payload.race,
+    scoreBundles: payload.scoreBundles ?? payload.scoreBundle,
+    marketSnapshots: payload.marketSnapshots,
+    decisions: payload.decisions,
+    generatedAt: args.generatedAt ?? payload.generatedAt,
+  });
+  const recorded = locks.map((lock) => recordProspectiveLock({ dbPath, lock }));
+  const ledgers = summarizeProspectiveLocks(loadProspectiveLocks({ dbPath }));
+  const report = {
+    generatedAt: new Date().toISOString(),
+    executionStatus: 'PAPER_ONLY',
+    database: publicDatabaseLabel(dbPath),
+    input: publicInputLabel(inputPath),
+    recorded: recorded.length,
+    locks: recorded,
+    ledgers,
+  };
+
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeJson(outputPath, report);
+  console.log(`Prospective locks recorded: ${recorded.length}`);
+  console.log(`Saved prospective lock report to ${outputPath}`);
+}
+
+async function prospectiveSettleCommand(args) {
+  const dbPath = path.resolve(args.db ?? sqliteDbPath);
+  const outputPath = path.resolve(
+    args.output ?? path.join(privateDataDir, 'latest-prospective-audit.json'),
+  );
+  const raceId = args.raceId ?? args.race ?? null;
+  const openLocks = loadProspectiveLocks({ dbPath, raceId, status: 'OPEN' });
+  const races = args.input
+    ? normalizeRacePayload(JSON.parse(await readFile(path.resolve(args.input), 'utf8')))
+    : loadRacesFromDatabase({ dbPath, status: 'settled' });
+  const raceById = new Map(races.map((race) => [race.raceId, race]));
+  const settledAt = args.settledAt ?? new Date().toISOString();
+  let settledCount = 0;
+  let voidCount = 0;
+  const unresolvedRaceIds = new Set();
+
+  for (const [lockRaceId, raceLocks] of groupBy(openLocks, (lock) => lock.raceId)) {
+    const race = raceById.get(lockRaceId);
+    if (!race) {
+      unresolvedRaceIds.add(lockRaceId);
+      continue;
+    }
+    const marketSnapshots = loadMarketSnapshots({ dbPath, raceId: lockRaceId }).odds;
+    const settlement = settleProspectiveLocks({ locks: raceLocks, race, marketSnapshots });
+    for (const line of settlement.lines) {
+      const state = line.status === 'VOID' ? 'VOID' : 'SETTLED';
+      settleProspectiveLock({
+        dbPath,
+        lockId: line.lockId,
+        settlement: {
+          status: state,
+          outcome: line.status,
+          settledAt,
+          stake: line.stake,
+          dividendPer10: line.dividendPer10,
+          returned: line.returned,
+          profit: line.profit,
+          closingDividendPer10: line.closingDividendPer10 ?? null,
+          indicativeClv: line.indicativeClv ?? null,
+          priceSlippageToT3: line.priceSlippageToT3 ?? null,
+          officialDividendChangeFromLock: line.officialDividendChangeFromLock ?? null,
+        },
+      });
+      if (state === 'VOID') voidCount += 1;
+      else settledCount += 1;
+    }
+  }
+
+  const locks = loadProspectiveLocks({ dbPath, raceId });
+  const report = {
+    generatedAt: new Date().toISOString(),
+    executionStatus: 'NO_BET',
+    database: publicDatabaseLabel(dbPath),
+    summary: {
+      openBefore: openLocks.length,
+      settled: settledCount,
+      void: voidCount,
+      unresolvedRaceIds: [...unresolvedRaceIds].sort(),
+    },
+    ledgers: summarizeProspectiveLocks(locks),
+  };
+
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeJson(outputPath, report);
+  console.log(`Prospective locks settled: ${settledCount}, void: ${voidCount}, still open: ${report.ledgers.shadow.open}`);
+  console.log(`Saved prospective audit to ${outputPath}`);
+}
+
 function recordDashboardRecommendationRun({ dbPath, snapshot, args }) {
   const forecast = snapshot.latestUpcomingForecast?.raceId
     ? snapshot.latestUpcomingForecast
@@ -971,7 +1096,13 @@ async function recommendationAuditCommand(args) {
   const marketSnapshots = recommendationRaceIds.flatMap((raceId) => (
     loadMarketSnapshots({ dbPath, raceId }).odds
   ));
-  const report = auditRecommendationRuns({ runs, races, marketSnapshots });
+  const prospectiveLedgers = summarizeProspectiveLocks(loadProspectiveLocks({ dbPath }));
+  const report = auditRecommendationRuns({
+    runs,
+    races,
+    marketSnapshots,
+    prospectiveLedgers,
+  });
   const outputPath = path.resolve(args.output ?? path.join(processedDataDir, 'latest-recommendation-audit.json'));
 
   await mkdir(path.dirname(outputPath), { recursive: true });
@@ -981,6 +1112,7 @@ async function recommendationAuditCommand(args) {
   console.log(`Recommendation audit: ${report.summary.eligibleRuns}/${report.summary.recordedRuns} final pre-race runs eligible, ${report.summary.settledRuns} settled, ${report.summary.excludedRuns} excluded`);
   console.log(`Stake ${money(report.summary.totalStake)}, return ${money(report.summary.totalReturn)}, profit ${formatSigned(report.summary.profit)}, ROI ${report.summary.roi == null ? 'n/a' : percent(report.summary.roi)}`);
   console.log(`Indicative CLV lines ${report.summary.clvLines}, average ${report.summary.averageIndicativeClv == null ? 'n/a' : percent(report.summary.averageIndicativeClv)}; paper ROI ${report.summary.paperRoi == null ? 'n/a' : percent(report.summary.paperRoi)}`);
+  console.log(`Immutable shadow locks ${report.ledgers.shadow.settled}/${report.ledgers.shadow.locks} settled; paper ROI ${report.ledgers.paper.roi == null ? 'n/a' : percent(report.ledgers.paper.roi)}; cash ${report.ledgers.cash.executionStatus}`);
   console.log(`Lines: ${report.summary.hitLines} hit, ${report.summary.missLines} miss, ${report.summary.passLines} pass`);
 }
 
@@ -1320,6 +1452,22 @@ async function loadShadowScoreRows(inputPath) {
   });
 }
 
+function normalizeRacePayload(payload) {
+  if (Array.isArray(payload)) return payload;
+  if (Array.isArray(payload?.races)) return payload.races;
+  if (payload && typeof payload === 'object') return [payload];
+  throw new Error('prospective-settle input must contain a race object or races array');
+}
+
+function groupBy(items, selector) {
+  const groups = new Map();
+  for (const item of items) {
+    const key = selector(item);
+    groups.set(key, [...(groups.get(key) ?? []), item]);
+  }
+  return groups;
+}
+
 async function loadFixtureWindow(from, to) {
   const meetings = [];
   for (const { year, month } of monthsBetween(from, to)) {
@@ -1423,6 +1571,9 @@ Commands:
   live-market-due-snapshots --db hkjc-horse-model/data/hkjc.sqlite --windows T-30,T-10,T-3 --pools WIN,PLA,QIN,QPL --output hkjc-horse-model/data/processed/live-market-source-report.json --dryRun
   market-coverage-report --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/market-snapshot-coverage.json
   market-window-research --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/market-window-research.json
+  shadow-score --input upcoming.jsonl --model model.cbm --report report.json --featureManifest manifest.json --generatedAt 2026-07-22T10:20:00Z --output hkjc-horse-model/data/processed/shadow-score.json
+  prospective-lock --input prospective-lock-input.json --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/private/latest-prospective-lock.json
+  prospective-settle --db hkjc-horse-model/data/hkjc.sqlite [--input settled-race.json] [--raceId 2026-07-22-HV-R1] --output hkjc-horse-model/data/private/latest-prospective-audit.json
   recommendation-audit --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/latest-recommendation-audit.json
   fetch-url  https://racing.hkjc.com/en-us/local/information/localresults?RaceNo=2&Racecourse=ST&racedate=2026%2F01%2F04
   backtest   --input hkjc-horse-model/data/raw --minEdge 0

@@ -219,6 +219,53 @@ describe('recommendation audit', () => {
       status: 'MISS',
     });
   });
+
+  it('reports cash, paper, and immutable shadow ledgers independently', () => {
+    const audit = auditRecommendationRuns({
+      runs: [],
+      races: [],
+      prospectiveLedgers: {
+        shadow: {
+          locks: 2,
+          open: 0,
+          settled: 2,
+          hits: 1,
+          misses: 1,
+          voids: 0,
+          hitRate: 0.5,
+          clvLines: 2,
+          averageIndicativeClv: 0.04,
+          executionStatus: 'SHADOW',
+        },
+        paper: {
+          lines: 2,
+          stake: 20,
+          returned: 23,
+          profit: 3,
+          roi: 0.15,
+          maxDrawdown: 10,
+          longestLosingRun: 1,
+          executionStatus: 'PAPER_ONLY',
+        },
+        cash: {
+          lines: 0,
+          stake: 0,
+          returned: 0,
+          profit: 0,
+          roi: null,
+          maxDrawdown: 0,
+          longestLosingRun: 0,
+          executionStatus: 'NO_BET',
+        },
+      },
+    });
+
+    assert.equal(audit.ledgers.shadow.locks, 2);
+    assert.equal(audit.ledgers.paper.roi, 0.15);
+    assert.equal(audit.ledgers.paper.source, 'IMMUTABLE_PROSPECTIVE_LOCKS');
+    assert.equal(audit.ledgers.cash.stake, 0);
+    assert.equal(audit.ledgers.cash.executionStatus, 'NO_BET');
+  });
 });
 
 function settledRace() {

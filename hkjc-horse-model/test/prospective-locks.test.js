@@ -5,9 +5,11 @@ import path from 'node:path';
 import { describe, it } from 'node:test';
 
 import {
+  buildProspectiveLocks,
   buildProspectiveLockId,
   normalizeProspectiveLock,
   recordProspectiveLock,
+  summarizeProspectiveLocks,
   settleProspectiveLocks,
   settleProspectiveLock,
 } from '../src/prospective-locks.js';
@@ -132,18 +134,41 @@ describe('prospective locks', () => {
             currentDividendPer10: 14,
           },
         },
+        {
+          ...prospectiveLock(),
+          pool: 'WIN',
+          combination: [1],
+        },
+        {
+          ...prospectiveLock(),
+          pool: 'QUINELLA',
+          combination: [2, 1],
+        },
+        {
+          ...prospectiveLock(),
+          pool: 'WIN',
+          combination: [8],
+        },
       ],
       race: settledRace(),
     });
 
     assert.equal(summary.status, 'SETTLED');
-    assert.equal(summary.lines.length, 2);
+    assert.equal(summary.lines.length, 5);
     assert.equal(summary.lines[0].status, 'HIT');
     assert.equal(summary.lines[0].dividendPer10, 15);
     assert.equal(summary.lines[0].returned, 15);
     assert.equal(summary.lines[1].status, 'HIT');
     assert.equal(summary.lines[1].dividendPer10, 13.5);
     assert.equal(summary.lines[1].returned, 13.5);
+    assert.equal(summary.lines[2].status, 'HIT');
+    assert.equal(summary.lines[2].dividendPer10, 23);
+    assert.equal(summary.lines[3].status, 'HIT');
+    assert.deepEqual(summary.lines[3].combination, [1, 2]);
+    assert.equal(summary.lines[3].dividendPer10, 42);
+    assert.equal(summary.lines[4].status, 'MISS');
+    assert.equal(summary.lines[4].dividendPer10, null);
+    assert.equal(summary.lines[4].profit, -10);
   });
 
   it('rejects unsupported windows, pools, and malformed pool combinations', () => {
@@ -182,7 +207,7 @@ describe('prospective locks', () => {
         ...prospectiveLock(),
         decision: {
           ...prospectiveLock().decision,
-          conservativeProbability: 0.3,
+          conservativeProbability: 0.5,
         },
       }),
       /conservativeProbability must not exceed rawProbability/,
@@ -193,6 +218,13 @@ describe('prospective locks', () => {
         decision: { ...prospectiveLock().decision, requiredDividendPer10: 20 },
       }),
       /requiredDividendPer10 must not be below fairDividendPer10/,
+    );
+    assert.throws(
+      () => normalizeProspectiveLock({
+        ...prospectiveLock(),
+        decision: { ...prospectiveLock().decision, fairDividendPer10: 20 },
+      }),
+      /fairDividendPer10 must equal 10 divided by rawProbability/,
     );
     assert.throws(
       () => normalizeProspectiveLock({
@@ -243,6 +275,122 @@ describe('prospective locks', () => {
       /official PLACE dividends are missing/,
     );
   });
+
+  it('builds a pre-race paper-only lock from a frozen score bundle and matching market window', () => {
+    const locks = buildProspectiveLocks({
+      race: upcomingRace(),
+      scoreBundles: [scoreBundle()],
+      marketSnapshots: [marketSnapshot()],
+      decisions: [{
+        pool: 'PLACE',
+        combination: [2],
+        modelId: 'catboost-market-aware-t10-v1',
+        rawProbability: 0.55,
+        conservativeProbability: 0.52,
+        paperStake: 10,
+        marketWindow: 'T-10',
+      }],
+      generatedAt: '2026-07-22T10:20:00Z',
+    });
+
+    assert.equal(locks.length, 1);
+    assert.equal(locks[0].raceId, '2026-07-22-HV-R1');
+    assert.equal(locks[0].marketWindow, 'T-10');
+    assert.equal(locks[0].poolKey, 'place');
+    assert.deepEqual(locks[0].combination, [2]);
+    assert.equal(locks[0].decision.executionStatus, 'PAPER_ONLY');
+    assert.equal(locks[0].decision.currentDividendPer10, 21);
+    assert.equal(locks[0].decision.stake, 10);
+    assert.deepEqual(locks[0].decision.reasonCodes, ['PROBABILITY_NOT_PROMOTED']);
+    assert.equal(locks[0].lineage.artifactId, 'sha256:abc123');
+  });
+
+  it('rejects post-time lock creation and any nonzero cash stake', () => {
+    const base = {
+      race: upcomingRace(),
+      scoreBundles: [scoreBundle()],
+      marketSnapshots: [marketSnapshot()],
+      decisions: [{
+        pool: 'PLACE',
+        combination: [2],
+        rawProbability: 0.55,
+        conservativeProbability: 0.52,
+        paperStake: 10,
+        marketWindow: 'T-10',
+      }],
+    };
+    assert.throws(
+      () => buildProspectiveLocks({ ...base, generatedAt: '2026-07-22T10:30:00Z' }),
+      /generatedAt must be before race post time/,
+    );
+    assert.throws(
+      () => buildProspectiveLocks({
+        ...base,
+        generatedAt: '2026-07-22T10:20:00Z',
+        decisions: [{ ...base.decisions[0], cashStake: 10 }],
+      }),
+      /cashStake must remain zero/,
+    );
+  });
+
+  it('settles refunds as VOID and computes closing-price audit plus shadow and paper summaries', () => {
+    const lock = prospectiveLock();
+    const summary = settleProspectiveLocks({
+      locks: [lock],
+      race: settledRace(),
+      marketSnapshots: [{
+        raceId: lock.raceId,
+        pool: 'PLACE',
+        combination: [2],
+        oddsValue: 2.8,
+        minutesToPost: 3,
+        capturedAt: '2026-07-22T10:27:00Z',
+        sellStatus: 'START_SELL',
+      }],
+    });
+    assert.equal(summary.lines[0].closingDividendPer10, 28);
+    assert.equal(summary.lines[0].indicativeClv, 0.125);
+    assert.equal(summary.lines[0].priceSlippageToT3, -0.1111);
+
+    const ledgers = summarizeProspectiveLocks([
+      {
+        ...lock,
+        status: 'SETTLED',
+        settlement: {
+          outcome: summary.lines[0].status,
+          stake: summary.lines[0].stake,
+          returned: summary.lines[0].returned,
+          profit: summary.lines[0].profit,
+          indicativeClv: summary.lines[0].indicativeClv,
+        },
+      },
+      {
+        ...lock,
+        lockId: 'sha256:miss',
+        status: 'SETTLED',
+        settlement: { outcome: 'MISS', stake: 10, returned: 0, profit: -10, indicativeClv: null },
+      },
+    ]);
+    assert.equal(ledgers.shadow.locks, 2);
+    assert.equal(ledgers.shadow.hitRate, 0.5);
+    assert.equal(ledgers.paper.stake, 20);
+    assert.equal(ledgers.paper.returned, 15);
+    assert.equal(ledgers.paper.profit, -5);
+    assert.equal(ledgers.paper.roi, -0.25);
+    assert.equal(ledgers.paper.maxDrawdown, 10);
+    assert.equal(ledgers.paper.longestLosingRun, 1);
+    assert.equal(ledgers.cash.stake, 0);
+    assert.equal(ledgers.cash.executionStatus, 'NO_BET');
+
+    const voided = settleProspectiveLocks({
+      locks: [lock],
+      race: { ...settledRace(), voidPools: ['PLACE'], dividends: {} },
+    });
+    assert.equal(voided.status, 'VOID');
+    assert.equal(voided.lines[0].status, 'VOID');
+    assert.equal(voided.lines[0].returned, 10);
+    assert.equal(voided.lines[0].profit, 0);
+  });
 });
 
 function prospectiveLock() {
@@ -257,10 +405,10 @@ function prospectiveLock() {
     generatedAt: '2026-07-22T10:20:00Z',
     decision: {
       executionStatus: 'PAPER_ONLY',
-      rawProbability: 0.221,
-      conservativeProbability: 0.207,
-      fairDividendPer10: 28.2,
-      requiredDividendPer10: 30.1,
+      rawProbability: 0.4,
+      conservativeProbability: 0.35,
+      fairDividendPer10: 25,
+      requiredDividendPer10: 30.86,
       currentDividendPer10: 31.5,
       marketCapturedAt: '2026-07-22T10:19:00Z',
       sellStatus: 'SELLING',
@@ -284,12 +432,70 @@ function settledRace() {
     startTime: '18:30',
     status: 'settled',
     dividends: {
+      win: [
+        { pool: 'WIN', combination: [1], dividendPer10: 23 },
+      ],
       place: [
         { pool: 'PLACE', combination: [2], dividendPer10: 15 },
+      ],
+      quinella: [
+        { pool: 'QUINELLA', combination: [1, 2], dividendPer10: 42 },
       ],
       quinellaPlace: [
         { pool: 'QUINELLA PLACE', combination: [1, 2], dividendPer10: 13.5 },
       ],
     },
+  };
+}
+
+function upcomingRace() {
+  return {
+    raceId: '2026-07-22-HV-R1',
+    date: '2026-07-22',
+    racecourse: 'HV',
+    raceNo: 1,
+    startTime: '18:30',
+    status: 'upcoming',
+    runners: [
+      { horseId: 'H001', horseNo: 1, horseName: 'Horse 1' },
+      { horseId: 'H002', horseNo: 2, horseName: 'Horse 2' },
+    ],
+  };
+}
+
+function scoreBundle() {
+  return {
+    researchMode: 'SHADOW',
+    executionStatus: 'PAPER_ONLY',
+    probabilityStatus: 'RESEARCH_ONLY',
+    generatedAt: '2026-07-22T10:18:00Z',
+    modelId: 'catboost-market-aware-t10-v1',
+    artifactId: 'sha256:abc123',
+    featurePolicyId: 'market-aware-t10-v1',
+    calibrationMethod: 'sigmoid',
+    trainingCutoff: '2026-06-30',
+    lineage: {
+      reportLineage: 'holdout-selection-v1',
+      modelPath: 'model.cbm',
+      reportPath: 'report.json',
+      featureManifestPath: 'manifest.json',
+    },
+    predictions: [
+      { raceId: '2026-07-22-HV-R1', runnerId: 'H001', probability: 0.45 },
+      { raceId: '2026-07-22-HV-R1', runnerId: 'H002', probability: 0.55 },
+    ],
+  };
+}
+
+function marketSnapshot() {
+  return {
+    raceId: '2026-07-22-HV-R1',
+    pool: 'PLACE',
+    combination: [2],
+    oddsValue: 2.1,
+    minutesToPost: 10,
+    capturedAt: '2026-07-22T10:19:00Z',
+    sellStatus: 'START_SELL',
+    source: 'hkjc-live-graphql-test',
   };
 }

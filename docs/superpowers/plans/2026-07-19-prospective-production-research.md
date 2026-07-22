@@ -34,7 +34,7 @@
 - Modify: `hkjc-horse-model/src/cli.js`
 - Modify: `package.json`
 
-- [ ] **Step 1: Write failing Python tests for frozen-lineage scoring**
+- [x] **Step 1: Write failing Python tests for frozen-lineage scoring**
 
 Use a synthetic two-runner fixture. Assert that output contains exactly:
 
@@ -53,13 +53,13 @@ Use a synthetic two-runner fixture. Assert that output contains exactly:
 
 The test must reject a feature manifest that differs from the fitted report and any input observed at or after post time.
 
-- [ ] **Step 2: Run the failing Python test**
+- [x] **Step 2: Run the failing Python test**
 
 Run: `python3 -m unittest hkjc-horse-model/python/test_score_market_aware_candidate.py -v`
 
 Expected: FAIL because the scoring module does not exist.
 
-- [ ] **Step 3: Implement the minimal Python scorer**
+- [x] **Step 3: Implement the minimal Python scorer**
 
 Expose pure functions with these signatures:
 
@@ -71,7 +71,7 @@ def build_score_bundle(*, bundle, rows, generated_at): ...
 
 Hash the artifact bytes, compare model/report target and feature policy, preserve raw probabilities, and never create stake or execution status.
 
-- [ ] **Step 4: Write failing Node tests for score-bundle validation**
+- [x] **Step 4: Write failing Node tests for score-bundle validation**
 
 Assert `validateProbabilityArtifact(bundle, { raceId, postAt })` rejects missing lineage, duplicate runner ids, probabilities outside `[0, 1]`, post-time generation, and a manually supplied `CALIBRATED` execution flag. Assert valid output is normalized to:
 
@@ -86,11 +86,11 @@ Assert `validateProbabilityArtifact(bundle, { raceId, postAt })` rejects missing
 }
 ```
 
-- [ ] **Step 5: Implement the validator and CLI command**
+- [x] **Step 5: Implement the validator and CLI command**
 
 Add `shadow-score --input <jsonl> --model <artifact> --report <json> --featureManifest <json> --output <json>`. Do not add an option that can switch the output to cash mode.
 
-- [ ] **Step 6: Run focused and full tests, then commit**
+- [x] **Step 6: Run focused and full tests, then commit**
 
 Run:
 
@@ -115,7 +115,7 @@ Commit: `feat: add market-aware shadow scoring bridge`
 - Modify: `hkjc-horse-model/test/recommendation-audit.test.js`
 - Modify: `hkjc-horse-model/src/cli.js`
 
-- [ ] **Step 1: Write failing schema/idempotency tests**
+- [x] **Step 1: Write failing schema/idempotency tests**
 
 Define the lock identity as SHA-256 over canonical values:
 
@@ -128,7 +128,7 @@ Define the lock identity as SHA-256 over canonical values:
 
 Assert that replaying the exact payload returns the existing lock, while changing content under an existing `lockId` throws `PROSPECTIVE_LOCK_CONFLICT` rather than updating the row.
 
-- [ ] **Step 2: Add the append-only table and store functions**
+- [x] **Step 2: Add the append-only table and store functions**
 
 Add a `prospective_locks` table with `lock_id` primary key, identity fields, decision JSON, `created_at`, settlement JSON, and settlement timestamp. Implement:
 
@@ -140,11 +140,11 @@ settleProspectiveLock({ dbPath, lockId, settlement })
 
 Only the empty settlement fields may transition once from `OPEN` to `SETTLED` or `VOID`; decision fields are immutable.
 
-- [ ] **Step 3: Write failing normalization and settlement tests**
+- [x] **Step 3: Write failing normalization and settlement tests**
 
 Require each line to carry pool/combination, raw and conservative probability, fair/required/current dividend, market timestamp/window/sell status, model lineage, machine reason codes, and `executionStatus: 'PAPER_ONLY'`. Reject post-time locks and nonzero cash stake. Test WIN, PLACE, QIN, QPL, refund/void, hit, and miss settlements.
 
-- [ ] **Step 4: Implement lock creation and official settlement**
+- [x] **Step 4: Implement lock creation and official settlement**
 
 Expose:
 
@@ -156,11 +156,11 @@ summarizeProspectiveLocks(locks)
 
 Reuse dividend matching from `recommendation-audit.js` through an exported pure helper instead of duplicating pool semantics.
 
-- [ ] **Step 5: Add CLI commands and audit separation**
+- [x] **Step 5: Add CLI commands and audit separation**
 
 Add `prospective-lock` and `prospective-settle`. The recommendation audit must report `paper`, `cash`, and `shadow` independently; shadow locks never enter cash totals.
 
-- [ ] **Step 6: Run focused and full tests, then commit**
+- [x] **Step 6: Run focused and full tests, then commit**
 
 Run:
 
@@ -359,4 +359,3 @@ Commit: `research: compare feature lift and guarded staking`
 - When a gate is waiting for future races, record its exact deficit and continue with the next ready engineering step; do not stop at a status report.
 - Keep local/private artifacts untracked. Never place bets, log in, change cash authorization, publish row-level locks, or copy third-party data without a compatible license.
 - End each run with focused tests, `npm test`, a local commit, the roadmap checkbox/note update, and one exact next step.
-
