@@ -182,7 +182,7 @@ Commit: `feat: add immutable prospective recommendation locks`
 - Modify: `hkjc-horse-model/src/cli.js`
 - Modify: `package.json`
 
-- [ ] **Step 1: Write failing orchestration tests**
+- [x] **Step 1: Write failing orchestration tests**
 
 Inject planner, collector, scorer, and lock-writer functions. Assert one cycle:
 
@@ -195,19 +195,19 @@ runRaceDayCycle({
 
 calls the network collector only for due uncaptured windows, creates zero-stake shadow locks, skips post-time races, bounds retries, and returns Chinese counts and the next due window.
 
-- [ ] **Step 2: Implement one idempotent cycle**
+- [x] **Step 2: Implement one idempotent cycle**
 
 Compose the existing `runDueLiveMarketSnapshots`, Task 1 score validator, and Task 2 lock writer. Do not add an internal endless loop.
 
-- [ ] **Step 3: Write failing LaunchAgent render tests**
+- [x] **Step 3: Write failing LaunchAgent render tests**
 
 Assert `renderLaunchAgent()` creates a plist that invokes `npm run hkjc:race-day-cycle` at a configurable local interval, writes logs under the local private-data directory, contains no secret, and defaults to disabled installation. Assert invalid paths and intervals below the documented safety floor are rejected.
 
-- [ ] **Step 4: Implement render/install guidance**
+- [x] **Step 4: Implement render/install guidance**
 
 Add `local-scheduler --dryRun --output <plist>`. An explicit `--install` may copy the reviewed plist into `~/Library/LaunchAgents`; tests and daily Codex巡检 must use `--dryRun`. Document load, unload, logs, backup, and sleep/offline limitations.
 
-- [ ] **Step 5: Run focused and full tests, then commit**
+- [x] **Step 5: Run focused and full tests, then commit**
 
 Run:
 
