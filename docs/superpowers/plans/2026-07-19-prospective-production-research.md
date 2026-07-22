@@ -228,11 +228,11 @@ Commit: `feat: add safe local race-day collection cycle`
 - Modify: `hkjc-horse-model/src/dashboard-publish.js`
 - Modify: `hkjc-horse-model/test/dashboard-publish.test.js`
 
-- [ ] **Step 1: Write failing coverage tests**
+- [x] **Step 1: Write failing coverage tests**
 
 Assert the report groups by meeting, pool, and T-window; distinguishes missing racecard, offline, collector error, duplicate, not selling, and missed window; and calculates lock/settlement coverage without treating an absent line as a losing bet.
 
-- [ ] **Step 2: Implement coverage and backup manifest checks**
+- [x] **Step 2: Implement coverage and backup manifest checks**
 
 Expose:
 
@@ -243,11 +243,11 @@ evaluateProspectiveDataGate({ coverage, minimums })
 
 The gate must declare minimums before consuming any ROI field and return `READY` or `BLOCKED_DATA` with exact deficits.
 
-- [ ] **Step 3: Add CLI and privacy-safe publication**
+- [x] **Step 3: Add CLI and privacy-safe publication**
 
 Add `prospective-coverage --db ... --freezeDate ... --output ...`. Publish only aggregate counts, ratios, dates, and reason counts; never publish row-level locks, local paths, model artifacts, or SQLite labels.
 
-- [ ] **Step 4: Run focused, privacy, and full tests, then commit**
+- [x] **Step 4: Run focused, privacy, and full tests, then commit**
 
 Run:
 

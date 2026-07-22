@@ -1,3 +1,5 @@
+import { publicProspectiveCoverageProjection } from './prospective-coverage.js';
+
 const DEFAULT_EMBEDDED_PERFORMANCE_MEETING_LIMIT = 40;
 
 const PUBLIC_FORECAST_FIELDS = [
@@ -98,6 +100,7 @@ export function splitDashboardForPublishing(snapshot, options = {}) {
     latestForecast: sanitizeForecast(snapshot?.latestForecast),
     latestUpcomingForecast: sanitizeForecast(snapshot?.latestUpcomingForecast),
     latestSettlement: sanitizeSettlement(snapshot?.latestSettlement),
+    prospectiveCoverage: publicProspectiveCoverageProjection(snapshot?.prospectiveCoverage),
     publication: {
       visibility: 'PUBLIC_FUNCTIONAL_SANITIZED',
       policyVersion: 'public-dashboard-v2',

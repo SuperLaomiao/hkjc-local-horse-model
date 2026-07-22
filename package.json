@@ -39,6 +39,7 @@
     "hkjc:live-market-due-snapshots": "node hkjc-horse-model/src/cli.js live-market-due-snapshots",
     "hkjc:race-day-cycle": "node hkjc-horse-model/src/cli.js race-day-cycle",
     "hkjc:local-scheduler": "node hkjc-horse-model/src/cli.js local-scheduler",
+    "hkjc:prospective-coverage": "node hkjc-horse-model/src/cli.js prospective-coverage",
     "hkjc:market-coverage": "node hkjc-horse-model/src/cli.js market-coverage-report",
     "hkjc:market-window-research": "node hkjc-horse-model/src/cli.js market-window-research",
     "hkjc:shadow-score": "node hkjc-horse-model/src/cli.js shadow-score",
