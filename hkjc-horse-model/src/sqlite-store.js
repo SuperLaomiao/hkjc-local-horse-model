@@ -563,6 +563,116 @@ export function loadRecommendationRuns({ dbPath, raceId = null } = {}) {
   }
 }
 
+export function recordProspectiveLock({ dbPath, lock }) {
+  if (!dbPath) throw new Error('recordProspectiveLock requires dbPath');
+  if (!lock?.lockId) throw new Error('recordProspectiveLock requires lock.lockId');
+
+  const db = openDatabase(dbPath);
+  try {
+    const existing = db.prepare('SELECT * FROM prospective_locks WHERE lock_id = ?').get(lock.lockId);
+    if (existing) {
+      if (existing.immutable_payload_json !== lock.immutablePayloadJson) {
+        throw new Error(`PROSPECTIVE_LOCK_CONFLICT: ${lock.lockId}`);
+      }
+      return prospectiveLockFromRow(existing);
+    }
+
+    db.prepare(`
+      INSERT INTO prospective_locks (
+        lock_id, race_id, market_window, pool_key, pool, combination_key, combination_json,
+        model_id, artifact_id, feature_policy_id, generated_at, decision_json, lineage_json,
+        immutable_payload_json, status, settlement_json, settled_at, created_at
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'OPEN', NULL, NULL, ?)
+    `).run(
+      lock.lockId,
+      lock.raceId,
+      lock.marketWindow,
+      lock.poolKey,
+      lock.pool,
+      lock.combinationKey,
+      JSON.stringify(lock.combination),
+      lock.modelId,
+      lock.artifactId,
+      lock.featurePolicyId,
+      lock.generatedAt,
+      JSON.stringify(lock.decision),
+      JSON.stringify(lock.lineage),
+      lock.immutablePayloadJson,
+      lock.createdAt,
+    );
+
+    return prospectiveLockFromRow(
+      db.prepare('SELECT * FROM prospective_locks WHERE lock_id = ?').get(lock.lockId),
+    );
+  } finally {
+    db.close();
+  }
+}
+
+export function loadProspectiveLocks({ dbPath, raceId = null, status = null } = {}) {
+  if (!dbPath) throw new Error('loadProspectiveLocks requires dbPath');
+
+  const db = openDatabase(dbPath);
+  try {
+    const clauses = [];
+    const params = [];
+    if (raceId) {
+      clauses.push('race_id = ?');
+      params.push(raceId);
+    }
+    if (status) {
+      clauses.push('status = ?');
+      params.push(status);
+    }
+    const where = clauses.length ? `WHERE ${clauses.join(' AND ')}` : '';
+    const rows = db.prepare(`
+      SELECT * FROM prospective_locks
+      ${where}
+      ORDER BY generated_at DESC, lock_id DESC
+    `).all(...params);
+    return rows.map(prospectiveLockFromRow);
+  } finally {
+    db.close();
+  }
+}
+
+export function settleProspectiveLock({ dbPath, lockId, settlement }) {
+  if (!dbPath) throw new Error('settleProspectiveLock requires dbPath');
+  if (!lockId) throw new Error('settleProspectiveLock requires lockId');
+  if (!settlement || typeof settlement !== 'object' || Array.isArray(settlement)) {
+    throw new Error('settleProspectiveLock requires settlement');
+  }
+
+  const db = openDatabase(dbPath);
+  try {
+    const existing = db.prepare('SELECT * FROM prospective_locks WHERE lock_id = ?').get(lockId);
+    if (!existing) {
+      throw new Error(`PROSPECTIVE_LOCK_NOT_FOUND: ${lockId}`);
+    }
+    if (existing.status !== 'OPEN' || existing.settlement_json != null) {
+      throw new Error(`PROSPECTIVE_LOCK_ALREADY_SETTLED: ${lockId}`);
+    }
+
+    db.prepare(`
+      UPDATE prospective_locks
+      SET status = ?, settlement_json = ?, settled_at = ?
+      WHERE lock_id = ?
+    `).run(
+      settlement.status,
+      JSON.stringify(settlement),
+      settlement.settledAt,
+      lockId,
+    );
+
+    return prospectiveLockFromRow(
+      db.prepare('SELECT * FROM prospective_locks WHERE lock_id = ?').get(lockId),
+    );
+  } finally {
+    db.close();
+  }
+}
+
 export function loadRacesFromDatabase({ dbPath, status = null } = {}) {
   const db = openDatabase(dbPath);
   try {
@@ -724,6 +834,27 @@ function openDatabase(dbPath) {
       raw_json TEXT NOT NULL
     );
     CREATE INDEX IF NOT EXISTS idx_recommendation_runs_race ON recommendation_runs(race_id, generated_at);
+    CREATE TABLE IF NOT EXISTS prospective_locks (
+      lock_id TEXT PRIMARY KEY,
+      race_id TEXT NOT NULL,
+      market_window TEXT NOT NULL,
+      pool_key TEXT NOT NULL,
+      pool TEXT NOT NULL,
+      combination_key TEXT NOT NULL,
+      combination_json TEXT NOT NULL,
+      model_id TEXT NOT NULL,
+      artifact_id TEXT NOT NULL,
+      feature_policy_id TEXT NOT NULL,
+      generated_at TEXT NOT NULL,
+      decision_json TEXT NOT NULL,
+      lineage_json TEXT NOT NULL,
+      immutable_payload_json TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'OPEN',
+      settlement_json TEXT,
+      settled_at TEXT,
+      created_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_prospective_locks_race ON prospective_locks(race_id, generated_at);
   `);
   const oddsColumns = db.prepare('PRAGMA table_info(odds_snapshots)').all();
   if (!oddsColumns.some((column) => column.name === 'sell_status')) {
@@ -1209,6 +1340,27 @@ function recommendationRunFromRow(row) {
     recommendations: JSON.parse(row.recommendations_json),
     summary: JSON.parse(row.summary_json),
     raw: JSON.parse(row.raw_json),
+  };
+}
+
+function prospectiveLockFromRow(row) {
+  return {
+    lockId: row.lock_id,
+    raceId: row.race_id,
+    marketWindow: row.market_window,
+    poolKey: row.pool_key,
+    pool: row.pool,
+    combination: JSON.parse(row.combination_json),
+    modelId: row.model_id,
+    artifactId: row.artifact_id,
+    featurePolicyId: row.feature_policy_id,
+    generatedAt: row.generated_at,
+    decision: JSON.parse(row.decision_json),
+    lineage: JSON.parse(row.lineage_json),
+    status: row.status,
+    settlement: row.settlement_json ? JSON.parse(row.settlement_json) : null,
+    settledAt: row.settled_at,
+    createdAt: row.created_at,
   };
 }
 
