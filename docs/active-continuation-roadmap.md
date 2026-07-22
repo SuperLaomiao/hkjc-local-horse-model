@@ -65,9 +65,23 @@ This sequence overrides the older phase ordering below when the daily continuati
 - [x] Redesign the mobile-first interface after P3 around today's status, race-by-race WIN/PLA value, recommendation evidence/rejection reasons, and research/settlement history.
   - Delivered a four-destination race-day cockpit (`Today`, `Review`, `Research`, `More`) with explicit race/pool/selection context, fail-closed `PLAY/WATCH/BLOCK/NO BET` states, public retry handling, mobile bottom navigation, and verified no-meeting behavior. The redesign changes presentation only; model probabilities, EV gates, and staking calculations remain unchanged.
 
+## Current unattended operations priority — 2026-07-22
+
+This operating order supersedes the old rule that every daily run starts with the first unchecked P5-P8 research item:
+
+1. Refresh the public HKJC fixture/race-card window and sync verified upcoming races into the approved private SQLite database.
+2. Verify the finite ten-minute race-day LaunchAgent, its error log, due windows, backup freshness, and prospective coverage.
+3. Sync official results/dividends and settle fresh immutable locks before evaluating probability, ROI, CLV, drawdown, or promotion gates.
+4. When the forward cohort remains below its declared gate, record the exact deficit and continue timestamped SpeedPRO backfill, same-cohort ablations, external benchmark reproduction, or parser-resilience work.
+
+- [x] Install and enable the local finite race-day LaunchAgent after explicit user approval; each cycle exits after one bounded check and cash remains `NO_BET`.
+- [x] Put the public fixture/race-card preflight first in the daily 10:00 HKT inspection and restrict writes to ignored local inputs plus the approved private database/log boundary.
+- [ ] Verify the first newly published 2026/27 local race card end to end: official fixture identity, runner rows, SQLite `upcoming` state, and the next due T-window.
+- [ ] Accumulate and settle enough fresh T-30/T-10/T-3 evidence to pass the declared prospective-data gate.
+
 ## Approved P5-P8 prospective execution order — 2026-07-19
 
-This sequence supersedes the older Phase A-D queue below. The older queue remains as research history and dependency evidence; daily continuation must start here and select the first unchecked item whose dependencies are ready. Detailed implementation steps live in:
+This sequence supersedes the older Phase A-D research queue below, but now runs after the unattended operational preflight above. The older queue remains as research history and dependency evidence. Detailed implementation steps live in:
 
 - `docs/superpowers/plans/2026-07-19-prospective-production-research.md`
 
@@ -127,11 +141,12 @@ This sequence supersedes the older Phase A-D queue below. The older queue remain
 
 ### Daily continuation selection rule
 
-1. Complete one TDD-sized slice of the first ready unchecked P5-P8 item; continue to another slice when time allows.
-2. If the first item is blocked only by future data, record the measurable gate and continue to the next ready engineering/research item in the same run.
-3. Never mark a data-dependent gate complete from historical or reused holdout results.
-4. Never log in, place a bet, change cash mode, publish private data, or overwrite local SQLite/raw snapshots.
-5. Finish with focused tests, `npm test`, a local commit, and an exact next-step note. Push, merge, deployment, and account actions remain manual review boundaries.
+1. Complete the public fixture/race-card preflight, collector-health check, and any available official settlement before selecting research work.
+2. Complete one TDD-sized slice of the first ready unchecked P5-P8 item; continue to another slice when time allows.
+3. If the first item is blocked only by future data, record the measurable gate and continue to the next ready engineering/research item in the same run.
+4. Never mark a data-dependent gate complete from historical or reused holdout results.
+5. Never log in, place a bet, change cash mode, or publish private data. Writes to local SQLite/raw inputs are allowed only inside the explicitly approved unattended collector boundary.
+6. Finish with focused tests, `npm test`, a local commit, and an exact next-step note. Push, merge, deployment, and account actions remain manual review boundaries.
 
 ## Phase A — Race-day live market snapshot collection
 

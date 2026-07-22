@@ -77,7 +77,11 @@ describe('research upgrade program', () => {
 
     assert(program.followUpActions.length >= 8);
     assert.deepEqual(program.followUpActions.map((item) => item.priority).slice(0, 3), ['P0', 'P0', 'P0']);
-    assert.equal(program.followUpActions[0].id, 'live-snapshot-planner');
+    assert.equal(program.followUpActions[0].id, 'upcoming-racecard-preflight');
+    assert.equal(program.followUpActions[0].status, 'partial');
+    assert.equal(program.followUpActions[0].automationExecutable, true);
+    assert(program.followUpActions[0].evidence.some((entry) => /refresh.*sync-db|fixture/i.test(entry)));
+    assert(program.followUpActions[0].remaining.some((entry) => /upcoming|新赛季|race card/i.test(entry)));
     assert(program.followUpActions.some((item) => (
       item.id === 'live-snapshot-planner'
       && item.status === 'implemented'
@@ -116,6 +120,17 @@ describe('research upgrade program', () => {
       && item.evidence.some((entry) => /external-model-comparison\.js|app\.js/.test(entry))
       && item.remaining.some((entry) => /prospective locks|settlement|race-day cycle/i.test(entry))
     )));
+    const marketAwareBridge = program.followUpActions.find(
+      (item) => item.id === 'market-aware-shadow-bridge',
+    );
+    assert(marketAwareBridge);
+    assert.equal(
+      marketAwareBridge.remaining.some((entry) => /继续实现.*race-day cycle/i.test(entry)),
+      false,
+    );
+    assert(marketAwareBridge.remaining.some(
+      (entry) => /已完成.*(?:fresh|upcoming|新赛季)/i.test(entry),
+    ));
     assert(program.followUpActions.some((item) => (
       item.id === 'prospective-lock-ledger'
       && item.status === 'implemented'
@@ -130,7 +145,9 @@ describe('research upgrade program', () => {
       && item.automationExecutable === true
       && item.evidence.some((entry) => /race-day-cycle\.js/.test(entry))
       && item.evidence.some((entry) => /local-scheduler\.js/.test(entry))
+      && item.evidence.some((entry) => /已启用|enabled/i.test(entry))
       && item.remaining.some((entry) => /prospective coverage|missed|offline/i.test(entry))
+      && item.remaining.some((entry) => /NO_BET|cash/i.test(entry))
     )));
     assert(program.followUpActions.some((item) => (
       item.id === 'prospective-coverage-gate'
@@ -202,7 +219,7 @@ describe('research upgrade program', () => {
     assert.equal(summary.researchOnlyCount > 0, true);
     assert.equal(summary.followUpCount > 0, true);
     assert.equal(summary.implementedActionCount, 12);
-    assert.equal(summary.partialActionCount, 2);
+    assert.equal(summary.partialActionCount, 3);
     assert.equal(summary.queuedActionCount, 0);
     assert.equal(summary.researchOnlyActionCount, 1);
     assert.equal(summary.automationReadyCount > 0, true);
@@ -216,7 +233,7 @@ describe('research upgrade program', () => {
     assert.match(summary.nextDataLeverageAction, /Tianxi|tianxi|数据|feature/i);
     assert.match(summary.headline, /研究驱动/);
     assert.match(summary.nextFocus, /市场赔率|校准|Kelly/);
-    assert.match(summary.nextAction, /SpeedPRO|CLV|Bayesian/i);
+    assert.match(summary.nextAction, /赛程|排位|race.?card|preflight/i);
   });
 
   it('attaches the research program to generated dashboard snapshots', () => {
