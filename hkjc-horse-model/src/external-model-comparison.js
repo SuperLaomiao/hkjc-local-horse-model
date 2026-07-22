@@ -1,4 +1,5 @@
 import { buildRaceForecast, trainStateFromRaces } from './model.js';
+import { validateProbabilityArtifact } from './probability-artifact.js';
 
 const MODEL_DEFINITIONS = [
   {
@@ -391,9 +392,22 @@ function buildShadowMarketAwarePredictions({ race, rows, bundle }) {
   }
 
   const raceId = race?.raceId ?? rows[0]?.raceId ?? null;
+  let validatedBundle;
+  try {
+    validatedBundle = validateProbabilityArtifact(bundle, {
+      raceId,
+      postAt: racePostAt(race),
+    });
+  } catch (error) {
+    return {
+      status: 'bundle-invalid',
+      predictions: [],
+      note: `The supplied shadow bundle failed validation: ${error.message}`,
+    };
+  }
   const runnerLookup = new Map(rows.map((row) => [stableId(row.runnerId ?? row.horseId), row]));
   const predictions = [];
-  for (const prediction of bundle.predictions ?? []) {
+  for (const prediction of validatedBundle.predictions) {
     const key = stableId(prediction.runnerId);
     const row = runnerLookup.get(key);
     if (!row || prediction.raceId !== raceId) {
@@ -414,21 +428,38 @@ function buildShadowMarketAwarePredictions({ race, rows, bundle }) {
       input: 'frozen-shadow-score-bundle',
     });
   }
+  if (predictions.length !== runnerLookup.size) {
+    return {
+      status: 'bundle-runner-mismatch',
+      predictions: [],
+      note: 'The supplied shadow bundle does not cover every upcoming race runner.',
+    };
+  }
 
   predictions.sort(comparePredictions);
   return {
     status: 'available',
     predictions,
     note: 'Using the frozen CatBoost shadow bundle for this upcoming race.',
-    researchMode: bundle.researchMode ?? 'SHADOW',
-    executionStatus: bundle.executionStatus ?? 'PAPER_ONLY',
-    probabilityStatus: bundle.probabilityStatus ?? 'RESEARCH_ONLY',
-    artifactId: bundle.artifactId ?? null,
-    featurePolicyId: bundle.featurePolicyId ?? null,
-    calibrationMethod: bundle.calibrationMethod ?? null,
-    trainingCutoff: bundle.trainingCutoff ?? null,
-    lineage: bundle.lineage ?? null,
+    researchMode: validatedBundle.researchMode,
+    executionStatus: validatedBundle.executionStatus,
+    probabilityStatus: validatedBundle.probabilityStatus,
+    artifactId: validatedBundle.artifactId,
+    featurePolicyId: validatedBundle.featurePolicyId,
+    calibrationMethod: validatedBundle.calibrationMethod,
+    trainingCutoff: validatedBundle.trainingCutoff,
+    lineage: validatedBundle.lineage,
   };
+}
+
+function racePostAt(race) {
+  const date = String(race?.date ?? '').trim();
+  const startTime = String(race?.startTime ?? '').trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{1,2}:\d{2}(?::\d{2})?$/.test(startTime)) {
+    throw new Error('upcoming race must include date and startTime for shadow bundle validation');
+  }
+  const time = startTime.length === 5 ? `${startTime}:00` : startTime;
+  return `${date}T${time}+08:00`;
 }
 
 function buildMarketBaselinePredictions({ rows }) {

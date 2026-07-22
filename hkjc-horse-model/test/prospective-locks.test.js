@@ -6,6 +6,7 @@ import { describe, it } from 'node:test';
 
 import {
   buildProspectiveLockId,
+  normalizeProspectiveLock,
   recordProspectiveLock,
   settleProspectiveLocks,
   settleProspectiveLock,
@@ -143,6 +144,104 @@ describe('prospective locks', () => {
     assert.equal(summary.lines[1].status, 'HIT');
     assert.equal(summary.lines[1].dividendPer10, 13.5);
     assert.equal(summary.lines[1].returned, 13.5);
+  });
+
+  it('rejects unsupported windows, pools, and malformed pool combinations', () => {
+    assert.throws(
+      () => normalizeProspectiveLock({ ...prospectiveLock(), marketWindow: 'T-5' }),
+      /marketWindow must be T-30, T-10, or T-3/,
+    );
+    assert.throws(
+      () => normalizeProspectiveLock({ ...prospectiveLock(), pool: 'TRIO', combination: [1, 2, 3] }),
+      /pool must be WIN, PLACE, QUINELLA, or QUINELLA PLACE/,
+    );
+    assert.throws(
+      () => normalizeProspectiveLock({ ...prospectiveLock(), pool: 'PLACE', combination: [2, 8] }),
+      /PLACE combination must contain exactly 1 runner/,
+    );
+    assert.throws(
+      () => normalizeProspectiveLock({ ...prospectiveLock(), pool: 'QPL', combination: [2, 2] }),
+      /combination runner numbers must be unique/,
+    );
+    assert.throws(
+      () => normalizeProspectiveLock({ ...prospectiveLock(), combination: [2.5] }),
+      /positive integers/,
+    );
+  });
+
+  it('rejects invalid probabilities, market economics, timestamps, and lineage mismatches', () => {
+    assert.throws(
+      () => normalizeProspectiveLock({
+        ...prospectiveLock(),
+        decision: { ...prospectiveLock().decision, rawProbability: 1.2 },
+      }),
+      /rawProbability must be between 0 and 1/,
+    );
+    assert.throws(
+      () => normalizeProspectiveLock({
+        ...prospectiveLock(),
+        decision: {
+          ...prospectiveLock().decision,
+          conservativeProbability: 0.3,
+        },
+      }),
+      /conservativeProbability must not exceed rawProbability/,
+    );
+    assert.throws(
+      () => normalizeProspectiveLock({
+        ...prospectiveLock(),
+        decision: { ...prospectiveLock().decision, requiredDividendPer10: 20 },
+      }),
+      /requiredDividendPer10 must not be below fairDividendPer10/,
+    );
+    assert.throws(
+      () => normalizeProspectiveLock({
+        ...prospectiveLock(),
+        decision: { ...prospectiveLock().decision, stake: -10 },
+      }),
+      /stake must be zero or greater/,
+    );
+    assert.throws(
+      () => normalizeProspectiveLock({
+        ...prospectiveLock(),
+        decision: {
+          ...prospectiveLock().decision,
+          marketCapturedAt: '2026-07-22T10:21:00Z',
+        },
+      }),
+      /marketCapturedAt must not be after generatedAt/,
+    );
+    assert.throws(
+      () => normalizeProspectiveLock({
+        ...prospectiveLock(),
+        lineage: { ...prospectiveLock().lineage, artifactId: 'sha256:different' },
+      }),
+      /lineage artifactId must match lock artifactId/,
+    );
+  });
+
+  it('fails closed when the official race or requested dividend pool is not settled and complete', () => {
+    assert.throws(
+      () => settleProspectiveLocks({
+        locks: [prospectiveLock()],
+        race: { ...settledRace(), raceId: '2026-07-22-HV-R2' },
+      }),
+      /raceId does not match/,
+    );
+    assert.throws(
+      () => settleProspectiveLocks({
+        locks: [prospectiveLock()],
+        race: { ...settledRace(), status: 'upcoming' },
+      }),
+      /race must be settled/,
+    );
+    assert.throws(
+      () => settleProspectiveLocks({
+        locks: [prospectiveLock()],
+        race: { ...settledRace(), dividends: {} },
+      }),
+      /official PLACE dividends are missing/,
+    );
   });
 });
 

@@ -654,16 +654,19 @@ export function settleProspectiveLock({ dbPath, lockId, settlement }) {
       throw new Error(`PROSPECTIVE_LOCK_ALREADY_SETTLED: ${lockId}`);
     }
 
-    db.prepare(`
+    const result = db.prepare(`
       UPDATE prospective_locks
       SET status = ?, settlement_json = ?, settled_at = ?
-      WHERE lock_id = ?
+      WHERE lock_id = ? AND status = 'OPEN' AND settlement_json IS NULL
     `).run(
       settlement.status,
       JSON.stringify(settlement),
       settlement.settledAt,
       lockId,
     );
+    if (result.changes !== 1) {
+      throw new Error(`PROSPECTIVE_LOCK_ALREADY_SETTLED: ${lockId}`);
+    }
 
     return prospectiveLockFromRow(
       db.prepare('SELECT * FROM prospective_locks WHERE lock_id = ?').get(lockId),

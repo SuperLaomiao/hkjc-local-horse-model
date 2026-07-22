@@ -122,6 +122,24 @@ describe('external model comparison', () => {
     assert.match(marketModel.note, /runner/i);
   });
 
+  it('revalidates a stored shadow bundle and fails closed on promoted execution flags', () => {
+    const report = buildExternalModelComparison({
+      settledRaces: settledRaces(),
+      upcomingRaces: [upcomingRace()],
+      trainingReport: trainingReportFixture(),
+      marketAwareBundlesByRace: new Map([
+        ['2026-07-08-HV-1', validShadowBundle({ executionStatus: 'CASH_READY' })],
+      ]),
+      generatedAt: '2026-07-07T12:00:00.000Z',
+    });
+
+    const marketModel = report.races[0].models.find((model) => model.modelId === 'jerrydaphantom-catboost-market-aware');
+    assert.equal(report.summary.marketAwareShadowRaces, 0);
+    assert.equal(marketModel.status, 'bundle-invalid');
+    assert.deepEqual(marketModel.predictions, []);
+    assert.match(marketModel.note, /PAPER_ONLY/);
+  });
+
   it('exposes a CLI command that writes the comparison report from SQLite', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-external-comparison-'));
     try {

@@ -227,10 +227,14 @@ def _resolve_calibration_method(report):
 
 
 def _positive_probability(value):
-    if isinstance(value, (list, tuple)) and len(value) >= 2:
-        value = value[1]
+    if not isinstance(value, (str, bytes, dict)):
+        try:
+            if len(value) >= 2:
+                value = value[1]
+        except TypeError:
+            pass
     value = _as_float(value)
-    if value is None:
+    if value is None or value < 0 or value > 1:
         raise ValueError("model returned a non-numeric probability")
     return round(float(value), 12)
 

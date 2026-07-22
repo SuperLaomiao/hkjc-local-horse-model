@@ -53,6 +53,28 @@ class _RecordingCatBoostClassifier:
         )
 
 
+class _ArrayLikeProbabilityRow:
+    """Mimic a one-dimensional NumPy row without inheriting from list/tuple."""
+
+    def __init__(self, values):
+        self._values = values
+
+    def __len__(self):
+        return len(self._values)
+
+    def __getitem__(self, index):
+        return self._values[index]
+
+
+class _NumpyLikeCatBoostClassifier(_RecordingCatBoostClassifier):
+    def predict_proba(self, frame):
+        probabilities = [0.42, 0.58][:len(frame)]
+        return [
+            _ArrayLikeProbabilityRow([1.0 - probability, probability])
+            for probability in probabilities
+        ]
+
+
 class ScoreMarketAwareCandidateTest(unittest.TestCase):
     def _write_fixture_bundle(self, directory, *, manifest_features=None):
         model_path = Path(directory) / "catboost-market-aware-t10-v1.model.cbm"
@@ -158,6 +180,36 @@ class ScoreMarketAwareCandidateTest(unittest.TestCase):
                     report_path=report_path,
                     feature_manifest_path=manifest_path,
                 )
+
+    def test_score_bundle_accepts_numpy_like_probability_rows(self):
+        with tempfile.TemporaryDirectory() as directory:
+            model_path, report_path, manifest_path, _model_bytes = self._write_fixture_bundle(
+                directory,
+            )
+            fake_catboost = SimpleNamespace(CatBoostClassifier=_NumpyLikeCatBoostClassifier)
+            with patch(
+                "score_market_aware_candidate._require_scoring_dependencies",
+                return_value=(_FakePandas, _FakeNumpy, fake_catboost),
+            ):
+                bundle = load_frozen_bundle(
+                    model_path=model_path,
+                    report_path=report_path,
+                    feature_manifest_path=manifest_path,
+                )
+                score_bundle = build_score_bundle(
+                    bundle=bundle,
+                    rows=[{
+                        "raceId": "2026-07-22-HV-R1",
+                        "runnerId": "H001",
+                        "barrier": 1,
+                        "marketWinOddsT10": 3.2,
+                        "observedAt": "2026-07-22T10:01:00Z",
+                        "postAt": "2026-07-22T10:30:00Z",
+                    }],
+                    generated_at="2026-07-22T10:02:00Z",
+                )
+
+        self.assertEqual(score_bundle["predictions"][0]["probability"], 0.42)
 
     def test_build_score_bundle_rejects_rows_observed_at_or_after_post_time(self):
         with tempfile.TemporaryDirectory() as directory:
