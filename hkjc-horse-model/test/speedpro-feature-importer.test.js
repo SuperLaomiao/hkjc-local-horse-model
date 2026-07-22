@@ -127,6 +127,56 @@ describe('SpeedPRO feature importer', () => {
       await rm(tempDir, { recursive: true, force: true });
     }
   });
+
+  it('records observed-at/source/identity provenance and separates cohort coverage', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-speedpro-'));
+    try {
+      const races = [
+        targetRace({ date: '2023-12-30', startTime: '16:00' }),
+        targetRace({ date: '2024-07-04', startTime: '16:00' }),
+        targetRace({ date: '2026-07-04', startTime: '16:00' }),
+      ];
+      for (const race of races) await writeMeetingForRace(tempDir, race);
+
+      const result = await loadSpeedproFeatureIndex({
+        rootPath: tempDir,
+        races,
+        prospectiveFreezeDate: '2026-07-01',
+      });
+      const prospectiveRace = races.at(-1);
+      const provenance = result.provenanceByRunner.get(
+        speedproRunnerFeatureKey(prospectiveRace, prospectiveRace.runners[0]),
+      );
+
+      assert.equal(provenance.sourceId, 'sleepingarhat-tianxi-speedpro');
+      assert.equal(provenance.observedAt, '2026-07-04T07:00:00.000Z');
+      assert.equal(provenance.horseCode, 'L245');
+      assert.equal(provenance.identityMatched, true);
+      assert.deepEqual(result.summary.coverageByCohort.train, coverage(1, 1));
+      assert.deepEqual(result.summary.coverageByCohort.validation, coverage(1, 1));
+      assert.deepEqual(result.summary.coverageByCohort.holdout, coverage(0, 0));
+      assert.deepEqual(result.summary.coverageByCohort.prospective, coverage(1, 1));
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('rejects a source runner that does not match the requested horse identity', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-speedpro-'));
+    try {
+      const race = targetRace({ date: '2026-07-04', startTime: '16:00' });
+      await writeMeetingForRace(tempDir, race, { brandNo: 'A999' });
+
+      const result = await loadSpeedproFeatureIndex({ rootPath: tempDir, races: [race] });
+      const key = speedproRunnerFeatureKey(race, race.runners[0]);
+
+      assert.equal(result.featuresByRunner.get(key).speedproAvailable, 0);
+      assert.equal(result.provenanceByRunner.get(key), null);
+      assert.equal(result.summary.excludedIdentityMismatchRunnerRows, 1);
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
+    }
+  });
 });
 
 async function writeMeeting(rootPath, timestampFields) {
@@ -149,14 +199,44 @@ async function writeMeeting(rootPath, timestampFields) {
   );
 }
 
-function targetRace({ startTime }) {
+async function writeMeetingForRace(rootPath, race, { brandNo = 'L245' } = {}) {
+  const sourceDir = path.join(rootPath, 'speedpro', 'data');
+  await mkdir(sourceDir, { recursive: true });
+  await writeFile(
+    path.join(sourceDir, `${race.date}_ST.json`),
+    JSON.stringify({
+      racedate: race.date,
+      venue: 'ST',
+      scraped_at: `${race.date}T07:00:00.000Z`,
+      races: [{
+        raceno: 1,
+        raceinfo_eng: { PostTime: '4:00 PM' },
+        energy: [{ brandno: brandNo, speedproenergy: '99' }],
+        formguide: [],
+      }],
+    }),
+    'utf8',
+  );
+}
+
+function targetRace({ date = '2026-07-04', startTime }) {
   return {
-    raceId: '2026-07-04-ST-1',
-    date: '2026-07-04',
+    raceId: `${date}-ST-1`,
+    date,
     racecourse: 'ST',
     raceNo: 1,
     startTime,
     distance: 1200,
     runners: [{ horseId: 'HK_2025_L245', horseNo: 2 }],
+  };
+}
+
+function coverage(requestedRunnerRows, availableFeatureRows) {
+  return {
+    requestedRunnerRows,
+    availableFeatureRows,
+    unavailableFeatureRows: requestedRunnerRows - availableFeatureRows,
+    excludedTimingRunnerRows: 0,
+    excludedIdentityMismatchRunnerRows: 0,
   };
 }

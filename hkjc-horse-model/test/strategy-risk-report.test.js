@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { buildStrategyRiskReport } from '../src/strategy-risk-report.js';
+import {
+  buildGuardedStakingSweep,
+  buildStrategyRiskReport,
+} from '../src/strategy-risk-report.js';
 
 describe('strategy risk report', () => {
   it('summarizes strategy profit, drawdown, pools, pass races, and concentration', () => {
@@ -65,6 +68,61 @@ describe('strategy risk report', () => {
     assert.deepEqual(report.timeline.map((row) => row.drawdown), [0, 0, 10]);
     assert.equal(report.timeline[1].mainExposure.horseName, 'Support One');
     assert.equal(report.timeline[1].mainExposure.stakeInvolvingHorse, 60);
+  });
+
+  it('compares research stakes but keeps every executable stake at zero before manual approval', () => {
+    const report = buildGuardedStakingSweep(stakingLines(), {
+      promotion: {
+        state: 'REVIEW_REQUIRED',
+        pool: 'WIN',
+        cashMode: 'NO_BET',
+      },
+      bankroll: 1000,
+      maxRaceStakePct: 0.05,
+    });
+
+    assert.equal(report.state, 'REVIEW_REQUIRED');
+    assert.equal(report.cashMode, 'NO_BET');
+    assert.equal(report.executionStatus, 'PAPER_ONLY');
+    assert.deepEqual(report.strategies.map((strategy) => strategy.id), [
+      'fixed-hk10',
+      'fractional-kelly-0.1',
+      'fractional-kelly-0.25',
+      'fractional-kelly-0.5',
+      'conservative-capped',
+    ]);
+    assert(report.strategies.every((strategy) => strategy.researchStake > 0));
+    assert(report.strategies.some((strategy) => strategy.researchRoi > 0));
+    assert(report.strategies.every((strategy) => strategy.executableStake === 0));
+    assert(report.strategies.every((strategy) => strategy.maxRaceStake <= 50));
+  });
+
+  it('does not turn an approved research candidate into cash authorization', () => {
+    const report = buildGuardedStakingSweep(stakingLines(), {
+      promotion: {
+        state: 'APPROVED_CANDIDATE',
+        pool: 'WIN',
+        cashMode: 'NO_BET',
+        manualReview: { reviewedBy: 'owner', reviewedAt: '2026-08-01T10:00:00Z' },
+      },
+      bankroll: 1000,
+    });
+
+    assert.equal(report.state, 'APPROVED_RESEARCH_NO_CASH');
+    assert.equal(report.cashMode, 'NO_BET');
+    assert(report.strategies.every((strategy) => strategy.executableStake === 0));
+    assert.match(report.activationRequired, /outside|另行|separate/i);
+  });
+
+  it('does not run staking sweeps before a positive prospective promotion gate', () => {
+    const report = buildGuardedStakingSweep(stakingLines(), {
+      promotion: { state: 'NO_GO', pool: 'WIN', cashMode: 'NO_BET' },
+      bankroll: 1000,
+    });
+
+    assert.equal(report.state, 'BLOCKED_PROMOTION');
+    assert.deepEqual(report.strategies, []);
+    assert.equal(report.cashMode, 'NO_BET');
   });
 });
 
@@ -155,6 +213,25 @@ const strategyEntries = [
     ],
   }),
 ];
+
+function stakingLines() {
+  return [
+    {
+      raceId: '2026-07-22-HV-R1',
+      pool: 'WIN',
+      probability: 0.5,
+      decimalOdds: 3,
+      outcome: 1,
+    },
+    {
+      raceId: '2026-07-22-HV-R2',
+      pool: 'WIN',
+      probability: 0.5,
+      decimalOdds: 3,
+      outcome: 0,
+    },
+  ];
+}
 
 function strategyEntry({ raceId, topProbability, topWinOdds, secondProbability, thirdProbability, dividends, results }) {
   return {

@@ -18,12 +18,43 @@ SOURCES = {
     "marketBaseline": "marketBaselineProbability",
     "selectedStack": "selectedProbability",
 }
+REQUIRED_BOOK_WINDOWS = ("T-30", "T-10", "T-3")
+DEFAULT_MIN_BOOK_RACES = 100
+DEFAULT_MIN_BOOK_COVERAGE = 0.75
 
 
-def evaluate_pair_strategies(rows, dividends, *, pool):
+def evaluate_pair_strategies(
+    rows,
+    dividends,
+    *,
+    pool,
+    combination_book_coverage=None,
+    minimum_book_races=DEFAULT_MIN_BOOK_RACES,
+    minimum_book_coverage=DEFAULT_MIN_BOOK_COVERAGE,
+):
     """Evaluate one fixed top-pair selection per race for each probability source."""
     if pool not in SUPPORTED_POOLS:
         raise ValueError(f"unsupported exotic pool {pool!r}")
+    combination_book_gate = evaluate_combination_book_gate(
+        combination_book_coverage,
+        pool=pool,
+        minimum_book_races=minimum_book_races,
+        minimum_book_coverage=minimum_book_coverage,
+    )
+    if combination_book_gate["status"] != "READY":
+        return {
+            "version": REPORT_VERSION,
+            "pool": pool,
+            "unitBet": UNIT_BET,
+            "state": "BLOCKED_DATA",
+            "cashMode": "NO_BET",
+            "executionStatus": "PAPER_ONLY",
+            "valueStatus": "RESEARCH_ONLY",
+            "reason": "verified T-30/T-10/T-3 combination books have not passed the declared gate",
+            "combinationBookGate": combination_book_gate,
+            "metricsBySplit": {},
+            "ledger": [],
+        }
     grouped = {split: defaultdict(list) for split in SPLITS}
     race_splits = defaultdict(set)
     for index, row in enumerate(rows, start=1):
@@ -96,14 +127,116 @@ def evaluate_pair_strategies(rows, dividends, *, pool):
         "version": REPORT_VERSION,
         "pool": pool,
         "unitBet": UNIT_BET,
+        "state": "READY_FOR_RESEARCH",
         "cashMode": "NO_BET",
+        "executionStatus": "PAPER_ONLY",
         "valueStatus": "RESEARCH_ONLY",
         "reason": (
             "top-pair selection is fixed before settlement, but official dividends are final outcomes "
             "rather than lockable pre-race QIN/QPL prices"
         ),
+        "combinationBookGate": combination_book_gate,
         "metricsBySplit": metrics_by_split,
         "ledger": ledger,
+    }
+
+
+def evaluate_combination_book_gate(
+    coverage,
+    *,
+    pool,
+    minimum_book_races=DEFAULT_MIN_BOOK_RACES,
+    minimum_book_coverage=DEFAULT_MIN_BOOK_COVERAGE,
+):
+    if pool not in SUPPORTED_POOLS:
+        raise ValueError(f"unsupported exotic pool {pool!r}")
+    minimum_races = _non_negative_integer(minimum_book_races, "minimum_book_races")
+    minimum_coverage = _coverage_rate(minimum_book_coverage, "minimum_book_coverage")
+    rows = [] if coverage is None else coverage
+    if isinstance(coverage, dict):
+        rows = coverage.get("byPoolWindow") or coverage.get("rows") or []
+    if not isinstance(rows, list):
+        raise ValueError("combination_book_coverage must be a list or aggregate report")
+    normalized_rows = []
+    for index, row in enumerate(rows, start=1):
+        if not isinstance(row, dict):
+            raise ValueError(f"combination book coverage row {index} must be an object")
+        if _canonical_pool(row.get("poolKey") or row.get("pool")) != pool:
+            continue
+        window = str(row.get("window") or "").strip().upper()
+        if window not in REQUIRED_BOOK_WINDOWS:
+            continue
+        eligible_races = _non_negative_integer(
+            row.get("eligibleRaces", row.get("dueRaces", 0)),
+            f"coverage row {index} eligibleRaces",
+        )
+        verified_races = _non_negative_integer(
+            row.get("racesWithVerifiedBook", row.get("usableRaces", 0)),
+            f"coverage row {index} racesWithVerifiedBook",
+        )
+        if verified_races > eligible_races:
+            raise ValueError(f"coverage row {index} verified races exceed eligible races")
+        normalized_rows.append({
+            "window": window,
+            "eligibleRaces": eligible_races,
+            "racesWithVerifiedBook": verified_races,
+            "coverage": _round(verified_races / eligible_races) if eligible_races else None,
+            "verified": row.get("verified") is True,
+        })
+
+    by_window = {}
+    deficits = []
+    for window in REQUIRED_BOOK_WINDOWS:
+        candidates = [row for row in normalized_rows if row["window"] == window]
+        selected = sorted(
+            candidates,
+            key=lambda row: (row["racesWithVerifiedBook"], row["eligibleRaces"]),
+            reverse=True,
+        )[0] if candidates else None
+        by_window[window] = selected
+        if selected is None:
+            deficits.append({
+                "window": window,
+                "reason": "MISSING_VERIFIED_BOOK_COVERAGE",
+                "requiredRaces": minimum_races,
+                "actualRaces": 0,
+            })
+            continue
+        if not selected["verified"]:
+            deficits.append({
+                "window": window,
+                "reason": "BOOK_NOT_VERIFIED",
+                "required": True,
+                "actual": False,
+            })
+        if selected["racesWithVerifiedBook"] < minimum_races:
+            deficits.append({
+                "window": window,
+                "reason": "INSUFFICIENT_VERIFIED_RACES",
+                "requiredRaces": minimum_races,
+                "actualRaces": selected["racesWithVerifiedBook"],
+            })
+        if selected["coverage"] is None or selected["coverage"] < minimum_coverage:
+            deficits.append({
+                "window": window,
+                "reason": "INSUFFICIENT_COVERAGE_RATE",
+                "requiredCoverage": minimum_coverage,
+                "actualCoverage": selected["coverage"],
+            })
+    return {
+        "version": "combination-book-gate-v1",
+        "status": "READY" if not deficits else "BLOCKED_DATA",
+        "pool": pool,
+        "requiredWindows": list(REQUIRED_BOOK_WINDOWS),
+        "declaredMinimums": {
+            "racesPerWindow": minimum_races,
+            "coveragePerWindow": minimum_coverage,
+            "verified": True,
+        },
+        "byWindow": by_window,
+        "deficits": deficits,
+        "roiReadBeforeGate": False,
+        "cashMode": "NO_BET",
     }
 
 
@@ -122,11 +255,17 @@ def load_prediction_rows(path):
     return rows
 
 
-def write_pair_strategy_report(*, predictions, database, pool, output, ledger_output=None):
+def write_pair_strategy_report(
+    *, predictions, database, pool, output, ledger_output=None, coverage=None
+):
+    coverage_report = None
+    if coverage:
+        coverage_report = json.loads(Path(coverage).expanduser().read_text(encoding="utf-8"))
     report = evaluate_pair_strategies(
         load_prediction_rows(predictions),
         load_exotic_dividends(database, pool),
         pool=pool,
+        combination_book_coverage=coverage_report,
     )
     output_path = Path(output).expanduser()
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -208,6 +347,37 @@ def _probability(value, field, row_number):
     return number
 
 
+def _canonical_pool(value):
+    compact = "".join(character for character in str(value or "").lower() if character.isalnum())
+    if compact in {"qin", "quinella"}:
+        return "quinella"
+    if compact in {"qpl", "quinellaplace"}:
+        return "quinellaPlace"
+    return None
+
+
+def _non_negative_integer(value, label):
+    if isinstance(value, bool):
+        raise ValueError(f"{label} must be a non-negative integer")
+    try:
+        number = int(value)
+    except (TypeError, ValueError) as error:
+        raise ValueError(f"{label} must be a non-negative integer") from error
+    if number < 0 or float(value) != number:
+        raise ValueError(f"{label} must be a non-negative integer")
+    return number
+
+
+def _coverage_rate(value, label):
+    try:
+        number = float(value)
+    except (TypeError, ValueError) as error:
+        raise ValueError(f"{label} must be between 0 and 1") from error
+    if not math.isfinite(number) or number < 0 or number > 1:
+        raise ValueError(f"{label} must be between 0 and 1")
+    return number
+
+
 def _race_sort_key(rows):
     return str(rows[0].get("date") or ""), str(rows[0].get("raceId") or "")
 
@@ -227,6 +397,7 @@ def build_parser():
     parser.add_argument("--pool", required=True, choices=SUPPORTED_POOLS)
     parser.add_argument("--output", required=True)
     parser.add_argument("--ledger-output")
+    parser.add_argument("--coverage")
     return parser
 
 
@@ -239,14 +410,21 @@ def main(argv=None):
             pool=args.pool,
             output=args.output,
             ledger_output=args.ledger_output,
+            coverage=args.coverage,
         )
     except (OSError, ValueError) as error:
         raise SystemExit(str(error)) from error
-    holdout = report["metricsBySplit"]["holdout"]["selectedStack"]
-    print(
-        f"{args.pool} selected stack: holdout {holdout['hits']}/{holdout['bets']} hits, "
-        f"ROI {holdout['ROI']}, max drawdown {holdout['maxDrawdown']}"
-    )
+    if report["state"] == "BLOCKED_DATA":
+        print(
+            f"{args.pool} strategy BLOCKED_DATA: "
+            f"{len(report['combinationBookGate']['deficits'])} combination-book deficits"
+        )
+    else:
+        holdout = report["metricsBySplit"]["holdout"]["selectedStack"]
+        print(
+            f"{args.pool} selected stack: holdout {holdout['hits']}/{holdout['bets']} hits, "
+            f"ROI {holdout['ROI']}, max drawdown {holdout['maxDrawdown']}"
+        )
     print(f"Saved report to {Path(args.output).expanduser().resolve()}")
 
 

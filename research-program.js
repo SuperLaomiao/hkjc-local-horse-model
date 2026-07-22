@@ -248,7 +248,7 @@ const FOLLOW_UP_ACTIONS = [
       'hkjc-horse-model/src/speedpro-feature-importer.js + CLI optional --speedproRoot wiring',
       '真实本地缓存抽样：2026-07-01 至 2026-07-15 共 5 个 meeting、637/637 runner rows 可用',
       'fixture tests 覆盖赛前快照、当前场排除、派生 pace/sectional/fitness/incident/health 特征',
-      '导入器校验 meeting date、venue、runner code 和 source update time；无法明确绑定目标场次即 fail closed。',
+      '导入器校验 meeting date、venue、runner code 和 source update time；逐 runner 记录 sourceId/observedAt/identityMatched/observedBeforePost，并按 train/validation/holdout/prospective 分开报告覆盖率。',
     ],
     remaining: ['回补有可信赛前时间戳的 historical SpeedPRO 快照，并完成有/无 SpeedPRO 的同 cohort holdout 对比。'],
   },
@@ -357,6 +357,26 @@ const FOLLOW_UP_ACTIONS = [
     remaining: [
       '当前真实 forward cohort 仍受 prospective coverage gate 的 BLOCKED_DATA 约束；继续积累 freeze date 后足量已结算锁单。',
       '任何玩法即使通过自动门槛也只到 REVIEW_REQUIRED；人工复核后仍保持 NO_BET，cash PLAY 不在自动状态机内。',
+    ],
+  },
+  {
+    id: 'post-gate-feature-staking-experiments',
+    priority: 'P8',
+    status: 'implemented',
+    automationPhase: 'Phase B/D',
+    title: '建立同 cohort 特征消融与晋级后仓位实验',
+    sourceRefs: ['tianxi-database', 'catowabisabi', 'HKJC Edge Lab', 'Ganyan'],
+    action: '冻结 feature policy 后，只在相同 validation/prospective race-runner cohort 比较基础、SpeedPRO、pool money、odds movement 与组合特征；QIN/QPL 和仓位扫描必须先通过各自数据/晋级门槛。',
+    expectedOutcome: 'Research Lab 能区分真实增量、缺数据和仅研究仓位曲线，不会把历史正 ROI 或手工批准误当现金授权。',
+    automationExecutable: true,
+    evidence: [
+      'hkjc-horse-model/python/compare_feature_ablations.py：validation-only 选型、完整比赛同 cohort、freeze-date guard、空 prospective fail-closed 与冻结 feature-policy hash',
+      'hkjc-horse-model/python/evaluate_exotic_pair_strategy.py：QIN/QPL 需要 T-30/T-10/T-3 verified combination-book coverage，否则在读取 ROI 前返回 BLOCKED_DATA',
+      'hkjc-horse-model/src/strategy-risk-report.js：fixed HK$10、0.1/0.25/0.5 Kelly 和 conservative cap 仅在正向 prospective promotion gate 后生成，所有 executable stake 恒为 0',
+    ],
+    remaining: [
+      '工程实验器已完成；仍需真实 timestamped SpeedPRO、pool/odds movement 与足量 fresh forward cohort，才能报告实际增量而不是 fixture 结果。',
+      '当前 cashMode 继续 NO_BET；即使候选被人工批准，仓位扫描也不会授权现金 PLAY。',
     ],
   },
   {

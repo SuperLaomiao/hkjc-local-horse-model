@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import { normalizeTianxiHorseCode } from './tianxi-form-features.js';
+import { splitForDate } from './training-dataset.js';
 
 const SOURCE_ID = 'sleepingarhat-tianxi-speedpro';
 const HONG_KONG_OFFSET_MS = 8 * 60 * 60 * 1000;
@@ -10,8 +11,13 @@ export async function loadSpeedproFeatureIndex({
   rootPath,
   races = [],
   checkoutRef = null,
+  prospectiveFreezeDate = null,
 } = {}) {
   if (!rootPath) throw new Error('loadSpeedproFeatureIndex requires rootPath');
+  const normalizedProspectiveFreezeDate = normalizeOptionalDate(
+    prospectiveFreezeDate,
+    'prospectiveFreezeDate',
+  );
 
   const runnerRequests = (races ?? []).flatMap((race) => (
     (race.runners ?? []).map((runner) => ({ race, runner }))
@@ -22,8 +28,15 @@ export async function loadSpeedproFeatureIndex({
       emptySpeedproFeatures(),
     ]),
   );
+  const provenanceByRunner = new Map(
+    runnerRequests.map(({ race, runner }) => [speedproRunnerFeatureKey(race, runner), null]),
+  );
   const meetings = groupRequestsByMeeting(runnerRequests);
   const coverageByRaceDate = buildEmptyDateCoverage(runnerRequests);
+  const coverageByCohort = buildEmptyCohortCoverage(
+    runnerRequests,
+    normalizedProspectiveFreezeDate,
+  );
   const audit = {
     meetingFilesRequested: meetings.size,
     meetingFilesRead: 0,
@@ -32,6 +45,7 @@ export async function loadSpeedproFeatureIndex({
     excludedMissingSnapshotTimeRunnerRows: 0,
     excludedMissingCutoffRunnerRows: 0,
     excludedPostTimeSnapshotRunnerRows: 0,
+    excludedIdentityMismatchRunnerRows: 0,
     excludedCurrentOrFutureFormRows: 0,
     invalidFormDateRows: 0,
   };
@@ -62,9 +76,13 @@ export async function loadSpeedproFeatureIndex({
 
     for (const { race, runner } of requests) {
       const dateCoverage = coverageByRaceDate[race.date];
+      const cohortCoverage = coverageByCohort[
+        speedproCohortForDate(race.date, normalizedProspectiveFreezeDate)
+      ];
       if (!Number.isFinite(capturedAtMs)) {
         audit.excludedMissingSnapshotTimeRunnerRows += 1;
         dateCoverage.excludedTimingRunnerRows += 1;
+        cohortCoverage.excludedTimingRunnerRows += 1;
         continue;
       }
 
@@ -73,11 +91,13 @@ export async function loadSpeedproFeatureIndex({
       if (!Number.isFinite(cutoffMs)) {
         audit.excludedMissingCutoffRunnerRows += 1;
         dateCoverage.excludedTimingRunnerRows += 1;
+        cohortCoverage.excludedTimingRunnerRows += 1;
         continue;
       }
       if (capturedAtMs >= cutoffMs) {
         audit.excludedPostTimeSnapshotRunnerRows += 1;
         dateCoverage.excludedTimingRunnerRows += 1;
+        cohortCoverage.excludedTimingRunnerRows += 1;
         continue;
       }
 
@@ -89,23 +109,41 @@ export async function loadSpeedproFeatureIndex({
       });
       audit.excludedCurrentOrFutureFormRows += result.audit.excludedCurrentOrFutureFormRows;
       audit.invalidFormDateRows += result.audit.invalidFormDateRows;
-      featuresByRunner.set(speedproRunnerFeatureKey(race, runner), result.features);
+      const runnerKey = speedproRunnerFeatureKey(race, runner);
+      featuresByRunner.set(runnerKey, result.features);
+      if (!result.identityMatched) {
+        audit.excludedIdentityMismatchRunnerRows += 1;
+        dateCoverage.excludedIdentityMismatchRunnerRows += 1;
+        cohortCoverage.excludedIdentityMismatchRunnerRows += 1;
+        continue;
+      }
       if (result.features.speedproAvailable === 1) {
         availableFeatureRows += 1;
         dateCoverage.availableFeatureRows += 1;
+        cohortCoverage.availableFeatureRows += 1;
+        provenanceByRunner.set(runnerKey, {
+          sourceId: SOURCE_ID,
+          observedAt: new Date(capturedAtMs).toISOString(),
+          horseCode: result.matchedHorseCode,
+          identityMatched: true,
+          observedBeforePost: capturedAtMs < cutoffMs,
+        });
       }
     }
   }
 
   return {
     featuresByRunner,
+    provenanceByRunner,
     summary: {
       sourceId: SOURCE_ID,
       checkoutRef: checkoutRef ?? await readGitHead(rootPath),
       requestedRunnerRows: runnerRequests.length,
       availableFeatureRows,
       unavailableFeatureRows: runnerRequests.length - availableFeatureRows,
-      coverageByRaceDate,
+      coverageByRaceDate: finalizeCoverage(coverageByRaceDate),
+      coverageByCohort: finalizeCoverage(coverageByCohort),
+      prospectiveFreezeDate: normalizedProspectiveFreezeDate,
       ...audit,
       publicationBoundary: 'Derived features and compact coverage only; raw paths, rows, and comments omitted.',
     },
@@ -152,6 +190,8 @@ function buildRunnerFeatures({ race, runner, sourceRace, snapshotLeadMinutes }) 
     return {
       features: emptySpeedproFeatures(),
       audit: { excludedCurrentOrFutureFormRows: 0, invalidFormDateRows: 0 },
+      identityMatched: false,
+      matchedHorseCode: null,
     };
   }
 
@@ -201,6 +241,8 @@ function buildRunnerFeatures({ race, runner, sourceRace, snapshotLeadMinutes }) 
       speedproSameDistanceEnergyAverage: average(sameDistance.map((row) => row.energy)),
     },
     audit,
+    identityMatched: true,
+    matchedHorseCode: horseCode,
   };
 }
 
@@ -239,11 +281,40 @@ function buildEmptyDateCoverage(requests) {
         requestedRunnerRows: 0,
         availableFeatureRows: 0,
         excludedTimingRunnerRows: 0,
+        excludedIdentityMismatchRunnerRows: 0,
       };
     }
     coverage[race.date].requestedRunnerRows += 1;
   }
   return coverage;
+}
+
+function buildEmptyCohortCoverage(requests, prospectiveFreezeDate) {
+  const coverage = Object.fromEntries(['train', 'validation', 'holdout', 'prospective'].map((cohort) => [
+    cohort,
+    {
+      requestedRunnerRows: 0,
+      availableFeatureRows: 0,
+      excludedTimingRunnerRows: 0,
+      excludedIdentityMismatchRunnerRows: 0,
+    },
+  ]));
+  for (const { race } of requests) {
+    coverage[speedproCohortForDate(race.date, prospectiveFreezeDate)].requestedRunnerRows += 1;
+  }
+  return coverage;
+}
+
+function speedproCohortForDate(date, prospectiveFreezeDate) {
+  if (prospectiveFreezeDate && date >= prospectiveFreezeDate) return 'prospective';
+  return splitForDate(date);
+}
+
+function finalizeCoverage(coverage) {
+  return Object.fromEntries(Object.entries(coverage).map(([key, value]) => [key, {
+    ...value,
+    unavailableFeatureRows: value.requestedRunnerRows - value.availableFeatureRows,
+  }]));
 }
 
 function isMatchingMeeting(document, date, venue) {
@@ -421,6 +492,17 @@ function normalizeDate(value) {
   const match = text.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
   if (!match) return null;
   return `${match[3]}-${match[2].padStart(2, '0')}-${match[1].padStart(2, '0')}`;
+}
+
+function normalizeOptionalDate(value, label) {
+  if (value == null || value === '') return null;
+  const normalized = normalizeDate(value);
+  if (!normalized) throw new Error(`${label} must be a valid YYYY-MM-DD date`);
+  const [year, month, day] = normalized.split('-').map(Number);
+  if (!isValidDateTime({ year, month, day, hour: 0, minute: 0, second: 0, millisecond: 0 })) {
+    throw new Error(`${label} must be a valid YYYY-MM-DD date`);
+  }
+  return normalized;
 }
 
 function numericOrNull(value) {
