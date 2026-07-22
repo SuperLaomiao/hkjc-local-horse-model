@@ -24,6 +24,185 @@ export function buildStrategyRiskReport(entries, options = {}) {
   };
 }
 
+export function buildGuardedStakingSweep(lines, options = {}) {
+  const bankroll = positiveNumber(options.bankroll ?? 1000, 'bankroll');
+  const maxRaceStakePct = rateNumber(options.maxRaceStakePct ?? 0.02, 'maxRaceStakePct');
+  const promotion = normalizePromotion(options.promotion);
+  const maxRaceStake = Math.min(100, Math.floor((bankroll * maxRaceStakePct) / 10) * 10);
+  const positivePromotionStates = new Set([
+    'RESEARCH_CHAMPION',
+    'REVIEW_REQUIRED',
+    'APPROVED_CANDIDATE',
+  ]);
+  if (!positivePromotionStates.has(promotion.state)) {
+    return {
+      version: 'guarded-staking-sweep-v1',
+      state: 'BLOCKED_PROMOTION',
+      pool: promotion.pool,
+      bankroll,
+      maxRaceStakePct,
+      maxRaceStake,
+      cashMode: 'NO_BET',
+      executionStatus: 'PAPER_ONLY',
+      strategies: [],
+      promotion: {
+        state: promotion.state,
+        manualReviewComplete: promotion.manualReviewComplete,
+      },
+      activationRequired: 'A positive prospective promotion gate is required before research staking sweeps; this report cannot enable PLAY.',
+    };
+  }
+  const rows = normalizeSweepLines(lines, promotion.pool);
+  const strategyPolicies = [
+    { id: 'fixed-hk10', type: 'fixed', amount: 10 },
+    { id: 'fractional-kelly-0.1', type: 'kelly', fraction: 0.1 },
+    { id: 'fractional-kelly-0.25', type: 'kelly', fraction: 0.25 },
+    { id: 'fractional-kelly-0.5', type: 'kelly', fraction: 0.5 },
+    {
+      id: 'conservative-capped',
+      type: 'kelly',
+      fraction: 0.25,
+      strategyCap: Math.min(20, maxRaceStake),
+    },
+  ];
+  const strategies = strategyPolicies.map((policy) => {
+    const settlements = rows.map((row) => {
+      const stake = researchStakeFor(row, policy, { bankroll, maxRaceStake });
+      const returned = row.outcome === 1 ? stake * row.decimalOdds : 0;
+      return { stake, returned, profit: returned - stake };
+    });
+    const researchStake = sum(settlements, (line) => line.stake);
+    const researchReturn = sum(settlements, (line) => line.returned);
+    const researchProfit = researchReturn - researchStake;
+    return {
+      id: policy.id,
+      researchStake: round(researchStake),
+      researchReturn: round(researchReturn),
+      researchProfit: round(researchProfit),
+      researchRoi: researchStake > 0 ? round(researchProfit / researchStake, 4) : null,
+      maxRaceStake: settlements.length
+        ? round(Math.max(...settlements.map((line) => line.stake)))
+        : 0,
+      maxDrawdown: sweepMaxDrawdown(settlements),
+      executableStake: 0,
+      executionStatus: 'NO_BET',
+    };
+  });
+  const approvedResearch = promotion.state === 'APPROVED_CANDIDATE'
+    && promotion.manualReviewComplete;
+
+  return {
+    version: 'guarded-staking-sweep-v1',
+    state: approvedResearch ? 'APPROVED_RESEARCH_NO_CASH' : promotion.state,
+    pool: promotion.pool,
+    bankroll,
+    maxRaceStakePct,
+    maxRaceStake,
+    cashMode: 'NO_BET',
+    executionStatus: 'PAPER_ONLY',
+    strategies,
+    promotion: {
+      state: promotion.state,
+      manualReviewComplete: promotion.manualReviewComplete,
+    },
+    activationRequired: 'A separate cash authorization outside this research report is required; this sweep cannot enable PLAY.',
+  };
+}
+
+function normalizePromotion(promotion) {
+  if (!promotion || typeof promotion !== 'object' || Array.isArray(promotion)) {
+    throw new TypeError('promotion must be an object');
+  }
+  const state = String(promotion.state ?? '').trim().toUpperCase();
+  if (!['BLOCKED_DATA', 'NO_GO', 'RESEARCH_CHAMPION', 'REVIEW_REQUIRED', 'APPROVED_CANDIDATE'].includes(state)) {
+    throw new TypeError('promotion.state is not supported');
+  }
+  const pool = canonicalPool(promotion.pool);
+  const reviewedBy = String(promotion.manualReview?.reviewedBy ?? '').trim();
+  const reviewedAt = Date.parse(promotion.manualReview?.reviewedAt ?? '');
+  return {
+    state,
+    pool,
+    manualReviewComplete: state === 'APPROVED_CANDIDATE'
+      && Boolean(reviewedBy)
+      && Number.isFinite(reviewedAt),
+  };
+}
+
+function normalizeSweepLines(lines, pool) {
+  if (!Array.isArray(lines)) throw new TypeError('lines must be an array');
+  return lines.map((line, index) => {
+    if (!line || typeof line !== 'object' || Array.isArray(line)) {
+      throw new TypeError(`lines[${index}] must be an object`);
+    }
+    const linePool = canonicalPool(line.pool);
+    if (linePool !== pool) throw new Error(`lines[${index}] pool does not match promotion pool`);
+    const probability = probabilityNumber(line.probability, `lines[${index}].probability`);
+    const decimalOdds = positiveNumber(line.decimalOdds, `lines[${index}].decimalOdds`);
+    const outcome = Number(line.outcome);
+    if (![0, 1].includes(outcome)) throw new TypeError(`lines[${index}].outcome must be 0 or 1`);
+    return {
+      raceId: String(line.raceId ?? `line-${index}`),
+      pool: linePool,
+      probability,
+      decimalOdds,
+      outcome,
+    };
+  });
+}
+
+function researchStakeFor(line, policy, { bankroll, maxRaceStake }) {
+  if (line.probability * line.decimalOdds <= 1 || maxRaceStake < 10) return 0;
+  if (policy.type === 'fixed') return Math.min(policy.amount, maxRaceStake);
+  const fullKelly = (line.probability * line.decimalOdds - 1) / (line.decimalOdds - 1);
+  const rawStake = bankroll * Math.max(0, fullKelly) * policy.fraction;
+  const cap = Math.min(maxRaceStake, policy.strategyCap ?? maxRaceStake);
+  return Math.min(cap, Math.floor(rawStake / 10) * 10);
+}
+
+function sweepMaxDrawdown(lines) {
+  let cumulative = 0;
+  let peak = 0;
+  let maxDrawdown = 0;
+  for (const line of lines) {
+    cumulative += line.profit;
+    peak = Math.max(peak, cumulative);
+    maxDrawdown = Math.max(maxDrawdown, peak - cumulative);
+  }
+  return round(maxDrawdown);
+}
+
+function canonicalPool(value) {
+  const compact = String(value ?? '').trim().toUpperCase().replaceAll(/[^A-Z]/g, '');
+  if (compact === 'WIN') return 'WIN';
+  if (['PLA', 'PLACE'].includes(compact)) return 'PLACE';
+  if (['QIN', 'QUINELLA'].includes(compact)) return 'QUINELLA';
+  if (['QPL', 'QUINELLAPLACE'].includes(compact)) return 'QUINELLA_PLACE';
+  throw new TypeError('pool must be WIN, PLACE, QIN, or QPL');
+}
+
+function positiveNumber(value, label) {
+  const number = Number(value);
+  if (!Number.isFinite(number) || number <= 0) throw new TypeError(`${label} must be positive`);
+  return number;
+}
+
+function probabilityNumber(value, label) {
+  const number = Number(value);
+  if (!Number.isFinite(number) || number < 0 || number > 1) {
+    throw new TypeError(`${label} must be between 0 and 1`);
+  }
+  return number;
+}
+
+function rateNumber(value, label) {
+  const number = Number(value);
+  if (!Number.isFinite(number) || number <= 0 || number > 1) {
+    throw new TypeError(`${label} must be greater than 0 and at most 1`);
+  }
+  return number;
+}
+
 function enrichEntrySettlement(entry) {
   const settlement = settleStrategyEntry(entry);
   const totalStake = Number(settlement.strategy.totalStake ?? 0);

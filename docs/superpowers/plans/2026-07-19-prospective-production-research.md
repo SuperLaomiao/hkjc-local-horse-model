@@ -324,23 +324,23 @@ Commit: `feat: gate models on fresh prospective evidence`
 - Modify: `hkjc-horse-model/src/strategy-risk-report.js`
 - Modify: `hkjc-horse-model/test/strategy-risk-report.test.js`
 
-- [ ] **Step 1: Add timestamped SpeedPRO identity/availability tests**
+- [x] **Step 1: Add timestamped SpeedPRO identity/availability tests**
 
 Reject feature rows without observed-at, source id, horse identity match, and an observation time before post. Report coverage separately for train, validation, and fresh prospective cohorts.
 
-- [ ] **Step 2: Implement same-cohort ablation reports**
+- [x] **Step 2: Implement same-cohort ablation reports**
 
 Compare base, SpeedPRO, pool-money, odds-movement, and combined policies on exactly the same rows. Selection occurs on validation; the prospective cohort is read once after the feature policy is frozen.
 
-- [ ] **Step 3: Re-run QIN/QPL only behind combination-book coverage**
+- [x] **Step 3: Re-run QIN/QPL only behind combination-book coverage**
 
 If verified T-window combination odds are below the declared coverage minimum, return `BLOCKED_DATA`. Exact-order pools remain `PAPER_ONLY` regardless of retrospective ROI.
 
-- [ ] **Step 4: Add staking sweeps behind positive prospective gates**
+- [x] **Step 4: Add staking sweeps behind positive prospective gates**
 
 Compare fixed HK$10, capped fractional Kelly, and current conservative exposure caps. If the pool promotion state is not manually approved, every executable stake remains zero even when the research curve is positive.
 
-- [ ] **Step 5: Run Python, focused Node, and full tests, then commit**
+- [x] **Step 5: Run Python, focused Node, and full tests, then commit**
 
 Run:
 

@@ -20,6 +20,7 @@ class ExoticPairStrategyTest(unittest.TestCase):
                 ("H1", "quinella"): {(1, 2): 20.0},
             },
             pool="quinella",
+            combination_book_coverage=_ready_coverage("quinella"),
         )
 
         selected_validation = report["metricsBySplit"]["validation"]["selectedStack"]
@@ -37,10 +38,16 @@ class ExoticPairStrategyTest(unittest.TestCase):
         self.assertTrue(selected_holdout["isOutOfSample"])
         self.assertEqual(report["cashMode"], "NO_BET")
         self.assertEqual(report["valueStatus"], "RESEARCH_ONLY")
+        self.assertEqual(report["combinationBookGate"]["status"], "READY")
 
     def test_missing_official_pool_is_ineligible_instead_of_a_loss(self):
         rows = _prediction_rows()[:3]
-        report = evaluate_pair_strategies(rows, {}, pool="quinella")
+        report = evaluate_pair_strategies(
+            rows,
+            {},
+            pool="quinella",
+            combination_book_coverage=_ready_coverage("quinella"),
+        )
 
         metrics = report["metricsBySplit"]["validation"]["selectedStack"]
         self.assertEqual(metrics["racesTotal"], 1)
@@ -48,6 +55,46 @@ class ExoticPairStrategyTest(unittest.TestCase):
         self.assertEqual(metrics["bets"], 0)
         self.assertEqual(metrics["stake"], 0.0)
         self.assertIsNone(metrics["ROI"])
+
+    def test_blocks_research_promotion_when_verified_t_window_books_are_missing(self):
+        report = evaluate_pair_strategies(
+            _prediction_rows(),
+            {( "V1", "quinella"): {(1, 2): 25.0}},
+            pool="quinella",
+            combination_book_coverage=[
+                {
+                    "poolKey": "quinella",
+                    "window": "T-30",
+                    "eligibleRaces": 120,
+                    "racesWithVerifiedBook": 100,
+                    "verified": True,
+                },
+                {
+                    "poolKey": "quinella",
+                    "window": "T-10",
+                    "eligibleRaces": 120,
+                    "racesWithVerifiedBook": 100,
+                    "verified": True,
+                },
+            ],
+        )
+
+        self.assertEqual(report["state"], "BLOCKED_DATA")
+        self.assertEqual(report["cashMode"], "NO_BET")
+        self.assertEqual(report["executionStatus"], "PAPER_ONLY")
+        self.assertTrue(any(
+            deficit["window"] == "T-3"
+            for deficit in report["combinationBookGate"]["deficits"]
+        ))
+        self.assertEqual(report["combinationBookGate"]["roiReadBeforeGate"], False)
+
+        missing = evaluate_pair_strategies(
+            _prediction_rows(),
+            {},
+            pool="quinella",
+        )
+        self.assertEqual(missing["state"], "BLOCKED_DATA")
+        self.assertEqual(len(missing["combinationBookGate"]["deficits"]), 3)
 
 
 def _prediction_rows():
@@ -80,6 +127,19 @@ def _prediction_rows():
                 "selectedProbability": probabilities[2],
             })
     return rows
+
+
+def _ready_coverage(pool):
+    return [
+        {
+            "poolKey": pool,
+            "window": window,
+            "eligibleRaces": 120,
+            "racesWithVerifiedBook": 100,
+            "verified": True,
+        }
+        for window in ("T-30", "T-10", "T-3")
+    ]
 
 
 if __name__ == "__main__":
