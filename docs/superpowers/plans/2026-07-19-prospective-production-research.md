@@ -271,11 +271,11 @@ Commit: `feat: report prospective market coverage gates`
 - Modify: `research-program.js`
 - Modify: `test/research-program.test.js`
 
-- [ ] **Step 1: Write failing identical-cohort metric tests**
+- [x] **Step 1: Write failing identical-cohort metric tests**
 
 Feed synthetic locks where one model is missing a race. Assert all candidates are evaluated only on the declared common cohort and report exclusions. Calculate log loss, Brier, calibration buckets/error, Top-pick WIN/PLACE, CLV, ROI, max drawdown, longest losing run, meeting/month stability, and return concentration.
 
-- [ ] **Step 2: Implement deterministic evaluation**
+- [x] **Step 2: Implement deterministic evaluation**
 
 Expose:
 
@@ -286,11 +286,11 @@ evaluateProspectiveCandidates({ cohort, bootstrapSeed })
 
 Use meeting-block bootstrap intervals, a fixed seed, and placebo labels/price permutations. Report uncertainty; never replace missing data with zero return.
 
-- [ ] **Step 3: Write failing pool-promotion tests**
+- [x] **Step 3: Write failing pool-promotion tests**
 
 Test that `NO_BET` persists when any of sample size, positive lower ROI bound, CLV, calibration, drawdown, stability, concentration, placebo, fresh-cohort, or lineage gates fail. A passing research candidate may transition only to `REVIEW_REQUIRED`, never directly to cash `PLAY`.
 
-- [ ] **Step 4: Implement the state machine and Research Lab aggregate**
+- [x] **Step 4: Implement the state machine and Research Lab aggregate**
 
 Allowed transitions:
 
@@ -302,7 +302,7 @@ REVIEW_REQUIRED -> APPROVED_CANDIDATE  (manual review outside automation)
 
 There is no automated transition to executable cash mode. Record gate version, frozen thresholds, cohort dates, and model/artifact ids.
 
-- [ ] **Step 5: Run focused and full tests, then commit**
+- [x] **Step 5: Run focused and full tests, then commit**
 
 Run:
 

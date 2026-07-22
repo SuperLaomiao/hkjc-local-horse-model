@@ -101,13 +101,18 @@ This sequence supersedes the older Phase A-D queue below. The older queue remain
 
 ### P7 — Fresh forward validation and pool-specific promotion
 
-- [ ] Freeze candidate versions, feature policy, calibration, and EV thresholds before evaluating the new cohort.
+- [x] Freeze candidate versions, feature policy, calibration, and EV thresholds before evaluating the new cohort.
+  - Completed 2026-07-22: the evaluator requires a declared freeze date and carries model artifact plus feature-policy ids from immutable locks; the promotion report records `prospective-promotion-v1` and a frozen copy of every gate threshold. Missing lineage fails closed.
 - [ ] Compare heuristic, no-market stack, market-aware CatBoost, and market baseline on identical prospective races.
   - Acceptance: report log loss, Brier, calibration error, Top-pick WIN/PLACE, CLV, paper ROI, drawdown, losing run, monthly/meeting stability, and missing-data exclusions.
-- [ ] Add meeting-block bootstrap intervals, placebo checks, and profit-concentration tests.
-- [ ] Build pool-specific WIN/PLACE/QIN/QPL promotion reports and an explicit state transition.
+  - Engineering ready 2026-07-22: `prospective-evaluation.js` intersects settled race-pool cells across all requested models and reports every exclusion instead of treating missing predictions as losing bets. The actual four-model comparison stays unchecked until the declared fresh-data gate passes.
+- [x] Add meeting-block bootstrap intervals, placebo checks, and profit-concentration tests.
+  - Completed 2026-07-22: deterministic meeting-block ROI intervals, label and locked-price permutation placebo checks, drawdown/losing-run, meeting/month stability and return-concentration diagnostics are computed on the identical cohort.
+- [x] Build pool-specific WIN/PLACE/QIN/QPL promotion reports and an explicit state transition.
   - Acceptance: only a fresh, sufficiently large, positive and stable prospective cohort may move a pool from `NO_BET` to a reviewed candidate state; no automation can authorize cash `PLAY` by itself.
-- [ ] Surface gate progress and exact failure reasons in Research Lab using aggregate, privacy-safe fields only.
+  - Completed 2026-07-22: `prospective-promotion.js` evaluates each pool independently across sample size, positive bootstrap ROI lower bound, CLV, calibration, drawdown, stability, return concentration, placebo, fresh-cohort and lineage gates. Passing automation stops at `REVIEW_REQUIRED`; even a manual `APPROVED_CANDIDATE` remains `PAPER_ONLY` / `NO_BET`, and `PLAY` is not an allowed transition.
+- [x] Surface gate progress and exact failure reasons in Research Lab using aggregate, privacy-safe fields only.
+  - Completed 2026-07-22: Research Lab action `prospective-promotion-state-machine` exposes the implemented evidence, declared gate families, current `BLOCKED_DATA` dependency and cash prohibition without publishing race ids, lock ids, local paths or row-level bets.
 
 ### P8 — Feature and portfolio lift after prospective gates
 
