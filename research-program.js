@@ -186,6 +186,26 @@ const ALGORITHM_BORROWINGS = [
 
 const FOLLOW_UP_ACTIONS = [
   {
+    id: 'upcoming-racecard-preflight',
+    priority: 'P0',
+    status: 'partial',
+    automationPhase: 'Phase A/D',
+    title: '自动预加载未来赛程与排位表',
+    sourceRefs: ['official HKJC fixture', 'official HKJC race card'],
+    action: '每日巡检先运行公开 fixture/race-card refresh，再用 sync-db 把可验证的 upcoming races 写入本地私有 SQLite。',
+    expectedOutcome: '新赛季排位表发布后无需人工导入，十分钟 race-day cycle 可直接接手 T-30/T-10/T-3 采集。',
+    automationExecutable: true,
+    evidence: [
+      'hkjc-horse-model/src/hkjc-parser.js：fetchFixtureMeetings / fetchMeetingRaceCards 使用官方公开页面并校验本地赛场身份',
+      'hkjc-horse-model/src/cli.js：refresh + sync-db 复用现有 upcoming 数据链路，不新增账号登录或第二套爬虫',
+      'hkjc-parser and sqlite-store tests：排位表解析、upcoming 状态、settled authority 与幂等同步均有回归保护',
+    ],
+    remaining: [
+      '当前休赛期 upcoming=0；待新赛季首份 race card 发布后完成一次真实预加载、身份校验和 SQLite 覆盖确认。',
+      '现金状态保持 NO_BET；预加载只处理公开赛程和排位表，不访问 HKJC 会员账户。',
+    ],
+  },
+  {
     id: 'live-snapshot-planner',
     priority: 'P0',
     status: 'implemented',
@@ -319,8 +339,12 @@ const FOLLOW_UP_ACTIONS = [
       'hkjc-horse-model/src/race-day-cycle.js：单周期、有界重试、post-time guard、零现金锁单与中文摘要',
       'hkjc-horse-model/src/local-scheduler.js：默认禁用、无 secret 的 macOS LaunchAgent 生成器',
       'docs/operations/local-race-day-scheduler.md：演练、审核、安装、日志、备份和卸载手册',
+      '本地部署已启用 LaunchAgent（用户明确批准后安装）；每个十分钟周期运行后退出，不是常驻抓取进程。',
     ],
-    remaining: ['默认 CLI 在未配置冻结 scorer adapter 时只抓取快照；prospective coverage 已能量化 missed/offline/collector-error，下一步积累足量 forward cohort。'],
+    remaining: [
+      '默认 CLI 在未配置冻结 scorer adapter 时只抓取快照；prospective coverage 已能量化 missed/offline/collector-error，下一步积累足量 forward cohort。',
+      '现金状态继续 NO_BET；本地调度器不登录、下注或产生非零 cash stake。',
+    ],
   },
   {
     id: 'prospective-coverage-gate',
