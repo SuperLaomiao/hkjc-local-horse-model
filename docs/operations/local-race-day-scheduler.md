@@ -4,6 +4,19 @@
 
 系统保持 `SHADOW / PAPER_ONLY / RESEARCH_ONLY`：它不登录香港赛马会、不下注、不会把现金模式改成 `PLAY`。只有配置了已冻结且通过验证的本地 scorer adapter 时，周期才会在抓取后写入零现金注额的不可变 shadow lock；默认 CLI 没有配置 scorer 时只会抓取到期快照，并如实报告 `score-not-configured`。
 
+## 当前本地部署状态
+
+生成器对新安装仍保持默认禁用，避免仓库代码自行注册后台任务。本项目的本地主机已于 2026-07-22 在用户明确批准后完成安装和启用；它每十分钟启动一次有限周期，执行完即退出。GitHub Pages 只展示这项汇总状态，不发布主机路径、数据库位置、日志内容或逐场记录。
+
+本地部署把赛程预加载与临场采集分开：每日巡检先复用公开 `refresh` 和 `sync-db` 链路，把已发布的未来排位表同步进获批的私有 SQLite；LaunchAgent 随后只读取这些 `upcoming` 场次，并在到期窗口采集。没有未来本地赛事或排位表尚未发布时，预加载应报告空闲并继续其他研究任务，不伪造场次。
+
+```bash
+npm run hkjc:refresh -- --historyDays 1 --futureDays 60
+npm run hkjc:sync-db -- --db "$HKJC_PRIVATE_DB"
+```
+
+`HKJC_PRIVATE_DB` 只在本地自动化中配置，不进入 Git、GitHub Actions 或 Pages。网络、解析、身份或数据库错误必须保留原有已结算权威数据并失败关闭。
+
 ## 先做一次安全演练
 
 在项目根目录执行：
