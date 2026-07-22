@@ -40,6 +40,8 @@
     "hkjc:market-coverage": "node hkjc-horse-model/src/cli.js market-coverage-report",
     "hkjc:market-window-research": "node hkjc-horse-model/src/cli.js market-window-research",
     "hkjc:shadow-score": "node hkjc-horse-model/src/cli.js shadow-score",
+    "hkjc:prospective-lock": "node hkjc-horse-model/src/cli.js prospective-lock",
+    "hkjc:prospective-settle": "node hkjc-horse-model/src/cli.js prospective-settle",
     "hkjc:recommendation-audit": "node hkjc-horse-model/src/cli.js recommendation-audit",
     "hkjc:auto-run": "node hkjc-horse-model/src/cli.js auto-run --output data/dashboard.json"
   }

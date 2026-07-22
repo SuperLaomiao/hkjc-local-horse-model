@@ -1,6 +1,6 @@
 export const VALUE_RULE_VERSION = 'value-betting-v1';
 
-const SELLING_STATUSES = new Set(['SELLING', 'OPEN', 'SALE_OPEN']);
+const SELLING_STATUSES = new Set(['SELLING', 'OPEN', 'SALE_OPEN', 'START_SELL', 'START_SELLING']);
 
 const REASONS = {
   EDGE_CLEARS_BUFFER: '保守期望回报达到安全门槛，可以进入执行候选。',

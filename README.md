@@ -74,8 +74,10 @@ npm run hkjc:auto-run -- --bankroll 200 --minEdge 0 --minProbability 0.15 --maxS
 It syncs raw/upcoming JSON into SQLite, optionally imports a market snapshot
 when `--marketInput path/to/market-snapshot.json` is supplied, regenerates
 `data/dashboard.json`, and records the latest recommendation run for later
-audit/replay. It also writes the latest settled recommendation review to
-`data/latest-recommendation-audit.json` unless `--auditOutput` is supplied.
+audit/replay. It also auto-settles any matching OPEN prospective locks from
+official dividends before writing the latest recommendation and prospective
+reviews. Private outputs default under `hkjc-horse-model/data/private/` unless
+`--auditOutput` / `--prospectiveOutput` is supplied.
 
 Codex also has a local recurring automation named `HKJC赛后数据抓取` (`hkjc`)
 that runs after likely Hong Kong race days instead of polling frequently. It is
@@ -89,10 +91,26 @@ You can also regenerate only the latest recommendation audit:
 npm run hkjc:recommendation-audit
 ```
 
+Create and settle immutable paper-only T-30/T-10/T-3 forward locks with:
+
+```bash
+npm run hkjc:prospective-lock -- --input /path/to/prospective-lock-input.json --db hkjc-horse-model/data/hkjc.sqlite
+npm run hkjc:prospective-settle -- --db hkjc-horse-model/data/hkjc.sqlite
+```
+
+The lock input contains one upcoming `race`, validated `scoreBundles`, matching
+`marketSnapshots`, `decisions`, and a pre-post `generatedAt`. Every decision is
+forced to `PAPER_ONLY`; a nonzero `cashStake`, wrong market window, post-time
+timestamp, stale/terminal quote, malformed pool combination, or mismatched
+lineage fails closed. Settlement keeps cash, paper, and shadow ledgers separate
+and recomputes CLV, slippage, ROI, drawdown, and losing run from the immutable
+SQLite locks.
+
 The SQLite database is stored locally at
 `hkjc-horse-model/data/hkjc.sqlite`. It is the durable local research store for
 official race results, runners, dividends, upcoming race cards, pre-race market
-snapshots, pool snapshots, and recommendation-run audit records. The static
+snapshots, pool snapshots, recommendation-run audit records, and prospective
+locks. The static
 website still reads `data/dashboard.json`; SQLite is used to build and replay
 the model before exporting that JSON.
 
