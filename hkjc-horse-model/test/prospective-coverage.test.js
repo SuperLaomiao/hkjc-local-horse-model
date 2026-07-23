@@ -139,6 +139,40 @@ describe('prospective coverage and backup-health gate', () => {
     assert.deepEqual(ready.deficits, []);
   });
 
+  it('quantifies missing pool-window coverage as zero instead of null', () => {
+    const blocked = evaluateProspectiveDataGate({
+      coverage: {
+        summary: {
+          races: 0,
+          usableCells: 0,
+          locks: 0,
+          settledLocks: 0,
+          settlementCoverage: null,
+        },
+        byPoolWindow: [],
+        backup: { status: 'OK', ageHours: 6, checksumPresent: true },
+      },
+      minimums: {
+        races: 1,
+        usableCells: 1,
+        locks: 1,
+        settledLocks: 1,
+        settlementCoverage: 0.5,
+        perPoolWindowUsableCells: 2,
+        requiredPools: ['WIN'],
+        requiredWindows: ['T-30'],
+        backupMaxAgeHours: 24,
+      },
+    });
+
+    assert(blocked.deficits.some((item) => (
+      item.metric === 'WIN.T-30.usableCells' && item.actual === 0
+    )));
+    assert(blocked.deficits.some((item) => (
+      item.metric === 'settlementCoverage' && item.actual === 0
+    )));
+  });
+
   it('writes a privacy-safe aggregate CLI report from SQLite inputs', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-prospective-coverage-'));
     const dbPath = path.join(tempDir, 'hkjc.sqlite');

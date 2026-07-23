@@ -236,32 +236,44 @@ export function loadLatestMarketSnapshots({ dbPath, raceId }) {
   }
 }
 
-export function loadMarketSnapshots({ dbPath, raceId = null } = {}) {
+export function loadMarketSnapshots({ dbPath, raceId = null, dateFrom = null } = {}) {
   if (!dbPath) throw new Error('loadMarketSnapshots requires dbPath');
 
   const db = openDatabase(dbPath);
   try {
-    const oddsRows = raceId
-      ? db.prepare(`
-        SELECT * FROM odds_snapshots
-        WHERE race_id = ?
-        ORDER BY race_id, captured_at, pool_key, combination_key
-      `).all(raceId)
-      : db.prepare(`
-        SELECT * FROM odds_snapshots
-        ORDER BY race_id, captured_at, pool_key, combination_key
-      `).all();
+    const oddsClauses = [];
+    const oddsParams = [];
+    if (raceId) {
+      oddsClauses.push('race_id = ?');
+      oddsParams.push(raceId);
+    }
+    if (dateFrom) {
+      oddsClauses.push('date >= ?');
+      oddsParams.push(dateFrom);
+    }
+    const oddsWhere = oddsClauses.length ? `WHERE ${oddsClauses.join(' AND ')}` : '';
+    const oddsRows = db.prepare(`
+      SELECT * FROM odds_snapshots
+      ${oddsWhere}
+      ORDER BY race_id, captured_at, pool_key, combination_key
+    `).all(...oddsParams);
 
-    const poolRows = raceId
-      ? db.prepare(`
-        SELECT * FROM pool_snapshots
-        WHERE race_id = ?
-        ORDER BY race_id, captured_at, pool_key
-      `).all(raceId)
-      : db.prepare(`
-        SELECT * FROM pool_snapshots
-        ORDER BY race_id, captured_at, pool_key
-      `).all();
+    const poolClauses = [];
+    const poolParams = [];
+    if (raceId) {
+      poolClauses.push('race_id = ?');
+      poolParams.push(raceId);
+    }
+    if (dateFrom) {
+      poolClauses.push('date >= ?');
+      poolParams.push(dateFrom);
+    }
+    const poolWhere = poolClauses.length ? `WHERE ${poolClauses.join(' AND ')}` : '';
+    const poolRows = db.prepare(`
+      SELECT * FROM pool_snapshots
+      ${poolWhere}
+      ORDER BY race_id, captured_at, pool_key
+    `).all(...poolParams);
 
     return {
       odds: oddsRows.map(oddsSnapshotFromRow),
@@ -610,7 +622,7 @@ export function recordProspectiveLock({ dbPath, lock }) {
   }
 }
 
-export function loadProspectiveLocks({ dbPath, raceId = null, status = null } = {}) {
+export function loadProspectiveLocks({ dbPath, raceId = null, status = null, dateFrom = null } = {}) {
   if (!dbPath) throw new Error('loadProspectiveLocks requires dbPath');
 
   const db = openDatabase(dbPath);
@@ -625,6 +637,10 @@ export function loadProspectiveLocks({ dbPath, raceId = null, status = null } = 
       clauses.push('status = ?');
       params.push(status);
     }
+    if (dateFrom) {
+      clauses.push('substr(race_id, 1, 10) >= ?');
+      params.push(dateFrom);
+    }
     const where = clauses.length ? `WHERE ${clauses.join(' AND ')}` : '';
     const rows = db.prepare(`
       SELECT * FROM prospective_locks
@@ -637,12 +653,12 @@ export function loadProspectiveLocks({ dbPath, raceId = null, status = null } = 
   }
 }
 
-export function loadProspectiveCoverageInputs({ dbPath } = {}) {
+export function loadProspectiveCoverageInputs({ dbPath, freezeDate = null } = {}) {
   if (!dbPath) throw new Error('loadProspectiveCoverageInputs requires dbPath');
   return {
-    races: loadRacesFromDatabase({ dbPath }),
-    snapshots: loadMarketSnapshots({ dbPath }),
-    locks: loadProspectiveLocks({ dbPath }),
+    races: loadRacesFromDatabase({ dbPath, dateFrom: freezeDate }),
+    snapshots: loadMarketSnapshots({ dbPath, dateFrom: freezeDate }),
+    locks: loadProspectiveLocks({ dbPath, dateFrom: freezeDate }),
   };
 }
 
@@ -685,12 +701,25 @@ export function settleProspectiveLock({ dbPath, lockId, settlement }) {
   }
 }
 
-export function loadRacesFromDatabase({ dbPath, status = null } = {}) {
+export function loadRacesFromDatabase({ dbPath, status = null, dateFrom = null } = {}) {
   const db = openDatabase(dbPath);
   try {
-    const raceRows = status
-      ? db.prepare('SELECT * FROM races WHERE status = ? ORDER BY date, racecourse, race_no').all(status)
-      : db.prepare('SELECT * FROM races ORDER BY date, racecourse, race_no').all();
+    const clauses = [];
+    const params = [];
+    if (status) {
+      clauses.push('status = ?');
+      params.push(status);
+    }
+    if (dateFrom) {
+      clauses.push('date >= ?');
+      params.push(dateFrom);
+    }
+    const where = clauses.length ? `WHERE ${clauses.join(' AND ')}` : '';
+    const raceRows = db.prepare(`
+      SELECT * FROM races
+      ${where}
+      ORDER BY date, racecourse, race_no
+    `).all(...params);
 
     return raceRows.map((raceRow) => {
       const rawRace = JSON.parse(raceRow.raw_json);
@@ -814,6 +843,7 @@ function openDatabase(dbPath) {
       PRIMARY KEY (race_id, captured_at, pool_key, combination_key)
     );
     CREATE INDEX IF NOT EXISTS idx_odds_snapshots_race_time ON odds_snapshots(race_id, captured_at);
+    CREATE INDEX IF NOT EXISTS idx_odds_snapshots_date_time ON odds_snapshots(date, captured_at, race_id);
     CREATE TABLE IF NOT EXISTS pool_snapshots (
       race_id TEXT NOT NULL,
       date TEXT,
@@ -830,6 +860,7 @@ function openDatabase(dbPath) {
       PRIMARY KEY (race_id, captured_at, pool_key)
     );
     CREATE INDEX IF NOT EXISTS idx_pool_snapshots_race_time ON pool_snapshots(race_id, captured_at);
+    CREATE INDEX IF NOT EXISTS idx_pool_snapshots_date_time ON pool_snapshots(date, captured_at, race_id);
     CREATE TABLE IF NOT EXISTS recommendation_runs (
       run_id TEXT PRIMARY KEY,
       race_id TEXT NOT NULL,
@@ -867,6 +898,8 @@ function openDatabase(dbPath) {
       created_at TEXT NOT NULL
     );
     CREATE INDEX IF NOT EXISTS idx_prospective_locks_race ON prospective_locks(race_id, generated_at);
+    CREATE INDEX IF NOT EXISTS idx_prospective_locks_freeze_date
+      ON prospective_locks(substr(race_id, 1, 10), generated_at);
   `);
   const oddsColumns = db.prepare('PRAGMA table_info(odds_snapshots)').all();
   if (!oddsColumns.some((column) => column.name === 'sell_status')) {

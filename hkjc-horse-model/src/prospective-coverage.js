@@ -98,7 +98,7 @@ export function evaluateProspectiveDataGate({ coverage, minimums = {} } = {}) {
   addMinimumDeficit(
     deficits,
     'settlementCoverage',
-    summary.settlementCoverage,
+    summary.settlementCoverage ?? 0,
     declaredMinimums.settlementCoverage,
   );
 
@@ -110,7 +110,7 @@ export function evaluateProspectiveDataGate({ coverage, minimums = {} } = {}) {
       addMinimumDeficit(
         deficits,
         `${pool}.${window}.usableCells`,
-        row?.usableCells,
+        row?.usableCells ?? 0,
         declaredMinimums.perPoolWindowUsableCells,
       );
     }

@@ -1089,7 +1089,8 @@ async function localSchedulerCommand(args) {
 
 async function prospectiveCoverageCommand(args) {
   const dbPath = path.resolve(args.db ?? sqliteDbPath);
-  const inputs = loadProspectiveCoverageInputs({ dbPath });
+  const freeze = requiredArg(args.freezeDate ?? args.freeze, 'freezeDate');
+  const inputs = loadProspectiveCoverageInputs({ dbPath, freezeDate: freeze });
   const collectionEvidence = args.events
     ? normalizeCoverageEvents(JSON.parse(await readFile(path.resolve(args.events), 'utf8')))
     : { events: [] };
@@ -1100,7 +1101,7 @@ async function prospectiveCoverageCommand(args) {
     ...inputs,
     snapshots: { ...inputs.snapshots, ...collectionEvidence },
     backupManifest,
-    freeze: requiredArg(args.freezeDate ?? args.freeze, 'freezeDate'),
+    freeze,
     generatedAt: args.generatedAt ?? new Date().toISOString(),
   });
   report.gate = evaluateProspectiveDataGate({
