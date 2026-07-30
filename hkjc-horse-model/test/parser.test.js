@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { parseLocalResultHtml } from '../src/hkjc-parser.js';
+import { parseFixtureHtml, parseLocalResultHtml } from '../src/hkjc-parser.js';
 
 describe('HKJC result parser safeguards', () => {
   it('parses official dividend rows with repeated pool labels omitted by rowspan', () => {
@@ -56,6 +56,20 @@ describe('HKJC result parser safeguards', () => {
       }),
       /race number mismatch/i,
     );
+  });
+});
+
+describe('HKJC fixture parser safeguards', () => {
+  it('uses the actual returned month when HKJC falls back from an unavailable fixture month', () => {
+    const parsed = parseFixtureHtml(fixtureHtml({ month: 9, year: 2026 }), {
+      year: 2026,
+      month: 8,
+    });
+
+    assert.deepEqual(parsed, [
+      { date: '2026-09-06', racecourse: 'ST', raceCount: 2 },
+      { date: '2026-09-09', racecourse: 'HV', raceCount: 1 },
+    ]);
   });
 });
 
@@ -142,6 +156,33 @@ function resultHtml({ date, raceNo, dividends = false }) {
             </table>
           </div>
         ` : ''}
+      </body>
+    </html>
+  `;
+}
+
+function fixtureHtml({ month, year }) {
+  return `
+    <html>
+      <body>
+        <ul>
+          <li class="cur">Sep</li>
+        </ul>
+        <table>
+          <tr><td colspan="7">${month}/${year}</td></tr>
+          <tr>
+            <td class="calendar">
+              <span class="f_fl">6</span>
+              <img alt="ST" />
+              1200(2)
+            </td>
+            <td class="calendar">
+              <span class="f_fl">9</span>
+              <img alt="HV" />
+              1650(1)
+            </td>
+          </tr>
+        </table>
       </body>
     </html>
   `;
