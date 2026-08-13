@@ -201,7 +201,7 @@ const FOLLOW_UP_ACTIONS = [
       'hkjc-parser and sqlite-store tests：排位表解析、upcoming 状态、settled authority 与幂等同步均有回归保护',
     ],
     remaining: [
-      '当前休赛期 upcoming=0；待新赛季首份 race card 发布后完成一次真实预加载、身份校验和 SQLite 覆盖确认。',
+      '当前休赛期 upcoming=0；HKJC 官方最近本地赛为 2026-07-15，下一场本地赛为 2026-09-06；待新赛季首份 race card 发布后完成一次真实预加载、身份校验和 SQLite 覆盖确认。',
       '现金状态保持 NO_BET；预加载只处理公开赛程和排位表，不访问 HKJC 会员账户。',
     ],
   },
@@ -305,7 +305,7 @@ const FOLLOW_UP_ACTIONS = [
       'hkjc-horse-model/src/cli.js shadow-score + hkjc-horse-model/test/shadow-score-cli.test.js：Python scorer 输出先经 validator，再写成 SHADOW / PAPER_ONLY / RESEARCH_ONLY bundle',
       'hkjc-horse-model/src/external-model-comparison.js + app.js：同一场 upcoming race 现已并列展示 heuristic、no-market、live-market baseline 与带 artifact/calibration/training-cutoff lineage 的 shadow market-aware 概率',
     ],
-    remaining: ['one-cycle race-day cycle 已完成；等待新赛季 upcoming race card 与 fresh T-window snapshots 验证真实 shadow score、锁单与结算覆盖。'],
+    remaining: ['one-cycle race-day cycle 已完成；等待 2026-09-06 前后首份新赛季 upcoming race card 与 fresh T-window snapshots 验证真实 shadow score、锁单与结算覆盖。'],
   },
   {
     id: 'prospective-lock-ledger',

@@ -1094,9 +1094,15 @@ async function prospectiveCoverageCommand(args) {
   const collectionEvidence = args.events
     ? normalizeCoverageEvents(JSON.parse(await readFile(path.resolve(args.events), 'utf8')))
     : { events: [] };
-  const backupManifest = args.backupManifest
-    ? JSON.parse(await readFile(path.resolve(args.backupManifest), 'utf8'))
-    : null;
+  let backupManifest = null;
+  if (args.backupManifest) {
+    const backupManifestPath = path.resolve(args.backupManifest);
+    try {
+      backupManifest = JSON.parse(await readFile(backupManifestPath, 'utf8'));
+    } catch (error) {
+      if (error?.code !== 'ENOENT') throw error;
+    }
+  }
   const report = buildProspectiveCoverage({
     ...inputs,
     snapshots: { ...inputs.snapshots, ...collectionEvidence },
