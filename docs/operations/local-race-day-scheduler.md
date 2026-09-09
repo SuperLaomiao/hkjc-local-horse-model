@@ -6,7 +6,7 @@
 
 ## 当前本地部署状态
 
-生成器对新安装仍保持默认禁用，避免仓库代码自行注册后台任务。本项目的本地主机已于 2026-07-22 在用户明确批准后完成安装和启用；它每十分钟启动一次有限周期，执行完即退出。GitHub Pages 只展示这项汇总状态，不发布主机路径、数据库位置、日志内容或逐场记录。
+生成器对新安装仍保持默认禁用，避免仓库代码自行注册后台任务。本项目的本地主机已于 2026-07-22 在用户明确批准后完成安装和启用，并于 2026-09-09 把 launchd 日志迁移到 `~/Library/Logs/HKJC Local Horse Model/`，修复项目 Documents 路径日志无法由 launchd 打开而产生的退出码 78。它每十分钟启动一次有限周期，执行完即退出。GitHub Pages 只展示这项汇总状态，不发布主机路径、数据库位置、日志内容或逐场记录。
 
 本地部署把赛程预加载与临场采集分开：每日巡检先复用公开 `refresh` 和 `sync-db` 链路，把已发布的未来排位表同步进获批的私有 SQLite；LaunchAgent 随后只读取这些 `upcoming` 场次，并在到期窗口采集。没有未来本地赛事或排位表尚未发布时，预加载应报告空闲并继续其他研究任务，不伪造场次。
 
@@ -37,6 +37,8 @@ npm run hkjc:race-day-cycle -- \
 ```bash
 npm run hkjc:local-scheduler -- \
   --projectPath "$(pwd)" \
+  --db "$HKJC_PRIVATE_DB" \
+  --logDirectory "$HOME/Library/Logs/HKJC Local Horse Model" \
   --intervalMinutes 10 \
   --dryRun \
   --output hkjc-horse-model/data/private/com.superlaomiao.hkjc-race-day-cycle.plist
@@ -44,7 +46,7 @@ npm run hkjc:local-scheduler -- \
 plutil -lint hkjc-horse-model/data/private/com.superlaomiao.hkjc-race-day-cycle.plist
 ```
 
-最小间隔是 5 分钟。生成的 plist 默认 `Disabled=true`、`RunAtLoad=false`，日志位于 `hkjc-horse-model/data/private/logs/`，不包含 token、密码或 API key。在审核前不要安装。
+最小间隔是 5 分钟。生成的 plist 默认 `Disabled=true`、`RunAtLoad=false`，不包含 token、密码或 API key。部署时应显式把日志放在用户 Library 下，避免 launchd 因 Documents 访问边界在启动 shell 前以 `EX_CONFIG` 退出。在审核前不要安装。
 
 ## 显式安装与启用
 
@@ -61,6 +63,8 @@ cp "$HOME/Library/LaunchAgents/com.superlaomiao.hkjc-race-day-cycle.plist" \
 ```bash
 npm run hkjc:local-scheduler -- \
   --projectPath "$(pwd)" \
+  --db "$HKJC_PRIVATE_DB" \
+  --logDirectory "$HOME/Library/Logs/HKJC Local Horse Model" \
   --intervalMinutes 10 \
   --output hkjc-horse-model/data/private/com.superlaomiao.hkjc-race-day-cycle.plist \
   --install
@@ -77,8 +81,8 @@ launchctl kickstart -k "gui/$(id -u)/com.superlaomiao.hkjc-race-day-cycle"
 
 ```bash
 launchctl print "gui/$(id -u)/com.superlaomiao.hkjc-race-day-cycle"
-tail -n 100 hkjc-horse-model/data/private/logs/race-day-cycle.log
-tail -n 100 hkjc-horse-model/data/private/logs/race-day-cycle-error.log
+tail -n 100 "$HOME/Library/Logs/HKJC Local Horse Model/race-day-cycle.log"
+tail -n 100 "$HOME/Library/Logs/HKJC Local Horse Model/race-day-cycle-error.log"
 ```
 
 Mac 睡眠、关机或断网时不能抓取。LaunchAgent 醒来后不会补造已错过的赛前快照；这些缺口应由 prospective coverage 报告记录为 missed/offline，不能用赛后数据填充。
@@ -93,6 +97,18 @@ rm "$HOME/Library/LaunchAgents/com.superlaomiao.hkjc-race-day-cycle.plist"
 ```
 
 GitHub Actions 和 GitHub Pages 不运行这个本地调度器，也不上传 SQLite、市场快照、模型产物、锁单或日志。
+
+## 每日一致性备份
+
+每日巡检通过 SQLite 自身的在线备份机制创建一致性快照，流式计算 SHA-256，原子更新私有 manifest，并默认只保留最近 7 份由本命令管理的备份。清理逻辑不会删除备份目录里的无关文件。
+
+```bash
+npm run hkjc:backup-db -- \
+  --db "$HKJC_PRIVATE_DB" \
+  --backupDirectory "$HOME/Library/Application Support/HKJC Local Horse Model/backups" \
+  --manifest hkjc-horse-model/data/private/backup-manifest.json \
+  --retain 7
+```
 
 ## 生成覆盖率和备份健康报告
 

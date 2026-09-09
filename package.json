@@ -8,6 +8,7 @@
     "hkjc:refresh": "node hkjc-horse-model/src/cli.js refresh",
     "hkjc:dashboard": "node hkjc-horse-model/src/cli.js dashboard",
     "hkjc:sync-db": "node hkjc-horse-model/src/cli.js sync-db",
+    "hkjc:backup-db": "node hkjc-horse-model/src/cli.js backup-db",
     "hkjc:dashboard-db": "node hkjc-horse-model/src/cli.js dashboard-db --output data/dashboard.json",
     "hkjc:training-dataset": "node hkjc-horse-model/src/cli.js training-dataset",
     "hkjc:training-matrix": "node hkjc-horse-model/src/cli.js training-matrix",

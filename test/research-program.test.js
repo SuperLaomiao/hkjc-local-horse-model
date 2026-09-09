@@ -82,6 +82,8 @@ describe('research upgrade program', () => {
     assert.equal(program.followUpActions[0].automationExecutable, true);
     assert(program.followUpActions[0].evidence.some((entry) => /refresh.*sync-db|fixture/i.test(entry)));
     assert(program.followUpActions[0].remaining.some((entry) => /upcoming|新赛季|race card/i.test(entry)));
+    assert(program.followUpActions[0].remaining.some((entry) => /2026-09-09.*8.*upcoming/i.test(entry)));
+    assert(program.followUpActions[0].remaining.some((entry) => /scorer|score-not-configured/i.test(entry)));
     assert(program.followUpActions.some((item) => (
       item.id === 'live-snapshot-planner'
       && item.status === 'implemented'
@@ -146,6 +148,7 @@ describe('research upgrade program', () => {
       && item.evidence.some((entry) => /race-day-cycle\.js/.test(entry))
       && item.evidence.some((entry) => /local-scheduler\.js/.test(entry))
       && item.evidence.some((entry) => /已启用|enabled/i.test(entry))
+      && item.evidence.some((entry) => /exit 0|退出码 0/i.test(entry))
       && item.remaining.some((entry) => /prospective coverage|missed|offline/i.test(entry))
       && item.remaining.some((entry) => /NO_BET|cash/i.test(entry))
     )));
