@@ -21,7 +21,7 @@
 - [x] **Step 2:** Refresh official September fixtures/results and sync them through the existing idempotent SQLite importer.
 - [x] **Step 3:** Run one real due-window cycle before the first 2026-09-09 race and retain truthful `score-not-configured` status.
 - [x] **Step 4:** Reproduce launchd exit 78, isolate log-path access as the failing boundary, move logs to the user Library, reinstall, and verify exit 0.
-- [x] **Step 5:** Verify automatic ten-minute cycles continue with exit 0; official results and any available locks settle through the next deterministic preflight.
+- [x] **Step 5:** Verify automatic cycles continue with exit 0, tighten the cadence to five minutes so T-3 cannot be skipped by alignment, and settle official results/available locks through deterministic preflight.
 
 ### Task 2: Add checksum-backed retained backups
 
