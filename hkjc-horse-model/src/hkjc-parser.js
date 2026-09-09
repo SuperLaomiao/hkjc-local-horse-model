@@ -206,8 +206,8 @@ export function parseRaceCardHtml(html, context = {}) {
 export function parseFixtureHtml(html, context = {}) {
   const pageText = stripText(html);
   const monthTitle = pageText.match(/\b(\d{1,2})\/(\d{4})\b/);
-  const month = Number(context.month ?? monthTitle?.[1]);
-  const year = Number(context.year ?? monthTitle?.[2]);
+  const month = Number(monthTitle?.[1] ?? context.month);
+  const year = Number(monthTitle?.[2] ?? context.year);
 
   if (!year || !month) {
     throw new Error('Could not determine fixture month and year');

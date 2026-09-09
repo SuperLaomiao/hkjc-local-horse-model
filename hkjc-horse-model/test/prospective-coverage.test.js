@@ -139,6 +139,40 @@ describe('prospective coverage and backup-health gate', () => {
     assert.deepEqual(ready.deficits, []);
   });
 
+  it('quantifies missing pool-window coverage as zero instead of null', () => {
+    const blocked = evaluateProspectiveDataGate({
+      coverage: {
+        summary: {
+          races: 0,
+          usableCells: 0,
+          locks: 0,
+          settledLocks: 0,
+          settlementCoverage: null,
+        },
+        byPoolWindow: [],
+        backup: { status: 'OK', ageHours: 6, checksumPresent: true },
+      },
+      minimums: {
+        races: 1,
+        usableCells: 1,
+        locks: 1,
+        settledLocks: 1,
+        settlementCoverage: 0.5,
+        perPoolWindowUsableCells: 2,
+        requiredPools: ['WIN'],
+        requiredWindows: ['T-30'],
+        backupMaxAgeHours: 24,
+      },
+    });
+
+    assert(blocked.deficits.some((item) => (
+      item.metric === 'WIN.T-30.usableCells' && item.actual === 0
+    )));
+    assert(blocked.deficits.some((item) => (
+      item.metric === 'settlementCoverage' && item.actual === 0
+    )));
+  });
+
   it('writes a privacy-safe aggregate CLI report from SQLite inputs', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-prospective-coverage-'));
     const dbPath = path.join(tempDir, 'hkjc.sqlite');
@@ -174,6 +208,40 @@ describe('prospective coverage and backup-health gate', () => {
       assert.equal(report.summary.races, 0);
       assert.equal(report.database, undefined);
       assert.equal(JSON.stringify(report).includes(tempDir), false);
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('treats a missing backup manifest path as backup missing instead of crashing', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-prospective-coverage-missing-backup-'));
+    const dbPath = path.join(tempDir, 'hkjc.sqlite');
+    const outputPath = path.join(tempDir, 'coverage.json');
+    const missingBackupPath = path.join(tempDir, 'missing-backup-manifest.json');
+
+    try {
+      const result = spawnSync(process.execPath, [
+        'hkjc-horse-model/src/cli.js',
+        'prospective-coverage',
+        '--db',
+        dbPath,
+        '--freezeDate',
+        '2026-07-22',
+        '--generatedAt',
+        '2026-08-13T02:10:00Z',
+        '--backupManifest',
+        missingBackupPath,
+        '--output',
+        outputPath,
+      ], {
+        cwd: path.resolve(import.meta.dirname, '..', '..'),
+        encoding: 'utf8',
+      });
+
+      assert.equal(result.status, 0, result.stderr || result.stdout);
+      const report = JSON.parse(await readFile(outputPath, 'utf8'));
+      assert.equal(report.backup.status, 'MISSING');
+      assert.equal(report.gate.status, 'BLOCKED_DATA');
     } finally {
       await rm(tempDir, { recursive: true, force: true });
     }

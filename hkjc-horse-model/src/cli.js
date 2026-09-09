@@ -50,6 +50,7 @@ import { runDueLiveMarketSnapshots } from './live-market-due-snapshots.js';
 import { DEFAULT_SNAPSHOT_WINDOWS } from './live-snapshot-planner.js';
 import { runRaceDayCycle } from './race-day-cycle.js';
 import { LOCAL_SCHEDULER_LABEL, renderLaunchAgent } from './local-scheduler.js';
+import { createDatabaseBackup } from './database-backup.js';
 import {
   buildProspectiveCoverage,
   evaluateProspectiveDataGate,
@@ -130,6 +131,11 @@ async function main(argv) {
 
   if (command === 'sync-db') {
     await syncDbCommand(args);
+    return;
+  }
+
+  if (command === 'backup-db') {
+    await backupDbCommand(args);
     return;
   }
 
@@ -288,6 +294,27 @@ async function syncDbCommand(args) {
     console.log(`Upcoming files ${upcomingSummary.filesSeen}, races ${upcomingSummary.racesSeen}, runners ${upcomingSummary.runnersSeen}`);
   }
   console.log(`Database totals: ${stats.races} races (${stats.settledRaces} settled, ${stats.upcomingRaces} upcoming), ${stats.runners} runners, ${stats.dividends} dividends`);
+}
+
+async function backupDbCommand(args) {
+  const dbPath = path.resolve(args.db ?? sqliteDbPath);
+  const backupDirectory = path.resolve(
+    args.backupDirectory
+      ?? path.join(os.homedir(), 'Library', 'Application Support', 'HKJC Local Horse Model', 'backups'),
+  );
+  const manifestPath = path.resolve(
+    args.manifest ?? path.join(privateDataDir, 'backup-manifest.json'),
+  );
+  const report = await createDatabaseBackup({
+    dbPath,
+    backupDirectory,
+    manifestPath,
+    retain: args.retain == null ? 7 : Number(args.retain),
+    now: args.now ?? new Date(),
+  });
+  console.log(`SQLite backup complete: ${report.completedAt}`);
+  console.log(`SHA-256: ${report.sha256}`);
+  console.log(`Retained backups: ${report.retainedBackups}`);
 }
 
 async function autoRunCommand(args) {
@@ -1089,18 +1116,25 @@ async function localSchedulerCommand(args) {
 
 async function prospectiveCoverageCommand(args) {
   const dbPath = path.resolve(args.db ?? sqliteDbPath);
-  const inputs = loadProspectiveCoverageInputs({ dbPath });
+  const freeze = requiredArg(args.freezeDate ?? args.freeze, 'freezeDate');
+  const inputs = loadProspectiveCoverageInputs({ dbPath, freezeDate: freeze });
   const collectionEvidence = args.events
     ? normalizeCoverageEvents(JSON.parse(await readFile(path.resolve(args.events), 'utf8')))
     : { events: [] };
-  const backupManifest = args.backupManifest
-    ? JSON.parse(await readFile(path.resolve(args.backupManifest), 'utf8'))
-    : null;
+  let backupManifest = null;
+  if (args.backupManifest) {
+    const backupManifestPath = path.resolve(args.backupManifest);
+    try {
+      backupManifest = JSON.parse(await readFile(backupManifestPath, 'utf8'));
+    } catch (error) {
+      if (error?.code !== 'ENOENT') throw error;
+    }
+  }
   const report = buildProspectiveCoverage({
     ...inputs,
     snapshots: { ...inputs.snapshots, ...collectionEvidence },
     backupManifest,
-    freeze: requiredArg(args.freezeDate ?? args.freeze, 'freezeDate'),
+    freeze,
     generatedAt: args.generatedAt ?? new Date().toISOString(),
   });
   report.gate = evaluateProspectiveDataGate({
@@ -1701,6 +1735,7 @@ Commands:
   refresh    --historyDays 14 --futureDays 21 --bankroll 200 --minEdge 0 --minProbability 0.15
   auto-run   --input hkjc-horse-model/data/raw --db hkjc-horse-model/data/hkjc.sqlite --output data/dashboard.json --auditOutput hkjc-horse-model/data/private/latest-recommendation-audit.json
   sync-db    --input hkjc-horse-model/data/raw --upcoming hkjc-horse-model/data/upcoming --db hkjc-horse-model/data/hkjc.sqlite
+  backup-db  --db hkjc-horse-model/data/hkjc.sqlite --backupDirectory /private/backups --manifest hkjc-horse-model/data/private/backup-manifest.json --retain 7
   dashboard-db --db hkjc-horse-model/data/hkjc.sqlite --output data/dashboard.json --privateHistoryOutput hkjc-horse-model/data/private/dashboard-history.json
   training-dataset --db hkjc-horse-model/data/hkjc.sqlite --output hkjc-horse-model/data/processed/training-dataset.json --tianxiRoot /path/to/tianxi-database --speedproRoot /path/to/tianxi-database
   training-matrix --input hkjc-horse-model/data/processed/training-dataset.json --output hkjc-horse-model/data/processed/training-matrix.jsonl [--format jsonl|csv]

@@ -201,7 +201,8 @@ const FOLLOW_UP_ACTIONS = [
       'hkjc-parser and sqlite-store tests：排位表解析、upcoming 状态、settled authority 与幂等同步均有回归保护',
     ],
     remaining: [
-      '当前休赛期 upcoming=0；待新赛季首份 race card 发布后完成一次真实预加载、身份校验和 SQLite 覆盖确认。',
+      '2026-09-09 已完成新赛季真实预加载：私有 SQLite 有 8 场 Happy Valley upcoming，并在 R1 开赛前捕获首个 WIN/PLA/QIN/QPL T-30 窗口。',
+      '当前 capture-only 周期仍报告 score-not-configured；下一步接入冻结 scorer 与零现金 decision builder 后，才能把快照转为 prospective model locks。',
       '现金状态保持 NO_BET；预加载只处理公开赛程和排位表，不访问 HKJC 会员账户。',
     ],
   },
@@ -305,7 +306,7 @@ const FOLLOW_UP_ACTIONS = [
       'hkjc-horse-model/src/cli.js shadow-score + hkjc-horse-model/test/shadow-score-cli.test.js：Python scorer 输出先经 validator，再写成 SHADOW / PAPER_ONLY / RESEARCH_ONLY bundle',
       'hkjc-horse-model/src/external-model-comparison.js + app.js：同一场 upcoming race 现已并列展示 heuristic、no-market、live-market baseline 与带 artifact/calibration/training-cutoff lineage 的 shadow market-aware 概率',
     ],
-    remaining: ['one-cycle race-day cycle 已完成；等待新赛季 upcoming race card 与 fresh T-window snapshots 验证真实 shadow score、锁单与结算覆盖。'],
+    remaining: ['已完成新赛季 upcoming race card 与 fresh T-window 采集验证；race-day cycle 的 CLI 仍需显式装配冻结 scorer/decision adapter，才能验证真实 prospective locks 与 settlement。'],
   },
   {
     id: 'prospective-lock-ledger',
@@ -339,10 +340,10 @@ const FOLLOW_UP_ACTIONS = [
       'hkjc-horse-model/src/race-day-cycle.js：单周期、有界重试、post-time guard、零现金锁单与中文摘要',
       'hkjc-horse-model/src/local-scheduler.js：默认禁用、无 secret 的 macOS LaunchAgent 生成器',
       'docs/operations/local-race-day-scheduler.md：演练、审核、安装、日志、备份和卸载手册',
-      '本地部署已启用 LaunchAgent（用户明确批准后安装）；每个十分钟周期运行后退出，不是常驻抓取进程。',
+      '本地部署已启用 LaunchAgent（用户明确批准后安装）；2026-09-09 将日志迁移至用户 Library 后已连续自动运行并取得退出码 0。',
     ],
     remaining: [
-      '默认 CLI 在未配置冻结 scorer adapter 时只抓取快照；prospective coverage 已能量化 missed/offline/collector-error，下一步积累足量 forward cohort。',
+      '默认 CLI 在未配置冻结 scorer adapter 时只抓取快照；先完成 scorer/decision 接线，再由 prospective coverage 量化 missed/offline/collector-error 并积累足量 forward cohort。',
       '现金状态继续 NO_BET；本地调度器不登录、下注或产生非零 cash stake。',
     ],
   },

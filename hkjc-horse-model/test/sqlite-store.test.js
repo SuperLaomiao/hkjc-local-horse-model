@@ -700,6 +700,125 @@ describe('local SQLite race store', () => {
     }
   });
 
+  it('creates date-filter indexes for prospective coverage hot paths', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-sqlite-'));
+    try {
+      const dbPath = path.join(tempDir, 'hkjc.sqlite');
+      getDatabaseStats(dbPath);
+
+      const db = new DatabaseSync(dbPath);
+      const oddsIndexes = db.prepare("PRAGMA index_list('odds_snapshots')").all().map((row) => row.name);
+      const poolIndexes = db.prepare("PRAGMA index_list('pool_snapshots')").all().map((row) => row.name);
+      const lockIndexes = db.prepare("PRAGMA index_list('prospective_locks')").all().map((row) => row.name);
+      db.close();
+
+      assert(oddsIndexes.includes('idx_odds_snapshots_date_time'));
+      assert(poolIndexes.includes('idx_pool_snapshots_date_time'));
+      assert(lockIndexes.includes('idx_prospective_locks_freeze_date'));
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('filters prospective coverage inputs to the freeze-date cohort before loading rows into Node', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-sqlite-'));
+    try {
+      const rawDir = path.join(tempDir, 'raw');
+      const dbPath = path.join(tempDir, 'hkjc.sqlite');
+      const futureRace = {
+        ...settledRace(),
+        raceId: '2026-07-22-HV-1',
+        date: '2026-07-22',
+        racecourse: 'HV',
+        raceNo: 1,
+      };
+      await mkdir(rawDir, { recursive: true });
+      await writeFile(
+        path.join(rawDir, 'mixed-races.json'),
+        JSON.stringify([settledRace(), futureRace], null, 2),
+        'utf8',
+      );
+      syncRaceFilesToDatabase({ dbPath, inputPath: rawDir, sourceKind: 'raw' });
+
+      sqliteStore.recordOddsSnapshots({
+        dbPath,
+        snapshots: [
+          oddsSnapshot('2026-07-04-ST-1', 1, 'WIN', 2, 30, '2026-07-04T07:00:00.000Z'),
+          oddsSnapshot('2026-07-22-HV-1', 1, 'WIN', 3, 30, '2026-07-22T10:00:00.000Z'),
+        ],
+      });
+      sqliteStore.recordProspectiveLock({
+        dbPath,
+        lock: {
+          lockId: 'sha256:old-lock',
+          raceId: '2026-07-04-ST-1',
+          marketWindow: 'T-30',
+          poolKey: 'win',
+          pool: 'WIN',
+          combinationKey: '1',
+          combination: [1],
+          modelId: 'test-model',
+          artifactId: 'sha256:old',
+          featurePolicyId: 'test-policy',
+          generatedAt: '2026-07-04T07:00:00.000Z',
+          decision: {
+            executionStatus: 'PAPER_ONLY',
+            currentDividendPer10: 20,
+            reasonCodes: ['TEST'],
+            stake: 10,
+          },
+          lineage: {
+            modelId: 'test-model',
+            artifactId: 'sha256:old',
+            featurePolicyId: 'test-policy',
+          },
+          immutablePayloadJson: JSON.stringify({ raceId: '2026-07-04-ST-1', modelId: 'test-model' }),
+          createdAt: '2026-07-04T07:00:00.000Z',
+        },
+      });
+      sqliteStore.recordProspectiveLock({
+        dbPath,
+        lock: {
+          lockId: 'sha256:new-lock',
+          raceId: '2026-07-22-HV-1',
+          marketWindow: 'T-30',
+          poolKey: 'win',
+          pool: 'WIN',
+          combinationKey: '1',
+          combination: [1],
+          modelId: 'test-model',
+          artifactId: 'sha256:new',
+          featurePolicyId: 'test-policy',
+          generatedAt: '2026-07-22T10:00:00.000Z',
+          decision: {
+            executionStatus: 'PAPER_ONLY',
+            currentDividendPer10: 30,
+            reasonCodes: ['TEST'],
+            stake: 10,
+          },
+          lineage: {
+            modelId: 'test-model',
+            artifactId: 'sha256:new',
+            featurePolicyId: 'test-policy',
+          },
+          immutablePayloadJson: JSON.stringify({ raceId: '2026-07-22-HV-1', modelId: 'test-model' }),
+          createdAt: '2026-07-22T10:00:00.000Z',
+        },
+      });
+
+      const filtered = sqliteStore.loadProspectiveCoverageInputs({
+        dbPath,
+        freezeDate: '2026-07-22',
+      });
+
+      assert.deepEqual(filtered.races.map((race) => race.raceId), ['2026-07-22-HV-1']);
+      assert.deepEqual(filtered.snapshots.odds.map((snapshot) => snapshot.raceId), ['2026-07-22-HV-1']);
+      assert.deepEqual(filtered.locks.map((lock) => lock.raceId), ['2026-07-22-HV-1']);
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
   it('loads runner-level market odds features from pre-race windows', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'hkjc-sqlite-'));
     try {
