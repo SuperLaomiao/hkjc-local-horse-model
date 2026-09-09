@@ -6,7 +6,7 @@
 
 ## 当前本地部署状态
 
-生成器对新安装仍保持默认禁用，避免仓库代码自行注册后台任务。本项目的本地主机已于 2026-07-22 在用户明确批准后完成安装和启用，并于 2026-09-09 把 launchd 日志迁移到 `~/Library/Logs/HKJC Local Horse Model/`，修复项目 Documents 路径日志无法由 launchd 打开而产生的退出码 78。它每十分钟启动一次有限周期，执行完即退出。GitHub Pages 只展示这项汇总状态，不发布主机路径、数据库位置、日志内容或逐场记录。
+生成器对新安装仍保持默认禁用，避免仓库代码自行注册后台任务。本项目的本地主机已于 2026-07-22 在用户明确批准后完成安装和启用，并于 2026-09-09 把 launchd 日志迁移到 `~/Library/Logs/HKJC Local Horse Model/`，修复项目 Documents 路径日志无法由 launchd 打开而产生的退出码 78。它每五分钟启动一次有限周期，执行完即退出；五分钟上限用于避免跨过仅有0–5分钟宽度的T-3窗口。GitHub Pages 只展示这项汇总状态，不发布主机路径、数据库位置、日志内容或逐场记录。
 
 本地部署把赛程预加载与临场采集分开：每日巡检先复用公开 `refresh` 和 `sync-db` 链路，把已发布的未来排位表同步进获批的私有 SQLite；LaunchAgent 随后只读取这些 `upcoming` 场次，并在到期窗口采集。没有未来本地赛事或排位表尚未发布时，预加载应报告空闲并继续其他研究任务，不伪造场次。
 
@@ -39,7 +39,7 @@ npm run hkjc:local-scheduler -- \
   --projectPath "$(pwd)" \
   --db "$HKJC_PRIVATE_DB" \
   --logDirectory "$HOME/Library/Logs/HKJC Local Horse Model" \
-  --intervalMinutes 10 \
+  --intervalMinutes 5 \
   --dryRun \
   --output hkjc-horse-model/data/private/com.superlaomiao.hkjc-race-day-cycle.plist
 
@@ -65,7 +65,7 @@ npm run hkjc:local-scheduler -- \
   --projectPath "$(pwd)" \
   --db "$HKJC_PRIVATE_DB" \
   --logDirectory "$HOME/Library/Logs/HKJC Local Horse Model" \
-  --intervalMinutes 10 \
+  --intervalMinutes 5 \
   --output hkjc-horse-model/data/private/com.superlaomiao.hkjc-race-day-cycle.plist \
   --install
 

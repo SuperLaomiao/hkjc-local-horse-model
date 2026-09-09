@@ -193,7 +193,7 @@ const FOLLOW_UP_ACTIONS = [
     title: '自动预加载未来赛程与排位表',
     sourceRefs: ['official HKJC fixture', 'official HKJC race card'],
     action: '每日巡检先运行公开 fixture/race-card refresh，再用 sync-db 把可验证的 upcoming races 写入本地私有 SQLite。',
-    expectedOutcome: '新赛季排位表发布后无需人工导入，十分钟 race-day cycle 可直接接手 T-30/T-10/T-3 采集。',
+    expectedOutcome: '新赛季排位表发布后无需人工导入，五分钟 race-day cycle 可直接接手 T-30/T-10/T-3 采集。',
     automationExecutable: true,
     evidence: [
       'hkjc-horse-model/src/hkjc-parser.js：fetchFixtureMeetings / fetchMeetingRaceCards 使用官方公开页面并校验本地赛场身份',
@@ -340,7 +340,7 @@ const FOLLOW_UP_ACTIONS = [
       'hkjc-horse-model/src/race-day-cycle.js：单周期、有界重试、post-time guard、零现金锁单与中文摘要',
       'hkjc-horse-model/src/local-scheduler.js：默认禁用、无 secret 的 macOS LaunchAgent 生成器',
       'docs/operations/local-race-day-scheduler.md：演练、审核、安装、日志、备份和卸载手册',
-      '本地部署已启用 LaunchAgent（用户明确批准后安装）；2026-09-09 将日志迁移至用户 Library 后已连续自动运行并取得退出码 0。',
+      '本地部署已启用 LaunchAgent（用户明确批准后安装）；2026-09-09 将日志迁移至用户 Library 后已按5分钟周期连续自动运行并取得退出码 0。',
     ],
     remaining: [
       '默认 CLI 在未配置冻结 scorer adapter 时只抓取快照；先完成 scorer/decision 接线，再由 prospective coverage 量化 missed/offline/collector-error 并积累足量 forward cohort。',

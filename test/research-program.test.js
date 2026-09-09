@@ -149,6 +149,7 @@ describe('research upgrade program', () => {
       && item.evidence.some((entry) => /local-scheduler\.js/.test(entry))
       && item.evidence.some((entry) => /已启用|enabled/i.test(entry))
       && item.evidence.some((entry) => /exit 0|退出码 0/i.test(entry))
+      && item.evidence.some((entry) => /5分钟|五分钟|300 seconds/i.test(entry))
       && item.remaining.some((entry) => /prospective coverage|missed|offline/i.test(entry))
       && item.remaining.some((entry) => /NO_BET|cash/i.test(entry))
     )));
