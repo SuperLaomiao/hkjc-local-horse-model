@@ -1,10 +1,10 @@
-const CACHE_NAME = "hkjc-model-v15-live-market";
+const CACHE_NAME = "hkjc-model-v16-sw-retry";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./styles.css?v=20260913-live-market",
-  "./app.js?v=20260913-live-market",
-  "./live-market-browser.js",
+  "./app.js?v=20260913-sw-retry",
+  "./live-market-browser.js?v=20260913-sw-retry",
   "./dashboard-cockpit.js?v=20260719-mobile-cockpit",
   "./dashboard-layout.js?v=20260719-mobile-cockpit",
   "./external-model-summary.js?v=20260708-external-models",
