@@ -92,6 +92,7 @@ describe('public dashboard app integration', () => {
     const serviceWorker = await readFile(new URL('../sw.js', import.meta.url), 'utf8');
     const publisher = await readFile(new URL('../hkjc-horse-model/src/public-site-publish.js', import.meta.url), 'utf8');
     const styles = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
+    const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
 
     assert.match(appSource, /fetchLiveRaceOdds/);
     assert.match(appSource, /refreshSelectedRaceOdds/);
@@ -103,5 +104,8 @@ describe('public dashboard app integration', () => {
     assert.match(serviceWorker, /event\.request\.method !== "GET"/);
     assert.match(publisher, /live-market-browser\.js/);
     assert.match(styles, /\.cockpit-live-odds-row/);
+    assert.match(appSource, /controllerchange/);
+    assert.match(appSource, /document\.readyState === "complete"/);
+    assert.match(html, /app\.js\?v=20260913-sw-retry/);
   });
 });

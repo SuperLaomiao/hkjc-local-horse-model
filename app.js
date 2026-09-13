@@ -24,7 +24,7 @@ import {
 } from "./external-model-summary.js?v=20260708-external-models";
 import { buildStructuredBetPortfolio } from "./multi-play-portfolio.js";
 import { buildMeetingCountdown } from "./meeting-countdown.js";
-import { fetchLiveRaceOdds, formatLiveOddsValue, quoteForSelection, withLiveOdds } from "./live-market-browser.js";
+import { fetchLiveRaceOdds, formatLiveOddsValue, quoteForSelection, withLiveOdds } from "./live-market-browser.js?v=20260913-sw-retry";
 import {
   buildPublicPortfolioOptions,
   dashboardExecutionPolicy,
@@ -2713,9 +2713,14 @@ function refreshStatusText(snapshot) {
 
 function registerServiceWorker() {
   if (!("serviceWorker" in navigator)) return;
-  window.addEventListener("load", () => {
+  const register = () => {
     navigator.serviceWorker.register("./sw.js").catch(() => {});
+  };
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (uiState.snapshot) void refreshSelectedRaceOdds();
   });
+  if (document.readyState === "complete") register();
+  else window.addEventListener("load", register, { once: true });
 }
 
 function formatMeeting(meeting) {
