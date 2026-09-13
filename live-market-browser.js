@@ -131,6 +131,11 @@ export function quoteForSelection(market, betType, selections, now = new Date())
   };
 }
 
+export function formatLiveOddsValue(value) {
+  const odds = Number(value);
+  return Number.isFinite(odds) && odds > 0 ? String(odds) : '—';
+}
+
 export function withLiveOdds(entry, market, now = new Date()) {
   if (!entry?.forecast) return entry;
   const validMarket = market?.raceId === entry.raceId ? market : null;
