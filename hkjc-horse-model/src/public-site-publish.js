@@ -24,6 +24,7 @@ export const PUBLIC_SITE_STATIC_FILES = Object.freeze([
   'hkjc-horse-model/src/value-betting-engine.js',
   'icons/app-icon.svg',
   'index.html',
+  'live-market-browser.js',
   'manifest.webmanifest',
   'meeting-countdown.js',
   'multi-play-portfolio.js',

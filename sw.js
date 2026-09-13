@@ -1,9 +1,10 @@
-const CACHE_NAME = "hkjc-model-v14-mobile-cockpit";
+const CACHE_NAME = "hkjc-model-v15-live-market";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=20260719-mobile-cockpit",
-  "./app.js?v=20260719-mobile-cockpit",
+  "./styles.css?v=20260913-live-market",
+  "./app.js?v=20260913-live-market",
+  "./live-market-browser.js",
   "./dashboard-cockpit.js?v=20260719-mobile-cockpit",
   "./dashboard-layout.js?v=20260719-mobile-cockpit",
   "./external-model-summary.js?v=20260708-external-models",
@@ -38,6 +39,8 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
+  // Cross-origin live POSTs must reach HKJC directly; Cache API cannot store POST requests.
+  if (url.origin !== self.location.origin || event.request.method !== "GET") return;
 
   if (
     url.pathname.endsWith("/data/dashboard.json")

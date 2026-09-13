@@ -97,6 +97,23 @@ describe('race-day cockpit', () => {
     assert.equal(view.lines[0].amount, 0);
   });
 
+  it('prints horse numbers from structured selections instead of object strings', () => {
+    const view = buildCockpitViewModel({
+      entry,
+      entries: [entry],
+      refreshStatus: 'ready',
+      executionPolicy: { allowExecutableRecommendations: true },
+      availability: { canBetNow: true },
+      portfolio: {
+        cashLines: [],
+        watchLines: [{ type: 'QUINELLA_PLACE', selections: [{ horseNo: 2 }, { horseNo: 8 }], stake: 0 }],
+      },
+    });
+    assert.equal(view.lines[0].context, 'R3 · QUINELLA_PLACE · 2+8');
+    assert.equal(view.lines[0].type, 'QUINELLA_PLACE');
+    assert.deepEqual(view.lines[0].selections, [{ horseNo: 2 }, { horseNo: 8 }]);
+  });
+
   it('keeps a valid cash portfolio executable with the exact total', () => {
     const view = buildCockpitViewModel({
       snapshot: { generatedAt: '2026-07-19T04:00:00.000Z' },

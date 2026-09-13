@@ -313,6 +313,18 @@ describe('multi-play portfolio optimizer', () => {
     assert(portfolio.tripwire.reasonCodes.includes('MISSING_LIVE_MARKET'));
   });
 
+  it('recognizes HKJC START_SELL as an open market while keeping unpromoted models paper-only', () => {
+    const portfolio = buildStructuredBetPortfolio(entry([
+      runner('A', 'Market Top', 0.4, 7.2, 2.6),
+      runner('B', 'Market Support', 0.3, 8.5, 2.8),
+      runner('C', 'Third', 0.2, 11, 3.3),
+      runner('D', 'Fourth', 0.1, 14, 4.2),
+    ]), liveOptions({ sellStatus: 'START_SELL', probabilityStatus: 'RESEARCH_ONLY' }));
+
+    assert.equal(portfolio.totalStake, 0);
+    assert(!portfolio.tripwire.reasonCodes.includes('MISSING_LIVE_MARKET'));
+  });
+
   it('does not force a cash bet when the race has no usable signal', () => {
     const portfolio = buildStructuredBetPortfolio(entry([
       runner('A', 'Thin Top', 0.105, 10, 2.8),
