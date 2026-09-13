@@ -24,7 +24,7 @@ import {
 } from "./external-model-summary.js?v=20260708-external-models";
 import { buildStructuredBetPortfolio } from "./multi-play-portfolio.js";
 import { buildMeetingCountdown } from "./meeting-countdown.js";
-import { fetchLiveRaceOdds, quoteForSelection, withLiveOdds } from "./live-market-browser.js";
+import { fetchLiveRaceOdds, formatLiveOddsValue, quoteForSelection, withLiveOdds } from "./live-market-browser.js";
 import {
   buildPublicPortfolioOptions,
   dashboardExecutionPolicy,
@@ -549,14 +549,14 @@ function renderLiveMarketCard(entry) {
 function renderMarketPrice(quote) {
   if (!quote) return "—";
   if (quote.status !== "FRESH") return `— <small>${escapeHtml(marketStatusLabel(quote.status))}</small>`;
-  return `${escapeHtml(quote.oddsValue.toFixed(1))}倍 <small>${escapeHtml(formatHkMarketTime(quote.capturedAt))}</small>`;
+  return `${escapeHtml(formatLiveOddsValue(quote.oddsValue))}倍 <small>${escapeHtml(formatHkMarketTime(quote.capturedAt))}</small>`;
 }
 
 function renderLiveLineQuote(line) {
   const quote = quoteForSelection(uiState.liveMarket, line.type, line.selections);
   if (!quote) return "官方报价：未取得";
   if (quote.status !== "FRESH") return `官方报价：${marketStatusLabel(quote.status)}`;
-  return `官方赔率 ${quote.oddsValue.toFixed(1)}倍 · ${formatHkMarketTime(quote.capturedAt)}`;
+  return `官方赔率 ${formatLiveOddsValue(quote.oddsValue)}倍 · ${formatHkMarketTime(quote.capturedAt)}`;
 }
 
 function marketStatusLabel(status) {

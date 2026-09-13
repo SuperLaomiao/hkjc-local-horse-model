@@ -3,6 +3,7 @@ import { describe, it } from 'node:test';
 
 import {
   fetchLiveRaceOdds,
+  formatLiveOddsValue,
   HKJC_BROWSER_ODDS_QUERY,
   quoteForSelection,
   withLiveOdds,
@@ -27,6 +28,11 @@ function payload({ lastUpdateTime = updatedAt, sellStatus = 'START_SELL', raceNo
 }
 
 describe('browser live HKJC odds', () => {
+  it('does not round away the source quote precision in the display', () => {
+    assert.equal(formatLiveOddsValue(1.07), '1.07');
+    assert.equal(formatLiveOddsValue(4.8), '4.8');
+  });
+
   it('keeps the browser query identical to the collector-approved HKJC query', () => {
     assert.equal(HKJC_BROWSER_ODDS_QUERY.trim(), HKJC_HORSE_ODDS_QUERY.trim());
   });
