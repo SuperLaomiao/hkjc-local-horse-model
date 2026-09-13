@@ -215,7 +215,7 @@ function buildPortfolioTripwire(board, entry, config) {
     return Number.isFinite(Number(market?.dividendPer10))
       && Number(market.dividendPer10) > 0
       && market?.status === "FRESH"
-      && ["SELLING", "OPEN", "SALE_OPEN"].includes(sellStatus);
+      && ["SELLING", "OPEN", "SALE_OPEN", "START_SELL", "START_SELLING"].includes(sellStatus);
   });
   return evaluateUncertaintyTripwire({
     ...(entry?.forecast?.uncertaintyContext ?? {}),

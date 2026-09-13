@@ -86,4 +86,22 @@ describe('public dashboard app integration', () => {
     assert.match(appSource, /!selectedEntry \|\| todayStatus\.noLocalRaceToday/);
     assert.match(appSource, /香港今天没有开放赛事/);
   });
+
+  it('loads live odds for the selected race and never promises a static ten-minute refresh', async () => {
+    const appSource = await readFile(new URL('../app.js', import.meta.url), 'utf8');
+    const serviceWorker = await readFile(new URL('../sw.js', import.meta.url), 'utf8');
+    const publisher = await readFile(new URL('../hkjc-horse-model/src/public-site-publish.js', import.meta.url), 'utf8');
+    const styles = await readFile(new URL('../styles.css', import.meta.url), 'utf8');
+
+    assert.match(appSource, /fetchLiveRaceOdds/);
+    assert.match(appSource, /refreshSelectedRaceOdds/);
+    assert.match(appSource, /withLiveOdds/);
+    assert.match(appSource, /renderLiveMarketCard/);
+    assert.match(appSource, /quoteForSelection/);
+    assert.doesNotMatch(appSource, /赛马窗口后台约每 10 分钟更新/);
+    assert.match(serviceWorker, /url\.origin !== self\.location\.origin/);
+    assert.match(serviceWorker, /event\.request\.method !== "GET"/);
+    assert.match(publisher, /live-market-browser\.js/);
+    assert.match(styles, /\.cockpit-live-odds-row/);
+  });
 });

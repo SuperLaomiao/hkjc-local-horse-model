@@ -24,6 +24,7 @@ import {
 } from "./external-model-summary.js?v=20260708-external-models";
 import { buildStructuredBetPortfolio } from "./multi-play-portfolio.js";
 import { buildMeetingCountdown } from "./meeting-countdown.js";
+import { fetchLiveRaceOdds, quoteForSelection, withLiveOdds } from "./live-market-browser.js";
 import {
   buildPublicPortfolioOptions,
   dashboardExecutionPolicy,
@@ -58,6 +59,11 @@ const uiState = {
   isRefreshing: false,
   refreshStatus: "ready",
   refreshedAt: null,
+  liveMarket: null,
+  liveMarketStatus: "idle",
+  liveMarketError: null,
+  liveMarketRequestId: 0,
+  liveMarketController: null,
   userPicks: [],
   lockedForecasts: [],
   selectedPoolType: "PLACE",
@@ -80,6 +86,12 @@ async function init() {
   loadLocalRecords();
   bindHashNavigation();
   await refreshDashboardData({ initial: true });
+  window.setInterval(() => {
+    if (document.visibilityState === "visible") void refreshSelectedRaceOdds();
+  }, 60_000);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") void refreshSelectedRaceOdds();
+  });
   registerServiceWorker();
 }
 
@@ -120,6 +132,7 @@ function writeLocalArray(key, value) {
 async function refreshDashboardData({ initial = false } = {}) {
   if (uiState.isRefreshing) return;
   uiState.isRefreshing = true;
+  let loaded = false;
   uiState.refreshStatus = initial ? "loading-initial" : "loading";
   if (!initial && uiState.snapshot) render();
 
@@ -134,6 +147,7 @@ async function refreshDashboardData({ initial = false } = {}) {
     uiState.selectedRaceId = resolveSelectedRaceId(nextSnapshot, uiState.selectedRaceId);
     uiState.refreshedAt = new Date().toISOString();
     uiState.refreshStatus = initial ? "ready" : "success";
+    loaded = true;
     render();
   } catch (error) {
     uiState.refreshStatus = "error";
@@ -145,6 +159,42 @@ async function refreshDashboardData({ initial = false } = {}) {
   } finally {
     uiState.isRefreshing = false;
     if (uiState.snapshot) render();
+    if (loaded) void refreshSelectedRaceOdds();
+  }
+}
+
+async function refreshSelectedRaceOdds() {
+  const rawEntry = getAllEntries(uiState.snapshot ?? {}).find((entry) => entry.raceId === uiState.selectedRaceId);
+  if (!rawEntry || rawEntry.settlement || rawEntry.date !== hkDateString()) return;
+  const requestId = ++uiState.liveMarketRequestId;
+  uiState.liveMarketController?.abort();
+  const controller = new AbortController();
+  uiState.liveMarketController = controller;
+  uiState.liveMarket = null;
+  uiState.liveMarketStatus = "loading";
+  uiState.liveMarketError = null;
+  render();
+  const timeoutId = window.setTimeout(() => controller.abort(), 12_000);
+  try {
+    const market = await fetchLiveRaceOdds({
+      date: rawEntry.date,
+      venueCode: rawEntry.racecourse,
+      raceNo: rawEntry.raceNo,
+      signal: controller.signal,
+    });
+    if (requestId !== uiState.liveMarketRequestId || uiState.selectedRaceId !== rawEntry.raceId) return;
+    uiState.liveMarket = market;
+    uiState.liveMarketStatus = Object.values(market.pools).some((pool) => Object.keys(pool.quotes).length)
+      ? "ready"
+      : "empty";
+  } catch (error) {
+    if (requestId !== uiState.liveMarketRequestId) return;
+    uiState.liveMarket = null;
+    uiState.liveMarketStatus = "error";
+    uiState.liveMarketError = error?.name === "AbortError" ? "请求超时" : "接口暂不可用";
+  } finally {
+    window.clearTimeout(timeoutId);
+    if (requestId === uiState.liveMarketRequestId) render();
   }
 }
 
@@ -161,7 +211,10 @@ function resolveSelectedRaceId(snapshot, preferredRaceId) {
 function render() {
   const snapshot = uiState.snapshot;
   const entries = getAllEntries(snapshot);
-  const selectedEntry = entries.find((entry) => entry.raceId === uiState.selectedRaceId) ?? entries[0] ?? null;
+  const rawSelectedEntry = entries.find((entry) => entry.raceId === uiState.selectedRaceId) ?? entries[0] ?? null;
+  const selectedEntry = rawSelectedEntry && !rawSelectedEntry.settlement
+    ? withLiveOdds(rawSelectedEntry, uiState.liveMarket, new Date())
+    : rawSelectedEntry;
   const todayStatus = localRaceDayStatus(snapshot);
   const executionPolicy = dashboardExecutionPolicy(snapshot);
   const publication = publicationBadge(executionPolicy);
@@ -257,6 +310,7 @@ function renderTodayDestination(context) {
     <section class="cockpit-page is-today" aria-label="今日赛马驾驶舱">
       ${renderCockpitStatusCard(snapshot, selectedEntry, todayStatus, cockpit)}
       ${renderCockpitRaceChips(entries, selectedEntry)}
+      ${renderLiveMarketCard(selectedEntry)}
       <div class="cockpit-content-grid">
         <div class="cockpit-primary-stack">
           ${renderCockpitPlanCard(cockpit)}
@@ -441,7 +495,7 @@ function renderCockpitPlanCard(cockpit) {
         <div class="cockpit-plan-lines">
           ${cockpit.lines.map((line) => `
             <div class="cockpit-plan-line">
-              <div><strong>${escapeHtml(line.context)}</strong><span>${escapeHtml(line.rationale || "按现有 EV 与风险闸结果")}</span></div>
+              <div><strong>${escapeHtml(line.context)}</strong><span>${escapeHtml(line.rationale || "按现有 EV 与风险闸结果")}</span><span>${renderLiveLineQuote(line)}</span></div>
               <em>${formatHkd(line.amount)}</em>
             </div>
           `).join("")}
@@ -450,6 +504,71 @@ function renderCockpitPlanCard(cockpit) {
       ${renderRefreshButton("刷新赔率并重算方案", "panel")}
     </section>
   `;
+}
+
+function renderLiveMarketCard(entry) {
+  const market = uiState.liveMarket?.raceId === entry.raceId ? uiState.liveMarket : null;
+  const runners = entry.forecast?.predictions ?? [];
+  const freshCount = runners.reduce((count, runner) => (
+    count + Number(quoteForSelection(market, "WIN", [runner])?.status === "FRESH")
+  ), 0);
+  const newest = Object.values(market?.pools ?? {})
+    .map((pool) => pool.capturedAt)
+    .filter((value) => Number.isFinite(Date.parse(value)))
+    .sort()
+    .at(-1);
+  const status = uiState.liveMarketStatus === "loading"
+    ? "正在查询马会赔率…"
+    : uiState.liveMarketStatus === "error"
+      ? `读取失败：${uiState.liveMarketError}；不要使用旧报价`
+      : uiState.liveMarketStatus === "empty"
+        ? "马会尚未提供本场有效报价"
+        : freshCount
+          ? `已取得本场官方报价 · 最近更新 ${formatHkMarketTime(newest)}`
+          : "当前报价已过期或停止销售，不可用于下注";
+  return `
+    <section class="cockpit-live-market panel" aria-label="本场官方实时赔率" aria-live="polite">
+      <div class="panel-header"><div><h3>R${escapeHtml(entry.raceNo)} · 官方实时赔率</h3><p>${escapeHtml(status)}</p></div></div>
+      <div class="cockpit-live-odds-head"><span>马匹</span><span>独赢 WIN</span><span>位置 PLA</span></div>
+      <div class="cockpit-live-odds-list">
+        ${runners.map((runner) => {
+          const win = quoteForSelection(market, "WIN", [runner]);
+          const place = quoteForSelection(market, "PLACE", [runner]);
+          return `<div class="cockpit-live-odds-row">
+            <strong>${escapeHtml(runner.horseNo ?? "-")}号 ${escapeHtml(runner.horseName ?? "")}</strong>
+            <span>${renderMarketPrice(win)}</span>
+            <span>${renderMarketPrice(place)}</span>
+          </div>`;
+        }).join("") || '<p class="guardrail">本场暂无可显示的马匹。</p>'}
+      </div>
+      <p class="fine-print">赔率来自马会公开接口，显示的是报价倍数；按“刷新赔率”可重新查询。超过15分钟或停售的报价不能作为下注依据。预测概率尚未通过执行晋级，当前仍为纸上观察。</p>
+    </section>
+  `;
+}
+
+function renderMarketPrice(quote) {
+  if (!quote) return "—";
+  if (quote.status !== "FRESH") return `— <small>${escapeHtml(marketStatusLabel(quote.status))}</small>`;
+  return `${escapeHtml(quote.oddsValue.toFixed(1))}倍 <small>${escapeHtml(formatHkMarketTime(quote.capturedAt))}</small>`;
+}
+
+function renderLiveLineQuote(line) {
+  const quote = quoteForSelection(uiState.liveMarket, line.type, line.selections);
+  if (!quote) return "官方报价：未取得";
+  if (quote.status !== "FRESH") return `官方报价：${marketStatusLabel(quote.status)}`;
+  return `官方赔率 ${quote.oddsValue.toFixed(1)}倍 · ${formatHkMarketTime(quote.capturedAt)}`;
+}
+
+function marketStatusLabel(status) {
+  return { STALE: "已过期", CLOSED: "已停售", FUTURE: "时间异常", UNKNOWN_TIME: "缺更新时间" }[status] ?? "不可用";
+}
+
+function formatHkMarketTime(value) {
+  const date = new Date(value);
+  if (!Number.isFinite(date.getTime())) return "时间不明";
+  return new Intl.DateTimeFormat("zh-HK", {
+    timeZone: "Asia/Hong_Kong", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
+  }).format(date);
 }
 
 function renderCockpitModelSummary(snapshot, entry) {
@@ -2470,6 +2589,7 @@ function bindEvents() {
     button.addEventListener("click", () => {
       uiState.selectedRaceId = button.dataset.raceSelectId;
       render();
+      void refreshSelectedRaceOdds();
     });
   });
 
@@ -2588,7 +2708,7 @@ function refreshStatusText(snapshot) {
   }
   const dataTime = snapshot?.generatedAt ? `数据生成：${formatDateTime(snapshot.generatedAt)}` : "数据生成：-";
   const clickTime = uiState.refreshedAt ? `页面刷新：${formatDateTime(uiState.refreshedAt)}` : "页面刷新：-";
-  return `${dataTime} · ${clickTime} · 赛马窗口后台约每 10 分钟更新`;
+  return `${dataTime} · ${clickTime} · 官方赔率在本场区块独立实时查询`;
 }
 
 function registerServiceWorker() {

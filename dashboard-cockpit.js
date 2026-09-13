@@ -43,6 +43,8 @@ export function buildCockpitViewModel(options = {}) {
   const canExecute = state === 'PLAY' && raceContext !== null;
   const lines = sourceLines.map((line) => ({
     context: `${raceContext ?? 'R-'} · ${line.type ?? line.label ?? 'BET'} · ${formatSelections(line.selections)}`,
+    type: line.type ?? null,
+    selections: line.selections ?? [],
     amount: canExecute ? finiteAmount(line.stake) : 0,
     rationale: line.rationale ?? '',
   }));
@@ -82,7 +84,12 @@ function finiteAmount(value) {
 
 function formatSelections(selections) {
   if (!Array.isArray(selections) || !selections.length) return '-';
-  return selections.map((selection) => String(selection)).join('+');
+  return selections.map((selection) => {
+    if (selection && typeof selection === 'object') {
+      return String(selection.horseNo ?? selection.horseName ?? selection.horseId ?? '?');
+    }
+    return String(selection);
+  }).join('+');
 }
 
 function headlineForState(state) {
