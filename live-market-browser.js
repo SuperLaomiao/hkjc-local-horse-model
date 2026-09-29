@@ -77,6 +77,7 @@ export async function fetchLiveRaceOdds({
   if (payload?.errors?.length) throw new Error('马会赔率接口拒绝查询');
   const raceId = `${date}-${normalizedVenue}-${normalizedRaceNo}`;
   const pools = {};
+  const fetchedAt = new Date(now).toISOString();
   for (const meeting of payload?.data?.raceMeetings ?? []) {
     for (const pool of meeting?.pmPools ?? []) {
       const type = String(pool?.oddsType ?? '').toUpperCase();
@@ -91,7 +92,8 @@ export async function fetchLiveRaceOdds({
         quotes[key] = price;
       }
       pools[type] = {
-        capturedAt: pool.lastUpdateTime ?? null,
+        capturedAt: fetchedAt,
+        marketUpdatedAt: pool.lastUpdateTime ?? null,
         sellStatus: pool.sellStatus ?? pool.status ?? null,
         quotes,
       };
@@ -99,7 +101,7 @@ export async function fetchLiveRaceOdds({
   }
   return {
     raceId,
-    fetchedAt: new Date(now).toISOString(),
+    fetchedAt,
     source: 'HKJC public GraphQL',
     pools,
   };
@@ -116,19 +118,34 @@ export function quoteForSelection(market, betType, selections, now = new Date())
   if (!Number.isFinite(oddsValue) || oddsValue <= 0) return null;
   const captured = Date.parse(pool.capturedAt);
   const ageMinutes = (new Date(now).getTime() - captured) / 60_000;
+  const marketUpdated = Date.parse(pool.marketUpdatedAt);
   let status = 'FRESH';
   if (!Number.isFinite(ageMinutes)) status = 'UNKNOWN_TIME';
-  else if (ageMinutes < -1) status = 'FUTURE';
+  else if (ageMinutes < -1 || (Number.isFinite(marketUpdated) && marketUpdated - new Date(now).getTime() > 60_000)) status = 'FUTURE';
   else if (ageMinutes > 15) status = 'STALE';
   else if (!SELLING_STATUSES.has(String(pool.sellStatus ?? '').toUpperCase())) status = 'CLOSED';
   return {
     oddsValue,
     capturedAt: pool.capturedAt,
+    marketUpdatedAt: pool.marketUpdatedAt,
     sellStatus: pool.sellStatus,
     ageMinutes: Number.isFinite(ageMinutes) ? ageMinutes : null,
     status,
     source: market.source,
   };
+}
+
+export function isLiveMarketEligible(entry, today) {
+  const raceDate = String(entry?.date ?? entry?.forecast?.date ?? '');
+  return !entry?.settlement
+    && /^\d{4}-\d{2}-\d{2}$/.test(raceDate)
+    && /^\d{4}-\d{2}-\d{2}$/.test(String(today ?? ''))
+    && raceDate >= today;
+}
+
+export function liveMarketPhase(entry, today) {
+  if (!isLiveMarketEligible(entry, today)) return 'UNAVAILABLE';
+  return String(entry?.date ?? entry?.forecast?.date) > today ? 'EARLY' : 'LIVE';
 }
 
 export function formatLiveOddsValue(value) {

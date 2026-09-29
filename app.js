@@ -10,6 +10,7 @@ import { buildAdaptiveRacePlan } from "./adaptive-staking.js";
 import {
   COCKPIT_DESTINATIONS,
   buildCockpitViewModel,
+  buildProspectiveCoverageView,
   normalizeCockpitDestination,
 } from "./dashboard-cockpit.js?v=20260719-mobile-cockpit";
 import {
@@ -24,7 +25,7 @@ import {
 } from "./external-model-summary.js?v=20260708-external-models";
 import { buildStructuredBetPortfolio } from "./multi-play-portfolio.js";
 import { buildMeetingCountdown } from "./meeting-countdown.js";
-import { fetchLiveRaceOdds, formatLiveOddsValue, quoteForSelection, withLiveOdds } from "./live-market-browser.js?v=20260913-sw-retry";
+import { fetchLiveRaceOdds, formatLiveOddsValue, isLiveMarketEligible, liveMarketPhase, quoteForSelection, withLiveOdds } from "./live-market-browser.js?v=20260929-public-release";
 import {
   buildPublicPortfolioOptions,
   dashboardExecutionPolicy,
@@ -165,7 +166,7 @@ async function refreshDashboardData({ initial = false } = {}) {
 
 async function refreshSelectedRaceOdds() {
   const rawEntry = getAllEntries(uiState.snapshot ?? {}).find((entry) => entry.raceId === uiState.selectedRaceId);
-  if (!rawEntry || rawEntry.settlement || rawEntry.date !== hkDateString()) return;
+  if (!isLiveMarketEligible(rawEntry, hkDateString())) return;
   const requestId = ++uiState.liveMarketRequestId;
   uiState.liveMarketController?.abort();
   const controller = new AbortController();
@@ -303,7 +304,7 @@ function renderDestination(destinationId, context) {
 function renderTodayDestination(context) {
   const { snapshot, entries, selectedEntry, todayStatus, executionPolicy, cockpit } = context;
   if (!selectedEntry || todayStatus.noLocalRaceToday) {
-    return renderNoMeetingCockpit(snapshot, cockpit, todayStatus);
+    return renderNoMeetingCockpit(snapshot, cockpit, todayStatus, selectedEntry);
   }
 
   return `
@@ -353,6 +354,7 @@ function renderResearchDestination({ snapshot }) {
       ${renderDestinationHeader("研究", "模型成绩、外部 benchmark、数据缺口和下一步升级。")}
       <div class="cockpit-detail-stack">
         ${renderScoreStrip(snapshot.summary)}
+        ${renderProspectiveCoveragePanel(snapshot.prospectiveCoverage)}
         ${renderResearchUpgradePanel(snapshot)}
       </div>
     </section>
@@ -404,7 +406,7 @@ function renderDestinationHeader(title, detail) {
   `;
 }
 
-function renderNoMeetingCockpit(snapshot, cockpit, todayStatus) {
+function renderNoMeetingCockpit(snapshot, cockpit, todayStatus, selectedEntry) {
   const nextMeeting = todayStatus.nextMeeting ? formatMeeting(todayStatus.nextMeeting) : "等待官方排位表";
   return `
     <section class="cockpit-page is-today" aria-label="今日无香港本地赛事">
@@ -418,6 +420,7 @@ function renderNoMeetingCockpit(snapshot, cockpit, todayStatus) {
         </div>
       </section>
       ${renderMeetingForecastPanel(snapshot, todayStatus)}
+      ${selectedEntry && selectedEntry.date > todayStatus.today ? renderLiveMarketCard(selectedEntry) : ""}
       <section class="cockpit-empty-action">
         ${renderRefreshButton("检查最新赛程", "panel")}
       </section>
@@ -517,14 +520,16 @@ function renderLiveMarketCard(entry) {
     .filter((value) => Number.isFinite(Date.parse(value)))
     .sort()
     .at(-1);
+  const phase = liveMarketPhase(entry, hkDateString());
+  const phaseLabel = phase === "EARLY" ? "早盘" : "实时";
   const status = uiState.liveMarketStatus === "loading"
     ? "正在查询马会赔率…"
     : uiState.liveMarketStatus === "error"
       ? `读取失败：${uiState.liveMarketError}；不要使用旧报价`
       : uiState.liveMarketStatus === "empty"
-        ? "马会尚未提供本场有效报价"
+        ? `马会尚未开放本场${phaseLabel}盘口`
         : freshCount
-          ? `已取得本场官方报价 · 最近更新 ${formatHkMarketTime(newest)}`
+          ? `已取得本场官方${phaseLabel}报价 · 查询时间 ${formatHkMarketTime(newest)}`
           : "当前报价已过期或停止销售，不可用于下注";
   return `
     <section class="cockpit-live-market panel" aria-label="本场官方实时赔率" aria-live="polite">
@@ -541,7 +546,7 @@ function renderLiveMarketCard(entry) {
           </div>`;
         }).join("") || '<p class="guardrail">本场暂无可显示的马匹。</p>'}
       </div>
-      <p class="fine-print">赔率来自马会公开接口，显示的是报价倍数；按“刷新赔率”可重新查询。超过15分钟或停售的报价不能作为下注依据。预测概率尚未通过执行晋级，当前仍为纸上观察。</p>
+      <p class="fine-print">赔率来自马会公开接口，显示的是报价倍数；盘口开放后可提前查看早盘，比赛当天显示实时盘。按“刷新赔率”可重新查询，超过15分钟或停售的报价不能作为下注依据。预测概率尚未通过执行晋级，当前仍为纸上观察。</p>
     </section>
   `;
 }
@@ -1481,12 +1486,18 @@ function renderResearchUpgradePanel(snapshot) {
   const externalBenchmarkCount = summary.externalBenchmarkCount ?? externalBenchmarks.length;
   const reproducedBenchmarkCount = summary.reproducedBenchmarkCount
     ?? externalBenchmarks.filter((item) => ["partial-blocked-data", "reproduced-no-go"].includes(item.status)).length;
+  const waitingRealSampleActionCount = summary.waitingRealSampleActionCount
+    ?? followUpActions.filter((item) => item.evidenceStatus === "waiting-real-samples").length;
+  const missingHistoricalDataActionCount = summary.missingHistoricalDataActionCount
+    ?? followUpActions.filter((item) => item.evidenceStatus === "missing-historical-data").length;
+  const verifiedNotAdoptedActionCount = summary.verifiedNotAdoptedActionCount
+    ?? followUpActions.filter((item) => item.evidenceStatus === "verified-not-adopted").length;
   return `
     <section class="panel research-panel">
       <div class="panel-header">
         <div>
           <h3>研究升级 / Research Lab</h3>
-          <p>把 GitHub 和论文里的好方法拆成：已进入系统、下一步学习、只做研究观察。</p>
+          <p>把工程完成度与证据完成度分开，避免把等待真实样本误读成代码没做完。</p>
         </div>
         <span class="research-version">${escapeHtml(summary.version)}</span>
       </div>
@@ -1498,13 +1509,15 @@ function renderResearchUpgradePanel(snapshot) {
       </div>
       <div class="research-metrics">
         ${renderResearchMetric("参考项目", summary.sourceCount)}
-        ${renderResearchMetric("机制已进入", summary.activeCount)}
-        ${renderResearchMetric("Action已完成", `${implementedActionCount}/${followUpCount}`)}
-        ${renderResearchMetric("部分完成", partialActionCount)}
-        ${renderResearchMetric("待执行", queuedActionCount)}
-        ${renderResearchMetric("巡检可续跑", automationReadyCount)}
-        ${renderResearchMetric("外部Benchmark", externalBenchmarkCount)}
-        ${renderResearchMetric("已复现/部分", reproducedBenchmarkCount)}
+        ${renderResearchMetric("机制已实现", summary.activeCount)}
+        ${renderResearchMetric("工程已完成", `${implementedActionCount}/${followUpCount}`)}
+        ${renderResearchMetric("工程部分完成", partialActionCount)}
+        ${renderResearchMetric("待开发", queuedActionCount)}
+        ${renderResearchMetric("等待真实样本", waitingRealSampleActionCount)}
+        ${renderResearchMetric("缺少历史数据", missingHistoricalDataActionCount)}
+        ${renderResearchMetric("已验证不采用", verifiedNotAdoptedActionCount)}
+        ${renderResearchMetric("外部方法", externalBenchmarkCount)}
+        ${renderResearchMetric("已完成本地验证", reproducedBenchmarkCount)}
       </div>
       <div class="research-section">
         <strong>从开源项目学习什么</strong>
@@ -1515,14 +1528,14 @@ function renderResearchUpgradePanel(snapshot) {
       <div class="research-section">
         <strong>算法借鉴路线</strong>
         <div class="research-roadmap">
-          ${renderResearchGroup("已进入系统", activeItems)}
-          ${renderResearchGroup("下一步学习", nextItems)}
+          ${renderResearchGroup("已实现或接入", activeItems)}
+          ${nextItems.length ? renderResearchGroup("下一步学习", nextItems) : ""}
           ${renderResearchGroup("研究观察", researchOnlyItems)}
         </div>
       </div>
       ${followUpActions.length ? `
         <div class="research-section">
-          <strong>Follow-up 研究 action 队列</strong>
+          <strong>工程与证据状态</strong>
           <div class="research-action-list">
             ${followUpActions.map(renderResearchFollowUpAction).join("")}
           </div>
@@ -1530,7 +1543,7 @@ function renderResearchUpgradePanel(snapshot) {
       ` : ""}
       ${externalBenchmarks.length ? `
         <div class="research-section">
-          <strong>Tier1 外部 benchmark / leverage-first 路线</strong>
+          <strong>外部方法验证档案</strong>
           <div class="research-benchmark-list">
             ${externalBenchmarks.map(renderExternalBenchmarkCard).join("")}
           </div>
@@ -1542,7 +1555,7 @@ function renderResearchUpgradePanel(snapshot) {
           ${program.frontendSignals.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
         </div>
       </div>
-      <p class="fine-print">下一焦点：${escapeHtml(summary.nextFocus)}。数据优先：${escapeHtml(summary.nextDataLeverageAction ?? "暂无")}。这些不会自动变成真实下注，必须先进入回测和复盘。</p>
+      <p class="fine-print">当前焦点：${escapeHtml(summary.nextFocus)}。没有依赖已满足却仍排队的工程任务；这些状态不会自动变成真实下注。</p>
     </section>
   `;
 }
@@ -1564,7 +1577,7 @@ function renderExternalBenchmarkCard(benchmark) {
     <article>
       <div class="research-action-meta">
         <span class="research-status ${researchPriorityClass(benchmark.priority)}">${escapeHtml(benchmark.priority ?? "P?")}</span>
-        <span class="research-status ${researchBenchmarkStatusClass(benchmark.status)}">${escapeHtml(benchmark.status)}</span>
+        <span class="research-status ${researchBenchmarkStatusClass(benchmark.status)}">${escapeHtml(researchBenchmarkStatusLabel(benchmark.status))}</span>
         <span>${escapeHtml(benchmark.localAdoption)}</span>
       </div>
       <strong>${sourceLinks}</strong>
@@ -1589,7 +1602,8 @@ function renderResearchFollowUpAction(action) {
       <div class="research-action-meta">
         <span class="research-status ${researchPriorityClass(action.priority)}">${escapeHtml(action.priority ?? "P?")}</span>
         <span>${escapeHtml(action.automationPhase ?? "未排期")}</span>
-        <span>${escapeHtml(researchActionStatusLabel(action.status))}</span>
+        <span>${escapeHtml(`工程：${researchActionStatusLabel(action.status)}`)}</span>
+        <span>${escapeHtml(`证据：${action.evidenceStatusLabel ?? researchEvidenceStatusLabel(action.evidenceStatus)}`)}</span>
         <span>${escapeHtml(automationLabel)}</span>
       </div>
       <strong>${escapeHtml(action.title)}</strong>
@@ -1610,10 +1624,30 @@ function researchActionStatusLabel(status) {
   return status ?? "待确认";
 }
 
+function researchEvidenceStatusLabel(status) {
+  if (status === "implemented") return "已实现";
+  if (status === "waiting-real-samples") return "等待真实样本";
+  if (status === "missing-historical-data") return "缺少历史数据";
+  if (status === "verified-not-adopted") return "已验证不采用";
+  if (status === "research-only") return "研究观察";
+  return "待确认";
+}
+
+function researchBenchmarkStatusLabel(status) {
+  if (status === "partial-blocked-data") return "缺少组合盘口";
+  if (status === "reproduced-no-go") return "已验证不采用";
+  if (status === "reproduce-after-p0") return "等待依赖数据";
+  if (status === "partially-leveraged") return "已部分采用";
+  if (status === "data-leverage") return "数据来源参考";
+  if (status === "research-only-unverified") return "研究观察";
+  return status ?? "待确认";
+}
+
 function researchActionAutomationLabel(action) {
   if (action.status === "implemented" && action.automationExecutable) return "赛马日继续运行";
   if (action.status === "implemented") return "实现完成";
-  if (action.status === "partial" && action.automationExecutable) return "巡检继续补齐";
+  if (action.status === "partial" && action.evidenceStatus === "missing-historical-data") return "等待可信历史数据";
+  if (action.status === "partial" && action.automationExecutable) return "赛马日继续积累";
   if (action.status === "queued" && action.automationExecutable) return "巡检待执行";
   return "研究观察";
 }
@@ -2708,7 +2742,10 @@ function refreshStatusText(snapshot) {
   }
   const dataTime = snapshot?.generatedAt ? `数据生成：${formatDateTime(snapshot.generatedAt)}` : "数据生成：-";
   const clickTime = uiState.refreshedAt ? `页面刷新：${formatDateTime(uiState.refreshedAt)}` : "页面刷新：-";
-  return `${dataTime} · ${clickTime} · 官方赔率在本场区块独立实时查询`;
+  const settledThrough = snapshot?.latestSettlement?.date ?? snapshot?.recentEntries?.map((entry) => entry?.settlement?.date ?? entry?.date).filter(Boolean).sort().at(-1) ?? "-";
+  const nextMeeting = snapshot?.latestUpcomingForecast?.date ?? snapshot?.upcomingEntries?.map((entry) => entry?.date).filter(Boolean).sort().at(0) ?? "-";
+  const settledRaces = Number.isFinite(Number(snapshot?.dataSource?.settledRaces)) ? Number(snapshot.dataSource.settledRaces).toLocaleString("zh-HK") : "-";
+  return `${dataTime} · ${clickTime} · 最新赛果 ${settledThrough}（${settledRaces}场） · 下一场 ${nextMeeting} · 官方赔率在本场区块独立查询`;
 }
 
 function registerServiceWorker() {
@@ -2778,4 +2815,28 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+
+
+function renderProspectiveCoveragePanel(report) {
+  const view = buildProspectiveCoverageView(report);
+  if (!view.available) return `<section class="panel research-panel prospective-coverage" aria-label="真实前瞻样本"><h3>真实前瞻样本</h3><p>尚无可验证的覆盖报告。样本数未知，保持 NO_BET。</p></section>`;
+  const value = v => v == null ? '未知' : String(v);
+  const asOf = new Date(view.generatedAt).toLocaleString('zh-HK',{timeZone:'Asia/Hong_Kong',hour12:false});
+  return `<section class="panel research-panel prospective-coverage" aria-label="真实前瞻样本">
+    <div class="panel-header"><div><h3>真实前瞻样本</h3><p>报告截至 ${escapeHtml(asOf)}（香港时间）</p></div><span class="research-version">PAPER_ONLY · NO_BET</span></div>
+    <div class="research-metrics">
+      ${renderResearchMetric('有效样本场次',view.usableRaces)}
+      ${renderResearchMetric('已加载赛程',view.loadedRaces)}
+      ${renderResearchMetric('尚未到窗口',view.futureRaces)}
+      ${renderResearchMetric('采集缺口',value(view.missingCells))}
+      ${renderResearchMetric('已结算观察记录',value(view.settledLocks))}
+      ${renderResearchMetric('距离场次门槛',value(view.racesNeeded))}
+    </div>
+    <p>有效场次要求至少一个完整、可售且同刻的赛前盘口。未来赛程不计入；观察记录包含同场多匹马，不是策略下注次数或胜率。</p>
+    <p>${view.gateStatus==='READY'?'采集数据门槛已满足，模型共同样本和质量评估仍需独立通过。':view.gateStatus==='BLOCKED_DATA'?'数据门槛未满足，继续累积真实赛前样本。':'数据门槛状态未知，需重新生成覆盖报告。'}</p>
+    <details><summary>查看彩池与时间窗口覆盖</summary><div style="overflow-x:auto"><table><thead><tr><th>彩池</th><th>窗口</th><th>可用 / 已到期</th><th>缺口</th></tr></thead><tbody>
+    ${view.cells.map(row=>`<tr><td>${escapeHtml(row.pool)}</td><td>${escapeHtml(row.window)}</td><td>${escapeHtml(value(row.usable))} / ${escapeHtml(value(row.due))}</td><td>${escapeHtml(value(row.missing))}</td></tr>`).join('')}
+    </tbody></table></div></details>
+  </section>`;
 }

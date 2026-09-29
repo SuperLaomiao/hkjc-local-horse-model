@@ -47,9 +47,11 @@ from the local model workspace. The current export was refreshed from the HKJC
 official fixture/results/race-card flow.
 
 GitHub Actions is configured in `.github/workflows/refresh-hkjc-data.yml` to
-refresh baseline data around 09:00 Hong Kong time, plus one post-race refresh
-around 23:45 Hong Kong time on common Hong Kong race days. It can also be run
-manually from the Actions tab.
+refresh baseline data around 09:00 Hong Kong time, check the public race-day
+view around 11:30, and refresh official results around 23:45 on common Hong
+Kong race days. It can also be run manually from the Actions tab. Each run
+resumes from the newest tracked official result, so a short runner checkout
+does not leave older meetings permanently missing.
 
 To refresh the source workspace:
 
@@ -319,9 +321,9 @@ Expected shape:
 }
 ```
 
-The source dashboard currently has 137 settled HK local races through
-2026-07-04 Sha Tin. Race-card forecasts appear only after HKJC publishes local
-starters.
+The public header and `data/publication-manifest.json` report the dashboard
+generation time, settled-race count and cutoff, and the next published meeting.
+Race-card forecasts appear only after HKJC publishes local starters.
 
 The refresh parser validates that an official-results page actually matches the
 requested meeting date and race number before writing it into historical data.
@@ -331,20 +333,24 @@ page is rejected instead of polluting the backtest.
 The page-level refresh button reloads the latest published `data/dashboard.json`
 without browser cache. GitHub Pages cannot safely store a secret token in the
 browser, so this button does not directly trigger the GitHub Actions backend.
-The backend workflow is intentionally low-frequency for now: daily baseline plus
-post-race refresh. A future Worker/API can make the button trigger an immediate
-server-side HKJC refresh once realtime odds/pool capture is added.
+The backend workflow remains bounded: daily baseline plus race-day pre-race and
+post-race refreshes. The browser also queries the official public odds endpoint
+when that market becomes available, without writing private snapshots or
+changing the paper-only execution policy.
 
 ## Deployment
 
-The stable public dashboard is served by GitHub Pages from the `main` branch
-root:
+The stable public dashboard is served by GitHub Pages from an allowlisted,
+privacy-scanned Actions artifact:
 
 https://superlaomiao.github.io/hkjc-local-horse-model/
 
-After pushing to `main`, GitHub Pages rebuilds the static site automatically.
-The site reads `data/dashboard.json`, so the published view reflects the latest
-committed dashboard export rather than the local SQLite database file.
+After pushing to `main`, the workflow runs focused publication tests, refreshes
+official data in an ephemeral runner, builds `.public-site/`, checks it against
+the previous public release contract, scans it, deploys it, and verifies the
+deployed dashboard hash. A release is blocked if settled coverage regresses or
+an already-published future meeting disappears unexpectedly. The local SQLite
+database and private research evidence are never uploaded.
 
 ## Self-Test Lab
 

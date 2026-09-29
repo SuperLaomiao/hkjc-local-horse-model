@@ -16,11 +16,13 @@ The browser recognizes only the exact `PUBLIC_FUNCTIONAL_SANITIZED` contract. Th
 Run the same checks locally:
 
 ```bash
-npm run hkjc:build-public-site
+npm run hkjc:stage-public-release
 npm run hkjc:privacy-scan
 ```
 
 The scan fails closed for files outside the allowlist, symlinks, local absolute paths, common secret patterns, forbidden dashboard fields, non-empty row-level ledgers, or a publication contract that is not both functional and sanitized.
+
+The builder also writes `data/publication-manifest.json` with the dashboard SHA-256, settled-race count/cutoff, and upcoming meeting/race/runner counts. Deployment validates the candidate against the previous public manifest, then checks the deployed URL and dashboard hash after Pages reports success. This prevents a successful workflow from silently publishing older or incomplete data.
 
 ## Private/local data
 
@@ -36,7 +38,7 @@ The following outputs are ignored and retained locally:
 
 ## GitHub Pages operating mode
 
-The workflow no longer commits refreshed raw files, processed reports, or audits. It refreshes in an ephemeral runner, builds the allowlisted artifact, scans it, and passes only `.public-site/` to GitHub Pages.
+The workflow no longer commits refreshed raw files, processed reports, or audits. It resumes from the newest tracked official result in an ephemeral runner, builds the allowlisted artifact, applies the release transition checks, scans it, and passes only `.public-site/` to GitHub Pages. Scheduled runs cover the daily baseline plus bounded pre-race and post-race refreshes on common local race days.
 
 The repository and Pages site intentionally remain public so the product works on mobile using the free GitHub Pages tier. Authentication, private source hosting, cloud-synced personal records, and a separate public/private repository topology are deferred until the product is mature.
 

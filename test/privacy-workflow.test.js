@@ -14,6 +14,10 @@ describe('public Pages privacy workflow', () => {
 
     assert.match(workflow, /hkjc:build-public-site/);
     assert.match(workflow, /hkjc:privacy-scan/);
+    assert.match(workflow, /resumeFromLatest/);
+    assert.match(workflow, /publication-manifest\.json/);
+    assert.match(workflow, /verify-url/);
+    assert.match(workflow, /cron: "30 3 \* \* 0,3,6"/);
     assert.match(workflow, /actions\/upload-pages-artifact@v3/);
     assert.match(workflow, /actions\/deploy-pages@v4/);
     assert.doesNotMatch(workflow, /contents:\s*write/);

@@ -7,6 +7,8 @@ on:
   schedule:
     # Baseline refresh around 09:00 Hong Kong time.
     - cron: "0 1 * * *"
+    # Pre-race refresh around 11:30 Hong Kong time on common HK race days.
+    - cron: "30 3 * * 0,3,6"
     # Post-race refresh around 23:45 Hong Kong time on common HK race days.
     - cron: "45 15 * * 0,3,6"
 
@@ -34,13 +36,28 @@ jobs:
         with:
           node-version: "25"
 
+      - name: Run code and publication tests
+        run: npm run hkjc:test-publication
+
+      - name: Download current public release contract
+        continue-on-error: true
+        run: |
+          if ! curl --fail --silent --show-error --location --output .previous-publication-manifest.json https://superlaomiao.github.io/hkjc-local-horse-model/data/publication-manifest.json; then
+            rm -f .previous-publication-manifest.json
+          fi
+
       - name: Refresh local model data in the ephemeral runner
         run: |
-          npm run hkjc:refresh -- --historyDays 14 --futureDays 21 --bankroll 200 --minEdge 0 --minProbability 0.15 --maxStakePct 0.05 --finalEdgeBuffer 0.08
+          npm run hkjc:refresh -- --resumeFromLatest true --historyDays 14 --futureDays 60 --bankroll 200 --minEdge 0 --minProbability 0.15 --maxStakePct 0.05 --finalEdgeBuffer 0.08
           npm run hkjc:auto-run -- --bankroll 200 --minEdge 0 --minProbability 0.15 --maxStakePct 0.05 --finalEdgeBuffer 0.08
 
       - name: Build public allowlist artifact
-        run: npm run hkjc:build-public-site
+        run: |
+          if [ -f .previous-publication-manifest.json ]; then
+            npm run hkjc:build-public-site -- --previousManifest .previous-publication-manifest.json
+          else
+            npm run hkjc:build-public-site
+          fi
 
       - name: Verify public artifact privacy
         run: npm run hkjc:privacy-scan
@@ -56,3 +73,6 @@ jobs:
       - name: Deploy sanitized Pages artifact
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Verify deployed page and release hash
+        run: node hkjc-horse-model/src/public-site-cli.js verify-url --url "${{ steps.deployment.outputs.page_url }}" --expectedManifest .public-site/data/publication-manifest.json --retries 12 --retryDelayMs 5000

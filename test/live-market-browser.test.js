@@ -5,6 +5,8 @@ import {
   fetchLiveRaceOdds,
   formatLiveOddsValue,
   HKJC_BROWSER_ODDS_QUERY,
+  isLiveMarketEligible,
+  liveMarketPhase,
   quoteForSelection,
   withLiveOdds,
 } from '../live-market-browser.js';
@@ -59,6 +61,25 @@ describe('browser live HKJC odds', () => {
     assert.equal(quoteForSelection(market, 'QUINELLA_PLACE', [{ horseNo: 2 }, { horseNo: 8 }], NOW)?.oddsValue, 3.5);
   });
 
+  it('allows an upcoming race to query as soon as the official pool opens', () => {
+    assert.equal(isLiveMarketEligible({ date: '2026-10-01' }, '2026-09-29'), true);
+    assert.equal(isLiveMarketEligible({ date: '2026-09-28' }, '2026-09-29'), false);
+    assert.equal(isLiveMarketEligible({ date: '2026-10-01', settlement: {} }, '2026-09-29'), false);
+    assert.equal(liveMarketPhase({ date: '2026-10-01' }, '2026-09-29'), 'EARLY');
+    assert.equal(liveMarketPhase({ date: '2026-09-29' }, '2026-09-29'), 'LIVE');
+  });
+
+  it('uses the browser fetch time for freshness while preserving the official market update time', async () => {
+    const market = await fetchLiveRaceOdds({
+      date: '2026-09-13', venueCode: 'ST', raceNo: 2, now: NOW,
+      fetchImpl: async () => ({ ok: true, json: async () => payload({ lastUpdateTime: '2026-09-13T10:20:00+08:00' }) }),
+    });
+    const quote = quoteForSelection(market, 'WIN', [8], NOW);
+    assert.equal(quote.status, 'FRESH');
+    assert.equal(quote.capturedAt, NOW.toISOString());
+    assert.equal(quote.marketUpdatedAt, '2026-09-13T10:20:00+08:00');
+  });
+
   it('rejects wrong-race, stale, future, and non-selling quotes', async () => {
     const wrong = await fetchLiveRaceOdds({
       date: '2026-09-13', venueCode: 'ST', raceNo: 2, now: NOW,
@@ -69,7 +90,7 @@ describe('browser live HKJC odds', () => {
       date: '2026-09-13', venueCode: 'ST', raceNo: 2, now: NOW,
       fetchImpl: async () => ({ ok: true, json: async () => payload({ lastUpdateTime: '2026-09-13T10:20:00+08:00' }) }),
     });
-    assert.equal(quoteForSelection(stale, 'WIN', [8], NOW)?.status, 'STALE');
+    assert.equal(quoteForSelection(stale, 'WIN', [8], new Date('2026-09-13T03:02:00.000Z'))?.status, 'STALE');
     const closed = await fetchLiveRaceOdds({
       date: '2026-09-13', venueCode: 'ST', raceNo: 2, now: NOW,
       fetchImpl: async () => ({ ok: true, json: async () => payload({ sellStatus: 'STOP_SELL' }) }),
