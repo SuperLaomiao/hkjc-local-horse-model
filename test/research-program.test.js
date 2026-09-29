@@ -40,7 +40,7 @@ describe('research upgrade program', () => {
       item.id === 'catowabisabi-lgb-no-odds-quinella'
       && item.status === 'partial-blocked-data'
       && /Quinella|连赢/i.test(item.publicMetric)
-      && /negative|负|NO-BET/i.test(item.ourGap)
+      && /negative|负|NO[-_]BET/i.test(item.ourGap)
       && item.promotionGate.includes('holdout')
     )));
     assert(program.externalBenchmarkRegistry.some((item) => (
@@ -83,7 +83,8 @@ describe('research upgrade program', () => {
     assert.equal(program.followUpActions[0].automationExecutable, true);
     assert(program.followUpActions[0].evidence.some((entry) => /refresh.*sync-db|fixture/i.test(entry)));
     assert(program.followUpActions[0].remaining.some((entry) => /upcoming|新赛季|race card/i.test(entry)));
-    assert(program.followUpActions[0].remaining.some((entry) => /2026-09-09.*8.*upcoming/i.test(entry)));
+    assert(program.followUpActions[0].remaining.some((entry) => /刷新官方赛卡|退赛|开赛时间/.test(entry)));
+    assert.equal(program.followUpActions[0].remaining.some((entry) => /score-not-configured/.test(entry)), false);
     assert(program.followUpActions[0].remaining.some((entry) => /scorer|score-not-configured/i.test(entry)));
     assert(program.followUpActions.some((item) => (
       item.id === 'live-snapshot-planner'
@@ -150,7 +151,7 @@ describe('research upgrade program', () => {
       && item.evidence.some((entry) => /local-scheduler\.js/.test(entry))
       && item.evidence.some((entry) => /已启用|enabled/i.test(entry))
       && item.evidence.some((entry) => /exit 0|退出码 0/i.test(entry))
-      && item.evidence.some((entry) => /5分钟|五分钟|300 seconds/i.test(entry))
+      && item.evidence.some((entry) => /60秒|每分钟|60 seconds/i.test(entry))
       && item.remaining.some((entry) => /prospective coverage|missed|offline/i.test(entry))
       && item.remaining.some((entry) => /NO_BET|cash/i.test(entry))
     )));

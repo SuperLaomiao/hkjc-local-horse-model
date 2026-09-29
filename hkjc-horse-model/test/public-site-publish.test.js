@@ -45,8 +45,12 @@ describe('public site publishing boundary', () => {
         'app.js',
         'dashboard-cockpit.js',
         'data/dashboard.json',
+        'data/publication-manifest.json',
         'index.html',
       ]);
+      const manifest = JSON.parse(await readFile(path.join(output, 'data', 'publication-manifest.json'), 'utf8'));
+      assert.equal(manifest.version, 'public-release-manifest-v1');
+      assert.match(manifest.dashboardSha256, /^[a-f0-9]{64}$/);
       assert.deepEqual(dashboard.ledger, []);
       assert.equal(dashboard.recentEntries[0].forecast.topPick.horseName, 'Public Top Pick');
       assert.equal(dashboard.recentEntries[0].forecast.recommendation, undefined);
@@ -55,6 +59,32 @@ describe('public site publishing boundary', () => {
       assert.equal(dashboard.publication.personalDataPublished, false);
       assert.equal(dashboard.publication.rowLevelHistoryPublished, false);
       await assert.rejects(readFile(path.join(output, 'data', 'raw', 'private.json'), 'utf8'));
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  it('blocks a public build that would regress the deployed data contract', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'hkjc-public-regression-'));
+    try {
+      const source = path.join(root, 'source');
+      const output = path.join(root, 'site');
+      await mkdir(path.join(source, 'data'), { recursive: true });
+      await writeFile(path.join(source, 'index.html'), '<main>safe</main>', 'utf8');
+      await writeFile(path.join(source, 'data', 'dashboard.json'), JSON.stringify({
+        generatedAt: '2026-09-29T01:00:00Z', ledger: [],
+        dataSource: { settledRaces: 9, upcomingRaces: 0 },
+        latestSettlement: { date: '2026-09-23' }, upcomingEntries: [],
+      }), 'utf8');
+      const previousManifest = {
+        version: 'public-release-manifest-v1', generatedAt: '2026-09-28T01:00:00Z',
+        data: { settledRaces: 10, settledThrough: '2026-09-27', upcomingRaces: 0, upcomingFrom: null },
+      };
+
+      await assert.rejects(
+        buildPublicSite({ projectRoot: source, outputRoot: output, staticFiles: ['index.html'], previousManifest }),
+        /release transition failed.*SETTLED_COUNT_REGRESSION.*SETTLED_DATE_REGRESSION/s,
+      );
     } finally {
       await rm(root, { recursive: true, force: true });
     }

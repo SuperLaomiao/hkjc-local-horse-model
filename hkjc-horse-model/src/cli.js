@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 
 import { backtestRaces, buildDashboardSnapshot, buildRollingPredictionLedger, calibrateConfig } from './model.js';
 import { splitDashboardForPublishing } from './dashboard-publish.js';
+import { resolveRefreshStartDate } from './refresh-window.js';
 import { auditRecommendationRuns } from './recommendation-audit.js';
 import {
   buildAsOfTrainingRows,
@@ -1363,7 +1364,14 @@ async function fetchRaceCardCommand(args) {
 
 async function refreshCommand(args) {
   const today = normalizeRaceDate(args.today) ?? hongKongToday();
-  const from = normalizeRaceDate(args.from) ?? addDays(today, -Number(args.historyDays ?? 14));
+  const availableRaceDates = await raceDatesInDirectory(rawDataDir);
+  const from = resolveRefreshStartDate({
+    today,
+    from: normalizeRaceDate(args.from),
+    historyDays: args.historyDays ?? 14,
+    resumeFromLatest: args.resumeFromLatest,
+    availableRaceDates,
+  });
   const to = normalizeRaceDate(args.to) ?? addDays(today, Number(args.futureDays ?? 21));
   const courseFilter = args.course ? String(args.course).toUpperCase() : null;
   const meetings = await loadFixtureWindow(from, to);
@@ -1437,6 +1445,18 @@ async function refreshCommand(args) {
       source: 'HKJC local fixture',
     },
   });
+}
+
+async function raceDatesInDirectory(directory) {
+  try {
+    return (await readdir(directory, { withFileTypes: true }))
+      .filter((entry) => entry.isFile())
+      .map((entry) => entry.name.match(/^(\d{4}-\d{2}-\d{2})-(?:ST|HV)(?:-R\d+)?\.json$/)?.[1])
+      .filter(Boolean);
+  } catch (error) {
+    if (error.code === 'ENOENT') return [];
+    throw error;
+  }
 }
 
 async function backtestCommand(args) {

@@ -87,6 +87,9 @@ export function splitDashboardForPublishing(snapshot, options = {}) {
     dataSource: {
       source: 'sanitized-public',
       ...pickFields(snapshot?.dataSource, PUBLIC_DATA_SOURCE_FIELDS),
+      settledRaces: normalizeCount(snapshot?.dataSource?.settledRaces ?? snapshot?.summary?.racesSettled),
+      upcomingRaces: normalizeCount(snapshot?.dataSource?.upcomingRaces ?? snapshot?.upcomingEntries?.length),
+      lastSyncAt: snapshot?.dataSource?.lastSyncAt ?? snapshot?.generatedAt ?? null,
     },
     assumptions: pickFields(snapshot?.assumptions, PUBLIC_ASSUMPTION_FIELDS),
     fixtureWindow: cloneJson(snapshot?.fixtureWindow),

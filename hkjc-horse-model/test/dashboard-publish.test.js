@@ -123,6 +123,8 @@ describe('dashboard publishing split', () => {
     assert.equal(publicSnapshot.latestSettlement.recommendedHorseName, undefined);
     assert.equal(publicSnapshot.assumptions.stakePolicy, undefined);
     assert.equal(publicSnapshot.dataSource.database, undefined);
+    assert.equal(publicSnapshot.dataSource.settledRaces, 6);
+    assert.equal(publicSnapshot.dataSource.upcomingRaces, 0);
     assert.equal(publicSnapshot.prospectiveCoverage.summary.races, 8);
     assert.equal(publicSnapshot.prospectiveCoverage.gate.status, 'BLOCKED_DATA');
     assert.equal(publicSnapshot.prospectiveCoverage.byPool[0].pool, 'WIN');

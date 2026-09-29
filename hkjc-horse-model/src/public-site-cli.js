@@ -1,8 +1,9 @@
 #!/usr/bin/env node
-import { writeFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import { buildPublicSite, scanPublicSite } from './public-site-publish.js';
+import { verifyPublishedSite } from './public-release-manifest.js';
 
 async function main(argv) {
   const [command, ...rest] = argv;
@@ -15,13 +16,24 @@ async function main(argv) {
       projectRoot,
       outputRoot: path.resolve(args.output ?? path.join(projectRoot, '.public-site')),
       dashboardPath: path.resolve(args.dashboard ?? path.join(projectRoot, 'data', 'dashboard.json')),
+      previousManifest: args.previousManifest
+        ? JSON.parse(await readFile(path.resolve(args.previousManifest), 'utf8'))
+        : null,
     });
   } else if (command === 'scan') {
     report = await scanPublicSite({
       root: path.resolve(args.root ?? path.join(process.cwd(), '.public-site')),
     });
+  } else if (command === 'verify-url') {
+    const expectedManifest = JSON.parse(await readFile(path.resolve(args.expectedManifest), 'utf8'));
+    report = await verifyPublishedSite({
+      baseUrl: args.url,
+      expectedManifest,
+      retries: Number(args.retries ?? 6),
+      retryDelayMs: Number(args.retryDelayMs ?? 5000),
+    });
   } else {
-    throw new Error('usage: public-site-cli.js <build|scan> [--projectRoot path] [--dashboard path] [--output path] [--root path] [--report path]');
+    throw new Error('usage: public-site-cli.js <build|scan|verify-url> [--projectRoot path] [--dashboard path] [--output path] [--root path] [--report path]');
   }
 
   if (args.report) {
@@ -29,6 +41,10 @@ async function main(argv) {
     await writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
   }
 
+  if (command === 'verify-url') {
+    console.log(`Public site online verification ${report.status}: ${report.manifest.dashboardSha256}`);
+    return;
+  }
   console.log(`Public site privacy scan ${report.status}: ${report.files.length} files, ${report.violations.length} violations`);
   if (report.status !== 'PASS') {
     console.error(JSON.stringify(report.violations, null, 2));

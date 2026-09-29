@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "node --test hkjc-horse-model/test/*.test.js test/*.test.js",
+    "hkjc:test-publication": "node --test hkjc-horse-model/test/dashboard-publish.test.js hkjc-horse-model/test/public-release-manifest.test.js hkjc-horse-model/test/public-site-publish.test.js hkjc-horse-model/test/refresh-window.test.js test/live-market-browser.test.js test/privacy-workflow.test.js test/public-dashboard-app-integration.test.js",
     "hkjc:refresh": "node hkjc-horse-model/src/cli.js refresh",
     "hkjc:dashboard": "node hkjc-horse-model/src/cli.js dashboard",
     "hkjc:sync-db": "node hkjc-horse-model/src/cli.js sync-db",
@@ -27,7 +28,9 @@
     "hkjc:evaluate-exotic-pair": "${PYTHON:-python3} hkjc-horse-model/python/evaluate_exotic_pair_strategy.py",
     "hkjc:exotic-promotion": "${PYTHON:-python3} hkjc-horse-model/python/build_exotic_pool_promotion.py",
     "hkjc:build-public-site": "node hkjc-horse-model/src/public-site-cli.js build --output .public-site",
+    "hkjc:stage-public-release": "node hkjc-horse-model/src/public-site-cli.js build --dashboard hkjc-horse-model/data/processed/dashboard.json --output .public-site",
     "hkjc:privacy-scan": "node hkjc-horse-model/src/public-site-cli.js scan --root .public-site",
+    "hkjc:verify-public-url": "node hkjc-horse-model/src/public-site-cli.js verify-url",
     "hkjc:model-leaderboard": "node hkjc-horse-model/src/cli.js model-leaderboard",
     "hkjc:external-model-comparison": "node hkjc-horse-model/src/cli.js external-model-comparison",
     "hkjc:external-source-audit": "node hkjc-horse-model/src/cli.js external-source-audit",

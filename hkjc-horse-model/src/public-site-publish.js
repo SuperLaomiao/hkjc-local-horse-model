@@ -10,6 +10,11 @@ import {
 import path from 'node:path';
 
 import { splitDashboardForPublishing } from './dashboard-publish.js';
+import {
+  buildPublicReleaseManifest,
+  validatePublicReleaseTransition,
+  verifyPublicReleaseFiles,
+} from './public-release-manifest.js';
 
 export const PUBLIC_SITE_STATIC_FILES = Object.freeze([
   '.nojekyll',
@@ -37,6 +42,7 @@ export const PUBLIC_SITE_STATIC_FILES = Object.freeze([
 ]);
 
 const PUBLIC_DASHBOARD_PATH = 'data/dashboard.json';
+const PUBLIC_MANIFEST_PATH = 'data/publication-manifest.json';
 const PUBLICATION_POLICY = Object.freeze({
   visibility: 'PUBLIC_FUNCTIONAL_SANITIZED',
   executableRecommendationsPublished: true,
@@ -67,10 +73,11 @@ export async function buildPublicSite({
   outputRoot,
   dashboardPath = path.join(projectRoot, PUBLIC_DASHBOARD_PATH),
   staticFiles = PUBLIC_SITE_STATIC_FILES,
+  previousManifest = null,
 }) {
   const sourceRoot = path.resolve(projectRoot);
   const destinationRoot = path.resolve(outputRoot);
-  const allowedFiles = [...new Set([...staticFiles, PUBLIC_DASHBOARD_PATH])]
+  const allowedFiles = [...new Set([...staticFiles, PUBLIC_DASHBOARD_PATH, PUBLIC_MANIFEST_PATH])]
     .map(normalizeRelativePath)
     .sort(compareText);
 
@@ -87,9 +94,20 @@ export async function buildPublicSite({
   const { publicSnapshot } = splitDashboardForPublishing(sourceDashboard);
   const publicDashboardPath = path.join(destinationRoot, PUBLIC_DASHBOARD_PATH);
   await mkdir(path.dirname(publicDashboardPath), { recursive: true });
+  const publicDashboardText = `${JSON.stringify(publicSnapshot, null, 2)}\n`;
+  const releaseManifest = buildPublicReleaseManifest({ dashboard: publicSnapshot, dashboardText: publicDashboardText });
+  const transitionIssues = validatePublicReleaseTransition({
+    previous: previousManifest,
+    candidate: releaseManifest,
+    asOfDate: new Date().toISOString().slice(0, 10),
+  });
+  if (transitionIssues.length) {
+    throw new Error(`public release transition failed: ${transitionIssues.map((item) => item.code).join(', ')}`);
+  }
+  await writeFile(publicDashboardPath, publicDashboardText, 'utf8');
   await writeFile(
-    publicDashboardPath,
-    `${JSON.stringify(publicSnapshot, null, 2)}\n`,
+    path.join(destinationRoot, PUBLIC_MANIFEST_PATH),
+    `${JSON.stringify(releaseManifest, null, 2)}\n`,
     'utf8',
   );
 
@@ -104,7 +122,7 @@ export async function buildPublicSite({
 
 export async function scanPublicSite({
   root,
-  allowedFiles = [...PUBLIC_SITE_STATIC_FILES, PUBLIC_DASHBOARD_PATH],
+  allowedFiles = [...PUBLIC_SITE_STATIC_FILES, PUBLIC_DASHBOARD_PATH, PUBLIC_MANIFEST_PATH],
 }) {
   const absoluteRoot = path.resolve(root);
   const allowed = new Set(allowedFiles.map(normalizeRelativePath));
@@ -159,6 +177,17 @@ export async function scanPublicSite({
       }
     } catch (error) {
       violations.push(violation('INVALID_DASHBOARD_JSON', PUBLIC_DASHBOARD_PATH, error.message));
+    }
+  }
+  if (files.includes(PUBLIC_DASHBOARD_PATH) && files.includes(PUBLIC_MANIFEST_PATH)) {
+    try {
+      const dashboardText = await readFile(path.join(absoluteRoot, PUBLIC_DASHBOARD_PATH), 'utf8');
+      const manifest = JSON.parse(await readFile(path.join(absoluteRoot, PUBLIC_MANIFEST_PATH), 'utf8'));
+      for (const issue of verifyPublicReleaseFiles({ dashboardText, manifest })) {
+        violations.push(violation(issue.code, PUBLIC_MANIFEST_PATH, issue.detail));
+      }
+    } catch (error) {
+      violations.push(violation('INVALID_RELEASE_MANIFEST', PUBLIC_MANIFEST_PATH, error.message));
     }
   }
 
