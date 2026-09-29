@@ -1481,12 +1481,18 @@ function renderResearchUpgradePanel(snapshot) {
   const externalBenchmarkCount = summary.externalBenchmarkCount ?? externalBenchmarks.length;
   const reproducedBenchmarkCount = summary.reproducedBenchmarkCount
     ?? externalBenchmarks.filter((item) => ["partial-blocked-data", "reproduced-no-go"].includes(item.status)).length;
+  const waitingRealSampleActionCount = summary.waitingRealSampleActionCount
+    ?? followUpActions.filter((item) => item.evidenceStatus === "waiting-real-samples").length;
+  const missingHistoricalDataActionCount = summary.missingHistoricalDataActionCount
+    ?? followUpActions.filter((item) => item.evidenceStatus === "missing-historical-data").length;
+  const verifiedNotAdoptedActionCount = summary.verifiedNotAdoptedActionCount
+    ?? followUpActions.filter((item) => item.evidenceStatus === "verified-not-adopted").length;
   return `
     <section class="panel research-panel">
       <div class="panel-header">
         <div>
           <h3>研究升级 / Research Lab</h3>
-          <p>把 GitHub 和论文里的好方法拆成：已进入系统、下一步学习、只做研究观察。</p>
+          <p>把工程完成度与证据完成度分开，避免把等待真实样本误读成代码没做完。</p>
         </div>
         <span class="research-version">${escapeHtml(summary.version)}</span>
       </div>
@@ -1498,13 +1504,15 @@ function renderResearchUpgradePanel(snapshot) {
       </div>
       <div class="research-metrics">
         ${renderResearchMetric("参考项目", summary.sourceCount)}
-        ${renderResearchMetric("机制已进入", summary.activeCount)}
-        ${renderResearchMetric("Action已完成", `${implementedActionCount}/${followUpCount}`)}
-        ${renderResearchMetric("部分完成", partialActionCount)}
-        ${renderResearchMetric("待执行", queuedActionCount)}
-        ${renderResearchMetric("巡检可续跑", automationReadyCount)}
-        ${renderResearchMetric("外部Benchmark", externalBenchmarkCount)}
-        ${renderResearchMetric("已复现/部分", reproducedBenchmarkCount)}
+        ${renderResearchMetric("机制已实现", summary.activeCount)}
+        ${renderResearchMetric("工程已完成", `${implementedActionCount}/${followUpCount}`)}
+        ${renderResearchMetric("工程部分完成", partialActionCount)}
+        ${renderResearchMetric("待开发", queuedActionCount)}
+        ${renderResearchMetric("等待真实样本", waitingRealSampleActionCount)}
+        ${renderResearchMetric("缺少历史数据", missingHistoricalDataActionCount)}
+        ${renderResearchMetric("已验证不采用", verifiedNotAdoptedActionCount)}
+        ${renderResearchMetric("外部方法", externalBenchmarkCount)}
+        ${renderResearchMetric("已完成本地验证", reproducedBenchmarkCount)}
       </div>
       <div class="research-section">
         <strong>从开源项目学习什么</strong>
@@ -1515,14 +1523,14 @@ function renderResearchUpgradePanel(snapshot) {
       <div class="research-section">
         <strong>算法借鉴路线</strong>
         <div class="research-roadmap">
-          ${renderResearchGroup("已进入系统", activeItems)}
-          ${renderResearchGroup("下一步学习", nextItems)}
+          ${renderResearchGroup("已实现或接入", activeItems)}
+          ${nextItems.length ? renderResearchGroup("下一步学习", nextItems) : ""}
           ${renderResearchGroup("研究观察", researchOnlyItems)}
         </div>
       </div>
       ${followUpActions.length ? `
         <div class="research-section">
-          <strong>Follow-up 研究 action 队列</strong>
+          <strong>工程与证据状态</strong>
           <div class="research-action-list">
             ${followUpActions.map(renderResearchFollowUpAction).join("")}
           </div>
@@ -1530,7 +1538,7 @@ function renderResearchUpgradePanel(snapshot) {
       ` : ""}
       ${externalBenchmarks.length ? `
         <div class="research-section">
-          <strong>Tier1 外部 benchmark / leverage-first 路线</strong>
+          <strong>外部方法验证档案</strong>
           <div class="research-benchmark-list">
             ${externalBenchmarks.map(renderExternalBenchmarkCard).join("")}
           </div>
@@ -1542,7 +1550,7 @@ function renderResearchUpgradePanel(snapshot) {
           ${program.frontendSignals.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
         </div>
       </div>
-      <p class="fine-print">下一焦点：${escapeHtml(summary.nextFocus)}。数据优先：${escapeHtml(summary.nextDataLeverageAction ?? "暂无")}。这些不会自动变成真实下注，必须先进入回测和复盘。</p>
+      <p class="fine-print">当前焦点：${escapeHtml(summary.nextFocus)}。没有依赖已满足却仍排队的工程任务；这些状态不会自动变成真实下注。</p>
     </section>
   `;
 }
@@ -1564,7 +1572,7 @@ function renderExternalBenchmarkCard(benchmark) {
     <article>
       <div class="research-action-meta">
         <span class="research-status ${researchPriorityClass(benchmark.priority)}">${escapeHtml(benchmark.priority ?? "P?")}</span>
-        <span class="research-status ${researchBenchmarkStatusClass(benchmark.status)}">${escapeHtml(benchmark.status)}</span>
+        <span class="research-status ${researchBenchmarkStatusClass(benchmark.status)}">${escapeHtml(researchBenchmarkStatusLabel(benchmark.status))}</span>
         <span>${escapeHtml(benchmark.localAdoption)}</span>
       </div>
       <strong>${sourceLinks}</strong>
@@ -1589,7 +1597,8 @@ function renderResearchFollowUpAction(action) {
       <div class="research-action-meta">
         <span class="research-status ${researchPriorityClass(action.priority)}">${escapeHtml(action.priority ?? "P?")}</span>
         <span>${escapeHtml(action.automationPhase ?? "未排期")}</span>
-        <span>${escapeHtml(researchActionStatusLabel(action.status))}</span>
+        <span>${escapeHtml(`工程：${researchActionStatusLabel(action.status)}`)}</span>
+        <span>${escapeHtml(`证据：${action.evidenceStatusLabel ?? researchEvidenceStatusLabel(action.evidenceStatus)}`)}</span>
         <span>${escapeHtml(automationLabel)}</span>
       </div>
       <strong>${escapeHtml(action.title)}</strong>
@@ -1610,10 +1619,30 @@ function researchActionStatusLabel(status) {
   return status ?? "待确认";
 }
 
+function researchEvidenceStatusLabel(status) {
+  if (status === "implemented") return "已实现";
+  if (status === "waiting-real-samples") return "等待真实样本";
+  if (status === "missing-historical-data") return "缺少历史数据";
+  if (status === "verified-not-adopted") return "已验证不采用";
+  if (status === "research-only") return "研究观察";
+  return "待确认";
+}
+
+function researchBenchmarkStatusLabel(status) {
+  if (status === "partial-blocked-data") return "缺少组合盘口";
+  if (status === "reproduced-no-go") return "已验证不采用";
+  if (status === "reproduce-after-p0") return "等待依赖数据";
+  if (status === "partially-leveraged") return "已部分采用";
+  if (status === "data-leverage") return "数据来源参考";
+  if (status === "research-only-unverified") return "研究观察";
+  return status ?? "待确认";
+}
+
 function researchActionAutomationLabel(action) {
   if (action.status === "implemented" && action.automationExecutable) return "赛马日继续运行";
   if (action.status === "implemented") return "实现完成";
-  if (action.status === "partial" && action.automationExecutable) return "巡检继续补齐";
+  if (action.status === "partial" && action.evidenceStatus === "missing-historical-data") return "等待可信历史数据";
+  if (action.status === "partial" && action.automationExecutable) return "赛马日继续积累";
   if (action.status === "queued" && action.automationExecutable) return "巡检待执行";
   return "研究观察";
 }

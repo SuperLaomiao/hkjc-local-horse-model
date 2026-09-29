@@ -21,6 +21,10 @@ describe('public dashboard app integration', () => {
 
     assert.match(appSource, /implementedActionCount/);
     assert.match(appSource, /partialActionCount/);
+    assert.match(appSource, /等待真实样本/);
+    assert.match(appSource, /缺少历史数据/);
+    assert.match(appSource, /已验证不采用/);
+    assert.match(appSource, /外部方法验证档案/);
     assert.match(appSource, /queuedActionCount/);
     assert.match(appSource, /action\.evidence/);
     assert.match(appSource, /action\.remaining/);
@@ -96,6 +100,9 @@ describe('public dashboard app integration', () => {
 
     assert.match(appSource, /fetchLiveRaceOdds/);
     assert.match(appSource, /refreshSelectedRaceOdds/);
+    assert.match(appSource, /isLiveMarketEligible/);
+    assert.match(appSource, /早盘/);
+    assert.match(appSource, /selectedEntry\.date > todayStatus\.today \? renderLiveMarketCard/);
     assert.match(appSource, /withLiveOdds/);
     assert.match(appSource, /renderLiveMarketCard/);
     assert.match(appSource, /quoteForSelection/);
@@ -106,6 +113,13 @@ describe('public dashboard app integration', () => {
     assert.match(styles, /\.cockpit-live-odds-row/);
     assert.match(appSource, /controllerchange/);
     assert.match(appSource, /document\.readyState === "complete"/);
-    assert.match(html, /app\.js\?v=20260913-sw-retry/);
+    assert.match(html, /app\.js\?v=20260929-research-status/);
+  });
+
+  it('shows public data cutoff and next-meeting freshness in the header', async () => {
+    const appSource = await readFile(new URL('../app.js', import.meta.url), 'utf8');
+    assert.match(appSource, /最新赛果/);
+    assert.match(appSource, /下一场/);
+    assert.match(appSource, /settledRaces/);
   });
 });

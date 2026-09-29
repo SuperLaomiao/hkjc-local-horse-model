@@ -1,10 +1,10 @@
-const CACHE_NAME = "hkjc-model-v16-sw-retry";
+const CACHE_NAME = "hkjc-model-v18-research-status";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./styles.css?v=20260913-live-market",
-  "./app.js?v=20260913-sw-retry",
-  "./live-market-browser.js?v=20260913-sw-retry",
+  "./app.js?v=20260929-research-status",
+  "./live-market-browser.js?v=20260929-public-release",
   "./dashboard-cockpit.js?v=20260719-mobile-cockpit",
   "./dashboard-layout.js?v=20260719-mobile-cockpit",
   "./external-model-summary.js?v=20260708-external-models",
@@ -44,6 +44,7 @@ self.addEventListener("fetch", (event) => {
 
   if (
     url.pathname.endsWith("/data/dashboard.json")
+    || url.pathname.endsWith("/data/publication-manifest.json")
     || url.pathname.endsWith("/hkjc-horse-model/data/processed/model-leaderboard.json")
     || url.pathname.endsWith("/hkjc-horse-model/data/processed/model-training-report.json")
     || url.pathname.endsWith("/hkjc-horse-model/data/processed/strategy-risk-report.json")

@@ -11,7 +11,7 @@ describe('research upgrade program', () => {
   it('turns external research projects into an actionable algorithm roadmap', () => {
     const program = buildResearchUpgradeProgram();
 
-    assert.equal(program.version, 'research-led-v2');
+    assert.equal(program.version, 'research-led-v3');
     assert(program.sources.length >= 15);
     assert(program.sources.some((source) => source.name === 'Ganyan'));
     assert(program.sources.some((source) => source.name.includes('HKJC Horse-Racing ML Research')));
@@ -27,7 +27,8 @@ describe('research upgrade program', () => {
 
     assert(program.algorithmBorrowings.some((item) => item.status === 'active' && /Harville|Plackett-Luce/.test(item.concept)));
     assert(program.algorithmBorrowings.some((item) => item.status === 'active' && /market|odds/i.test(item.concept)));
-    assert(program.algorithmBorrowings.some((item) => item.status === 'next' && /Kelly|Bayesian|SpeedPRO/i.test(item.concept)));
+    assert(program.algorithmBorrowings.some((item) => item.status === 'active' && /Kelly/i.test(item.concept)));
+    assert.equal(program.algorithmBorrowings.some((item) => item.status === 'next'), false);
     assert(program.frontendSignals.includes('研究升级页签'));
   });
 
@@ -219,31 +220,35 @@ describe('research upgrade program', () => {
     const summary = summarizeResearchUpgradeProgram(buildResearchUpgradeProgram());
 
     assert.equal(summary.activeCount > 0, true);
-    assert.equal(summary.nextCount > 0, true);
+    assert.equal(summary.nextCount, 0);
     assert.equal(summary.researchOnlyCount > 0, true);
     assert.equal(summary.followUpCount > 0, true);
     assert.equal(summary.implementedActionCount, 12);
     assert.equal(summary.partialActionCount, 3);
     assert.equal(summary.queuedActionCount, 0);
     assert.equal(summary.researchOnlyActionCount, 1);
+    assert.equal(summary.waitingRealSampleActionCount, 10);
+    assert.equal(summary.missingHistoricalDataActionCount, 1);
+    assert.equal(summary.verifiedNotAdoptedActionCount, 1);
     assert.equal(summary.automationReadyCount > 0, true);
     assert.equal(summary.externalBenchmarkCount >= 8, true);
     assert.equal(summary.reproducedBenchmarkCount, 2);
     assert.equal(summary.reproductionReadyCount >= 1, true);
     assert.equal(summary.dataLeverageCount >= 3, true);
     assert.equal(summary.blockedBenchmarkCount >= 1, true);
-    assert.match(summary.tier1GapLabel, /落后|behind|tier1/i);
+    assert.match(summary.tier1GapLabel, /工程.*完成|等待真实前瞻证据/i);
+    assert.doesNotMatch(summary.tier1GapLabel, /落后|behind/i);
     assert.match(summary.nextBenchmarkAction, /catowabisabi|LightGBM|连赢/i);
     assert.match(summary.nextDataLeverageAction, /Tianxi|tianxi|数据|feature/i);
-    assert.match(summary.headline, /研究驱动/);
-    assert.match(summary.nextFocus, /市场赔率|校准|Kelly/);
-    assert.match(summary.nextAction, /赛程|排位|race.?card|preflight/i);
+    assert.match(summary.headline, /工程接线.*完成|真实赛前样本/);
+    assert.match(summary.nextFocus, /真实|历史数据|研究观察/i);
+    assert.match(summary.nextAction, /暂无.*开发|真实赛日|赛卡/i);
   });
 
   it('attaches the research program to generated dashboard snapshots', () => {
     const snapshot = buildDashboardSnapshot([]);
 
-    assert.equal(snapshot.research.version, 'research-led-v2');
+    assert.equal(snapshot.research.version, 'research-led-v3');
     assert.equal(snapshot.research.summary.sourceCount >= 14, true);
     assert.equal(snapshot.research.summary.activeCount > 0, true);
     assert.equal(snapshot.research.summary.followUpCount > 0, true);

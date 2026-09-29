@@ -136,9 +136,9 @@ const ALGORITHM_BORROWINGS = [
   },
   {
     concept: 'Fractional Kelly + 资金/单马暴露上限',
-    status: 'next',
-    userImpact: '把 HK$10-100 的注码从固定规则升级成按 edge、方差和当天亏赢状态自适应。',
-    nextStep: '做 Kelly fraction sweep，比较 0.1x、0.25x、0.5x Kelly 在历史回测里的最大回撤。',
+    status: 'active',
+    userImpact: '仓位实验器已经能比较不同 Kelly fraction 和暴露上限；现金模式仍保持零金额。',
+    nextStep: '等待有玩法通过真实前瞻证据闸门后，再读取 0.1x、0.25x、0.5x 的风险曲线；目前不产生实盘建议。',
   },
   {
     concept: 'Bayesian skip-gate / trip-wire',
@@ -607,26 +607,60 @@ const STATUS_LABELS = {
   'research-only': '研究观察',
 };
 
+const FOLLOW_UP_EVIDENCE_STATES = {
+  'upcoming-racecard-preflight': 'waiting-real-samples',
+  'live-snapshot-planner': 'waiting-real-samples',
+  'pool-money-features': 'waiting-real-samples',
+  'benchmark-registry-refresh': 'implemented',
+  'speedpro-feature-importer': 'missing-historical-data',
+  'no-bet-clv-gate': 'waiting-real-samples',
+  'market-aware-shadow-bridge': 'waiting-real-samples',
+  'prospective-lock-ledger': 'waiting-real-samples',
+  'race-day-cycle': 'waiting-real-samples',
+  'prospective-coverage-gate': 'waiting-real-samples',
+  'prospective-promotion-state-machine': 'waiting-real-samples',
+  'post-gate-feature-staking-experiments': 'waiting-real-samples',
+  'bayesian-tripwire': 'implemented',
+  'lightgbm-no-market-benchmark': 'verified-not-adopted',
+  'parimutuel-stacker-copula-study': 'research-only',
+  'j-csc-scraper-schema-audit': 'implemented',
+};
+
+const EVIDENCE_STATUS_LABELS = {
+  implemented: '已实现',
+  'waiting-real-samples': '等待真实样本',
+  'missing-historical-data': '缺少历史数据',
+  'verified-not-adopted': '已验证不采用',
+  'research-only': '研究观察',
+};
+
 export function buildResearchUpgradeProgram() {
   return {
-    version: 'research-led-v2',
-    headline: '研究驱动：先学术与开源验证，再进入下注建议。',
+    version: 'research-led-v3',
+    headline: '工程接线基本完成；当前重点是积累真实赛前样本并守住 NO_BET 证据门槛。',
     sources: RESEARCH_SOURCES.map((source) => ({ ...source })),
     algorithmBorrowings: ALGORITHM_BORROWINGS.map((item) => ({
       ...item,
       label: STATUS_LABELS[item.status] ?? item.status,
     })),
-    followUpActions: FOLLOW_UP_ACTIONS.map((item) => ({ ...item })),
+    followUpActions: FOLLOW_UP_ACTIONS.map((item) => {
+      const evidenceStatus = FOLLOW_UP_EVIDENCE_STATES[item.id] ?? 'research-only';
+      return {
+        ...item,
+        evidenceStatus,
+        evidenceStatusLabel: EVIDENCE_STATUS_LABELS[evidenceStatus],
+      };
+    }),
     externalBenchmarkRegistry: EXTERNAL_BENCHMARK_REGISTRY.map((item) => ({ ...item, requiredLocalData: [...item.requiredLocalData] })),
     frontendSignals: [
       '研究升级页签',
-      '每项机制显示「已进入系统 / 下一步 / 研究观察」',
+      '每项机制分别显示工程状态与证据状态，区分已实现、等待真实样本、缺少历史数据、已验证不采用和研究观察',
       'Research Lab 显示可由每日巡检续跑的 follow-up action 队列',
-      'Tier1 外部 benchmark 显示公开强项、我们差距、复现门槛和 adoption 状态',
+      '外部方法验证档案显示公开强项、本地结论、数据缺口和采用状态',
       '前端解释期望 ROI、概率校准、风险上限，而不只给马号',
       '每日巡检后把模型变化和回测指标一起呈现',
     ],
-    guardrail: '只学习公开方法和设计经验，不复制第三方项目代码；所有新机制必须经过本地回测和前端标注后才进入实注建议。',
+    guardrail: '只学习公开方法和设计经验，不复制第三方项目代码；历史缺失快照不倒推，真实前瞻证据不足时保持 PAPER_ONLY / NO_BET。',
   };
 }
 
@@ -636,6 +670,7 @@ export function summarizeResearchUpgradeProgram(program = buildResearchUpgradePr
   const followUpActions = Array.isArray(program.followUpActions) ? program.followUpActions : [];
   const externalBenchmarkRegistry = Array.isArray(program.externalBenchmarkRegistry) ? program.externalBenchmarkRegistry : [];
   const actionCountByStatus = (status) => followUpActions.filter((item) => item.status === status).length;
+  const actionCountByEvidenceStatus = (status) => followUpActions.filter((item) => item.evidenceStatus === status).length;
   const automationReadyActions = followUpActions.filter((item) => (
     item.automationExecutable
     && ['queued', 'partial'].includes(item.status)
@@ -671,15 +706,18 @@ export function summarizeResearchUpgradeProgram(program = buildResearchUpgradePr
     partialActionCount: actionCountByStatus('partial'),
     queuedActionCount: actionCountByStatus('queued'),
     researchOnlyActionCount: actionCountByStatus('research-only'),
+    waitingRealSampleActionCount: actionCountByEvidenceStatus('waiting-real-samples'),
+    missingHistoricalDataActionCount: actionCountByEvidenceStatus('missing-historical-data'),
+    verifiedNotAdoptedActionCount: actionCountByEvidenceStatus('verified-not-adopted'),
     automationReadyCount: automationReadyActions.length,
     externalBenchmarkCount: externalBenchmarkRegistry.length,
     reproducedBenchmarkCount: reproducedBenchmarks.length,
     reproductionReadyCount: reproductionReadyBenchmarks.length,
     dataLeverageCount: dataLeverageBenchmarks.length,
     blockedBenchmarkCount,
-    tier1GapLabel: '当前模型仍落后 tier1：优先复现外部强 benchmark 后再升级推荐。',
-    nextFocus: nextItems.map((item) => item.concept).slice(0, 3).join(' / '),
-    nextAction: firstAction ? `${firstAction.priority} ${firstAction.title}` : '暂无排队 action',
+    tier1GapLabel: '核心工程已经完成；模型升级等待真实前瞻证据，缺失历史快照不会补造。',
+    nextFocus: '积累真实 T-30/T-10/T-3 样本 / 保留历史数据缺口 / 研究观察不进入现金推荐',
+    nextAction: firstAction ? `暂无新的独立开发项；真实赛日前继续 ${firstAction.title}` : '暂无依赖已满足的开发项',
     nextBenchmarkAction: nextBenchmark ? `${nextBenchmark.priority} ${nextBenchmark.sourceName}: ${nextBenchmark.leveragePath}` : '暂无外部 benchmark action',
     nextDataLeverageAction: dataLeverageBenchmarks[0]
       ? `${dataLeverageBenchmarks[0].priority} ${dataLeverageBenchmarks[0].sourceName}: ${dataLeverageBenchmarks[0].leveragePath}`
