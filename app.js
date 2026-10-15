@@ -12,7 +12,7 @@ import {
   buildCockpitViewModel,
   buildProspectiveCoverageView,
   normalizeCockpitDestination,
-} from "./dashboard-cockpit.js?v=20260719-mobile-cockpit";
+} from "./dashboard-cockpit.js?v=20261015-prospective-coverage-export";
 import {
   buildBettingAvailability,
   formatRaceContext,

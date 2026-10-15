@@ -113,7 +113,9 @@ describe('public dashboard app integration', () => {
     assert.match(styles, /\.cockpit-live-odds-row/);
     assert.match(appSource, /controllerchange/);
     assert.match(appSource, /document\.readyState === "complete"/);
-    assert.match(html, /app\.js\?v=20260929-research-status/);
+    assert.match(html, /app\.js\?v=20261015-prospective-coverage-export/);
+    assert.match(appSource, /dashboard-cockpit\.js\?v=20261015-prospective-coverage-export/);
+    assert.match(serviceWorker, /hkjc-model-v19-prospective-coverage-export/);
   });
 
   it('shows public data cutoff and next-meeting freshness in the header', async () => {

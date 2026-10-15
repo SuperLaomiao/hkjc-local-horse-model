@@ -4,8 +4,31 @@ import { describe, it } from 'node:test';
 import {
   COCKPIT_DESTINATIONS,
   buildCockpitViewModel,
+  buildProspectiveCoverageView,
   normalizeCockpitDestination,
 } from '../dashboard-cockpit.js';
+
+describe('prospective coverage view', () => {
+  it('builds a sanitized view and fails closed on invalid reports', () => {
+    const report = {
+      version: 'prospective-coverage-v1',
+      generatedAt: '2026-10-15T10:00:00.000Z',
+      summary: { races: 62, dueRaces: 50, usableRaces: 41, missingCells: 120, settledLocks: 900 },
+      gate: { status: 'BLOCKED_DATA', declaredMinimums: { races: 100 } },
+      byPoolWindow: [{ pool: 'WIN', window: 'T-30', usableCells: 41, dueCells: 50, missingCells: 9 }],
+    };
+
+    assert.deepEqual(buildProspectiveCoverageView(report), {
+      available: true, generatedAt: report.generatedAt, cashMode: 'NO_BET',
+      loadedRaces: 62, usableRaces: 41, futureRaces: 12, missingCells: 120,
+      settledLocks: 900, racesNeeded: 59, requiredRaces: 100, gateStatus: 'BLOCKED_DATA',
+      cells: [{ pool: 'WIN', window: 'T-30', usable: 41, due: 50, missing: 9 }],
+    });
+    assert.deepEqual(buildProspectiveCoverageView({ ...report, summary: { ...report.summary, usableRaces: 51 } }), {
+      available: false, cashMode: 'NO_BET',
+    });
+  });
+});
 
 const entry = {
   raceId: '2026-07-19-ST-R3',

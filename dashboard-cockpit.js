@@ -122,3 +122,35 @@ function reasonForState({
   }
   return portfolio?.summary ?? '没有通过全部执行门槛的组合。';
 }
+
+export function buildProspectiveCoverageView(report) {
+  const s = report?.summary;
+  const count = value => Number.isInteger(value) && value >= 0;
+  if (report?.version !== 'prospective-coverage-v1' || !s
+    || !Number.isFinite(Date.parse(report.generatedAt))
+    || ![s.races, s.dueRaces, s.usableRaces].every(count)
+    || s.usableRaces > s.dueRaces || s.dueRaces > s.races) {
+    return { available: false, cashMode: 'NO_BET' };
+  }
+  const required = report.gate?.declaredMinimums?.races;
+  return {
+    available: true,
+    generatedAt: report.generatedAt,
+    cashMode: 'NO_BET',
+    loadedRaces: s.races,
+    usableRaces: s.usableRaces,
+    futureRaces: s.races - s.dueRaces,
+    missingCells: count(s.missingCells) ? s.missingCells : null,
+    settledLocks: count(s.settledLocks) ? s.settledLocks : null,
+    racesNeeded: count(required) ? Math.max(0, required - s.usableRaces) : null,
+    requiredRaces: count(required) ? required : null,
+    gateStatus: ['READY', 'BLOCKED_DATA'].includes(report.gate?.status) ? report.gate.status : 'UNKNOWN',
+    cells: (Array.isArray(report.byPoolWindow) ? report.byPoolWindow : []).map(row => ({
+      pool: String(row.pool ?? ''),
+      window: String(row.window ?? ''),
+      usable: count(row.usableCells) ? row.usableCells : null,
+      due: count(row.dueCells) ? row.dueCells : null,
+      missing: count(row.missingCells) ? row.missingCells : null,
+    })),
+  };
+}
