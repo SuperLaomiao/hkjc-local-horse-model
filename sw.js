@@ -1,11 +1,11 @@
-const CACHE_NAME = "hkjc-model-v18-research-status";
+const CACHE_NAME = "hkjc-model-v19-prospective-coverage-export";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./styles.css?v=20260913-live-market",
-  "./app.js?v=20260929-research-status",
+  "./app.js?v=20261015-prospective-coverage-export",
   "./live-market-browser.js?v=20260929-public-release",
-  "./dashboard-cockpit.js?v=20260719-mobile-cockpit",
+  "./dashboard-cockpit.js?v=20261015-prospective-coverage-export",
   "./dashboard-layout.js?v=20260719-mobile-cockpit",
   "./external-model-summary.js?v=20260708-external-models",
   "./adaptive-staking.js",
