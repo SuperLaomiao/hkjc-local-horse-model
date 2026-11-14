@@ -74,6 +74,7 @@ export async function buildPublicSite({
   dashboardPath = path.join(projectRoot, PUBLIC_DASHBOARD_PATH),
   staticFiles = PUBLIC_SITE_STATIC_FILES,
   previousManifest = null,
+  previousDashboardText,
 }) {
   const sourceRoot = path.resolve(projectRoot);
   const destinationRoot = path.resolve(outputRoot);
@@ -98,6 +99,7 @@ export async function buildPublicSite({
   const releaseManifest = buildPublicReleaseManifest({ dashboard: publicSnapshot, dashboardText: publicDashboardText });
   const transitionIssues = validatePublicReleaseTransition({
     previous: previousManifest,
+    previousDashboardText,
     candidate: releaseManifest,
     asOfDate: new Date().toISOString().slice(0, 10),
   });

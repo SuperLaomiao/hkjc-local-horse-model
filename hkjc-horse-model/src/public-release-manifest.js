@@ -1,16 +1,25 @@
 import { createHash } from 'node:crypto';
 
-export const PUBLIC_RELEASE_MANIFEST_VERSION = 'public-release-manifest-v1';
+export const PUBLIC_RELEASE_MANIFEST_VERSION = 'public-release-manifest-v2';
+const LEGACY_MANIFEST_VERSION = 'public-release-manifest-v1';
+const LEGACY_DATA_FIELDS = [
+  'settledRaces', 'settledThrough', 'upcomingRaces', 'upcomingFrom',
+  'upcomingRunners', 'upcomingMeetings',
+];
 
 export function buildPublicReleaseManifest({ dashboard, dashboardText }) {
   const text = String(dashboardText ?? `${JSON.stringify(dashboard, null, 2)}\n`);
   const upcomingEntries = Array.isArray(dashboard?.upcomingEntries) ? dashboard.upcomingEntries : [];
+  const upcomingRaceIds = [];
   const meetings = new Map();
   let upcomingRunners = 0;
   for (const entry of upcomingEntries) {
-    const date = validDate(entry?.date ?? entry?.forecast?.date);
-    const racecourse = String(entry?.racecourse ?? entry?.forecast?.racecourse ?? '').toUpperCase();
-    if (!date || !racecourse) continue;
+    const raceId = entryRaceId(entry);
+    if (!raceId || entry?.settlement || upcomingRaceIds.includes(raceId)) {
+      throw new Error(`invalid or duplicate upcoming race identity: ${entry?.raceId ?? 'missing'}`);
+    }
+    upcomingRaceIds.push(raceId);
+    const { date, racecourse } = parseRaceId(raceId);
     const runners = Array.isArray(entry?.forecast?.predictions) ? entry.forecast.predictions.length : 0;
     const key = `${date}|${racecourse}`;
     const meeting = meetings.get(key) ?? { date, racecourse, races: 0, runners: 0 };
@@ -22,6 +31,21 @@ export function buildPublicReleaseManifest({ dashboard, dashboardText }) {
   const upcomingMeetings = [...meetings.values()].sort((left, right) => (
     left.date.localeCompare(right.date) || left.racecourse.localeCompare(right.racecourse)
   ));
+  const upcomingRaces = count(dashboard?.dataSource?.upcomingRaces ?? upcomingEntries.length);
+  if (upcomingRaces !== upcomingRaceIds.length) {
+    throw new Error('upcoming race count does not match the published race identities');
+  }
+  // Evidence is limited to results already present in the public dashboard.
+  // Never read the private ledger or expand the public history to make a release pass.
+  const recentSettledRaceIds = [...new Set([
+    ...(dashboard?.recentEntries ?? []).map((entry) => (
+      entryRaceId(entry) === settledRaceId(entry?.settlement) ? settledRaceId(entry?.settlement) : null
+    )),
+    settledRaceId(dashboard?.latestSettlement),
+  ].filter(Boolean))].sort();
+  if (recentSettledRaceIds.some((raceId) => upcomingRaceIds.includes(raceId))) {
+    throw new Error('settled race is still listed as upcoming');
+  }
   const settledThrough = validDate(dashboard?.latestSettlement?.date)
     ?? latestDate((dashboard?.recentEntries ?? []).map((entry) => entry?.settlement?.date ?? entry?.date));
   const upcomingFrom = upcomingMeetings[0]?.date
@@ -37,17 +61,46 @@ export function buildPublicReleaseManifest({ dashboard, dashboardText }) {
     data: {
       settledRaces: count(dashboard?.dataSource?.settledRaces ?? dashboard?.summary?.racesSettled),
       settledThrough,
-      upcomingRaces: count(dashboard?.dataSource?.upcomingRaces ?? upcomingEntries.length),
+      upcomingRaces,
       upcomingFrom,
       upcomingRunners,
       upcomingMeetings,
+      upcomingRaceIds: upcomingRaceIds.sort(),
+      recentSettledRaceIds,
     },
   };
 }
 
-export function validatePublicReleaseTransition({ previous, candidate, asOfDate }) {
-  if (!previous || previous.version !== PUBLIC_RELEASE_MANIFEST_VERSION) return [];
+export function validatePublicReleaseTransition({ previous, candidate, asOfDate, previousDashboardText }) {
+  if (!previous) return [];
   const issues = [];
+  if (!supportedVersion(previous?.version) || candidate?.version !== PUBLIC_RELEASE_MANIFEST_VERSION
+    || !validCoverageData(previous) || !validCoverageData(candidate)) {
+    return [issue('INVALID_RELEASE_MANIFEST', 'Unsupported version or invalid release coverage')];
+  }
+  if (previous.version === LEGACY_MANIFEST_VERSION && previous.data.upcomingRaces > 0 && previousDashboardText == null) {
+    return [issue('LEGACY_DASHBOARD_REQUIRED', 'The v1 release needs its hash-matched public dashboard to recover race identities')];
+  }
+  if (previousDashboardText != null) {
+    const previousIssues = verifyPublicReleaseFiles({ dashboardText: previousDashboardText, manifest: previous });
+    if (previousIssues.length) {
+      return [issue('PREVIOUS_RELEASE_INVALID', previousIssues.map((item) => item.code).join(', '))];
+    }
+    try {
+      const recovered = buildPublicReleaseManifest({
+        dashboard: JSON.parse(previousDashboardText), dashboardText: previousDashboardText,
+      });
+      if (LEGACY_DATA_FIELDS.some((key) => JSON.stringify(recovered.data[key]) !== JSON.stringify(previous.data[key]))) {
+        return [issue('PREVIOUS_RELEASE_INVALID', 'The previous counts and meetings disagree with its dashboard')];
+      }
+      previous = recovered;
+    } catch (error) {
+      return [issue('PREVIOUS_RELEASE_INVALID', error.message)];
+    }
+  }
+  if (!validIdentityData(candidate) || (previous.version === PUBLIC_RELEASE_MANIFEST_VERSION && !validIdentityData(previous))) {
+    return [issue('INVALID_RELEASE_MANIFEST', 'Invalid or missing race identity evidence')];
+  }
   if (candidate.data.settledRaces < previous.data.settledRaces) {
     issues.push(issue('SETTLED_COUNT_REGRESSION', `${previous.data.settledRaces} -> ${candidate.data.settledRaces}`));
   }
@@ -55,20 +108,33 @@ export function validatePublicReleaseTransition({ previous, candidate, asOfDate 
     || candidate.data.settledThrough < previous.data.settledThrough)) {
     issues.push(issue('SETTLED_DATE_REGRESSION', `${previous.data.settledThrough} -> ${candidate.data.settledThrough ?? 'missing'}`));
   }
-  const today = validDate(asOfDate) ?? new Date().toISOString().slice(0, 10);
-  if (previous.data.upcomingFrom && previous.data.upcomingFrom >= today && !candidate.data.upcomingFrom) {
-    issues.push(issue('FUTURE_MEETING_DISAPPEARED', `${previous.data.upcomingFrom} is still current or future`));
+  if (Date.parse(candidate.generatedAt) < Date.parse(previous.generatedAt)) {
+    issues.push(issue('GENERATED_AT_REGRESSION', `${previous.generatedAt} -> ${candidate.generatedAt}`));
   }
-  if (previous.data.upcomingFrom && candidate.data.upcomingFrom === previous.data.upcomingFrom
-    && candidate.data.upcomingRaces < previous.data.upcomingRaces) {
-    issues.push(issue('FUTURE_RACE_COUNT_REGRESSION', `${previous.data.upcomingRaces} -> ${candidate.data.upcomingRaces}`));
+  const today = validDate(asOfDate) ?? new Date().toISOString().slice(0, 10);
+  const upcomingIds = new Set(candidate.data.upcomingRaceIds);
+  const settledIds = new Set(candidate.data.recentSettledRaceIds.filter((raceId) => (
+    parseRaceId(raceId).date <= today && parseRaceId(raceId).date <= candidate.generatedAt.slice(0, 10)
+      && parseRaceId(raceId).date <= candidate.data.settledThrough
+  )));
+  const removed = (previous.data.upcomingRaceIds ?? []).filter((raceId) => !upcomingIds.has(raceId));
+  const missing = removed.filter((raceId) => !settledIds.has(raceId));
+  if (missing.length) {
+    const code = !candidate.data.upcomingFrom ? 'FUTURE_MEETING_DISAPPEARED'
+      : candidate.data.upcomingRaces < previous.data.upcomingRaces ? 'FUTURE_RACE_COUNT_REGRESSION'
+        : 'UPCOMING_RACE_DISAPPEARED';
+    issues.push(issue(code, `No matching settled result for ${missing.join(', ')}`));
+  }
+  const newlySettled = removed.length - missing.length;
+  if (newlySettled > 0 && newlySettled > candidate.data.settledRaces - previous.data.settledRaces) {
+    issues.push(issue('SETTLEMENT_COUNT_MISMATCH', `${newlySettled} removed races exceed settled-count growth`));
   }
   return issues;
 }
 
 export function verifyPublicReleaseFiles({ dashboardText, manifest }) {
   const issues = [];
-  if (manifest?.version !== PUBLIC_RELEASE_MANIFEST_VERSION) {
+  if (!supportedVersion(manifest?.version)) {
     issues.push(issue('INVALID_RELEASE_MANIFEST', 'Unsupported or missing manifest version'));
     return issues;
   }
@@ -79,7 +145,63 @@ export function verifyPublicReleaseFiles({ dashboardText, manifest }) {
   if (!manifest.generatedAt || !Number.isFinite(Date.parse(manifest.generatedAt))) {
     issues.push(issue('INVALID_GENERATED_AT', String(manifest.generatedAt)));
   }
+  if (manifest.version === PUBLIC_RELEASE_MANIFEST_VERSION) {
+    try {
+      const rebuilt = buildPublicReleaseManifest({ dashboard: JSON.parse(dashboardText), dashboardText });
+      if (!validIdentityData(manifest) || JSON.stringify(rebuilt.data) !== JSON.stringify(manifest.data)
+        || rebuilt.generatedAt !== manifest.generatedAt) {
+        issues.push(issue('RELEASE_DATA_MISMATCH', 'Manifest race evidence does not match the public dashboard'));
+      }
+    } catch (error) {
+      issues.push(issue('INVALID_RELEASE_DATA', error.message));
+    }
+  }
   return issues;
+}
+
+function supportedVersion(version) {
+  return version === PUBLIC_RELEASE_MANIFEST_VERSION || version === LEGACY_MANIFEST_VERSION;
+}
+
+function parseRaceId(value) {
+  const match = /^(\d{4}-\d{2}-\d{2})-(ST|HV)-([1-9]\d*)$/.exec(String(value ?? ''));
+  return match && validDate(match[1]) ? { date: match[1], racecourse: match[2], raceNo: Number(match[3]) } : null;
+}
+
+function matchesIdentity(value, raceId) {
+  const identity = parseRaceId(raceId);
+  return identity && value && ['date', 'racecourse', 'raceNo'].every((key) => (
+    value[key] == null || String(value[key]) === String(identity[key])
+  )) && (value.raceId == null || value.raceId === raceId);
+}
+
+function entryRaceId(entry) {
+  const raceId = entry?.raceId ?? entry?.forecast?.raceId;
+  return matchesIdentity(entry, raceId) && (!entry.forecast || matchesIdentity(entry.forecast, raceId))
+    ? raceId : null;
+}
+
+function settledRaceId(settlement) {
+  return matchesIdentity(settlement, settlement?.raceId)
+    && ['PASS', 'WIN', 'MISS'].includes(settlement?.resultLabel)
+    && typeof settlement?.winnerHorseId === 'string' && settlement.winnerHorseId.trim()
+    ? settlement.raceId : null;
+}
+
+function validIdentityData(manifest) {
+  const { upcomingRaceIds, recentSettledRaceIds, upcomingRaces, settledRaces } = manifest.data;
+  return [upcomingRaceIds, recentSettledRaceIds].every((ids) => (
+    Array.isArray(ids) && ids.every((raceId) => parseRaceId(raceId)) && new Set(ids).size === ids.length
+  )) && Number.isInteger(upcomingRaces) && upcomingRaces === upcomingRaceIds.length
+    && Number.isInteger(settledRaces) && settledRaces >= recentSettledRaceIds.length
+    && !recentSettledRaceIds.some((raceId) => upcomingRaceIds.includes(raceId));
+}
+
+function validCoverageData(manifest) {
+  const data = manifest?.data;
+  return data && ['settledRaces', 'upcomingRaces'].every((key) => Number.isInteger(data[key]) && data[key] >= 0)
+    && ['settledThrough', 'upcomingFrom'].every((key) => data[key] == null || validDate(data[key]))
+    && Number.isFinite(Date.parse(manifest.generatedAt));
 }
 
 export async function verifyPublishedSite({ baseUrl, expectedManifest, fetchImpl = fetch, retries = 6, retryDelayMs = 5000 }) {
@@ -119,7 +241,8 @@ function count(value) {
 
 function validDate(value) {
   const text = String(value ?? '');
-  return /^\d{4}-\d{2}-\d{2}$/.test(text) ? text : null;
+  return /^\d{4}-\d{2}-\d{2}$/.test(text) && Number.isFinite(Date.parse(text))
+    && new Date(text).toISOString().slice(0, 10) === text ? text : null;
 }
 
 function latestDate(values) {
