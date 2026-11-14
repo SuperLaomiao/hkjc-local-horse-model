@@ -41,7 +41,7 @@ export function dashboardExecutionPolicy(snapshot = {}) {
 
 export function buildPublicPortfolioOptions(snapshot = {}, entry = null) {
   const policy = dashboardExecutionPolicy(snapshot);
-  const options = policy.allowExecutableRecommendations
+  const options = policy.allowExecutableRecommendations && entry?.status !== 'abandoned'
     ? {}
     : {
         probabilityStatus: 'RESEARCH_ONLY',

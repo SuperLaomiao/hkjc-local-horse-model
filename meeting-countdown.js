@@ -69,6 +69,7 @@ export function hkRaceDateTime(dateString, timeString) {
 
 function normalizeEntries(entries) {
   return (Array.isArray(entries) ? entries : [])
+    .filter((entry) => entry.status !== 'abandoned')
     .map((entry) => ({
       raceId: entry.raceId ?? null,
       date: entry.date ?? entry.forecast?.date ?? null,

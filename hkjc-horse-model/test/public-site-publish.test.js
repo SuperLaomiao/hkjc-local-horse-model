@@ -50,7 +50,7 @@ describe('public site publishing boundary', () => {
         'index.html',
       ]);
       const manifest = JSON.parse(await readFile(path.join(output, 'data', 'publication-manifest.json'), 'utf8'));
-      assert.equal(manifest.version, 'public-release-manifest-v2');
+      assert.equal(manifest.version, 'public-release-manifest-v3');
       assert.match(manifest.dashboardSha256, /^[a-f0-9]{64}$/);
       assert.deepEqual(dashboard.ledger, []);
       assert.equal(dashboard.recentEntries[0].forecast.topPick.horseName, 'Public Top Pick');
@@ -111,6 +111,7 @@ describe('public site publishing boundary', () => {
       previousManifest.version = 'public-release-manifest-v1';
       delete previousManifest.data.upcomingRaceIds;
       delete previousManifest.data.recentSettledRaceIds;
+      delete previousManifest.data.abandonedRaces;
       const priorDashboardPath = path.join(root, 'previous-dashboard.json');
       const priorManifestPath = path.join(root, 'previous-manifest.json');
       await writeFile(priorDashboardPath, previousDashboardText);

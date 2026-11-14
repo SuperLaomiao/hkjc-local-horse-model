@@ -1,6 +1,8 @@
 import { createHash } from 'node:crypto';
+import { projectAbandonedRace } from './race-terminal.js';
 
-export const PUBLIC_RELEASE_MANIFEST_VERSION = 'public-release-manifest-v2';
+export const PUBLIC_RELEASE_MANIFEST_VERSION = 'public-release-manifest-v3';
+const IDENTITY_MANIFEST_VERSION = 'public-release-manifest-v2';
 const LEGACY_MANIFEST_VERSION = 'public-release-manifest-v1';
 const LEGACY_DATA_FIELDS = [
   'settledRaces', 'settledThrough', 'upcomingRaces', 'upcomingFrom',
@@ -15,7 +17,7 @@ export function buildPublicReleaseManifest({ dashboard, dashboardText }) {
   let upcomingRunners = 0;
   for (const entry of upcomingEntries) {
     const raceId = entryRaceId(entry);
-    if (!raceId || entry?.settlement || upcomingRaceIds.includes(raceId)) {
+    if (!raceId || entry?.settlement || entry?.status === 'abandoned' || upcomingRaceIds.includes(raceId)) {
       throw new Error(`invalid or duplicate upcoming race identity: ${entry?.raceId ?? 'missing'}`);
     }
     upcomingRaceIds.push(raceId);
@@ -46,6 +48,16 @@ export function buildPublicReleaseManifest({ dashboard, dashboardText }) {
   if (recentSettledRaceIds.some((raceId) => upcomingRaceIds.includes(raceId))) {
     throw new Error('settled race is still listed as upcoming');
   }
+  const abandonedRaces = (dashboard?.terminalEntries ?? []).map(projectAbandonedRace);
+  const generatedAt = validTimestamp(dashboard?.generatedAt);
+  if (abandonedRaces.some((race) => !generatedAt || Date.parse(race.terminalEvidence.observedAt) > Date.parse(generatedAt))) {
+    throw new Error('Abandoned race evidence was captured after dashboard generation');
+  }
+  const abandonedIds = abandonedRaces.map((race) => race.raceId);
+  if (new Set(abandonedIds).size !== abandonedIds.length
+    || abandonedIds.some((id) => upcomingRaceIds.includes(id) || recentSettledRaceIds.includes(id))) {
+    throw new Error('Conflicting or duplicate abandoned race identities');
+  }
   const settledThrough = validDate(dashboard?.latestSettlement?.date)
     ?? latestDate((dashboard?.recentEntries ?? []).map((entry) => entry?.settlement?.date ?? entry?.date));
   const upcomingFrom = upcomingMeetings[0]?.date
@@ -54,7 +66,7 @@ export function buildPublicReleaseManifest({ dashboard, dashboardText }) {
 
   return {
     version: PUBLIC_RELEASE_MANIFEST_VERSION,
-    generatedAt: validTimestamp(dashboard?.generatedAt),
+    generatedAt,
     dashboardSha256: createHash('sha256').update(text).digest('hex'),
     scope: dashboard?.scope ?? null,
     publicationPolicyVersion: dashboard?.publication?.policyVersion ?? null,
@@ -67,6 +79,7 @@ export function buildPublicReleaseManifest({ dashboard, dashboardText }) {
       upcomingMeetings,
       upcomingRaceIds: upcomingRaceIds.sort(),
       recentSettledRaceIds,
+      abandonedRaces,
     },
   };
 }
@@ -98,7 +111,7 @@ export function validatePublicReleaseTransition({ previous, candidate, asOfDate,
       return [issue('PREVIOUS_RELEASE_INVALID', error.message)];
     }
   }
-  if (!validIdentityData(candidate) || (previous.version === PUBLIC_RELEASE_MANIFEST_VERSION && !validIdentityData(previous))) {
+  if (!validIdentityData(candidate) || (previous.version !== LEGACY_MANIFEST_VERSION && !validIdentityData(previous))) {
     return [issue('INVALID_RELEASE_MANIFEST', 'Invalid or missing race identity evidence')];
   }
   if (candidate.data.settledRaces < previous.data.settledRaces) {
@@ -117,15 +130,23 @@ export function validatePublicReleaseTransition({ previous, candidate, asOfDate,
     parseRaceId(raceId).date <= today && parseRaceId(raceId).date <= candidate.generatedAt.slice(0, 10)
       && parseRaceId(raceId).date <= candidate.data.settledThrough
   )));
+  const abandonedIds = new Set(candidate.data.abandonedRaces.filter((race) => (
+    Date.parse(race.terminalEvidence.observedAt) <= Date.parse(candidate.generatedAt)
+  )).map((race) => race.raceId));
+  for (const race of previous.data.abandonedRaces ?? []) {
+    if (upcomingIds.has(race.raceId) || settledIds.has(race.raceId)) {
+      issues.push(issue('TERMINAL_RACE_REOPENED', race.raceId));
+    }
+  }
   const removed = (previous.data.upcomingRaceIds ?? []).filter((raceId) => !upcomingIds.has(raceId));
-  const missing = removed.filter((raceId) => !settledIds.has(raceId));
+  const missing = removed.filter((raceId) => !settledIds.has(raceId) && !abandonedIds.has(raceId));
   if (missing.length) {
     const code = !candidate.data.upcomingFrom ? 'FUTURE_MEETING_DISAPPEARED'
       : candidate.data.upcomingRaces < previous.data.upcomingRaces ? 'FUTURE_RACE_COUNT_REGRESSION'
         : 'UPCOMING_RACE_DISAPPEARED';
-    issues.push(issue(code, `No matching settled result for ${missing.join(', ')}`));
+    issues.push(issue(code, `No matching official settlement or abandonment for ${missing.join(', ')}`));
   }
-  const newlySettled = removed.length - missing.length;
+  const newlySettled = removed.filter((raceId) => settledIds.has(raceId)).length;
   if (newlySettled > 0 && newlySettled > candidate.data.settledRaces - previous.data.settledRaces) {
     issues.push(issue('SETTLEMENT_COUNT_MISMATCH', `${newlySettled} removed races exceed settled-count growth`));
   }
@@ -145,10 +166,12 @@ export function verifyPublicReleaseFiles({ dashboardText, manifest }) {
   if (!manifest.generatedAt || !Number.isFinite(Date.parse(manifest.generatedAt))) {
     issues.push(issue('INVALID_GENERATED_AT', String(manifest.generatedAt)));
   }
-  if (manifest.version === PUBLIC_RELEASE_MANIFEST_VERSION) {
+  if (manifest.version !== LEGACY_MANIFEST_VERSION) {
     try {
       const rebuilt = buildPublicReleaseManifest({ dashboard: JSON.parse(dashboardText), dashboardText });
-      if (!validIdentityData(manifest) || JSON.stringify(rebuilt.data) !== JSON.stringify(manifest.data)
+      const expectedData = { ...rebuilt.data };
+      if (manifest.version === IDENTITY_MANIFEST_VERSION) delete expectedData.abandonedRaces;
+      if (!validIdentityData(manifest) || JSON.stringify(expectedData) !== JSON.stringify(manifest.data)
         || rebuilt.generatedAt !== manifest.generatedAt) {
         issues.push(issue('RELEASE_DATA_MISMATCH', 'Manifest race evidence does not match the public dashboard'));
       }
@@ -160,7 +183,7 @@ export function verifyPublicReleaseFiles({ dashboardText, manifest }) {
 }
 
 function supportedVersion(version) {
-  return version === PUBLIC_RELEASE_MANIFEST_VERSION || version === LEGACY_MANIFEST_VERSION;
+  return [PUBLIC_RELEASE_MANIFEST_VERSION, IDENTITY_MANIFEST_VERSION, LEGACY_MANIFEST_VERSION].includes(version);
 }
 
 function parseRaceId(value) {
@@ -190,11 +213,18 @@ function settledRaceId(settlement) {
 
 function validIdentityData(manifest) {
   const { upcomingRaceIds, recentSettledRaceIds, upcomingRaces, settledRaces } = manifest.data;
-  return [upcomingRaceIds, recentSettledRaceIds].every((ids) => (
+  const valid = [upcomingRaceIds, recentSettledRaceIds].every((ids) => (
     Array.isArray(ids) && ids.every((raceId) => parseRaceId(raceId)) && new Set(ids).size === ids.length
   )) && Number.isInteger(upcomingRaces) && upcomingRaces === upcomingRaceIds.length
     && Number.isInteger(settledRaces) && settledRaces >= recentSettledRaceIds.length
     && !recentSettledRaceIds.some((raceId) => upcomingRaceIds.includes(raceId));
+  if (!valid) return false;
+  if (manifest.version !== PUBLIC_RELEASE_MANIFEST_VERSION) return true;
+  try {
+    const abandoned = manifest.data.abandonedRaces.map(projectAbandonedRace);
+    const ids = abandoned.map((race) => race.raceId);
+    return new Set(ids).size === ids.length && ids.every((id) => !upcomingRaceIds.includes(id) && !recentSettledRaceIds.includes(id));
+  } catch { return false; }
 }
 
 function validCoverageData(manifest) {

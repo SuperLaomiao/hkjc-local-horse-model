@@ -11,21 +11,22 @@ import {
   COCKPIT_DESTINATIONS,
   buildCockpitViewModel,
   buildProspectiveCoverageView,
+  buildTerminalRaceNotices,
   normalizeCockpitDestination,
-} from "./dashboard-cockpit.js?v=20261015-prospective-coverage-export";
+} from "./dashboard-cockpit.js?v=20261115-abandoned-terminal";
 import {
   buildBettingAvailability,
   formatRaceContext,
   getDestinationForTool,
   getToolsForDestination,
-} from "./dashboard-layout.js?v=20260719-mobile-cockpit";
+} from "./dashboard-layout.js?v=20261115-abandoned-terminal";
 import {
   buildExternalComparisonSummary,
   externalModelBenchmarkCards,
 } from "./external-model-summary.js?v=20260708-external-models";
 import { buildStructuredBetPortfolio } from "./multi-play-portfolio.js";
 import { buildMeetingCountdown } from "./meeting-countdown.js";
-import { fetchLiveRaceOdds, formatLiveOddsValue, isLiveMarketEligible, liveMarketPhase, quoteForSelection, withLiveOdds } from "./live-market-browser.js?v=20260929-public-release";
+import { fetchLiveRaceOdds, formatLiveOddsValue, isLiveMarketEligible, liveMarketPhase, quoteForSelection, withLiveOdds } from "./live-market-browser.js?v=20261115-abandoned-terminal";
 import {
   buildPublicPortfolioOptions,
   dashboardExecutionPolicy,
@@ -238,6 +239,7 @@ function render() {
   appRoot.innerHTML = `
     <div class="terminal cockpit-shell">
       ${renderCockpitHeader(snapshot, cockpit, publication)}
+      ${renderTerminalRaceNotices(snapshot)}
       <main class="cockpit-main" id="main-content">
         ${renderDestination(uiState.selectedDestination, {
           snapshot,
@@ -427,6 +429,16 @@ function renderNoMeetingCockpit(snapshot, cockpit, todayStatus, selectedEntry) {
       ${renderScoreStrip(snapshot.summary)}
     </section>
   `;
+}
+
+function renderTerminalRaceNotices(snapshot) {
+  return buildTerminalRaceNotices(snapshot).map((notice) => `
+    <section class="panel" role="status" aria-label="官方取消赛事">
+      <h2>${escapeHtml(notice.label)}</h2>
+      <p class="guardrail">${escapeHtml(notice.detail)}</p>
+      <a href="${escapeHtml(notice.sourceUrl)}" target="_blank" rel="noopener noreferrer">查看马会官方取消及退款公告</a>
+    </section>
+  `).join("");
 }
 
 function renderCockpitStatusCard(snapshot, selectedEntry, todayStatus, cockpit) {
@@ -1727,7 +1739,7 @@ function localRaceDayStatus(snapshot) {
   const nextMeeting = nextMeetings.find((meeting) => meeting.date >= today) ?? nextMeetings[0] ?? null;
   const latestForecast = snapshot.latestForecast ?? snapshot.recentEntries?.at(-1)?.forecast ?? null;
   const latestEntry = snapshot.recentEntries?.at(-1) ?? null;
-  const latestRaceDate = latestForecast?.date ?? latestEntry?.date ?? null;
+  const latestRaceDate = [latestForecast?.date, latestEntry?.date, ...(snapshot.terminalEntries ?? []).map((entry) => entry.date)].filter(Boolean).sort().at(-1) ?? null;
   const latestRacecourse = latestForecast?.racecourse ?? latestEntry?.racecourse ?? null;
   const upcomingCount = snapshot.upcomingEntries?.length ?? 0;
   const noLocalRaceToday = upcomingCount === 0 && !meetingToday && Boolean(latestRaceDate) && latestRaceDate <= today;

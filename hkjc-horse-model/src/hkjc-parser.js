@@ -1,3 +1,6 @@
+import { createHash } from 'node:crypto';
+import { ABANDONED_EVIDENCE_VERSION, officialResultIdentity, projectAbandonedRace } from './race-terminal.js';
+
 const HKJC_LOCAL_RESULTS_URL = 'https://racing.hkjc.com/en-us/local/information/localresults';
 const HKJC_RACE_CARD_URL = 'https://racing.hkjc.com/en-us/local/information/racecard';
 const HKJC_FIXTURE_URL = 'https://racing.hkjc.com/en-us/local/information/fixture';
@@ -143,6 +146,9 @@ export function parseLocalResultHtml(html, context = {}) {
     throw new Error(`HKJC result race number mismatch: requested ${context.raceNo}, received ${titleRaceNo}`);
   }
 
+  const abandoned = parseAbandonedResult(html, { ...context, date, racecourse, raceNo }, runners);
+  if (abandoned) return abandoned;
+
   if (runners.length === 0) {
     throw new Error(`No performance rows found for ${date} ${racecourse} race ${raceNo}`);
   }
@@ -218,7 +224,7 @@ export function parseFixtureHtml(html, context = {}) {
     .filter(Boolean);
 }
 
-export async function fetchLocalResultRace({ date, racecourse, raceNo, fetchImpl = fetch }) {
+export async function fetchLocalResultRace({ date, racecourse, raceNo, fetchImpl = fetch, observedAt }) {
   const url = buildLocalResultUrl({ date, racecourse, raceNo });
   const response = await fetchImpl(url, {
     headers: {
@@ -231,7 +237,58 @@ export async function fetchLocalResultRace({ date, racecourse, raceNo, fetchImpl
   }
 
   const html = await response.text();
-  return parseLocalResultHtml(html, { date, racecourse, raceNo });
+  if (response.url) {
+    const finalIdentity = officialResultIdentity(response.url);
+    if (!finalIdentity || finalIdentity.date !== normalizeRaceDate(date)
+      || finalIdentity.racecourse !== racecourse || finalIdentity.raceNo !== raceNo) {
+      throw new Error('HKJC result response URL identity mismatch');
+    }
+  }
+  return parseLocalResultHtml(html, { date, racecourse, raceNo, sourceUrl: response.url ?? url, observedAt });
+}
+
+function parseAbandonedResult(html, context, runners) {
+  const content = String(html).replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi, '');
+  if (!/\bThis race is declared abandoned\b/i.test(stripText(content))) return null;
+  const text = stripText(content);
+  const headings = [...text.matchAll(/Race Meeting\s*:\s*(\d{1,2}\/\d{1,2}\/\d{4})\s+(Sha Tin|Happy Valley)\b/gi)];
+  const heading = headings[0];
+  const displayedCourse = heading?.[2].toLowerCase() === 'sha tin' ? 'ST' : heading ? 'HV' : null;
+  const tables = [...content.matchAll(/<table\b[^>]*class=["'][^"']*\bjs_racecard\b[^"']*["'][^>]*>([\s\S]*?)<\/table>/gi)];
+  const courseLabel = context.racecourse === 'ST' ? 'Sha Tin:' : 'Happy Valley:';
+  const selected = tables.flatMap((table) => [...table[1].matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)])
+    .filter((row) => stripText(row[1]).startsWith(courseLabel))
+    .flatMap((row) => [...row[1].matchAll(/racecard_rt_(\d+)_o\.gif/gi)].map((match) => Number(match[1])));
+  if (headings.length !== 1 || normalizeRaceDate(heading?.[1]) !== context.date
+    || displayedCourse !== context.racecourse || selected.length !== 1 || selected[0] !== context.raceNo
+    || runners.length) throw new Error('HKJC abandoned result displayed identity mismatch or conflicting performance');
+
+  const singlePools = new Set(['WIN', 'PLACE', 'QUINELLA', 'QUINELLA PLACE', 'FORECAST', 'TRIO', 'TIERCE', 'FIRST 4', 'QUARTET']);
+  const refunds = new Set();
+  const dividendHtml = content.slice(content.search(/<div\b[^>]*class=["'][^"']*\bdividend_tab\b/i));
+  for (const row of dividendHtml.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)) {
+    const cells = [...row[1].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi)].map((cell) => stripText(cell[1]).toUpperCase());
+    if (!singlePools.has(cells[0])) continue;
+    if (cells[1] !== '-' || cells[2] !== 'REFUND') throw new Error('HKJC abandoned result has conflicting refund evidence');
+    refunds.add(cells[0]);
+  }
+  if (!refunds.has('WIN') || !refunds.has('PLACE')) throw new Error('HKJC abandoned result is missing official refunds');
+  const source = context.sourceUrl ?? buildLocalResultUrl(context);
+  const race = {
+    raceId: `${context.date}-${context.racecourse}-${context.raceNo}`,
+    date: context.date, racecourse: context.racecourse, raceNo: context.raceNo,
+    status: 'abandoned', runners: [], source,
+    terminalEvidence: {
+      version: ABANDONED_EVIDENCE_VERSION, status: 'ABANDONED', refund: true,
+      date: context.date, racecourse: context.racecourse, raceNo: context.raceNo,
+      identityMethod: 'displayed-meeting-and-selected-race', url: source,
+      sha256: createHash('sha256').update(String(html)).digest('hex'),
+      observedAt: new Date(context.observedAt ?? Date.now()).toISOString(),
+    },
+  };
+  projectAbandonedRace(race);
+  return race;
 }
 
 export async function fetchRaceCardRace({ date, racecourse, raceNo, fetchImpl = fetch }) {

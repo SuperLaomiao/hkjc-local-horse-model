@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 
 import { backtestRaces, buildDashboardSnapshot, buildRollingPredictionLedger, calibrateConfig } from './model.js';
 import { splitDashboardForPublishing } from './dashboard-publish.js';
-import { resolveRefreshStartDate } from './refresh-window.js';
+import { resolveRefreshStartDate, mergeOfficialMeetingRecords } from './refresh-window.js';
 import { auditRecommendationRuns } from './recommendation-audit.js';
 import {
   buildAsOfTrainingRows,
@@ -294,7 +294,7 @@ async function syncDbCommand(args) {
   if (upcomingSummary) {
     console.log(`Upcoming files ${upcomingSummary.filesSeen}, races ${upcomingSummary.racesSeen}, runners ${upcomingSummary.runnersSeen}`);
   }
-  console.log(`Database totals: ${stats.races} races (${stats.settledRaces} settled, ${stats.upcomingRaces} upcoming), ${stats.runners} runners, ${stats.dividends} dividends`);
+  console.log(`Database totals: ${stats.races} races (${stats.settledRaces} settled, ${stats.upcomingRaces} upcoming, ${stats.abandonedRaces} abandoned), ${stats.runners} runners, ${stats.dividends} dividends`);
 }
 
 async function backupDbCommand(args) {
@@ -358,6 +358,7 @@ async function dashboardDbCommand(args) {
   const dbPath = path.resolve(args.db ?? sqliteDbPath);
   const settledRaces = loadRacesFromDatabase({ dbPath, status: 'settled' });
   const upcomingRaces = loadRacesFromDatabase({ dbPath, status: 'upcoming' });
+  const abandonedRaces = loadRacesFromDatabase({ dbPath, status: 'abandoned' });
   const snapshot = buildDashboardSnapshot(settledRaces, {
     minEdge: args.minEdge == null ? 0 : Number(args.minEdge),
     minProbability: args.minProbability == null ? 0.15 : Number(args.minProbability),
@@ -366,6 +367,7 @@ async function dashboardDbCommand(args) {
     finalEdgeBuffer: args.finalEdgeBuffer == null ? 0.08 : Number(args.finalEdgeBuffer),
     allowProbabilityOnly: args.allowProbabilityOnly !== 'false',
     upcomingRaces,
+    abandonedRaces,
   });
 
   snapshot.dataSource = {
@@ -779,7 +781,7 @@ async function prospectiveSettleCommand(args) {
   const openLocks = loadProspectiveLocks({ dbPath, raceId, status: 'OPEN' });
   const races = args.input
     ? normalizeRacePayload(JSON.parse(await readFile(path.resolve(args.input), 'utf8')))
-    : loadRacesFromDatabase({ dbPath, status: 'settled' });
+    : [...loadRacesFromDatabase({ dbPath, status: 'settled' }), ...loadRacesFromDatabase({ dbPath, status: 'abandoned' })];
   const raceById = new Map(races.map((race) => [race.raceId, race]));
   const settledAt = args.settledAt ?? new Date().toISOString();
   let settledCount = 0;
@@ -1300,7 +1302,7 @@ async function fetchCommand(args) {
 
   await mkdir(rawDataDir, { recursive: true });
   const outputPath = path.join(rawDataDir, `${date}-${racecourse}.json`);
-  await writeJson(outputPath, result.races);
+  await writeOfficialMeeting(outputPath, result.races);
 
   console.log(`Saved ${result.races.length} HKJC local races to ${outputPath}`);
   if (result.errors.length > 0) {
@@ -1329,7 +1331,7 @@ async function fetchUrlCommand(rest) {
 
   await mkdir(rawDataDir, { recursive: true });
   const outputPath = path.join(rawDataDir, `${date}-${racecourse}-R${raceNo}.json`);
-  await writeJson(outputPath, result.races);
+  await writeOfficialMeeting(outputPath, result.races);
   console.log(`Saved ${result.races.length} HKJC local race to ${outputPath}`);
 }
 
@@ -1380,6 +1382,7 @@ async function refreshCommand(args) {
     return meeting.date >= from && meeting.date <= to;
   });
   let resultRaces = 0;
+  let abandonedRaces = 0;
   let raceCardRaces = 0;
 
   console.log(`Refreshing HKJC local meetings ${from} to ${to} (today ${today})`);
@@ -1397,9 +1400,11 @@ async function refreshCommand(args) {
       if (result.races.length > 0) {
         await mkdir(rawDataDir, { recursive: true });
         const outputPath = path.join(rawDataDir, `${meeting.date}-${meeting.racecourse}.json`);
-        await writeJson(outputPath, result.races);
-        resultRaces += result.races.length;
-        console.log(`Results ${meeting.date} ${meeting.racecourse}: saved ${result.races.length}/${races.length}`);
+        await writeOfficialMeeting(outputPath, result.races);
+        const abandoned = result.races.filter((race) => race.status === 'abandoned').length;
+        resultRaces += result.races.length - abandoned;
+        abandonedRaces += abandoned;
+        console.log(`Results ${meeting.date} ${meeting.racecourse}: saved ${result.races.length}/${races.length} (${abandoned} abandoned)`);
       } else {
         console.log(`Results ${meeting.date} ${meeting.racecourse}: no official result rows yet`);
       }
@@ -1429,7 +1434,7 @@ async function refreshCommand(args) {
     console.log('No HKJC local meetings found in the selected window.');
   }
 
-  console.log(`Refresh fetched ${resultRaces} settled races and ${raceCardRaces} race-card races`);
+  console.log(`Refresh fetched ${resultRaces} settled races, ${abandonedRaces} abandoned races and ${raceCardRaces} race-card races`);
   const nextLocalMeetings = selectedMeetings
     .filter((meeting) => meeting.date > today)
     .slice(0, 5);
@@ -1525,7 +1530,12 @@ async function loadRaces(inputPath) {
     else races.push(parsed);
   }
 
-  return races.filter((race) => race?.runners?.length);
+  return races.filter((race) => race?.runners?.length || race?.status === 'abandoned');
+}
+
+async function writeOfficialMeeting(outputPath, fetched) {
+  const existing = await loadRacesIfExists(outputPath);
+  await writeJson(outputPath, mergeOfficialMeetingRecords(existing, fetched));
 }
 
 async function loadRacesIfExists(inputPath) {
