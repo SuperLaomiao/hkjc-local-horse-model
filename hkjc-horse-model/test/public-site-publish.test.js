@@ -9,6 +9,7 @@ import {
   buildPublicSite,
   scanPublicSite,
 } from '../src/public-site-publish.js';
+import { buildPublicReleaseManifest } from '../src/public-release-manifest.js';
 
 describe('public site publishing boundary', () => {
   it('copies only allowlisted assets and writes a sanitized dashboard', async () => {
@@ -49,7 +50,7 @@ describe('public site publishing boundary', () => {
         'index.html',
       ]);
       const manifest = JSON.parse(await readFile(path.join(output, 'data', 'publication-manifest.json'), 'utf8'));
-      assert.equal(manifest.version, 'public-release-manifest-v1');
+      assert.equal(manifest.version, 'public-release-manifest-v2');
       assert.match(manifest.dashboardSha256, /^[a-f0-9]{64}$/);
       assert.deepEqual(dashboard.ledger, []);
       assert.equal(dashboard.recentEntries[0].forecast.topPick.horseName, 'Public Top Pick');
@@ -85,6 +86,72 @@ describe('public site publishing boundary', () => {
         buildPublicSite({ projectRoot: source, outputRoot: output, staticFiles: ['index.html'], previousManifest }),
         /release transition failed.*SETTLED_COUNT_REGRESSION.*SETTLED_DATE_REGRESSION/s,
       );
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  it('migrates v1 through the build CLI with public settlement evidence and no private history', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'hkjc-public-settlement-'));
+    try {
+      const source = path.join(root, 'source');
+      const output = path.join(root, 'site');
+      await mkdir(path.join(source, 'data'), { recursive: true });
+      await writeFile(path.join(source, 'index.html'), '<main>safe</main>');
+      const entries = [1, 2].map((raceNo) => ({
+        raceId: `2026-10-01-ST-${raceNo}`, date: '2026-10-01', racecourse: 'ST', raceNo,
+        forecast: { predictions: [] }, settlement: null,
+      }));
+      const before = {
+        generatedAt: '2026-10-01T00:00:00Z', dataSource: { settledRaces: 10, upcomingRaces: 2 },
+        latestSettlement: { date: '2026-09-27' }, upcomingEntries: entries,
+      };
+      const previousDashboardText = `${JSON.stringify(before, null, 2)}\n`;
+      const previousManifest = buildPublicReleaseManifest({ dashboard: before, dashboardText: previousDashboardText });
+      previousManifest.version = 'public-release-manifest-v1';
+      delete previousManifest.data.upcomingRaceIds;
+      delete previousManifest.data.recentSettledRaceIds;
+      const priorDashboardPath = path.join(root, 'previous-dashboard.json');
+      const priorManifestPath = path.join(root, 'previous-manifest.json');
+      await writeFile(priorDashboardPath, previousDashboardText);
+      await writeFile(priorManifestPath, JSON.stringify(previousManifest));
+
+      for (const settledCount of [1, 2]) {
+        const recentEntries = entries.slice(0, settledCount).map((entry) => ({
+          ...entry,
+          settlement: { ...entry, forecast: undefined, settlement: undefined, resultLabel: 'PASS', winnerHorseId: 'HK_2025_L001', stake: 100, ticket: 'PRIVATE_BET_SENTINEL' },
+        }));
+        const after = {
+          generatedAt: '2026-10-01T09:00:00Z', dataSource: { settledRaces: 10 + settledCount, upcomingRaces: 2 - settledCount },
+          latestSettlement: recentEntries.at(-1).settlement, upcomingEntries: entries.slice(settledCount), recentEntries,
+          ledger: [{ raceId: 'PRIVATE_HISTORY_SENTINEL', stake: 100 }],
+        };
+        await writeFile(path.join(source, 'data', 'dashboard.json'), JSON.stringify(after));
+        const report = await buildPublicSite({ projectRoot: source, outputRoot: output, staticFiles: ['index.html'], previousManifest, previousDashboardText });
+        assert.equal(report.status, 'PASS');
+        const publicText = await readFile(path.join(output, 'data', 'dashboard.json'), 'utf8');
+        const manifestText = await readFile(path.join(output, 'data', 'publication-manifest.json'), 'utf8');
+        assert.doesNotMatch(publicText + manifestText, /PRIVATE_.*SENTINEL|"stake"|"ticket"/);
+        assert.equal(JSON.parse(manifestText).data.recentSettledRaceIds.length, settledCount);
+      }
+
+      // The same migration inputs must be threaded through the real CLI, including raw dashboard bytes.
+      const projectRoot = path.resolve(import.meta.dirname, '..', '..');
+      const cli = path.join(projectRoot, 'hkjc-horse-model', 'src', 'public-site-cli.js');
+      const result = spawnSync(process.execPath, [
+        cli, 'build', '--projectRoot', projectRoot, '--dashboard', path.join(source, 'data', 'dashboard.json'),
+        '--output', output, '--previousManifest', priorManifestPath, '--previousDashboard', priorDashboardPath,
+      ], { cwd: projectRoot, encoding: 'utf8' });
+      assert.equal(result.status, 0, result.stderr || result.stdout);
+
+      await writeFile(priorDashboardPath, '{}');
+      const rejected = spawnSync(process.execPath, [
+        cli, 'build', '--projectRoot', projectRoot, '--dashboard', path.join(source, 'data', 'dashboard.json'),
+        '--output', output, '--previousManifest', priorManifestPath, '--previousDashboard', priorDashboardPath,
+      ], { cwd: projectRoot, encoding: 'utf8' });
+      assert.notEqual(rejected.status, 0);
+      assert.match(rejected.stderr, /PREVIOUS_RELEASE_INVALID/);
+      await assert.rejects(readFile(path.join(output, 'data', 'publication-manifest.json')));
     } finally {
       await rm(root, { recursive: true, force: true });
     }

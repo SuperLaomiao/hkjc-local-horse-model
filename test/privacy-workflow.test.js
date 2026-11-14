@@ -16,6 +16,8 @@ describe('public Pages privacy workflow', () => {
     assert.match(workflow, /hkjc:privacy-scan/);
     assert.match(workflow, /resumeFromLatest/);
     assert.match(workflow, /publication-manifest\.json/);
+    assert.match(workflow, /--previousDashboard \.previous-dashboard\.json/);
+    assert.doesNotMatch(workflow, /continue-on-error|rm -f \.previous-publication-manifest/);
     assert.match(workflow, /verify-url/);
     assert.match(workflow, /cron: "30 3 \* \* 0,3,6"/);
     assert.match(workflow, /actions\/upload-pages-artifact@v3/);

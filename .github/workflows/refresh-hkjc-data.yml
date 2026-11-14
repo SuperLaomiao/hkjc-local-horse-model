@@ -40,11 +40,9 @@ jobs:
         run: npm run hkjc:test-publication
 
       - name: Download current public release contract
-        continue-on-error: true
         run: |
-          if ! curl --fail --silent --show-error --location --output .previous-publication-manifest.json https://superlaomiao.github.io/hkjc-local-horse-model/data/publication-manifest.json; then
-            rm -f .previous-publication-manifest.json
-          fi
+          curl --fail --silent --show-error --location --retry 3 --retry-all-errors --output .previous-publication-manifest.json https://superlaomiao.github.io/hkjc-local-horse-model/data/publication-manifest.json
+          curl --fail --silent --show-error --location --retry 3 --retry-all-errors --output .previous-dashboard.json https://superlaomiao.github.io/hkjc-local-horse-model/data/dashboard.json
 
       - name: Refresh local model data in the ephemeral runner
         run: |
@@ -53,11 +51,7 @@ jobs:
 
       - name: Build public allowlist artifact
         run: |
-          if [ -f .previous-publication-manifest.json ]; then
-            npm run hkjc:build-public-site -- --previousManifest .previous-publication-manifest.json
-          else
-            npm run hkjc:build-public-site
-          fi
+          npm run hkjc:build-public-site -- --previousManifest .previous-publication-manifest.json --previousDashboard .previous-dashboard.json
 
       - name: Verify public artifact privacy
         run: npm run hkjc:privacy-scan

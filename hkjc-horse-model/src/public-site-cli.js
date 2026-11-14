@@ -19,6 +19,9 @@ async function main(argv) {
       previousManifest: args.previousManifest
         ? JSON.parse(await readFile(path.resolve(args.previousManifest), 'utf8'))
         : null,
+      previousDashboardText: args.previousDashboard
+        ? await readFile(path.resolve(args.previousDashboard), 'utf8')
+        : undefined,
     });
   } else if (command === 'scan') {
     report = await scanPublicSite({
@@ -33,7 +36,7 @@ async function main(argv) {
       retryDelayMs: Number(args.retryDelayMs ?? 5000),
     });
   } else {
-    throw new Error('usage: public-site-cli.js <build|scan|verify-url> [--projectRoot path] [--dashboard path] [--output path] [--root path] [--report path]');
+    throw new Error('usage: public-site-cli.js <build|scan|verify-url> [--projectRoot path] [--dashboard path] [--previousManifest path] [--previousDashboard path] [--output path] [--root path] [--report path]');
   }
 
   if (args.report) {

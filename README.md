@@ -352,6 +352,17 @@ deployed dashboard hash. A release is blocked if settled coverage regresses or
 an already-published future meeting disappears unexpectedly. The local SQLite
 database and private research evidence are never uploaded.
 
+The v2 release manifest tracks exact upcoming race IDs and settlement IDs from
+the public dashboard's recent official results. A race can leave the upcoming
+list only with its matching settled result and sufficient settled-count growth;
+a newer date or unchanged total cannot hide a missing or replaced race. The
+first transition from v1 recovers identities from the previous public dashboard
+only after checking its manifest SHA-256 and coverage. The workflow downloads
+both files and stops if either is unavailable or inconsistent. Settlements
+outside the existing recent-results window, cancellations, and missing result
+evidence require investigation; private history is never added to bypass this
+check.
+
 ## Self-Test Lab
 
 The dashboard includes a local "我的测试台" mode:
