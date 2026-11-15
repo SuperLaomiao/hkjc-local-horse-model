@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "node --test hkjc-horse-model/test/*.test.js test/*.test.js",
-    "hkjc:test-publication": "node --test hkjc-horse-model/test/dashboard-publish.test.js hkjc-horse-model/test/public-release-manifest.test.js hkjc-horse-model/test/public-site-publish.test.js hkjc-horse-model/test/refresh-window.test.js test/live-market-browser.test.js test/privacy-workflow.test.js test/public-dashboard-app-integration.test.js",
+    "hkjc:test-publication": "node --test hkjc-horse-model/test/abandoned-race.test.js hkjc-horse-model/test/abandoned-release.test.js hkjc-horse-model/test/dashboard-publish.test.js hkjc-horse-model/test/prospective-locks.test.js hkjc-horse-model/test/public-release-manifest.test.js hkjc-horse-model/test/public-site-publish.test.js hkjc-horse-model/test/refresh-window.test.js test/abandoned-terminal.test.js test/live-market-browser.test.js test/privacy-workflow.test.js test/public-dashboard-app-integration.test.js",
     "hkjc:refresh": "node hkjc-horse-model/src/cli.js refresh",
     "hkjc:dashboard": "node hkjc-horse-model/src/cli.js dashboard",
     "hkjc:sync-db": "node hkjc-horse-model/src/cli.js sync-db",

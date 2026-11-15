@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, rm } from 'node:fs/promises';
+import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { spawnSync } from 'node:child_process';
 import os from 'node:os';
 import path from 'node:path';
 import { describe, it } from 'node:test';
@@ -13,9 +14,36 @@ import {
   settleProspectiveLocks,
   settleProspectiveLock,
 } from '../src/prospective-locks.js';
-import { loadProspectiveLocks } from '../src/sqlite-store.js';
+import { loadProspectiveLocks, syncRaceFilesToDatabase } from '../src/sqlite-store.js';
+import { abandonedRace } from './abandoned-fixtures.js';
 
 describe('prospective locks', () => {
+  it('voids a verified abandoned race without a winner and rejects unproved cancellation', async () => {
+    const race = abandonedRace();
+    const lock = { ...prospectiveLock(), raceId: race.raceId, generatedAt: '2026-11-14T07:15:00Z',
+      decision: { ...prospectiveLock().decision, marketCapturedAt: '2026-11-14T07:14:00Z' } };
+    const result = settleProspectiveLocks({ locks: [lock], race });
+    assert.equal(result.status, 'VOID');
+    assert.equal(result.lines[0].status, 'VOID');
+    assert.equal(result.lines[0].returned, result.lines[0].stake);
+    assert.equal(result.lines[0].profit, 0);
+    assert.equal(settleProspectiveLocks({ locks: [], race }).status, 'VOID');
+    assert.throws(() => settleProspectiveLocks({ locks: [lock], race: { ...race, terminalEvidence: undefined } }), /evidence/i);
+    const root = await mkdtemp(path.join(os.tmpdir(), 'hkjc-abandoned-void-'));
+    try {
+      const dbPath = path.join(root, 'locks.sqlite');
+      const input = path.join(root, 'official.json');
+      await writeFile(input, JSON.stringify([race]));
+      syncRaceFilesToDatabase({ dbPath, inputPath: input });
+      recordProspectiveLock({ dbPath, lock });
+      const cli = spawnSync(process.execPath, ['hkjc-horse-model/src/cli.js', 'prospective-settle', '--db', dbPath, '--output', path.join(root, 'private-audit.json')], { cwd: path.resolve(import.meta.dirname, '../..'), encoding: 'utf8' });
+      assert.equal(cli.status, 0, cli.stderr);
+      const stored = loadProspectiveLocks({ dbPath });
+      assert.equal(stored.length, 1);
+      assert.equal(stored[0].status, 'VOID');
+      assert.equal(stored[0].settlement.profit, 0);
+    } finally { await rm(root, { recursive: true, force: true }); }
+  });
   it('hashes the canonical identity fields and ignores unrelated decision payload order', () => {
     const base = prospectiveLock();
     const first = buildProspectiveLockId(base);

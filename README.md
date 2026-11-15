@@ -352,16 +352,35 @@ deployed dashboard hash. A release is blocked if settled coverage regresses or
 an already-published future meeting disappears unexpectedly. The local SQLite
 database and private research evidence are never uploaded.
 
-The v2 release manifest tracks exact upcoming race IDs and settlement IDs from
+The v3 release manifest tracks exact upcoming race IDs and settlement IDs from
 the public dashboard's recent official results. A race can leave the upcoming
 list only with its matching settled result and sufficient settled-count growth;
 a newer date or unchanged total cannot hide a missing or replaced race. The
 first transition from v1 recovers identities from the previous public dashboard
 only after checking its manifest SHA-256 and coverage. The workflow downloads
-both files and stops if either is unavailable or inconsistent. Settlements
-outside the existing recent-results window, cancellations, and missing result
-evidence require investigation; private history is never added to bypass this
-check.
+both files and stops if either is unavailable or inconsistent. Existing v1 and
+v2 releases remain verifiable. Settlements outside the existing recent-results
+window and missing result evidence require investigation; private history is
+never added to bypass this check.
+
+An abandoned race is a separate terminal state. The results parser requires the
+displayed meeting date/venue, the selected race in that venue's navigation row,
+the explicit abandonment declaration, and WIN/PLACE refund rows to agree with
+the requested official URL. It saves a source SHA-256 and actual observation
+time, with no winner or normal performance rows. SQLite preserves this state
+against stale cards and rejects conflicting terminal rewrites; private OPEN
+paper locks become VOID with a refund and zero profit. Abandonments do not
+increase settled-race counts or enter model training, performance or forecasts.
+
+The public dashboard and manifest contain only the last 12 terminal identities
+and their official evidence, without raw HTML, private locks, stakes or betting
+history. An exact matching cancellation can account for an upcoming race
+disappearing even when normal settled totals do not increase. Unknown loss,
+wrong identities, missing refunds, future evidence and coverage regressions
+remain blocked, including when no upcoming races remain. The page labels the
+latest meeting's cancellations as cancelled/refunded with HK$0 and no odds or
+betting recommendations. A changed official HTML layout or evidence outside
+the retained window fails closed for investigation.
 
 ## Self-Test Lab
 

@@ -1,4 +1,5 @@
 import { publicProspectiveCoverageProjection } from './prospective-coverage.js';
+import { projectAbandonedRace } from './race-terminal.js';
 
 const DEFAULT_EMBEDDED_PERFORMANCE_MEETING_LIMIT = 40;
 
@@ -100,6 +101,7 @@ export function splitDashboardForPublishing(snapshot, options = {}) {
     history,
     recentEntries: sanitizeEntries(snapshot?.recentEntries),
     upcomingEntries: sanitizeEntries(snapshot?.upcomingEntries),
+    terminalEntries: (snapshot?.terminalEntries ?? []).map(projectAbandonedRace).slice(-12),
     latestForecast: sanitizeForecast(snapshot?.latestForecast),
     latestUpcomingForecast: sanitizeForecast(snapshot?.latestUpcomingForecast),
     latestSettlement: sanitizeSettlement(snapshot?.latestSettlement),

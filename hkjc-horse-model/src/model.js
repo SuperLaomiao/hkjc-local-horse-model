@@ -1,4 +1,5 @@
 import { buildPerformanceSnapshot } from './performance.js';
+import { projectAbandonedRace } from './race-terminal.js';
 import { evaluateValueCandidate } from './value-betting-engine.js';
 import {
   applyUncertaintyToStake,
@@ -206,6 +207,7 @@ export function backtestRaces(races, options = {}) {
 }
 
 export function buildRaceForecast(race, state = createModelState(), options = {}) {
+  if (['abandoned', 'void', 'cancelled', 'canceled'].includes(String(race.status ?? '').toLowerCase())) throw new Error('Cannot forecast an abandoned terminal race');
   const predictions = predictRace(race, state, options);
   const topPick = predictions[0] ? sanitizePrediction(predictions[0]) : null;
   const recommendation = recommendValueBet(predictions, options);
@@ -544,6 +546,9 @@ function hasVerifiableLiveMarket(decision) {
 }
 
 export function settleForecast(forecast, actualRace) {
+  if (['abandoned', 'void', 'cancelled', 'canceled'].includes(String(actualRace.status ?? '').toLowerCase())) {
+    throw new Error('Cannot settle an abandoned race as a normal result');
+  }
   const recommendation = forecast.recommendation ?? { action: 'pass', suggestedStake: 0 };
   const recommendedRunner = recommendation.horseId
     ? actualRace.runners.find((runner) => runner.horseId === recommendation.horseId)
@@ -666,6 +671,9 @@ export function buildRollingPredictionLedger(races, options = {}) {
 }
 
 export function buildDashboardSnapshot(races, options = {}) {
+  const abandoned = [...races, ...(options.abandonedRaces ?? [])].filter((race) => race.status === 'abandoned');
+  const abandonedById = new Map(abandoned.map((race) => [race.raceId, projectAbandonedRace(race)]));
+  const terminalEntries = [...abandonedById.values()].sort(compareRaces).slice(-12);
   const rolling = buildRollingPredictionLedger(races, options);
   const latestEntry = rolling.entries.at(-1) ?? null;
   const trainedState = trainStateFromRaces(races, options);
@@ -673,7 +681,7 @@ export function buildDashboardSnapshot(races, options = {}) {
   const researchProgram = buildResearchUpgradeProgram();
   const settledRaceIds = new Set(rolling.entries.map((entry) => entry.raceId));
   const upcomingEntries = uniqueRaces(options.upcomingRaces ?? [])
-    .filter((race) => !settledRaceIds.has(race.raceId))
+    .filter((race) => !settledRaceIds.has(race.raceId) && !abandonedById.has(race.raceId))
     .sort(compareRaces)
     .map((race) => ({
       raceId: race.raceId,
@@ -709,6 +717,7 @@ export function buildDashboardSnapshot(races, options = {}) {
     latestSettlement: latestEntry?.settlement ?? null,
     latestUpcomingForecast: upcomingEntries[0]?.forecast ?? null,
     upcomingEntries,
+    terminalEntries,
     nextLocalMeetings: options.nextLocalMeetings ?? [],
     fixtureWindow: options.fixtureWindow ?? null,
     performance,
@@ -743,8 +752,14 @@ export function trainStateFromRaces(races, options = {}) {
 function uniqueRaces(races) {
   const seen = new Set();
   const unique = [];
+  const abandonedIds = new Set(races.filter((race) => race.status === 'abandoned').map((race) => projectAbandonedRace(race).raceId));
   for (const race of races) {
+    if (['abandoned', 'void', 'cancelled', 'canceled'].includes(String(race.status ?? '').toLowerCase())) {
+      projectAbandonedRace(race);
+      continue;
+    }
     const key = race.raceId ?? `${race.date}-${race.racecourse}-${race.raceNo}`;
+    if (abandonedIds.has(key)) throw new Error(`Official terminal race status conflict: ${key}`);
     if (seen.has(key)) continue;
     seen.add(key);
     unique.push(race);

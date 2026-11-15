@@ -151,6 +151,13 @@ export function buildMultiPlayProbabilityBoard(entry, options = {}) {
 }
 
 export function buildStructuredBetPortfolio(entry, options = {}) {
+  if (entry?.status === 'abandoned') return {
+    mode: 'PASS', label: '本场已取消 · 不下注', totalStake: 0,
+    cashLines: [], watchLines: [], paperLines: [],
+    board: { candidates: [], runners: [] }, tripwire: null,
+    summary: '马会宣布本场取消，单场彩池退款；不生成投注组合。',
+    disclaimer: '已取消赛事不计入正常赛果与模型成绩。',
+  };
   const config = { ...DEFAULT_OPTIONS, ...options };
   if (options.maxHorseExposureShare == null && options.maxCoreExposureShare != null) {
     config.maxHorseExposureShare = options.maxCoreExposureShare;

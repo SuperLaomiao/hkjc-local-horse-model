@@ -4,6 +4,7 @@ import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 
 import { buildPoolMoneyFeatureIndex } from './pool-money-features.js';
+import { projectAbandonedRace } from './race-terminal.js';
 
 export function syncRaceFilesToDatabase({ dbPath, inputPath, sourceKind = 'raw' }) {
   if (!dbPath) throw new Error('syncRaceFilesToDatabase requires dbPath');
@@ -69,6 +70,7 @@ export function getDatabaseStats(dbPath) {
       races: countTable(db, 'races'),
       settledRaces: countTable(db, 'races', "status = 'settled'"),
       upcomingRaces: countTable(db, 'races', "status = 'upcoming'"),
+      abandonedRaces: countTable(db, 'races', "status = 'abandoned'"),
       runners: countTable(db, 'runners'),
       dividends: countTable(db, 'dividends'),
       oddsSnapshots: countTable(db, 'odds_snapshots'),
@@ -758,6 +760,7 @@ export function loadRacesFromDatabase({ dbPath, status = null, dateFrom = null }
           url: raceRow.source_url,
           file: raceRow.source_file,
         },
+        ...(raceRow.status === 'abandoned' ? { terminalEvidence: rawRace.terminalEvidence } : {}),
       };
     });
   } finally {
@@ -910,12 +913,27 @@ function openDatabase(dbPath) {
 
 function importRace(db, { race, sourceKind, sourceFile }) {
   const raceId = race.raceId ?? `${race.date}-${race.racecourse}-${race.raceNo}`;
-  const status = sourceKind === 'upcoming' ? 'upcoming' : 'settled';
+  const abandoned = race.status === 'abandoned';
+  if (!abandoned && (race.terminalEvidence || ['abandoned', 'void', 'cancelled', 'canceled'].includes(String(race.status ?? '').toLowerCase()))) {
+    throw new Error('Unverified abandoned or void terminal race status');
+  }
+  if (abandoned) {
+    projectAbandonedRace(race);
+    if (sourceKind === 'upcoming' || race.runners?.length || Object.keys(race.dividends ?? {}).length
+      || race.winnerHorseId != null || race.winnerHorseName != null) {
+      throw new Error('Abandoned race must come from official results without performance rows');
+    }
+  }
+  const status = abandoned ? 'abandoned' : sourceKind === 'upcoming' ? 'upcoming' : 'settled';
   const sourceUrl = typeof race.source === 'string' ? race.source : race.source?.url ?? null;
+  if (abandoned && sourceUrl !== race.terminalEvidence.url) throw new Error('Abandoned race source URL conflicts with evidence');
   const existing = db.prepare('SELECT status FROM races WHERE race_id = ?').get(raceId);
 
-  if (sourceKind === 'upcoming' && existing?.status === 'settled') {
+  if (sourceKind === 'upcoming' && ['settled', 'abandoned'].includes(existing?.status)) {
     return;
+  }
+  if (existing && existing.status !== 'upcoming' && existing.status !== status) {
+    throw new Error(`Official terminal race status conflict: ${raceId} ${existing.status} -> ${status}`);
   }
 
   db.prepare(`

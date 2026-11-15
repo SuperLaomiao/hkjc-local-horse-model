@@ -1,3 +1,5 @@
+import { projectAbandonedRace } from './race-terminal.js';
+
 import { createHash } from 'node:crypto';
 
 import { validateProbabilityArtifact } from './probability-artifact.js';
@@ -147,9 +149,11 @@ export function settleProspectiveLocks({ locks, race, marketSnapshots = [] }) {
   if (!race || typeof race !== 'object' || Array.isArray(race)) {
     throw new Error('race must be an object');
   }
-  if (!['settled', 'void', 'abandoned'].includes(String(race.status ?? '').toLowerCase())) {
+  const raceStatus = String(race.status ?? '').toLowerCase();
+  if (!['settled', 'void', 'abandoned'].includes(raceStatus)) {
     throw new Error('race must be settled before prospective locks can be settled');
   }
+  if (raceStatus === 'abandoned') projectAbandonedRace(race);
 
   const lines = normalizedLocks.map((lock) => {
     const normalized = normalizeProspectiveLock(lock);
@@ -157,7 +161,7 @@ export function settleProspectiveLocks({ locks, race, marketSnapshots = [] }) {
       throw new Error(`lock raceId does not match official raceId: ${normalized.raceId}`);
     }
     if (isVoidedPool(race, normalized.poolKey)) {
-      return addClosingPriceAudit({
+      const line = {
         lockId: normalized.lockId,
         raceId: normalized.raceId,
         poolKey: normalized.poolKey,
@@ -167,7 +171,12 @@ export function settleProspectiveLocks({ locks, race, marketSnapshots = [] }) {
         returned: normalized.decision.stake,
         profit: 0,
         status: 'VOID',
-      }, normalized, marketSnapshots, race);
+      };
+      if (race.status === 'abandoned') return {
+        ...line, closingDividendPer10: null, indicativeClv: null,
+        priceSlippageToT3: null, officialDividendChangeFromLock: null,
+      };
+      return addClosingPriceAudit(line, normalized, marketSnapshots, race);
     }
     if (!Array.isArray(race.dividends?.[normalized.poolKey])
       || race.dividends[normalized.poolKey].length === 0) {
@@ -193,7 +202,7 @@ export function settleProspectiveLocks({ locks, race, marketSnapshots = [] }) {
   });
 
   return {
-    status: lines.length > 0 && lines.every((line) => line.status === 'VOID') ? 'VOID' : 'SETTLED',
+    status: raceStatus === 'abandoned' || (lines.length > 0 && lines.every((line) => line.status === 'VOID')) ? 'VOID' : 'SETTLED',
     lines,
   };
 }

@@ -138,6 +138,7 @@ export function quoteForSelection(market, betType, selections, now = new Date())
 export function isLiveMarketEligible(entry, today) {
   const raceDate = String(entry?.date ?? entry?.forecast?.date ?? '');
   return !entry?.settlement
+    && entry?.status !== 'abandoned'
     && /^\d{4}-\d{2}-\d{2}$/.test(raceDate)
     && /^\d{4}-\d{2}-\d{2}$/.test(String(today ?? ''))
     && raceDate >= today;

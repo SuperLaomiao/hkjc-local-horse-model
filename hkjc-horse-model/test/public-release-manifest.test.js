@@ -57,6 +57,7 @@ function legacyManifest(snapshot = dashboard()) {
   result.version = 'public-release-manifest-v1';
   delete result.data.upcomingRaceIds;
   delete result.data.recentSettledRaceIds;
+  delete result.data.abandonedRaces;
   return result;
 }
 
@@ -65,7 +66,7 @@ describe('public release manifest', () => {
     const text = `${JSON.stringify(dashboard(), null, 2)}\n`;
     const manifest = buildPublicReleaseManifest({ dashboard: JSON.parse(text), dashboardText: text });
 
-    assert.equal(manifest.version, 'public-release-manifest-v2');
+    assert.equal(manifest.version, 'public-release-manifest-v3');
     assert.equal(manifest.data.settledRaces, 14306);
     assert.equal(manifest.data.settledThrough, '2026-09-27');
     assert.equal(manifest.data.upcomingRaces, 2);

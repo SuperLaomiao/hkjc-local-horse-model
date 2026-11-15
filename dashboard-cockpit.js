@@ -1,3 +1,5 @@
+import { projectAbandonedRace } from './hkjc-horse-model/src/race-terminal.js?v=20261115-abandoned-terminal';
+
 export const COCKPIT_DESTINATIONS = Object.freeze([
   Object.freeze({ id: 'today', label: '今日', symbol: '●' }),
   Object.freeze({ id: 'review', label: '复盘', symbol: '↺' }),
@@ -29,11 +31,12 @@ export function buildCockpitViewModel(options = {}) {
   const watchLines = Array.isArray(portfolio?.watchLines) ? portfolio.watchLines : [];
   const hardBlock = refreshStatus === 'error'
     || executionPolicy.allowExecutableRecommendations !== true;
-  const sourceLines = cashLines.length ? cashLines : watchLines;
+  const sourceLines = entry?.status === 'abandoned' ? [] : cashLines.length ? cashLines : watchLines;
 
   let state;
   if (hardBlock) state = 'BLOCK';
   else if (!entry) state = 'NO_MEETING';
+  else if (entry.status === 'abandoned') state = 'ABANDONED';
   else if (entry.settlement) state = 'SETTLED';
   else if (availability.canBetNow !== true) state = 'WAIT';
   else if (cashLines.length) state = raceContext ? 'PLAY' : 'BLOCK';
@@ -93,6 +96,7 @@ function formatSelections(selections) {
 }
 
 function headlineForState(state) {
+  if (state === 'ABANDONED') return '本场已取消 · 不下注';
   if (state === 'NO_MEETING') return '今天不可下注';
   if (state === 'PLAY') return '本场可执行建议';
   if (state === 'SETTLED') return '本场已经结算';
@@ -115,6 +119,7 @@ function reasonForState({
     return executionPolicy.reason ?? '发布边界不允许执行下注。';
   }
   if (!entry) return '还没有确认今日香港本地赛程。';
+  if (state === 'ABANDONED') return '马会宣布本场取消，单场彩池退款；不再查询赔率或生成投注建议。';
   if (state === 'BLOCK' && !raceContext) return '场次信息不完整，不能生成可执行建议。';
   if (state === 'SETTLED') return '赛事已经结算，请进入复盘。';
   if (availability.canBetNow !== true) {
@@ -153,4 +158,14 @@ export function buildProspectiveCoverageView(report) {
       missing: count(row.missingCells) ? row.missingCells : null,
     })),
   };
+}
+
+export function buildTerminalRaceNotices(snapshot = {}) {
+  const entries = (snapshot.terminalEntries ?? []).map(projectAbandonedRace);
+  const latest = [...entries.map((entry) => entry.date), snapshot.latestSettlement?.date].filter(Boolean).sort().at(-1);
+  return entries.filter((entry) => entry.date === latest).map((entry) => ({
+    raceId: entry.raceId, label: `${entry.date} ${entry.racecourse === 'ST' ? '沙田' : '跑马地'} R${entry.raceNo} · 已取消`,
+    detail: '马会宣布取消；本场单场彩池退款。HK$0 · 不下注，不计入正常已结算赛果与模型成绩。',
+    sourceUrl: entry.terminalEvidence.url,
+  }));
 }

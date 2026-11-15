@@ -93,6 +93,10 @@ export function formatRaceContext(entry = {}) {
 export function buildBettingAvailability({ entry = {}, today } = {}) {
   const context = formatRaceContext(entry);
   const raceDate = entry.date ?? null;
+  if (entry.status === 'abandoned') return {
+    canBetNow: false, label: '已取消 · 不下注', tone: 'closed', headline: `${context} 已取消`,
+    detail: '马会宣布本场取消，单场彩池退款；不会生成投注建议。',
+  };
 
   if (!raceDate || !today) {
     return {
